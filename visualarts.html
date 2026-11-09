@@ -6,18 +6,10 @@
     <title>Plastic Heart Surgery — Visual Arts</title>
     <style>
         @font-face {
-            font-family: 'Lyno Jean';
-            src: url('fonts/lyno-jean.otf') format('opentype');
+            font-family: 'Lyno Ulyscyr';
+            src: local('Lyno Ulyscyr'), url('fonts/lynoulyscyr.ttf') format('truetype');
             font-weight: normal;
             font-style: normal;
-        }
-
-        :root {
-            --bg-color: #0f0f0f;
-            --text-color: #f0f0f0;
-            --muted-color: #888888;
-            --accent-color: #ffffff;
-            --border-color: #222222;
         }
 
         * {
@@ -28,17 +20,17 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
+            background-color: #ffffff !important;
+            color: #111111 !important;
             display: flex;
             min-height: 100vh;
             line-height: 1.6;
         }
 
         sidebar {
-            width: 320px;
-            background-color: var(--bg-color);
-            border-right: 1px solid var(--border-color);
+            width: 340px;
+            background-color: #ffffff !important;
+            border-right: 1px solid #cccccc;
             padding: 40px;
             display: flex;
             flex-direction: column;
@@ -51,12 +43,11 @@
         }
 
         .site-title {
-            font-family: 'Lyno Jean', sans-serif !important;
-            font-size: 1.35rem;
-            letter-spacing: 0.4em;
-            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8), 0 0 10px rgba(255, 255, 255, 0.1);
+            font-family: 'Lyno Ulyscyr', sans-serif !important;
+            font-size: 1.5rem;
+            letter-spacing: 0.3em;
+            color: #ff0033 !important;
             margin-bottom: 40px;
-            color: var(--accent-color);
             text-decoration: none;
             display: block;
         }
@@ -64,32 +55,31 @@
         .nav-columns {
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 22px;
         }
 
         .nav-column-item {
-            font-family: 'Lyno Jean', sans-serif !important;
-            font-size: 1.1rem;
-            letter-spacing: 0.3em;
-            text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
-            color: var(--muted-color);
+            font-family: 'Lyno Ulyscyr', sans-serif !important;
+            font-size: 1.25rem;
+            letter-spacing: 0.2em;
+            color: #555555 !important;
             text-decoration: none;
             transition: color 0.2s ease;
         }
 
         .nav-column-item:hover, .nav-column-item.active {
-            color: var(--accent-color);
+            color: #ff0033 !important;
         }
 
         .sidebar-footer {
             font-size: 0.85rem;
-            color: var(--muted-color);
+            color: #333333 !important;
             word-break: break-all;
             margin-top: 40px;
         }
 
         .sidebar-footer a {
-            color: var(--text-color);
+            color: #ff0033 !important;
             text-decoration: none;
         }
 
@@ -98,23 +88,23 @@
         }
 
         main {
-            margin-left: 320px;
+            margin-left: 340px;
             flex: 1;
             padding: 80px 60px;
             max-width: 1000px;
+            background-color: #ffffff !important;
         }
 
         h2 {
-            font-family: 'Lyno Jean', sans-serif !important;
-            font-size: 1.6rem;
-            letter-spacing: 0.35em;
-            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
+            font-family: 'Lyno Ulyscyr', sans-serif !important;
+            font-size: 1.8rem;
+            letter-spacing: 0.25em;
+            color: #ff0033 !important;
             margin-bottom: 24px;
-            color: var(--accent-color);
         }
 
         p {
-            color: var(--muted-color);
+            color: #444444 !important;
             margin-bottom: 24px;
             font-size: 1rem;
         }
@@ -128,18 +118,20 @@
         }
 
         .art-card {
-            background: #141414;
-            border: 1px solid var(--border-color);
+            background: #ffffff;
+            border: 2px solid #000000;
             border-radius: 6px;
             overflow: hidden;
             text-decoration: none;
             display: block;
-            transition: transform 0.2s ease, border-color 0.2s ease;
+            box-shadow: 4px 4px 0px #000000;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
 
         .art-card:hover {
-            border-color: #555;
             transform: translateY(-2px);
+            box-shadow: 6px 6px 0px #ff0033;
+            border-color: #ff0033;
         }
 
         .art-card img {
@@ -150,20 +142,20 @@
 
         .art-info {
             padding: 16px;
+            background-color: #ffffff;
         }
 
         .art-title {
-            font-family: 'Lyno Jean', sans-serif !important;
-            font-size: 0.95rem;
-            letter-spacing: 0.2em;
-            color: var(--text-color);
+            font-family: 'Lyno Ulyscyr', sans-serif !important;
+            font-size: 1.05rem;
+            letter-spacing: 0.15em;
+            color: #ff0033 !important;
             margin-bottom: 6px;
-            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8);
         }
 
         .art-meta {
             font-size: 0.85rem;
-            color: var(--muted-color);
+            color: #555555;
         }
 
         @media (max-width: 768px) {
@@ -176,7 +168,7 @@
                 height: auto;
                 padding: 30px 20px;
                 border-right: none;
-                border-bottom: 1px solid var(--border-color);
+                border-bottom: 1px solid #cccccc;
             }
             main {
                 margin-left: 0;
@@ -185,25 +177,25 @@
         }
     </style>
 </head>
-<body>
+<body style="background-color: #ffffff !important;">
 
-    <sidebar>
+    <sidebar style="background-color: #ffffff !important;">
         <div>
             <a href="index.html" class="site-title">Plastic Heart Surgery</a>
             <div class="nav-columns">
-                <a href="index.html" class="nav-column-item">01 / Bio</a>
-                <a href="visualarts.html" class="nav-column-item active">02 / Visual Arts</a>
-                <a href="music.html" class="nav-column-item">03 / Music</a>
-                <a href="links.html" class="nav-column-item">04 / Links</a>
+                <a href="index.html" class="nav-column-item">Bio</a>
+                <a href="visualarts.html" class="nav-column-item active">Visual Arts</a>
+                <a href="music.html" class="nav-column-item">Music</a>
+                <a href="links.html" class="nav-column-item">Links</a>
             </div>
         </div>
         <div class="sidebar-footer">
-            <p style="margin-bottom: 4px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">Contact</p>
+            <p style="margin-bottom: 4px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #000000;">Contact</p>
             <a href="mailto:plasticheartsurgery@gmail.com">plasticheartsurgery@gmail.com</a>
         </div>
     </sidebar>
 
-    <main>
+    <main style="background-color: #ffffff !important;">
         <section>
             <h2>Visual Arts</h2>
             <p>Selected large-scale canvas pieces, mixed-media, and visual projects.</p>
