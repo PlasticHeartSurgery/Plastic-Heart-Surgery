@@ -1,2 +1,230 @@
-# Plastic-Heart-Surgery
+<img width="1068" height="1378" alt="image" src="https://github.com/user-attachments/assets/fe4986c5-47d5-4616-a6b6-b71fb0d81f26" /># Plastic-Heart-Surgery
 PHS
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plastic Heart Surgery</title>
+    <style>
+        :root {
+            --bg-color: #0f0f0f;
+            --text-color: #f0f0f0;
+            --muted-color: #888888;
+            --accent-color: #ffffff;
+            --border-color: #222222;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* Left Sidebar Navigation & Columns */
+        sidebar {
+            width: 320px;
+            background-color: var(--bg-color);
+            border-right: 1px solid var(--border-color);
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: fixed;
+            height: 100vh;
+            top: 0;
+            left: 0;
+        }
+
+        .site-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 40px;
+            color: var(--accent-color);
+        }
+
+        .nav-columns {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .nav-column-item {
+            font-size: 1rem;
+            color: var(--muted-color);
+            text-decoration: none;
+            transition: color 0.2s ease;
+            font-weight: 500;
+        }
+
+        .nav-column-item:hover, .nav-column-item.active {
+            color: var(--accent-color);
+        }
+
+        .sidebar-footer {
+            font-size: 0.85rem;
+            color: var(--muted-color);
+            word-break: break-all;
+        }
+
+        .sidebar-footer a {
+            color: var(--text-color);
+            text-decoration: none;
+        }
+
+        .sidebar-footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Main Content Area */
+        main {
+            margin-left: 320px;
+            flex: 1;
+            padding: 80px 60px;
+            max-width: 900px;
+        }
+
+        section {
+            margin-bottom: 120px;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 24px;
+            color: var(--accent-color);
+            letter-spacing: -0.01em;
+        }
+
+        p {
+            color: var(--muted-color);
+            margin-bottom: 16px;
+            font-size: 1rem;
+        }
+
+        /* Artwork Grid */
+        .artwork-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .artwork-placeholder {
+            background-color: #161616;
+            border: 1px solid var(--border-color);
+            aspect-ratio: 1 / 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--muted-color);
+            font-size: 0.85rem;
+            border-radius: 4px;
+        }
+
+        /* Links List */
+        .links-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .links-list a {
+            color: var(--text-color);
+            text-decoration: none;
+            font-size: 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: opacity 0.2s;
+        }
+
+        .links-list a:hover {
+            opacity: 0.7;
+        }
+
+        /* Responsive design for mobile screens */
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+            sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+                padding: 30px 20px;
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+            }
+            main {
+                margin-left: 0;
+                padding: 40px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Left Column Navigation & Contact Footer -->
+    <sidebar>
+        <div>
+            <div class="site-title">Plastic Heart Surgery</div>
+            <div class="nav-columns">
+                <a href="#bio" class="nav-column-item">01 / Bio</a>
+                <a href="#artwork" class="nav-column-item">02 / Artwork</a>
+                <a href="#links" class="nav-column-item">03 / Links</a>
+            </div>
+        </div>
+        <div class="sidebar-footer">
+            <p style="margin-bottom: 4px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">Contact</p>
+            <a href="mailto:plasticheartsurgery@gmail.com">plasticheartsurgery@gmail.com</a>
+        </div>
+    </sidebar>
+
+    <!-- Main Right Content Panels -->
+    <main>
+        <!-- Section 1: Bio -->
+        <section id="bio">
+            <h2>Bio</h2>
+            <p>Multi-disciplinary artist, curator, and sound designer based in Toronto. Working across large-scale canvas painting, experimental electronic music, and hardware audio customisation.</p>
+            <p>Practices explore themes relating to the natural world, structural mechanics, and the passage of time using mixed-media and abstraction.</p>
+        </section>
+
+        <!-- Section 2: Artwork -->
+        <section id="artwork">
+            <h2>Artwork</h2>
+            <p>Selected canvas pieces, mixed-media installations, and visual projects.</p>
+            <div class="artwork-grid">
+                <div class="artwork-placeholder">Artwork 01</div>
+                <div class="artwork-placeholder">Artwork 02</div>
+                <div class="artwork-placeholder">Artwork 03</div>
+                <div class="artwork-placeholder">Artwork 04</div>
+            </div>
+        </section>
+
+        <!-- Section 3: Links -->
+        <section id="links">
+            <h2>Links & Socials</h2>
+            <p>Find releases, audio projects, and updates across platforms.</p>
+            <ul class="links-list">
+                <li><a href="https://spotify.com" target="_blank">Spotify ↗</a></li>
+                <li><a href="https://instagram.com" target="_blank">Instagram ↗</a></li>
+                <li><a href="https://soundcloud.com" target="_blank">SoundCloud ↗</a></li>
+                <li><a href="https://github.com/PlasticHeartSurgery" target="_blank">GitHub ↗</a></li>
+            </ul>
+        </section>
+    </main>
+
+</body>
+</html>
