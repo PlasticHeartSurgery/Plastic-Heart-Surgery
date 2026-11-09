@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plastic Heart Surgery — Music</title>
+    <style>
+        @font-face {
+            font-family: 'Lyno Ulyscyr';
+            src: local('Lyno Ulyscyr'), url('fonts/lynoulyscyr.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #ffffff !important;
+            color: #111111 !important;
+            display: flex;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        sidebar {
+            width: 340px;
+            background-color: #ffffff !important;
+            border-right: 1px solid #cccccc;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: fixed;
+            height: 100vh;
+            top: 0;
+            left: 0;
+            overflow-y: auto;
+        }
+
+        .site-title {
+            font-family: 'Lyno Ulyscyr', sans-serif !important;
+            font-size: 1.5rem;
+            letter-spacing: 0.3em;
+            color: #ff0033 !important;
+            margin-bottom: 40px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .nav-columns {
+            display: flex;
+            flex-direction: column;
+            gap: 22px;
+        }
+
+        .nav-column-item {
+            font-family: 'Lyno Ulyscyr', sans-serif !important;
+            font-size: 1.25rem;
+            letter-spacing: 0.2em;
+            color: #555555 !important;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .nav-column-item:hover, .nav-column-item.active {
+            color: #ff0033 !important;
+        }
+
+        .sidebar-footer {
+            font-size: 0.85rem;
+            color: #333333 !important;
+            word-break: break-all;
+            margin-top: 40px;
+        }
+
+        .sidebar-footer a {
+            color: #ff0033 !important;
+            text-decoration: none;
+        }
+
+        .sidebar-footer a:hover {
+            text-decoration: underline;
+        }
+
+        main {
+            margin-left: 340px;
+            flex: 1;
+            padding: 80px 60px;
+            max-width: 950px;
+            background-color: #ffffff !important;
+        }
+
+        h2 {
+            font-family: 'Lyno Ulyscyr', sans-serif !important;
+            font-size: 1.8rem;
+            letter-spacing: 0.25em;
+            color: #ff0033 !important;
+            margin-bottom: 24px;
+        }
+
+        p {
+            color: #444444 !important;
+            margin-bottom: 24px;
+            font-size: 1rem;
+        }
+
+        /* Spotify Player Container */
+        .player-container {
+            margin-top: 30px;
+            background: #ffffff;
+            border: 2px solid #000000;
+            border-radius: 6px;
+            padding: 20px;
+            box-shadow: 4px 4px 0px #000000;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+            sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+                padding: 30px 20px;
+                border-right: none;
+                border-bottom: 1px solid #cccccc;
+            }
+            main {
+                margin-left: 0;
+                padding: 40px 20px;
+            }
+        }
+    </style>
+</head>
+<body style="background-color: #ffffff !important;">
+
+    <sidebar style="background-color: #ffffff !important;">
+        <div>
+            <a href="index.html" class="site-title">Plastic Heart Surgery</a>
+            <div class="nav-columns">
+                <a href="index.html" class="nav-column-item">Bio</a>
+                <a href="visualarts.html" class="nav-column-item">Visual Arts</a>
+                <a href="music.html" class="nav-column-item active">Music</a>
+                <a href="links.html" class="nav-column-item">Links</a>
+            </div>
+        </div>
+        <div class="sidebar-footer">
+            <p style="margin-bottom: 4px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #000000;">Contact</p>
+            <a href="mailto:plasticheartsurgery@gmail.com">plasticheartsurgery@gmail.com</a>
+        </div>
+    </sidebar>
+
+    <main style="background-color: #ffffff !important;">
+        <section>
+            <h2>Music</h2>
+            <p>Experimental electronic music, techno, and audio design releases.</p>
+            
+            <!-- Spotify Web Player Embed -->
+            <div class="player-container">
+                <!-- Replace 'YOUR_SPOTIFY_URI_OR_ID' with your actual Spotify artist/album/track embed code or link URI -->
+                <iframe style="border-radius:12px" src="
