@@ -41,6 +41,7 @@
             height: 100vh;
             top: 0;
             left: 0;
+            overflow-y: auto;
         }
 
         .site-title {
@@ -73,6 +74,7 @@
             font-size: 0.85rem;
             color: var(--muted-color);
             word-break: break-all;
+            margin-top: 40px;
         }
 
         .sidebar-footer a {
@@ -118,16 +120,26 @@
             margin-top: 20px;
         }
 
-        .artwork-placeholder {
-            background-color: #161616;
-            border: 1px solid var(--border-color);
-            aspect-ratio: 1 / 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--muted-color);
-            font-size: 0.85rem;
+        .artwork-item img {
+            width: 100%;
+            height: auto;
             border-radius: 4px;
+            border: 1px solid var(--border-color);
+        }
+
+        /* Music Release Cards */
+        .music-release {
+            margin-bottom: 40px;
+            background: #141414;
+            border: 1px solid var(--border-color);
+            padding: 24px;
+            border-radius: 6px;
+        }
+
+        .music-release h3 {
+            font-size: 1.1rem;
+            color: var(--text-color);
+            margin-bottom: 8px;
         }
 
         /* Links List */
@@ -181,7 +193,8 @@
             <div class="nav-columns">
                 <a href="#bio" class="nav-column-item">01 / Bio</a>
                 <a href="#artwork" class="nav-column-item">02 / Artwork</a>
-                <a href="#links" class="nav-column-item">03 / Links</a>
+                <a href="#music" class="nav-column-item">03 / Music</a>
+                <a href="#links" class="nav-column-item">04 / Links</a>
             </div>
         </div>
         <div class="sidebar-footer">
@@ -202,16 +215,28 @@
         <!-- Section 2: Artwork -->
         <section id="artwork">
             <h2>Artwork</h2>
-            <p>Selected canvas pieces, mixed-media installations, and visual projects.</p>
+            <p>Selected canvas pieces and visual projects.</p>
             <div class="artwork-grid">
-                <div class="artwork-placeholder">Artwork 01</div>
-                <div class="artwork-placeholder">Artwork 02</div>
-                <div class="artwork-placeholder">Artwork 03</div>
-                <div class="artwork-placeholder">Artwork 04</div>
+                <!-- Replace with your uploaded painting file names inside images/ -->
+                <div class="artwork-item"><img src="images/painting-1.jpg" alt="Artwork 1"></div>
+                <div class="artwork-item"><img src="images/painting-2.jpg" alt="Artwork 2"></div>
             </div>
         </section>
 
-        <!-- Section 3: Links -->
+        <!-- Section 3: Music -->
+        <section id="music">
+            <h2>Music</h2>
+            <p>Releases and electronic audio projects.</p>
+            
+            <div class="music-release">
+                <h3>Release Title / Album Name</h3>
+                <p>Short description about the album, hardware used, or conceptual background.</p>
+                <!-- Paste your Spotify Embed code below -->
+                <iframe style="border-radius:12px" src="https://open.spotify.com/embed/album/YOUR_ALBUM_ID?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+            </div>
+        </section>
+
+        <!-- Section 4: Links -->
         <section id="links">
             <h2>Links & Socials</h2>
             <p>Find releases, audio projects, and updates across platforms.</p>
