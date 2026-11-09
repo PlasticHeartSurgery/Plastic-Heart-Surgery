@@ -29,7 +29,6 @@
 
         sidebar {
             width: 340px;
-            /* Red on the left (#ff0033) fading to white on the right (#ffffff) */
             background: linear-gradient(to right, #ff0033, #ffffff) !important;
             border-right: 1px solid #cccccc;
             padding: 40px;
@@ -172,7 +171,8 @@
 </head>
 <body style="background-color: #ffffff !important;">
 
-    <sidebar>
+    <!-- Inline style added directly here to force the gradient rendering -->
+    <sidebar style="background: linear-gradient(to right, #ff0033, #ffffff) !important;">
         <div>
             <a href="index.html" class="site-title">Plastic Heart Surgery</a>
             <div class="nav-columns">
