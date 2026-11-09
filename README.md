@@ -5,6 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Plastic Heart Surgery</title>
     <style>
+        /* Custom Font Registration */
+        @font-face {
+            font-family: 'Lyno Jean';
+            src: url('fonts/lyno-jean.otf') format('opentype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
         :root {
             --bg-color: #0f0f0f;
             --text-color: #f0f0f0;
@@ -44,8 +52,8 @@
         }
 
         .site-title {
-            font-size: 1.25rem;
-            font-weight: 700;
+            font-family: 'Lyno Jean', sans-serif;
+            font-size: 1.35rem;
             letter-spacing: -0.02em;
             margin-bottom: 40px;
             color: var(--accent-color);
@@ -58,11 +66,11 @@
         }
 
         .nav-column-item {
-            font-size: 1rem;
+            font-family: 'Lyno Jean', sans-serif;
+            font-size: 1.1rem;
             color: var(--muted-color);
             text-decoration: none;
             transition: color 0.2s ease;
-            font-weight: 500;
             cursor: pointer;
         }
 
@@ -98,8 +106,8 @@
         }
 
         h2 {
-            font-size: 1.5rem;
-            font-weight: 600;
+            font-family: 'Lyno Jean', sans-serif;
+            font-size: 1.6rem;
             margin-bottom: 24px;
             color: var(--accent-color);
             letter-spacing: -0.01em;
@@ -244,7 +252,7 @@
             </div>
         </section>
 
-       <section id="links">
+        <section id="links">
             <h2>Links & Socials</h2>
             <p>Find releases, audio projects, and updates across platforms.</p>
             <ul class="links-list">
@@ -253,6 +261,7 @@
                 <li><a href="https://music.apple.com/ca/artist/plastic-heart-surgery/1539041975" target="_blank">Apple Music ↗</a></li>
                 <li><a href="https://www.instagram.com/plastic.heart.surgery/" target="_blank">Instagram ↗</a></li>
                 <li><a href="https://soundcloud.com" target="_blank">SoundCloud ↗</a></li>
+                <li><a href="https://github.com/PlasticHeartSurgery" target="_blank">GitHub ↗</a></li>
             </ul>
         </section>
     </main>
