@@ -155,7 +155,7 @@
             color: #111111;
         }
 
-        /* RA Widget Container */
+        /* Widget Container styled exactly like Spotify Container */
         .ra-widget-container {
             margin-bottom: 40px;
             width: 100%;
@@ -163,12 +163,10 @@
             overflow: hidden;
             border: 2px solid #000000;
             box-shadow: 4px 4px 0px #000000;
-            background: #fff;
-            display: flex;
-            justify-content: center;
+            background: #ffffff;
         }
 
-        /* Tour Cards Grid */
+        /* Tour Cards Container */
         .tours-grid {
             display: flex;
             flex-direction: column;
@@ -263,7 +261,7 @@
             <h2>Tour Dates</h2>
             <p>Live music performances, live hardware sets, and DJ appearances. Check listings below or follow profile updates directly on Resident Advisor.</p>
 
-            <!-- RA External Profile Link Box -->
+            <!-- External RA Profile Link Box -->
             <a href="https://ra.co/dj/plasticheartsurgery" target="_blank" class="ra-feature-box">
                 <img src="https://imgproxy.ra.co/_/quality:66/h:180/w:180/rt:fill/gravity:sm/aHR0cHM6Ly9zdGF0aWMucmEuY28vaW1hZ2VzL3Byb2ZpbGVzL3NxdWFyZS9wbGFzdGljaGVhcnRzdXJnZXJ5LmpwZz9kYXRlVXBkYXRlZD0xNzU2OTg3MDQzMDAw" alt="Plastic Heart Surgery RA Avatar" class="ra-avatar">
                 <div>
@@ -272,11 +270,9 @@
                 </div>
             </a>
 
-            <h2 style="font-size: 1.4rem; margin-top: 40px;">Resident Advisor Widget</h2>
-
             <!-- Resident Advisor Widget Integration -->
             <div class="ra-widget-container">
-                <iframe src="https://ra.co/widget/eventlisting?dj=plasticheartsurgery" height="640" width="100%" frameborder="0" style="border: none;"></iframe>
+                <iframe src="https://ra.co/widget/eventlisting?dj=plasticheartsurgery" height="640" width="100%" frameborder="0" style="display: block; border: none;"></iframe>
             </div>
 
             <h2 style="font-size: 1.4rem; margin-top: 40px;">Upcoming Dates</h2>
