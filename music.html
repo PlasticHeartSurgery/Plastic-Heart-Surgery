@@ -12,6 +12,13 @@
             font-style: normal;
         }
 
+        @font-face {
+            font-family: 'Drunk Fonts';
+            src: url('fonts/DRUNKFONTS-Regular.otf') format('opentype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
         * {
             box-sizing: border-box;
             margin: 0;
@@ -109,6 +116,12 @@
             font-size: 1rem;
         }
 
+        /* Custom style for the bio paragraph using the new font */
+        .bio-description {
+            font-family: 'Drunk Fonts', sans-serif;
+            font-size: 1.05rem;
+        }
+
         /* Spotify Player Styling */
         .spotify-container {
             margin-bottom: 40px;
@@ -204,50 +217,4 @@
                 <a href="links.html" class="nav-column-item">Links</a>
             </div>
         </div>
-        <div class="sidebar-footer">
-            <p style="margin-bottom: 4px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #000000;">Contact</p>
-            <a href="mailto:plasticheartsurgery@gmail.com">plasticheartsurgery@gmail.com</a>
-        </div>
-    </div>
-
-    <main>
-        <section>
-            <h2>Music</h2>
-            <p>Plastic Heart Surgery is an Experimental Electronic music producer and DJ residing in Toronto. She is not (yet) known for the phattest beats you've ever heard that will make you twerk like you're on horse tranquilizer and Diet Coke®️. She is also known for her impressively long songs that end up boring you if you're a headphone user because tbh you need that booty rattling on a thicc soundsystem that'll make your bottom shake uncontrollably. I didn't know how to twerk to a 5/4 beat until today - testimonial from a first time listener that somehow learned what a time signature was from ancient knowledge delivered through sound.</p>
-
-            <!-- Spotify Embed Player -->
-            <div class="spotify-container">
-                <iframe style="border-radius:12px" src="https://open.spotify.com/embed/artist/5ZoUq3l7mN6OBgTMjpjfj7?utm_source=generator&theme=0" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-            </div>
-
-            <h2 style="font-size: 1.4rem; margin-top: 40px;">Selected Releases</h2>
-            
-            <!-- Album Covers Grid -->
-            <div class="albums-grid">
-                <!-- Album Item 1 -->
-                <div class="album-card">
-                    <div class="album-image-frame">
-                        <img src="images/your-album-cover-1.jpg" alt="Album Title">
-                    </div>
-                    <div class="album-info">
-                        <div class="album-title">Release Title One</div>
-                        <p class="album-desc">Release description or year.</p>
-                    </div>
-                </div>
-
-                <!-- Album Item 2 -->
-                <div class="album-card">
-                    <div class="album-image-frame">
-                        <img src="images/your-album-cover-2.jpg" alt="Album Title">
-                    </div>
-                    <div class="album-info">
-                        <div class="album-title">Release Title Two</div>
-                        <p class="album-desc">Release description or year.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </main>
-
-</body>
-</html>
+        <div class="
