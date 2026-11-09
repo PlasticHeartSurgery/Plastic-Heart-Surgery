@@ -244,12 +244,13 @@
             </div>
         </section>
 
-        <section id="links">
+       <section id="links">
             <h2>Links & Socials</h2>
             <p>Find releases, audio projects, and updates across platforms.</p>
             <ul class="links-list">
                 <li><a href="https://plasticheartsurgery.bandcamp.com/" target="_blank">Bandcamp ↗</a></li>
                 <li><a href="https://open.spotify.com/artist/5ZoUq3l7mN6OBgTMjpjfj7" target="_blank">Spotify ↗</a></li>
+                <li><a href="https://music.apple.com/ca/artist/plastic-heart-surgery/1539041975" target="_blank">Apple Music ↗</a></li>
                 <li><a href="https://instagram.com" target="_blank">Instagram ↗</a></li>
                 <li><a href="https://soundcloud.com" target="_blank">SoundCloud ↗</a></li>
                 <li><a href="https://github.com/PlasticHeartSurgery" target="_blank">GitHub ↗</a></li>
