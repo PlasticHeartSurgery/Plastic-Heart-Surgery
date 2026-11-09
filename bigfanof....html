@@ -129,8 +129,16 @@ p {
 @media (max-width: 900px) {
   body { flex-direction: column; }
   .sidebar { position: relative; width: 100%; height: auto; padding: 30px 20px; }
-  main { margin-left: 0; padding: 40px 20px; }
+  main { margin-left: 0; padding: 40px 20px; max-width: 100%; }
   .fan-row { grid-template-columns: 1fr; }
+  .site-title {
+    font-size: 1.2rem;
+    letter-spacing: 0.15em;
+  }
+  h2 {
+    font-size: 1.4rem;
+    letter-spacing: 0.15em;
+  }
 }
 </style>
 </head>
@@ -145,7 +153,7 @@ p {
       <a href="music.html" class="nav-column-item">Music</a>
       <a href="tourdates.html" class="nav-column-item">Tour Dates</a>
       <a href="comingupshows.html" class="nav-column-item">Coming Up Shows</a>
-      <a href="bigfanof....html" class="nav-column-item">Big Fan Of</a>
+      <a href="bigfanof....html" class="nav-column-item active">Big Fan Of</a>
       <a href="links.html" class="nav-column-item">Links</a>
     </div>
   </div>
@@ -171,51 +179,3 @@ p {
         </a>
         <div class="review-box">
           <div class="review-text">Write your custom text body or review about this link right here.</div>
-        </div>
-      </div>
-
-      <!-- Item 2 -->
-      <div class="fan-row">
-        <a href="https://example.com" target="_blank" class="fan-card">
-          <div class="fan-tag">Artist / Work</div>
-          <div class="fan-title">Item Title Two</div>
-        </a>
-        <div class="review-box">
-          <div class="review-text">Add your notes, sound design thoughts, or reflections here.</div>
-        </div>
-      </div>
-
-      <!-- Item 3 -->
-      <div class="fan-row">
-        <a href="https://example.com" target="_blank" class="fan-card">
-          <div class="fan-tag">Archive / Video</div>
-          <div class="fan-title">Item Title Three</div>
-        </a>
-        <div class="review-box">
-          <div class="review-text">Type your commentary or review for this link here.</div>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- Spotify Playlists Section -->
-    <h2 style="font-size: 1.4rem; margin-top: 50px;">Playlists</h2>
-    <p>Curated Spotify playlists and selections.</p>
-
-    <div class="playlists-grid">
-      <a href="https://open.spotify.com/playlist/YOUR_PLAYLIST_ID_1" target="_blank" class="playlist-card">
-        <div class="fan-tag">Spotify Playlist</div>
-        <div class="fan-title">Playlist Title One</div>
-      </a>
-
-      <a href="https://open.spotify.com/playlist/YOUR_PLAYLIST_ID_2" target="_blank" class="playlist-card">
-        <div class="fan-tag">Spotify Playlist</div>
-        <div class="fan-title">Playlist Title Two</div>
-      </a>
-    </div>
-
-  </section>
-</main>
-
-</body>
-</html>
