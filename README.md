@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plastic Heart Surgery</title>
+    <title>Plastic Heart Surgery — Bio</title>
     <style>
-        /* Custom Font Registration */
         @font-face {
             font-family: 'Lyno Jean';
             src: url('fonts/lyno-jean.otf') format('opentype');
@@ -58,6 +57,8 @@
             text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8), 0 0 10px rgba(255, 255, 255, 0.1);
             margin-bottom: 40px;
             color: var(--accent-color);
+            text-decoration: none;
+            display: block;
         }
 
         .nav-columns {
@@ -74,7 +75,6 @@
             color: var(--muted-color);
             text-decoration: none;
             transition: color 0.2s ease;
-            cursor: pointer;
         }
 
         .nav-column-item:hover, .nav-column-item.active {
@@ -104,10 +104,6 @@
             max-width: 900px;
         }
 
-        section {
-            margin-bottom: 120px;
-        }
-
         h2 {
             font-family: 'Lyno Jean', sans-serif;
             font-size: 1.6rem;
@@ -121,76 +117,6 @@
             color: var(--muted-color);
             margin-bottom: 16px;
             font-size: 1rem;
-        }
-
-        .artwork-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
-        }
-
-        .artwork-item img {
-            width: 100%;
-            height: auto;
-            border-radius: 4px;
-            border: 1px solid var(--border-color);
-        }
-
-        .music-release {
-            margin-bottom: 40px;
-            background: #141414;
-            border: 1px solid var(--border-color);
-            padding: 24px;
-            border-radius: 6px;
-        }
-
-        .music-release h3 {
-            font-size: 1.1rem;
-            color: var(--text-color);
-            margin-bottom: 8px;
-        }
-
-        .music-release a.bandcamp-link {
-            display: inline-block;
-            margin-top: 12px;
-            font-family: 'Lyno Jean', sans-serif !important;
-            letter-spacing: 0.25em;
-            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8);
-            color: var(--text-color);
-            font-size: 0.9rem;
-            text-decoration: none;
-            border-bottom: 1px solid var(--muted-color);
-            padding-bottom: 2px;
-        }
-
-        .music-release a.bandcamp-link:hover {
-            color: var(--accent-color);
-            border-color: var(--accent-color);
-        }
-
-        .links-list {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .links-list a {
-            font-family: 'Lyno Jean', sans-serif !important;
-            font-size: 1.05rem;
-            letter-spacing: 0.3em;
-            text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
-            color: var(--text-color);
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: opacity 0.2s;
-        }
-
-        .links-list a:hover {
-            opacity: 0.7;
         }
 
         @media (max-width: 768px) {
@@ -216,12 +142,12 @@
 
     <sidebar>
         <div>
-            <div class="site-title">Plastic Heart Surgery</div>
+            <a href="index.html" class="site-title">Plastic Heart Surgery</a>
             <div class="nav-columns">
-                <a onclick="scrollToSection('bio')" class="nav-column-item">01 / Bio</a>
-                <a onclick="scrollToSection('artwork')" class="nav-column-item">02 / Artwork</a>
-                <a onclick="scrollToSection('music')" class="nav-column-item">03 / Music</a>
-                <a onclick="scrollToSection('links')" class="nav-column-item">04 / Links</a>
+                <a href="index.html" class="nav-column-item active">01 / Bio</a>
+                <a href="artwork.html" class="nav-column-item">02 / Artwork</a>
+                <a href="music.html" class="nav-column-item">03 / Music</a>
+                <a href="links.html" class="nav-column-item">04 / Links</a>
             </div>
         </div>
         <div class="sidebar-footer">
@@ -231,25 +157,12 @@
     </sidebar>
 
     <main>
-        <section id="bio">
+        <section>
             <h2>Bio</h2>
             <p>Multi-disciplinary artist, curator, and sound designer based in Toronto. Working across large-scale canvas painting, experimental electronic music, and hardware audio customisation.</p>
             <p>Practices explore themes relating to the natural world, structural mechanics, and the passage of time using mixed-media and abstraction.</p>
         </section>
+    </main>
 
-        <section id="artwork">
-            <h2>Artwork</h2>
-            <p>Selected canvas pieces and visual projects.</p>
-            <div class="artwork-grid">
-                <div class="artwork-item">
-                    <img src="images/And Now She Is a Monster - Brighter - 3000 x 3000.png" alt="And Now She Is a Monster">
-                </div>
-            </div>
-        </section>
-
-        <section id="music">
-            <h2>Music</h2>
-            <p>Electronic music releases, albums, and sound design projects.</p>
-            
-            <div style="margin-bottom: 40px;">
-                <iframe style="border-radius:12px" src="https://open.spotify.com/embed/artist/5ZoUq3l7mN6OBgTMjpjfj7?utm_source=generator&theme=0" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media
+</body>
+</html>
