@@ -32,11 +32,20 @@ p { color: #222; margin-bottom: 24px; font-size: 1rem; }
 .tour-date { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.1em; color: #ff0033; margin-bottom: 6px; font-weight: 600; }
 .tour-title { font-family: 'Lyno Ulyscyr', sans-serif; font-size: 1.2rem; letter-spacing: 0.15em; color: #111; margin-bottom: 8px; }
 .tour-location { font-size: 0.95rem; color: #444; }
+
 @media (max-width: 768px) {
   body { flex-direction: column; }
   .sidebar { position: relative; width: 100%; height: auto; padding: 30px 20px; }
-  main { margin-left: 0; padding: 40px 20px; }
+  main { margin-left: 0; padding: 40px 20px; max-width: 100%; }
   .ra-feature-box { flex-direction: column; align-items: flex-start; }
+  .site-title {
+    font-size: 1.2rem;
+    letter-spacing: 0.15em;
+  }
+  h2 {
+    font-size: 1.4rem;
+    letter-spacing: 0.15em;
+  }
 }
 </style>
 </head>
