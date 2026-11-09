@@ -13,11 +13,11 @@
         }
 
         :root {
-            --bg-color: #0f0f0f;
-            --text-color: #f0f0f0;
-            --muted-color: #888888;
-            --accent-color: #ffffff;
-            --border-color: #222222;
+            --bg-color: #ffffff;
+            --text-color: #111111;
+            --muted-color: #444444;
+            --accent-color: #ff0033; /* Vivid Red */
+            --border-color: #cccccc;
         }
 
         * {
@@ -54,9 +54,15 @@
             font-family: 'Lyno Jean', sans-serif !important;
             font-size: 1.35rem;
             letter-spacing: 0.4em;
-            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8), 0 0 10px rgba(255, 255, 255, 0.1);
-            margin-bottom: 40px;
             color: var(--accent-color);
+            /* Black outline effect using text-shadowing */
+            text-shadow: 
+                -1px -1px 0 #000,  
+                 1px -1px 0 #000,
+                -1px  1px 0 #000,
+                 1px  1px 0 #000,
+                 2px  2px 4px rgba(0, 0, 0, 0.4);
+            margin-bottom: 40px;
             text-decoration: none;
             display: block;
         }
@@ -71,8 +77,12 @@
             font-family: 'Lyno Jean', sans-serif !important;
             font-size: 1.1rem;
             letter-spacing: 0.3em;
-            text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
-            color: var(--muted-color);
+            color: #666666;
+            text-shadow: 
+                -1px -1px 0 rgba(0,0,0,0.8),  
+                 1px -1px 0 rgba(0,0,0,0.8),
+                -1px  1px 0 rgba(0,0,0,0.8),
+                 1px  1px 0 rgba(0,0,0,0.8);
             text-decoration: none;
             transition: color 0.2s ease;
         }
@@ -89,7 +99,7 @@
         }
 
         .sidebar-footer a {
-            color: var(--text-color);
+            color: var(--accent-color);
             text-decoration: none;
         }
 
@@ -108,15 +118,22 @@
             font-family: 'Lyno Jean', sans-serif !important;
             font-size: 1.6rem;
             letter-spacing: 0.35em;
-            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
-            margin-bottom: 24px;
             color: var(--accent-color);
+            /* Black outline effect */
+            text-shadow: 
+                -1px -1px 0 #000,  
+                 1px -1px 0 #000,
+                -1px  1px 0 #000,
+                 1px  1px 0 #000,
+                 2px  2px 6px rgba(0, 0, 0, 0.3);
+            margin-bottom: 24px;
         }
 
         p {
             color: var(--muted-color);
             margin-bottom: 16px;
             font-size: 1rem;
+            font-weight: 500;
         }
 
         /* Bio Layout with Photo */
@@ -134,10 +151,11 @@
         .bio-image-frame {
             width: 300px;
             flex-shrink: 0;
-            background: #141414;
-            border: 1px solid var(--border-color);
+            background: #f0f0f0;
+            border: 2px solid #000000;
             border-radius: 6px;
             overflow: hidden;
+            box-shadow: 4px 4px 0px #000000;
         }
 
         .bio-image-frame img {
@@ -189,7 +207,7 @@
             </div>
         </div>
         <div class="sidebar-footer">
-            <p style="margin-bottom: 4px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">Contact</p>
+            <p style="margin-bottom: 4px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #000;">Contact</p>
             <a href="mailto:plasticheartsurgery@gmail.com">plasticheartsurgery@gmail.com</a>
         </div>
     </sidebar>
