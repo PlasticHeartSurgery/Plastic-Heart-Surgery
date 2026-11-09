@@ -176,7 +176,6 @@
             gap: 16px;
         }
 
-        /* Forced custom font, letter spacing, and shadow on all URL links */
         .links-list a {
             font-family: 'Lyno Jean', sans-serif !important;
             font-size: 1.05rem;
@@ -253,39 +252,4 @@
             <p>Electronic music releases, albums, and sound design projects.</p>
             
             <div style="margin-bottom: 40px;">
-                <iframe style="border-radius:12px" src="https://open.spotify.com/embed/artist/5ZoUq3l7mN6OBgTMjpjfj7?utm_source=generator&theme=0" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-            </div>
-
-            <div class="music-release">
-                <h3>And Now She Is a Monster</h3>
-                <p>Experimental electronic release and audio project.</p>
-                <a href="https://plasticheartsurgery.bandcamp.com/" class="bandcamp-link" target="_blank">Listen on Bandcamp ↗</a>
-            </div>
-        </section>
-
-        <section id="links">
-            <h2>Links & Socials</h2>
-            <p>Find releases, audio projects, and updates across platforms.</p>
-            <ul class="links-list">
-                <li><a href="https://plasticheartsurgery.bandcamp.com/" target="_blank">Bandcamp ↗</a></li>
-                <li><a href="https://open.spotify.com/artist/5ZoUq3l7mN6OBgTMjpjfj7" target="_blank">Spotify ↗</a></li>
-                <li><a href="https://music.apple.com/ca/artist/plastic-heart-surgery/1539041975" target="_blank">Apple Music ↗</a></li>
-                <li><a href="https://www.instagram.com/plastic.heart.surgery/" target="_blank">Instagram ↗</a></li>
-                <li><a href="https://soundcloud.com" target="_blank">SoundCloud ↗</a></li>
-                <li><a href="https://github.com/PlasticHeartSurgery" target="_blank">GitHub ↗</a></li>
-            </ul>
-        </section>
-    </main>
-
-    <script>
-        function scrollToSection(id) {
-            const element = document.getElementById(id);
-            element.scrollIntoView({ behavior: 'smooth' });
-            if (window.history.pushState) {
-                window.history.pushState('', '', window.location.pathname);
-            }
-        }
-    </script>
-
-</body>
-</html>
+                <iframe style="border-radius:12px" src="https://open.spotify.com/embed/artist/5ZoUq3l7mN6OBgTMjpjfj7?utm_source=generator&theme=0" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media
