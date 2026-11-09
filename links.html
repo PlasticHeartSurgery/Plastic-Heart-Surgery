@@ -117,7 +117,7 @@
             margin-top: 30px;
         }
 
-        /* Hyperlink Box with Hover Glow Effect */
+        /* Hyperlink Box with Animated Gradient Glow Effect */
         .link-card {
             display: block;
             background: #ffffff;
@@ -126,13 +126,30 @@
             padding: 24px;
             text-decoration: none;
             box-shadow: 4px 4px 0px #000000;
-            transition: all 0.2s ease;
+            position: relative;
+            z-index: 1;
+            transition: transform 0.2s ease, border-color 0.4s ease;
         }
 
         .link-card:hover {
             border-color: #ff0033;
-            box-shadow: 0px 0px 15px rgba(255, 0, 51, 0.4), 4px 4px 0px #ff0033;
             transform: translateY(-2px);
+            animation: gradientGlow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes gradientGlow {
+            0% {
+                background-color: #ffffff;
+                box-shadow: 0px 0px 5px rgba(255, 255, 255, 0.8), 4px 4px 0px #ff0033;
+            }
+            50% {
+                background-color: #fff5f7;
+                box-shadow: 0px 0px 20px rgba(255, 0, 51, 0.35), 4px 4px 0px #ff0033;
+            }
+            100% {
+                background-color: #ffe6eb;
+                box-shadow: 0px 0px 30px rgba(255, 0, 51, 0.65), 4px 4px 0px #ff0033;
+            }
         }
 
         .link-tag {
@@ -187,7 +204,7 @@
 </head>
 <body>
 
- <div class="sidebar">
+    <div class="sidebar">
         <div>
             <a href="index.html" class="site-title">Plastic Heart Surgery</a>
             <div class="nav-columns">
@@ -224,7 +241,7 @@
                 <!-- Link Item 2 -->
                 <a href="https://open.spotify.com/artist/5ZoUq3l7mN6OBgTMjpjfj7?si=aBR1jQfQRJK01qLKTHEZfQ" target="_blank" class="link-card">
                     <div class="link-tag">SoundCloud</div>
-                    <div class="link-title">Plastic Heart Surgery's Spotify</div>
+                    <div class="link-title">Plastic Heart Surgery on SoundCloud</div>
                     <div class="link-desc">Experimental electronic tracks, mixes, and live recordings.</div>
                 </a>
 
