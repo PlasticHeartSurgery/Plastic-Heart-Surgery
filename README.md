@@ -142,6 +142,21 @@
             margin-bottom: 8px;
         }
 
+        .music-release a.bandcamp-link {
+            display: inline-block;
+            margin-top: 12px;
+            color: var(--text-color);
+            font-size: 0.9rem;
+            text-decoration: none;
+            border-bottom: 1px solid var(--muted-color);
+            padding-bottom: 2px;
+        }
+
+        .music-release a.bandcamp-link:hover {
+            color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+
         /* Links List */
         .links-list {
             list-style: none;
@@ -205,7 +220,7 @@
 
     <!-- Main Right Content Panels -->
     <main>
-        <!-- Bio -->
+        <!-- Section 1: Bio -->
         <section id="bio">
             <h2>Bio</h2>
             <p>Multi-disciplinary artist, curator, and sound designer based in Toronto. Working across large-scale canvas painting, experimental electronic music, and hardware audio customisation.</p>
@@ -217,37 +232,16 @@
             <h2>Artwork</h2>
             <p>Selected canvas pieces and visual projects.</p>
             <div class="artwork-grid">
-                <!-- Replace with your uploaded painting file names inside images/ -->
                 <div class="artwork-item"><img src="images/painting-1.jpg" alt="Artwork 1"></div>
                 <div class="artwork-item"><img src="images/painting-2.jpg" alt="Artwork 2"></div>
             </div>
         </section>
 
-        <!-- Music -->
+        <!-- Section 3: Music -->
         <section id="music">
             <h2>Music</h2>
-            <p>Releases and electronic audio projects.</p>
+            <p>Electronic music releases, albums, and sound design projects.</p>
             
-            <div class="music-release">
-                <h3>Release Title / Album Name</h3>
-                <p>Short description about the album, hardware used, or conceptual background.</p>
-                <!-- Paste your Spotify Embed code below -->
-                <iframe style="border-radius:12px" src="https://open.spotify.com/embed/album/YOUR_ALBUM_ID?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-            </div>
-        </section>
-
-        <!-- Links -->
-        <section id="links">
-            <h2>Links & Socials</h2>
-            <p>Find releases, audio projects, and updates across platforms.</p>
-            <ul class="links-list">
-                <li><a href="https://spotify.com" target="_blank">Spotify ↗</a></li>
-                <li><a href="https://instagram.com" target="_blank">Instagram ↗</a></li>
-                <li><a href="https://soundcloud.com" target="_blank">SoundCloud ↗</a></li>
-                <li><a href="https://github.com/PlasticHeartSurgery" target="_blank">GitHub ↗</a></li>
-            </ul>
-        </section>
-    </main>
-
-</body>
-</html>
+            <!-- Embedded Spotify Artist / Player -->
+            <div style="margin-bottom: 40px;">
+                <iframe style="border-radius:12px" src="https://open.spotify.com/embed/artist/5ZoUq3l7mN6OBgTMjpjfj7?utm_source=generator&theme=0" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-
