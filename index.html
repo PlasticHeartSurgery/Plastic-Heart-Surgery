@@ -29,7 +29,8 @@
 
         .sidebar {
             width: 340px;
-            background: linear-gradient(to right, #ff0033, #ffffff);
+            /* Red on the far left (0%), turning solid white by the 25% mark */
+            background: linear-gradient(to right, #ff0033 0%, #ffffff 25%);
             border-right: 1px solid #cccccc;
             padding: 40px;
             display: flex;
@@ -50,9 +51,7 @@
             margin-bottom: 40px;
             text-decoration: none;
             display: block;
-            /* Forces the browser to treat the font as a flat single-color shape, removing built-in multi-tone layers */
             -webkit-text-stroke: 0px #ff0033;
-            filter: drop-shadow(0px 0px 0px transparent);
         }
 
         .nav-columns {
@@ -104,7 +103,6 @@
             letter-spacing: 0.25em;
             color: #ff0033;
             margin-bottom: 24px;
-            /* Forces flat color rendering */
             -webkit-text-stroke: 0px #ff0033;
         }
 
