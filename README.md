@@ -1,5 +1,3 @@
-<img width="1068" height="1378" alt="image" src="https://github.com/user-attachments/assets/fe4986c5-47d5-4616-a6b6-b71fb0d81f26" /># Plastic-Heart-Surgery
-PHS
 <!DOCTYPE html>
 <html lang="en">
 <head>
