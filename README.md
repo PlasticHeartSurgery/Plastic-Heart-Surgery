@@ -28,7 +28,6 @@
             line-height: 1.6;
         }
 
-        /* Left Sidebar Navigation & Columns */
         sidebar {
             width: 320px;
             background-color: var(--bg-color);
@@ -87,7 +86,6 @@
             text-decoration: underline;
         }
 
-        /* Main Content Area */
         main {
             margin-left: 320px;
             flex: 1;
@@ -113,7 +111,6 @@
             font-size: 1rem;
         }
 
-        /* Artwork Grid */
         .artwork-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
@@ -128,7 +125,6 @@
             border: 1px solid var(--border-color);
         }
 
-        /* Music Release Cards */
         .music-release {
             margin-bottom: 40px;
             background: #141414;
@@ -158,7 +154,6 @@
             border-color: var(--accent-color);
         }
 
-        /* Links List */
         .links-list {
             list-style: none;
             display: flex;
@@ -180,7 +175,6 @@
             opacity: 0.7;
         }
 
-        /* Responsive design for mobile screens */
         @media (max-width: 768px) {
             body {
                 flex-direction: column;
@@ -202,7 +196,6 @@
 </head>
 <body>
 
-    <!-- Left Column Navigation & Contact Footer -->
     <sidebar>
         <div>
             <div class="site-title">Plastic Heart Surgery</div>
@@ -219,16 +212,13 @@
         </div>
     </sidebar>
 
-    <!-- Main Right Content Panels -->
     <main>
-        <!-- Section 1: Bio -->
         <section id="bio">
             <h2>Bio</h2>
             <p>Multi-disciplinary artist, curator, and sound designer based in Toronto. Working across large-scale canvas painting, experimental electronic music, and hardware audio customisation.</p>
             <p>Practices explore themes relating to the natural world, structural mechanics, and the passage of time using mixed-media and abstraction.</p>
         </section>
 
-        <!-- Section 2: Artwork -->
         <section id="artwork">
             <h2>Artwork</h2>
             <p>Selected canvas pieces and visual projects.</p>
@@ -239,17 +229,14 @@
             </div>
         </section>
 
-        <!-- Section 3: Music -->
         <section id="music">
             <h2>Music</h2>
             <p>Electronic music releases, albums, and sound design projects.</p>
             
-            <!-- Embedded Spotify Artist Player -->
             <div style="margin-bottom: 40px;">
                 <iframe style="border-radius:12px" src="https://open.spotify.com/embed/artist/5ZoUq3l7mN6OBgTMjpjfj7?utm_source=generator&theme=0" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
             </div>
 
-            <!-- Bandcamp Album Release Slot -->
             <div class="music-release">
                 <h3>And Now She Is a Monster</h3>
                 <p>Experimental electronic release and audio project.</p>
@@ -257,10 +244,28 @@
             </div>
         </section>
 
-        <!-- Section 4: Links -->
         <section id="links">
             <h2>Links & Socials</h2>
             <p>Find releases, audio projects, and updates across platforms.</p>
             <ul class="links-list">
                 <li><a href="https://plasticheartsurgery.bandcamp.com/" target="_blank">Bandcamp ↗</a></li>
                 <li><a href="https://open.spotify.com/artist/5ZoUq3l7mN6OBgTMjpjfj7" target="_blank">Spotify ↗</a></li>
+                <li><a href="https://instagram.com" target="_blank">Instagram ↗</a></li>
+                <li><a href="https://soundcloud.com" target="_blank">SoundCloud ↗</a></li>
+                <li><a href="https://github.com/PlasticHeartSurgery" target="_blank">GitHub ↗</a></li>
+            </ul>
+        </section>
+    </main>
+
+    <script>
+        function scrollToSection(id) {
+            const element = document.getElementById(id);
+            element.scrollIntoView({ behavior: 'smooth' });
+            if (window.history.pushState) {
+                window.history.pushState('', '', window.location.pathname);
+            }
+        }
+    </script>
+
+</body>
+</html>
