@@ -205,7 +205,7 @@
 
     <!-- Main Right Content Panels -->
     <main>
-        <!-- Section 1: Bio -->
+        <!-- Bio -->
         <section id="bio">
             <h2>Bio</h2>
             <p>Multi-disciplinary artist, curator, and sound designer based in Toronto. Working across large-scale canvas painting, experimental electronic music, and hardware audio customisation.</p>
@@ -223,7 +223,7 @@
             </div>
         </section>
 
-        <!-- Section 3: Music -->
+        <!-- Music -->
         <section id="music">
             <h2>Music</h2>
             <p>Releases and electronic audio projects.</p>
@@ -236,7 +236,7 @@
             </div>
         </section>
 
-        <!-- Section 4: Links -->
+        <!-- Links -->
         <section id="links">
             <h2>Links & Socials</h2>
             <p>Find releases, audio projects, and updates across platforms.</p>
