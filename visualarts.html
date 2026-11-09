@@ -1,1 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plastic Heart Surgery — Visual Arts</title>
+    <style>
+        @font-face {
+            font-family: 'Lyno Jean';
+            src: url('fonts/lyno-jean.otf') format('opentype');
+            font-weight: normal;
+            font-style: normal;
+        }
 
+        :root {
+            --bg-color: #0f0f0f;
+            --text-color: #f0f0f0;
+            --muted-color: #888888;
+            --accent-color: #ffffff;
+            --border-color: #222222;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        sidebar {
+            width: 320px;
+            background-color: var(--bg-color);
+            border-right: 1px solid var(--border-color);
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: fixed;
+            height: 100vh;
+            top: 0;
+            left: 0;
+            overflow-y: auto;
+        }
+
+        .site-title {
+            font-family: 'Lyno Jean', sans-serif !important;
+            font-size: 1.35rem;
+            letter-spacing: 0.4em;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8), 0 0 10px rgba(255, 255, 255, 0.1);
+            margin-bottom: 40px;
+            color: var(--accent-color);
+            text-decoration: none;
+            display: block;
+        }
+
+        .nav-columns {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .nav-column-item {
+            font-family: 'Lyno Jean', sans-serif !important;
+            font-size: 1.1rem;
+            letter-spacing: 0.3em;
+            text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
+            color: var(--muted-color);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .nav-column-item:hover, .nav-column-item.active {
+            color: var(--accent-color);
+        }
+
+        .sidebar-footer {
+            font-size: 0.85rem;
+            color: var(--muted-color);
+            word-break: break-all;
+            margin-top: 40px;
+        }
+
+        .sidebar-footer a {
+            color: var(--text-color);
+            text-decoration: none;
+        }
+
+        .sidebar-footer a:hover {
+            text-decoration: underline;
+        }
+
+        main {
+            margin-left: 320px;
+            flex: 1;
+            padding: 80px 60px;
+            max-width: 1000px;
+        }
+
+        h2 {
+            font-family: 'Lyno Jean', sans-serif !important;
+            font-size: 1.6rem;
+            letter-spacing: 0.35em;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
+            margin-bottom: 24px;
+            color: var(--accent-color);
+        }
+
+        p {
+            color: var(--muted-color);
+            margin-bottom: 24px;
+            font-size: 1rem;
+        }
+
+        /* Visual Arts Grid Layout with Sublinks */
+        .art-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .art-card {
+            background: #141414;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            overflow: hidden;
+            text-decoration: none;
+            display: block;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        .art-card:hover {
+            border-color: #555;
+            transform: translateY(-2px);
+        }
+
+        .art-card img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .art-info {
+            padding: 16px;
+        }
+
+        .art-title {
+            font-family: 'Lyno Jean', sans-serif !important;
+            font-size: 0.95rem;
+            letter-spacing: 0.2em;
+            color: var(--text-color);
+            margin-bottom: 6px;
+            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8);
+        }
+
+        .art-meta {
+            font-size: 0.85rem;
+            color: var(--muted-color);
+        }
+
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+            sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+                padding: 30px 20px;
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+            }
+            main {
+                margin-left: 0;
+                padding: 40px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <sidebar>
+        <div>
+            <a href="index.html" class="site-title">Plastic Heart Surgery</a>
+            <div class="nav-columns">
+                <a href="index.html" class="nav-column-item">01 / Bio</a>
+                <a href="visualarts.html" class="nav-column-item active">02 / Visual Arts</a>
+                <a href="music.html" class="nav-column-item">03 / Music</a>
+                <a href="links.html" class="nav-column-item">04 / Links</a>
+            </div>
+        </div>
+        <div class="sidebar-footer">
+            <p style="margin-bottom: 4px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">Contact</p>
+            <a href="mailto:plasticheartsurgery@gmail.com">plasticheartsurgery@gmail.com</a>
+        </div>
+    </sidebar>
+
+    <main>
+        <section>
+            <h2>Visual Arts</h2>
+            <p>Selected large-scale canvas pieces, mixed-media, and visual projects.</p>
+            
+            <div class="art-grid">
+                <!-- Piece 1 -->
+                <a href="artwork-monster.html" class="art-card">
+                    <img src="images/And Now She Is a Monster - Brighter - 3000 x 3000.png" alt="And Now She Is a Monster">
+                    <div class="art-info">
+                        <div class="art-title">And Now She Is a Monster</div>
+                        <div class="art-meta">Mixed-media on canvas ↗</div>
+                    </div>
+                </a>
+
+                <!-- Piece 2 (Duplicate and customize for additional pieces) -->
+                <a href="artwork-piece-two.html" class="art-card">
+                    <img src="images/YOUR-SECOND-IMAGE-NAME.png" alt="Artwork Title">
+                    <div class="art-info">
+                        <div class="art-title">Piece Title Here</div>
+                        <div class="art-meta">Medium / Details ↗</div>
+                    </div>
+                </a>
+            </div>
+        </section>
+    </main>
+
+</body>
+</html>
