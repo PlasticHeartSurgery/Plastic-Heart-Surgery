@@ -109,13 +109,15 @@
             font-size: 1rem;
         }
 
-        /* Resident Advisor Featured Box */
+        /* Resident Advisor Featured Box with Image */
         .ra-feature-box {
-            display: block;
+            display: flex;
+            align-items: center;
+            gap: 20px;
             background: #ffffff;
             border: 2px solid #000000;
             border-radius: 6px;
-            padding: 24px;
+            padding: 20px;
             text-decoration: none;
             box-shadow: 4px 4px 0px #000000;
             transition: all 0.2s ease;
@@ -124,154 +126,4 @@
 
         .ra-feature-box:hover {
             border-color: #ff0033;
-            box-shadow: 0px 0px 15px rgba(255, 0, 51, 0.4), 4px 4px 0px #ff0033;
-            transform: translateY(-2px);
-        }
-
-        .ra-tag {
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 0.15em;
-            color: #ff0033;
-            margin-bottom: 6px;
-            font-weight: 600;
-        }
-
-        .ra-title {
-            font-family: 'Lyno Ulyscyr', sans-serif;
-            font-size: 1.2rem;
-            letter-spacing: 0.15em;
-            color: #111111;
-        }
-
-        /* Tour Dates Grid List */
-        .tours-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            margin-top: 20px;
-        }
-
-        /* Tour Date Hyperlink Box with Hover Glow Effect */
-        .tour-card {
-            display: block;
-            background: #ffffff;
-            border: 2px solid #000000;
-            border-radius: 6px;
-            padding: 24px;
-            text-decoration: none;
-            box-shadow: 4px 4px 0px #000000;
-            transition: all 0.2s ease;
-        }
-
-        .tour-card:hover {
-            border-color: #ff0033;
-            box-shadow: 0px 0px 15px rgba(255, 0, 51, 0.4), 4px 4px 0px #ff0033;
-            transform: translateY(-2px);
-        }
-
-        .tour-date {
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: #ff0033;
-            margin-bottom: 6px;
-            font-weight: 600;
-        }
-
-        .tour-title {
-            font-family: 'Lyno Ulyscyr', sans-serif;
-            font-size: 1.2rem;
-            letter-spacing: 0.15em;
-            color: #111111;
-            margin-bottom: 8px;
-        }
-
-        .tour-location {
-            font-size: 0.95rem;
-            color: #444444;
-        }
-
-        @media (max-width: 768px) {
-            body {
-                flex-direction: column;
-            }
-            .sidebar {
-                position: relative;
-                width: 100%;
-                height: auto;
-                padding: 30px 20px;
-                border-right: none;
-                border-bottom: none;
-            }
-            main {
-                margin-left: 0;
-                padding: 40px 20px;
-            }
-        }
-    </style>
-</head>
-<body>
-
-    <div class="sidebar">
-        <div>
-            <a href="index.html" class="site-title">Plastic Heart Surgery</a>
-            <div class="nav-columns">
-                <a href="index.html" class="nav-column-item">Bio</a>
-                <a href="visualarts.html" class="nav-column-item">Visual Arts</a>
-                <a href="music.html" class="nav-column-item">Music</a>
-                <a href="tourdates.html" class="nav-column-item active">Tour Dates</a>
-                <a href="comingupshows.html" class="nav-column-item">Coming Up Shows</a>
-                <a href="bigfanof.html" class="nav-column-item">Big Fan Of</a>
-                <a href="links.html" class="nav-column-item">Links</a>
-            </div>
-        </div>
-        <div class="sidebar-footer">
-            <p style="margin-bottom: 4px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #000000;">Contact</p>
-            <a href="mailto:plasticheartsurgery@gmail.com">plasticheartsurgery@gmail.com</a>
-        </div>
-    </div>
-
-    <main>
-        <section>
-            <h2>Tour Dates</h2>
-            <p>Live music performances, live hardware sets, and DJ appearances. Check listings below or follow profile updates directly on Resident Advisor.</p>
-
-            <!-- Resident Advisor Featured Box Link -->
-            <a href="https://ra.co/dj/plasticheartsurgery" target="_blank" class="ra-feature-box">
-                <div class="ra-tag">External Profile</div>
-                <div class="ra-title">Resident Advisor — Plastic Heart Surgery</div>
-            </a>
-
-            <h2 style="font-size: 1.4rem; margin-top: 40px;">Upcoming Dates</h2>
-
-            <!-- Tour Dates Grid Boxes -->
-            <div class="tours-grid">
-                
-                <!-- Tour Item 1 -->
-                <a href="https://example.com/tickets-1" target="_blank" class="tour-card">
-                    <div class="tour-date">December 05, 2026</div>
-                    <div class="tour-title">Live Set / Techno Showcase</div>
-                    <div class="tour-location">Venue Name — Toronto, ON</div>
-                </a>
-
-                <!-- Tour Item 2 -->
-                <a href="https://example.com/tickets-2" target="_blank" class="tour-card">
-                    <div class="tour-date">December 20, 2026</div>
-                    <div class="tour-title">Electronic Music Performance</div>
-                    <div class="tour-location">Club Name — Montreal, QC</div>
-                </a>
-
-                <!-- Tour Item 3 -->
-                <a href="https://example.com/tickets-3" target="_blank" class="tour-card">
-                    <div class="tour-date">January 15, 2027</div>
-                    <div class="tour-title">Hardware Jam & Live PA</div>
-                    <div class="tour-location">Underground Space — Calgary, AB</div>
-                </a>
-
-            </div>
-        </section>
-    </main>
-
-</body>
-</html>
+            box-shadow: 0px 0px 15
