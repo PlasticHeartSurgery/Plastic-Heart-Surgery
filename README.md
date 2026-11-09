@@ -54,7 +54,8 @@
         .site-title {
             font-family: 'Lyno Jean', sans-serif;
             font-size: 1.35rem;
-            letter-spacing: -0.02em;
+            letter-spacing: 0.4em; /* Expanded letter spacing */
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8), 0 0 10px rgba(255, 255, 255, 0.1);
             margin-bottom: 40px;
             color: var(--accent-color);
         }
@@ -68,6 +69,8 @@
         .nav-column-item {
             font-family: 'Lyno Jean', sans-serif;
             font-size: 1.1rem;
+            letter-spacing: 0.3em; /* Expanded letter spacing */
+            text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
             color: var(--muted-color);
             text-decoration: none;
             transition: color 0.2s ease;
@@ -108,9 +111,10 @@
         h2 {
             font-family: 'Lyno Jean', sans-serif;
             font-size: 1.6rem;
+            letter-spacing: 0.35em; /* Expanded letter spacing */
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
             margin-bottom: 24px;
             color: var(--accent-color);
-            letter-spacing: -0.01em;
         }
 
         p {
@@ -150,6 +154,9 @@
         .music-release a.bandcamp-link {
             display: inline-block;
             margin-top: 12px;
+            font-family: 'Lyno Jean', sans-serif;
+            letter-spacing: 0.25em;
+            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8);
             color: var(--text-color);
             font-size: 0.9rem;
             text-decoration: none;
@@ -166,13 +173,17 @@
             list-style: none;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 16px;
         }
 
+        /* Applied custom font, letter spacing, and shadow to all URL links */
         .links-list a {
+            font-family: 'Lyno Jean', sans-serif;
+            font-size: 1.05rem;
+            letter-spacing: 0.3em; /* 2-space wide tracking effect */
+            text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
             color: var(--text-color);
             text-decoration: none;
-            font-size: 1rem;
             display: inline-flex;
             align-items: center;
             gap: 8px;
