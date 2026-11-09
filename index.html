@@ -29,7 +29,8 @@
 
         sidebar {
             width: 340px;
-            background-color: #ffffff !important;
+            /* Red on the left (#ff0033) fading to white on the right (#ffffff) */
+            background: linear-gradient(to right, #ff0033, #ffffff) !important;
             border-right: 1px solid #cccccc;
             padding: 40px;
             display: flex;
@@ -50,7 +51,7 @@
             margin-bottom: 40px;
             text-decoration: none;
             display: block;
-            text-shadow: 3px 3px 2px #ffcc00 !important; /* Enhanced yellow shadow */
+            text-shadow: 3px 3px 2px #ffcc00 !important;
         }
 
         .nav-columns {
@@ -102,7 +103,7 @@
             letter-spacing: 0.25em;
             color: #ff0033 !important;
             margin-bottom: 24px;
-            text-shadow: 3px 3px 2px #ffcc00 !important; /* Enhanced yellow shadow */
+            text-shadow: 3px 3px 2px #ffcc00 !important;
         }
 
         p {
@@ -171,7 +172,7 @@
 </head>
 <body style="background-color: #ffffff !important;">
 
-    <sidebar style="background-color: #ffffff !important;">
+    <sidebar>
         <div>
             <a href="index.html" class="site-title">Plastic Heart Surgery</a>
             <div class="nav-columns">
