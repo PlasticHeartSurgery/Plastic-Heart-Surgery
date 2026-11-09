@@ -20,17 +20,17 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: #ffffff !important;
-            color: #111111 !important;
+            background-color: #ffffff;
+            color: #111111;
             display: flex;
             min-height: 100vh;
             line-height: 1.6;
         }
 
-        sidebar {
+        .sidebar {
             width: 340px;
-            background-color: #ffffff !important;
-            border-right: 1px solid #cccccc;
+            background-color: #ffffff;
+            border-right: none;
             padding: 40px;
             display: flex;
             flex-direction: column;
@@ -43,10 +43,10 @@
         }
 
         .site-title {
-            font-family: 'Lyno Ulyscyr', sans-serif !important;
+            font-family: 'Lyno Ulyscyr', sans-serif;
             font-size: 1.5rem;
             letter-spacing: 0.3em;
-            color: #ff0033 !important;
+            color: #ff0033;
             margin-bottom: 40px;
             text-decoration: none;
             display: block;
@@ -55,31 +55,31 @@
         .nav-columns {
             display: flex;
             flex-direction: column;
-            gap: 22px;
+            gap: 16px;
         }
 
         .nav-column-item {
-            font-family: 'Lyno Ulyscyr', sans-serif !important;
-            font-size: 1.25rem;
+            font-family: 'Lyno Ulyscyr', sans-serif;
+            font-size: 1.15rem;
             letter-spacing: 0.2em;
-            color: #555555 !important;
+            color: #333333;
             text-decoration: none;
             transition: color 0.2s ease;
         }
 
         .nav-column-item:hover, .nav-column-item.active {
-            color: #ff0033 !important;
+            color: #ff0033;
         }
 
         .sidebar-footer {
             font-size: 0.85rem;
-            color: #333333 !important;
+            color: #333333;
             word-break: break-all;
-            margin-top: 40px;
+            margin-top: 30px;
         }
 
         .sidebar-footer a {
-            color: #ff0033 !important;
+            color: #ff0033;
             text-decoration: none;
         }
 
@@ -91,30 +91,30 @@
             margin-left: 340px;
             flex: 1;
             padding: 80px 60px;
-            max-width: 1000px;
-            background-color: #ffffff !important;
+            max-width: 950px;
+            background-color: #ffffff;
         }
 
         h2 {
-            font-family: 'Lyno Ulyscyr', sans-serif !important;
+            font-family: 'Lyno Ulyscyr', sans-serif;
             font-size: 1.8rem;
             letter-spacing: 0.25em;
-            color: #ff0033 !important;
+            color: #ff0033;
             margin-bottom: 24px;
         }
 
         p {
-            color: #444444 !important;
+            color: #222222;
             margin-bottom: 24px;
             font-size: 1rem;
         }
 
-        /* Visual Arts Grid Layout with Sublinks */
+        /* Artworks Grid Layout */
         .art-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 30px;
-            margin-top: 20px;
+            gap: 40px;
+            margin-top: 30px;
         }
 
         .art-card {
@@ -122,53 +122,54 @@
             border: 2px solid #000000;
             border-radius: 6px;
             overflow: hidden;
-            text-decoration: none;
-            display: block;
             box-shadow: 4px 4px 0px #000000;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            display: flex;
+            flex-direction: column;
         }
 
-        .art-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 6px 6px 0px #ff0033;
-            border-color: #ff0033;
+        .art-image-frame {
+            width: 100%;
+            background: #f0f0f0;
+            overflow: hidden;
+            border-bottom: 2px solid #000000;
         }
 
-        .art-card img {
+        .art-image-frame img {
             width: 100%;
             height: auto;
             display: block;
+            object-fit: cover;
         }
 
         .art-info {
-            padding: 16px;
-            background-color: #ffffff;
+            padding: 18px;
         }
 
         .art-title {
-            font-family: 'Lyno Ulyscyr', sans-serif !important;
-            font-size: 1.05rem;
+            font-family: 'Lyno Ulyscyr', sans-serif;
+            font-size: 1rem;
             letter-spacing: 0.15em;
-            color: #ff0033 !important;
+            color: #ff0033;
             margin-bottom: 6px;
         }
 
-        .art-meta {
-            font-size: 0.85rem;
-            color: #555555;
+        .art-desc {
+            font-size: 0.9rem;
+            color: #444444;
+            margin-bottom: 0;
         }
 
         @media (max-width: 768px) {
             body {
                 flex-direction: column;
             }
-            sidebar {
+            .sidebar {
                 position: relative;
                 width: 100%;
                 height: auto;
                 padding: 30px 20px;
                 border-right: none;
-                border-bottom: 1px solid #cccccc;
+                border-bottom: none;
             }
             main {
                 margin-left: 0;
@@ -177,15 +178,18 @@
         }
     </style>
 </head>
-<body style="background-color: #ffffff !important;">
+<body>
 
-    <sidebar style="background-color: #ffffff !important;">
+    <div class="sidebar">
         <div>
             <a href="index.html" class="site-title">Plastic Heart Surgery</a>
             <div class="nav-columns">
                 <a href="index.html" class="nav-column-item">Bio</a>
                 <a href="visualarts.html" class="nav-column-item active">Visual Arts</a>
                 <a href="music.html" class="nav-column-item">Music</a>
+                <a href="tourdates.html" class="nav-column-item">Tour Dates</a>
+                <a href="comingupshows.html" class="nav-column-item">Coming Up Shows</a>
+                <a href="bigfanof.html" class="nav-column-item">Big Fan Of</a>
                 <a href="links.html" class="nav-column-item">Links</a>
             </div>
         </div>
@@ -193,31 +197,49 @@
             <p style="margin-bottom: 4px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #000000;">Contact</p>
             <a href="mailto:plasticheartsurgery@gmail.com">plasticheartsurgery@gmail.com</a>
         </div>
-    </sidebar>
+    </div>
 
-    <main style="background-color: #ffffff !important;">
+    <main>
         <section>
             <h2>Visual Arts</h2>
-            <p>Selected large-scale canvas pieces, mixed-media, and visual projects.</p>
-            
-            <div class="art-grid">
-                <!-- Piece 1 -->
-                <a href="artwork-monster.html" class="art-card">
-                    <img src="images/And Now She Is a Monster - Brighter - 3000 x 3000.png" alt="And Now She Is a Monster">
-                    <div class="art-info">
-                        <div class="art-title">And Now She Is a Monster</div>
-                        <div class="art-meta">Mixed-media on canvas ↗</div>
-                    </div>
-                </a>
+            <p>Large-scale canvas paintings incorporating abstraction, cubism, and mixed-media elements exploring structural mechanics, the natural world, and the passage of time.</p>
 
-                <!-- Piece 2 (Duplicate and customize for additional pieces) -->
-                <a href="artwork-piece-two.html" class="art-card">
-                    <img src="images/YOUR-SECOND-IMAGE-NAME.png" alt="Artwork Title">
-                    <div class="art-info">
-                        <div class="art-title">Piece Title Here</div>
-                        <div class="art-meta">Medium / Details ↗</div>
+            <!-- Painting Gallery Grid -->
+            <div class="art-grid">
+                
+                <!-- Painting Item 1 -->
+                <div class="art-card">
+                    <div class="art-image-frame">
+                        <img src="images/painting-1.jpg" alt="Painting Title One">
                     </div>
-                </a>
+                    <div class="art-info">
+                        <div class="art-title">Painting Title One</div>
+                        <p class="art-desc">Mixed media on canvas, dimensions, year.</p>
+                    </div>
+                </div>
+
+                <!-- Painting Item 2 -->
+                <div class="art-card">
+                    <div class="art-image-frame">
+                        <img src="images/painting-2.jpg" alt="Painting Title Two">
+                    </div>
+                    <div class="art-info">
+                        <div class="art-title">Painting Title Two</div>
+                        <p class="art-desc">Mixed media on canvas, dimensions, year.</p>
+                    </div>
+                </div>
+
+                <!-- Painting Item 3 -->
+                <div class="art-card">
+                    <div class="art-image-frame">
+                        <img src="images/painting-3.jpg" alt="Painting Title Three">
+                    </div>
+                    <div class="art-info">
+                        <div class="art-title">Painting Title Three</div>
+                        <p class="art-desc">Mixed media on canvas, dimensions, year.</p>
+                    </div>
+                </div>
+
             </div>
         </section>
     </main>
