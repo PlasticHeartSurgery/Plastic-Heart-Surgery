@@ -50,6 +50,9 @@
             margin-bottom: 40px;
             text-decoration: none;
             display: block;
+            /* Forces the browser to treat the font as a flat single-color shape, removing built-in multi-tone layers */
+            -webkit-text-stroke: 0px #ff0033;
+            filter: drop-shadow(0px 0px 0px transparent);
         }
 
         .nav-columns {
@@ -101,6 +104,8 @@
             letter-spacing: 0.25em;
             color: #ff0033;
             margin-bottom: 24px;
+            /* Forces flat color rendering */
+            -webkit-text-stroke: 0px #ff0033;
         }
 
         p {
