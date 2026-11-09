@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plastic Heart Surgery — Bio</title>
+    <title>Plastic Heart Surgery — Artwork</title>
     <style>
         @font-face {
             font-family: 'Lyno Jean';
@@ -101,7 +101,7 @@
             margin-left: 320px;
             flex: 1;
             padding: 80px 60px;
-            max-width: 900px;
+            max-width: 1000px;
         }
 
         h2 {
@@ -115,8 +115,34 @@
 
         p {
             color: var(--muted-color);
-            margin-bottom: 16px;
+            margin-bottom: 24px;
             font-size: 1rem;
+        }
+
+        /* Collage / Grid Layout */
+        .artwork-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+            margin-top: 20px;
+        }
+
+        .artwork-item {
+            background: #141414;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            overflow: hidden;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        .artwork-item:hover {
+            border-color: #444;
+        }
+
+        .artwork-item img {
+            width: 100%;
+            height: auto;
+            display: block;
         }
 
         @media (max-width: 768px) {
@@ -144,8 +170,8 @@
         <div>
             <a href="index.html" class="site-title">Plastic Heart Surgery</a>
             <div class="nav-columns">
-                <a href="index.html" class="nav-column-item active">01 / Bio</a>
-                <a href="artwork.html" class="nav-column-item">02 / Artwork</a>
+                <a href="index.html" class="nav-column-item">01 / Bio</a>
+                <a href="artwork.html" class="nav-column-item active">02 / Artwork</a>
                 <a href="music.html" class="nav-column-item">03 / Music</a>
                 <a href="links.html" class="nav-column-item">04 / Links</a>
             </div>
@@ -158,9 +184,25 @@
 
     <main>
         <section>
-            <h2>Bio</h2>
-            <p>Multi-disciplinary artist, curator, and sound designer based in Toronto. Working across large-scale canvas painting, experimental electronic music, and hardware audio customisation.</p>
-            <p>Practices explore themes relating to the natural world, structural mechanics, and the passage of time using mixed-media and abstraction.</p>
+            <h2>Artwork</h2>
+            <p>Selected canvas pieces and visual projects.</p>
+            
+            <div class="artwork-grid">
+                <!-- Artwork Item 1 -->
+                <div class="artwork-item">
+                    <img src="images/And Now She Is a Monster - Brighter - 3000 x 3000.png" alt="And Now She Is a Monster">
+                </div>
+
+                <!-- Artwork Item 2 (Duplicate and change file name to add more) -->
+                <div class="artwork-item">
+                    <img src="images/YOUR-SECOND-IMAGE-NAME.png" alt="Artwork Title">
+                </div>
+
+                <!-- Artwork Item 3 -->
+                <div class="artwork-item">
+                    <img src="images/YOUR-THIRD-IMAGE-NAME.png" alt="Artwork Title">
+                </div>
+            </div>
         </section>
     </main>
 
