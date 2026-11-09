@@ -241,6 +241,11 @@
         <section id="music">
             <h2>Music</h2>
             <p>Electronic music releases, albums, and sound design projects.</p>
+            <div class="artwork-grid">
+    <div class="artwork-item">
+        <img src="images/And Now She Is a Monster - Brighter - 3000 x 3000.png" alt="And Now She Is a Monster">
+    </div>
+</div>
             
             <!-- Embedded Spotify Artist / Player -->
             <div style="margin-bottom: 40px;">
