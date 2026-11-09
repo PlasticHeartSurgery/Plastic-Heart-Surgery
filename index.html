@@ -101,7 +101,7 @@
             margin-left: 320px;
             flex: 1;
             padding: 80px 60px;
-            max-width: 900px;
+            max-width: 950px;
         }
 
         h2 {
@@ -117,6 +117,44 @@
             color: var(--muted-color);
             margin-bottom: 16px;
             font-size: 1rem;
+        }
+
+        /* Bio Layout with Photo */
+        .bio-container {
+            display: flex;
+            gap: 40px;
+            align-items: flex-start;
+            margin-top: 20px;
+        }
+
+        .bio-text {
+            flex: 1;
+        }
+
+        .bio-image-frame {
+            width: 300px;
+            flex-shrink: 0;
+            background: #141414;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .bio-image-frame img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        @media (max-width: 900px) {
+            .bio-container {
+                flex-direction: column-reverse;
+            }
+            .bio-image-frame {
+                width: 100%;
+                max-width: 400px;
+                margin-bottom: 30px;
+            }
         }
 
         @media (max-width: 768px) {
@@ -159,8 +197,18 @@
     <main>
         <section>
             <h2>Bio</h2>
-            <p>Multi-disciplinary artist, curator, and sound designer based in Toronto. Working across large-scale canvas painting, experimental electronic music, and hardware audio customisation.</p>
-            <p>Practices explore themes relating to the natural world, structural mechanics, and the passage of time using mixed-media and abstraction.</p>
+            
+            <div class="bio-container">
+                <div class="bio-text">
+                    <p>Multi-disciplinary artist, curator, and sound designer based in Toronto. Working across large-scale canvas painting, experimental electronic music, and hardware audio customisation.</p>
+                    <p>Practices explore themes relating to the natural world, structural mechanics, and the passage of time using mixed-media and abstraction.</p>
+                </div>
+
+                <!-- Photograph / Portrait Container -->
+                <div class="bio-image-frame">
+                    <img src="images/YOUR-PORTRAIT-OR-PHOTO.png" alt="Plastic Heart Surgery">
+                </div>
+            </div>
         </section>
     </main>
 
