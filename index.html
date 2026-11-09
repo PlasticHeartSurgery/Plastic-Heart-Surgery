@@ -29,7 +29,7 @@
 
         .sidebar {
             width: 340px;
-            background: linear-gradient(to right, #ff0033, #ffffff) !important;
+            background-color: #ffffff !important;
             border-right: 1px solid #cccccc;
             padding: 40px;
             display: flex;
@@ -40,6 +40,25 @@
             top: 0;
             left: 0;
             overflow-y: auto;
+            z-index: 10;
+        }
+
+        /* Bulletproof Gradient Layer */
+        .sidebar::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, rgba(255, 0, 51, 0.85), rgba(255, 255, 255, 0.95));
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .sidebar > * {
+            position: relative;
+            z-index: 2;
         }
 
         .site-title {
@@ -63,7 +82,7 @@
             font-family: 'Lyno Ulyscyr', sans-serif !important;
             font-size: 1.15rem;
             letter-spacing: 0.2em;
-            color: #555555 !important;
+            color: #333333 !important;
             text-decoration: none;
             transition: color 0.2s ease;
         }
