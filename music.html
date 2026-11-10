@@ -135,13 +135,13 @@ overflow: hidden;
 box-shadow: 6px 6px 0px #000000;
 display: flex;
 flex-direction: column;
-text-decoration: none;
-color: inherit;
-transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none; /* Removes underline from anchor tag */
+            color: inherit;
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease, border-color 0.4s ease;
 }
 
 .album-image-frame {
-position: relative;
+            position: relative;
 width: 100%;
 aspect-ratio: 1/1;
 background: #f0f0f0;
@@ -154,18 +154,43 @@ width: 100%;
 height: 100%;
 object-fit: cover;
 display: block;
-transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1), filter 0.7s ease;
-}
+            transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1), filter 0.7s ease;
+        }
 
-/* Hover Triggers: Card lift with custom inset shadow & image whoosh zoom */
-.album-card:hover {
-transform: translateY(-4px);
-box-shadow: inset 0 0 20px 5px rgba(0, 0, 0, 0.15), inset 0 0 0 2px rgba(0, 0, 0, 0.2), 6px 10px 0px #000000;
-}
+        /* Holographic Iridescent Fairy Sheen Overlay */
+        .holo-sheen {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                135deg,
+                rgba(255, 192, 203, 0) 0%,
+                rgba(255, 105, 180, 0.35) 30%,
+                rgba(138, 43, 226, 0.4) 50%,
+                rgba(0, 255, 255, 0.35) 70%,
+                rgba(255, 255, 255, 0) 100%
+            );
+            opacity: 0;
+            mix-blend-mode: overlay;
+            pointer-events: none;
+            transform: translateX(-100%) rotate(30deg);
+        }
 
-.album-card:hover .album-image-frame img {
-transform: scale(1.08);
-filter: brightness(1.03);
+        /* Hover Triggers: Card lift, image whoosh, and holographic sheen sweep */
+        .album-card:hover {
+            transform: translateY(-6px);
+            border-color: #ff0033;
+            box-shadow: 8px 12px 25px rgba(255, 0, 51, 0.2);
+        }
+
+        .album-card:hover .album-image-frame img {
+            transform: scale(1.1) rotate(1deg);
+            filter: saturate(1.25) brightness(1.05);
+        }
+
+        .album-card:hover .holo-sheen {
+            opacity: 1;
+            transform: translateX(100%) rotate(30deg);
+            transition: transform 0.8s ease-in-out, opacity 0.4s ease;
 }
 
 .album-info {
@@ -243,31 +268,38 @@ grid-template-columns: 1fr;
 
 <!-- Album Covers Grid -->
 <div class="albums-grid">
-<!-- Album Item 1 (Clickable Link) -->
-<a href="https://your-album-link-1.com" class="album-card" target="_blank" rel="noopener noreferrer">
+                <!-- Album Item 1 -->
+                <div class="album-card">
+                <!-- Album Item 1 (Clickable Link) -->
+                <a href="https://your-album-link-1.com" class="album-card" target="_blank" rel="noopener noreferrer">
 <div class="album-image-frame">
 <img src="images/And Now She Is a Monster - Brighter - 3000 x 3000.png" alt="...And Now She Is a Monster">
+                        <div class="holo-sheen"></div>
 </div>
 <div class="album-info">
 <div class="album-title">...And Now She Is a Monster</div>
 <p class="album-desc">2024</p>
 </div>
-</a>
-
-<!-- Album Item 2 (Clickable Link) -->
-<a href="https://your-album-link-2.com" class="album-card" target="_blank" rel="noopener noreferrer">
-                    <div class="album-image
-                    <div class="album-image-frame">
-                        <img src="images/Before She Became a Centipede Smaller For Bandcamp.png" alt="Before She Became a Centipede">
-                    </div>
-                    <div class="album-info">
-                        <div class="album-title">Before She Became a Centipede</div>
-                        <p class="album-desc">2023</p>
-                    </div>
+                </div>
                 </a>
-            </div>
-        </section>
-    </main>
+
+                <!-- Album Item 2 -->
+                <div class="album-card">
+                <!-- Album Item 2 (Clickable Link) -->
+                <a href="https://your-album-link-2.com" class="album-card" target="_blank" rel="noopener noreferrer">
+<div class="album-image-frame">
+<img src="images/Before She Became a Centipede Smaller For Bandcamp.png" alt="Before She Became a Centipede">
+                        <div class="holo-sheen"></div>
+</div>
+<div class="album-info">
+<div class="album-title">Before She Became a Centipede</div>
+<p class="album-desc">2023</p>
+</div>
+                </div>
+                </a>
+</div>
+</section>
+</main>
 
 </body>
 </html>
