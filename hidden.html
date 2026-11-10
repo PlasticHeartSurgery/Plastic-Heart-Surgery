@@ -25,14 +25,11 @@
             display: flex;
             min-height: 100vh;
             line-height: 1.6;
-            transition: background-color 0.1s ease;
         }
 
-        /* --- EXTENDED GLITCH & 10-SECOND STROBE TRANSITION --- */
+        /* --- 20-SECOND SERUM 2 CHAOTIC GLITCH SEQUENCE --- */
         body.glitch-transition {
-            animation: 
-                fullPageMeltdown 3s forwards ease-in-out, 
-                strobeLight 10s 3s forwards steps(1); /* 3s delay for meltdown, then 10s strobe */
+            animation: fullPageMeltdown 20s forwards ease-in-out;
             pointer-events: none;
         }
 
@@ -40,47 +37,66 @@
             0% {
                 transform: skewX(0deg) translateY(0px) scale(1);
                 filter: blur(0px) contrast(100%);
+                background-color: #ffffff;
             }
-            25% {
-                transform: skewX(-12deg) translateY(15px) scale(1.02);
+            15% {
+                transform: skewX(-15deg) translateY(20px) scale(1.02);
                 filter: blur(2px) contrast(150%) hue-rotate(90deg);
+                background-color: #ff0033;
+                color: #ffffff;
             }
-            50% {
-                transform: skewX(20deg) translateY(-25px) scale(0.98) rotate(1deg);
-                filter: blur(5px) contrast(200%) hue-rotate(180deg) invert(15%);
+            30% {
+                transform: skewX(25deg) translateY(-40px) scale(0.98) rotate(1deg);
+                filter: blur(4px) contrast(200%) hue-rotate(180deg) invert(15%);
+                background-color: #0000ff;
+                color: #ff0033;
+            }
+            45% {
+                transform: skewX(-30deg) translateY(60px) scale(1.05) rotate(-2deg);
+                filter: blur(6px) contrast(250%) invert(80%);
+                background-color: #ff0033;
+                color: #000000;
+            }
+            60% {
+                transform: skewX(40deg) translateY(-80px) scale(0.92) rotate(3deg);
+                filter: blur(8px) contrast(300%) invert(100%);
+                background-color: #0000ff;
+                color: #ffffff;
             }
             75% {
-                transform: skewX(-25deg) translateY(30px) scale(1.05);
-                filter: blur(8px) contrast(250%) hue-rotate(270deg) invert(50%);
+                transform: skewX(-20deg) translateY(30px) scale(1.1) rotate(-1deg);
+                filter: blur(5px) contrast(220%) hue-rotate(270deg);
+                background-color: #ff0033;
+                color: #0000ff;
+            }
+            90% {
+                transform: skewX(15deg) translateY(-20px) scale(1.03);
+                filter: blur(3px) contrast(180%) invert(50%);
+                background-color: #0000ff;
+                color: #ffffff;
             }
             100% {
-                transform: skewX(-40deg) translateY(50px) scale(1.1);
-                filter: blur(12px) contrast(300%) invert(100%);
+                transform: skewX(-50deg) translateY(120px) scale(1.2);
+                filter: blur(15px) contrast(400%) invert(100%);
+                background-color: #000000;
+                color: #ff0033;
             }
         }
 
-        @keyframes strobeLight {
-            0%   { background-color: #ff0033; color: #ffffff; }
-            5%   { background-color: #0000ff; color: #ffffff; }
-            10%  { background-color: #ff0033; color: #000000; }
-            15%  { background-color: #0000ff; color: #ff0033; }
-            20%  { background-color: #ff0033; color: #ffffff; }
-            25%  { background-color: #0000ff; color: #ffffff; }
-            30%  { background-color: #ff0033; color: #000000; }
-            35%  { background-color: #0000ff; color: #ff0033; }
-            40%  { background-color: #ff0033; color: #ffffff; }
-            45%  { background-color: #0000ff; color: #ffffff; }
-            50%  { background-color: #ff0033; color: #000000; }
-            55%  { background-color: #0000ff; color: #ff0033; }
-            60%  { background-color: #ff0033; color: #ffffff; }
-            65%  { background-color: #0000ff; color: #ffffff; }
-            70%  { background-color: #ff0033; color: #000000; }
-            75%  { background-color: #0000ff; color: #ff0033; }
-            80%  { background-color: #ff0033; color: #ffffff; }
-            85%  { background-color: #0000ff; color: #ffffff; }
-            90%  { background-color: #ff0033; color: #000000; }
-            95%  { background-color: #0000ff; color: #ff0033; }
-            100% { background-color: #000000; color: #000000; opacity: 0; }
+        /* Dynamic chaotic individual character jitter triggered during glitch */
+        body.glitch-transition .char-glitch {
+            display: inline-block;
+            animation: letterChaos 0.2s infinite alternate ease-in-out;
+        }
+
+        @keyframes letterChaos {
+            0% {
+                transform: translate(0px, 0px) rotate(0deg) scale(1);
+            }
+            100% {
+                transform: translate(calc(var(--rand-x) * 1px), calc(var(--rand-y) * 1px)) rotate(calc(var(--rand-rot) * 1deg)) scale(var(--rand-scale));
+                color: var(--rand-color);
+            }
         }
 
         .sidebar {
@@ -156,4 +172,106 @@
             font-size: 1.8rem;
             letter-spacing: 0.25em;
             color: #ff0033;
-            margin-bottom: 24
+            margin-bottom: 24px;
+        }
+
+        p {
+            color: #222222;
+            margin-bottom: 16px;
+            font-size: 1rem;
+        }
+
+        .bio-container {
+            display: flex;
+            gap: 40px;
+            align-items: flex-start;
+            margin-top: 20px;
+        }
+
+        .bio-text {
+            flex: 1;
+        }
+
+        .bio-image-frame {
+            width: 300px;
+            flex-shrink: 0;
+            background: #ffffff;
+            border: 2px solid #000000;
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: 4px 4px 0px #000000;
+        }
+
+        .bio-image-frame img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        @media (max-width: 900px) {
+            .bio-container {
+                flex-direction: column-reverse;
+            }
+            .bio-image-frame {
+                width: 100%;
+                max-width: 400px;
+                margin-bottom: 30px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+                padding: 30px 20px;
+                border-right: none;
+                border-bottom: none;
+            }
+            main {
+                margin-left: 0;
+                padding: 40px 20px;
+                max-width: 100%;
+            }
+            .site-title {
+                font-size: 1.2rem;
+                letter-spacing: 0.15em;
+            }
+            h2 {
+                font-size: 1.4rem;
+                letter-spacing: 0.15em;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div>
+            <a href="index.html" class="site-title">Plastic Heart Surgery</a>
+            <div class="nav-columns">
+                <a href="index.html" class="nav-column-item active">Plastic Heart Surgery</a>
+                <a href="visualarts.html" class="nav-column-item">Visual Arts</a>
+                <a href="music.html" class="nav-column-item">Music</a>
+                <a href="tourdates.html" class="nav-column-item">Tour Dates</a>
+                <a href="comingupshows.html" class="nav-column-item">Coming Up Shows</a>
+                <a href="bigfanof....html" class="nav-column-item">Big Fan Of...</a>
+                <a href="links.html" class="nav-column-item">Links</a>
+            </div>
+        </div>
+        <div class="sidebar-footer">
+            <p style="margin-bottom: 4px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #000000;">Contact</p>
+            <a href="mailto:plasticheartsurgery@gmail.com">plasticheartsurgery@gmail.com</a>
+        </div>
+    </div>
+
+    <main>
+        <section>
+            <h2>Bio</h2>
+            
+            <div class="bio-container">
+                <div class="bio-text">
+                    <p>Plastic Heart Surgery (Plastic S.), is a Toronto-based multi-disciplinary artist, curator, and performer. She works on large scale canvas incorporating mixed-media. She is also a music producer and sound designer; being a producer, mixing engineer and collaborator for multiple recording-artists alongside her solo visual work. Plastic has shown paintings across Canada–self-curating and developing multiple
