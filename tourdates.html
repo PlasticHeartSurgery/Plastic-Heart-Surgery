@@ -294,7 +294,7 @@ height: 160px;
 <iframe src="https://ra.co/widget/eventlisting?dj=plasticheartsurgery" height="300" width="100%" frameborder="0" style="display: block; border: none;"></iframe>
 </div>
 
-  <style>
+<style>
   @keyframes glowRedWhite {
     0%, 100% {
       background-color: #ffffff; /* White */
@@ -305,20 +305,30 @@ height: 160px;
   }
 
   .songkick-glow-container {
-    border-radius: 12px; /* Smoothes out the square inner/outer corners */
+    border-radius: 8px;
     overflow: hidden;
-    padding: 12px;
-    border: 1px solid #e0e0e0; /* Thinned down from .4px */
+    padding: 3px; /* Thin inner padding creates the slender glowing border */
+    border: 1px solid #e0e0e0;
     animation: glowRedWhite 6s infinite ease-in-out;
-}
+  }
+
+  /* Compact wrapper to restrict the Songkick widget height */
+  .songkick-compact-wrapper {
+    max-height: 380px;
+    overflow-y: auto;
+    background: #ffffff;
+    border-radius: 6px;
+  }
 </style>
 
 <div class="songkick-glow-container">
-  <a href="https://www.songkick.com/artists/10230307" class="songkick-widget" data-theme="light" data-track-button="on" data-detect-style="off" data-background-color="rgb(255,255,255,1)" data-font-color="rgb(0,0,0,1)" data-button-bg-color="rgb(0,0,0,1)" data-button-text-color="rgb(255,255,255,1)" data-locale="en" data-other-artists="on" data-share-button="on" data-country-filter="on" data-rsvp="on" data-request-show="on" data-past-events="off" data-past-events-offtour="off" data-remind-me="off" style="display: none;"></a>
+  <div class="songkick-compact-wrapper">
+    <a href="https://www.songkick.com/artists/10230307" class="songkick-widget" data-theme="light" data-track-button="on" data-detect-style="off" data-background-color="rgb(255,255,255,1)" data-font-color="rgb(0,0,0,1)" data-button-bg-color="rgb(0,0,0,1)" data-button-text-color="rgb(255,255,255,1)" data-locale="en" data-other-artists="on" data-share-button="on" data-country-filter="on" data-rsvp="on" data-request-show="on" data-past-events="off" data-past-events-offtour="off" data-remind-me="off" style="display: none;"></a>
+  </div>
   <script src='//widget-app.songkick.com/injector/10230307'></script>
 </div>
 
-  <h2 style="font-size: 1.4rem; margin-top: 40px;">Past Events</h2>
+<h2 style="font-size: 1.4rem; margin-top: 40px;">Past Events</h2>
 
 <!-- Manual Tour Cards Grid -->
 <div class="tours-grid">
