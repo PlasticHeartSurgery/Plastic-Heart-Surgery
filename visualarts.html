@@ -30,7 +30,6 @@
         .sidebar {
             width: 340px;
             background-color: #ffffff;
-            border-right: none;
             padding: 40px;
             display: flex;
             flex-direction: column;
@@ -109,7 +108,6 @@
             font-size: 1rem;
         }
 
-        /* Artworks Grid Layout */
         .art-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -146,4 +144,112 @@
             opacity: 0.85;
         }
 
-        .art-info
+        .art-info {
+            padding: 18px;
+        }
+
+        .art-title {
+            font-family: 'Lyno Ulyscyr', sans-serif;
+            font-size: 1rem;
+            letter-spacing: 0.15em;
+            color: #ff0033;
+            margin-bottom: 6px;
+        }
+
+        .art-desc {
+            font-size: 0.9rem;
+            color: #444444;
+            margin-bottom: 0;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+                padding: 30px 20px;
+            }
+            main {
+                margin-left: 0;
+                padding: 40px 20px;
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div>
+            <a href="index.html" class="site-title">Plastic Heart Surgery</a>
+            <div class="nav-columns">
+                <a href="index.html" class="nav-column-item">Plastic Heart Surgery</a>
+                <a href="visualarts.html" class="nav-column-item active">Visual Arts</a>
+                <a href="music.html" class="nav-column-item">Music</a>
+                <a href="tourdates.html" class="nav-column-item">Tour Dates</a>
+                <a href="comingupshows.html" class="nav-column-item">Coming Up Shows</a>
+                <a href="bigfanof....html" class="nav-column-item">Big Fan Of</a>
+                <a href="links.html" class="nav-column-item">Links</a>
+            </div>
+        </div>
+        <div class="sidebar-footer">
+            <p style="margin-bottom: 4px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #000000;">Contact</p>
+            <a href="mailto:plasticheartsurgery@gmail.com">plasticheartsurgery@gmail.com</a>
+        </div>
+    </div>
+
+    <main>
+        <section>
+            <h2>Visual Arts</h2>
+            <p>Plastic's painting(s) that are currently available for exhibition/private sale/showings are shown (for inquiries and/or pricing, please email).</p>
+
+            <div class="art-grid">
+                
+                <!-- Painting Item 1 -->
+                <div class="art-card">
+                    <div class="art-image-frame">
+                        <a href="landlord.html">
+                            <img src="images/Landlord, Plastic, Oil on Canvas, 42 x 55, 2023.jpg" alt="Landlord">
+                        </a>
+                    </div>
+                    <div class="art-info">
+                        <div class="art-title">Landlord</div>
+                        <p class="art-desc">Oil on Canvas, 42" x 55", 2025</p>
+                    </div>
+                </div>
+
+                <!-- Painting Item 2 -->
+                <div class="art-card">
+                    <div class="art-image-frame">
+                        <a href="demon.html">
+                            <img src="images/A Demon in 3-Dimensions, Plastic, Acrylic, Canvas, 28 x 24, 2026.jpg" alt="Demon">
+                        </a>
+                    </div>
+                    <div class="art-info">
+                        <div class="art-title">Demon</div>
+                        <p class="art-desc">Wood, Wire, Canvas, Oil, Glue, Acrylic, MDF, Boiled-Linseed Oil, 28" x 24"</p>
+                    </div>
+                </div>
+
+                <!-- Painting Item 3 -->
+                <div class="art-card">
+                    <div class="art-image-frame">
+                        <a href="demon.html">
+                            <img src="images/Sapphic-Sex;--Established Eroticism, Joy, Excitement & Frivolous Love (Name in JPG Info), Plastic, Oil on Pallet, 40 x 82, 2026.jpg" alt="Sapphic-Sex">
+                        </a>
+                    </div>
+                    <div class="art-info">
+                        <div class="art-title">Sapphic-Sex; Not in Bed-- In Public--Combining Two Binaries Into a Single Subject, the Objective, Established Eroticism, Joy, Excitement & Frivolous Love</div>
+                        <p class="art-desc">Oil, Acrylic, China Marker, Latex Paint, Newspaper-Collage, Suspended Canvas on Wood Pallet, 40" x 82"</p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+</body>
+</html>
