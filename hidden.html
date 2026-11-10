@@ -27,9 +27,9 @@
             line-height: 1.6;
         }
 
-        /* --- 20-SECOND SERUM 2 CHAOTIC GLITCH SEQUENCE --- */
+        /* --- SERUM 2 GLITCH PAGE MELT EFFECT ON CLICK --- */
         body.glitch-transition {
-            animation: fullPageMeltdown 20s forwards ease-in-out;
+            animation: fullPageMeltdown 0.8s forwards ease-in-out;
             pointer-events: none;
         }
 
@@ -37,65 +37,27 @@
             0% {
                 transform: skewX(0deg) translateY(0px) scale(1);
                 filter: blur(0px) contrast(100%);
-                background-color: #ffffff;
-            }
-            15% {
-                transform: skewX(-15deg) translateY(20px) scale(1.02);
-                filter: blur(2px) contrast(150%) hue-rotate(90deg);
-                background-color: #ff0033;
-                color: #ffffff;
+                opacity: 1;
             }
             30% {
-                transform: skewX(25deg) translateY(-40px) scale(0.98) rotate(1deg);
-                filter: blur(4px) contrast(200%) hue-rotate(180deg) invert(15%);
-                background-color: #0000ff;
-                color: #ff0033;
-            }
-            45% {
-                transform: skewX(-30deg) translateY(60px) scale(1.05) rotate(-2deg);
-                filter: blur(6px) contrast(250%) invert(80%);
-                background-color: #ff0033;
-                color: #000000;
+                transform: skewX(-15deg) translateY(20px) scale(1.02);
+                filter: blur(2px) contrast(150%) hue-rotate(90deg);
+                opacity: 1;
             }
             60% {
-                transform: skewX(40deg) translateY(-80px) scale(0.92) rotate(3deg);
-                filter: blur(8px) contrast(300%) invert(100%);
-                background-color: #0000ff;
-                color: #ffffff;
+                transform: skewX(25deg) translateY(-40px) scale(0.98) rotate(1deg);
+                filter: blur(6px) contrast(200%) hue-rotate(180deg) invert(15%);
+                opacity: 1;
             }
-            75% {
-                transform: skewX(-20deg) translateY(30px) scale(1.1) rotate(-1deg);
-                filter: blur(5px) contrast(220%) hue-rotate(270deg);
-                background-color: #ff0033;
-                color: #0000ff;
-            }
-            90% {
-                transform: skewX(15deg) translateY(-20px) scale(1.03);
-                filter: blur(3px) contrast(180%) invert(50%);
-                background-color: #0000ff;
-                color: #ffffff;
+            99% {
+                transform: skewX(-40deg) translateY(100px) scale(1.1);
+                filter: blur(15px) contrast(300%) invert(100%);
+                opacity: 1;
             }
             100% {
-                transform: skewX(-50deg) translateY(120px) scale(1.2);
-                filter: blur(15px) contrast(400%) invert(100%);
-                background-color: #000000;
-                color: #ff0033;
-            }
-        }
-
-        /* Dynamic chaotic individual character jitter triggered during glitch */
-        body.glitch-transition .char-glitch {
-            display: inline-block;
-            animation: letterChaos 0.2s infinite alternate ease-in-out;
-        }
-
-        @keyframes letterChaos {
-            0% {
-                transform: translate(0px, 0px) rotate(0deg) scale(1);
-            }
-            100% {
-                transform: translate(calc(var(--rand-x) * 1px), calc(var(--rand-y) * 1px)) rotate(calc(var(--rand-rot) * 1deg)) scale(var(--rand-scale));
-                color: var(--rand-color);
+                transform: skewX(-40deg) translateY(100px) scale(1.1);
+                filter: blur(15px) contrast(300%) invert(100%);
+                opacity: 0; /* Only drop opacity at the final split second */
             }
         }
 
@@ -274,4 +236,32 @@
             
             <div class="bio-container">
                 <div class="bio-text">
-                    <p>Plastic Heart Surgery (Plastic S.), is a Toronto-based multi-disciplinary artist, curator, and performer. She works on large scale canvas incorporating mixed-media. She is also a music producer and sound designer; being a producer, mixing engineer and collaborator for multiple recording-artists alongside her solo visual work. Plastic has shown paintings across Canada–self-curating and developing multiple
+                    <p>Plastic Heart Surgery (Plastic S.), is a Toronto-based multi-disciplinary artist, curator, and performer. She works on large scale canvas incorporating mixed-media. She is also a music producer and sound designer; being a producer, mixing engineer and collaborator for multiple recording-artists alongside her solo visual work. Plastic has shown paintings across Canada–self-curating and developing multiple exhibitions. She is in her final year of studies at Ontario College of Art and Design. She focuses on complicated subject matters such as sex, sexuality, biology, abstraction, neo-cubism and material. Her work encompasses multi-media art practices–focusing on abstraction, found media, collage, natural-materials such as foliage, earth and other constructive materials such as wood-pallets. She works on sculptural wood-pieces and is known for using oil-based resins. She is also known within the music scene for her music under the moniker Plastic Heart Surgery–having released multiple albums, playing shows across Canada along with sound designing video games.</p>
+                    <p>blah blah blah</p>
+                </div>
+
+                <div class="bio-image-frame">
+                    <img src="images/93954891_1415006468682362_9066604820017709056_n.jpg" alt="Plastic Heart Surgery">
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        document.addEventListener('click', function(e) {
+            const link = e.target.closest('a');
+            if (!link) return;
+            
+            const href = link.getAttribute('href');
+            if (!href || href.startsWith('mailto:') || href.startsWith('#') || link.target === '_blank') return;
+
+            e.preventDefault();
+            document.body.classList.add('glitch-transition');
+
+            setTimeout(() => {
+                window.location.href = href;
+            }, 750); // triggers right before the animation finishes
+        });
+    </script>
+</body>
+</html>
