@@ -25,7 +25,6 @@
             display: flex;
             min-height: 100vh;
             line-height: 1.6;
-            transition: transform 0.8s cubic-bezier(0.77, 0, 0.175, 1), filter 0.8s ease;
         }
 
         /* --- SERUM 2 GLITCH PAGE MELT EFFECT ON CLICK --- */
@@ -38,19 +37,27 @@
             0% {
                 transform: skewX(0deg) translateY(0px) scale(1);
                 filter: blur(0px) contrast(100%);
+                opacity: 1;
             }
             30% {
                 transform: skewX(-15deg) translateY(20px) scale(1.02);
                 filter: blur(2px) contrast(150%) hue-rotate(90deg);
+                opacity: 1;
             }
             60% {
                 transform: skewX(25deg) translateY(-40px) scale(0.98) rotate(1deg);
                 filter: blur(6px) contrast(200%) hue-rotate(180deg) invert(15%);
+                opacity: 1;
+            }
+            99% {
+                transform: skewX(-40deg) translateY(100px) scale(1.1);
+                filter: blur(15px) contrast(300%) invert(100%);
+                opacity: 1;
             }
             100% {
                 transform: skewX(-40deg) translateY(100px) scale(1.1);
                 filter: blur(15px) contrast(300%) invert(100%);
-                opacity: 0;
+                opacity: 0; /* Only drop opacity at the final split second */
             }
         }
 
@@ -193,4 +200,68 @@
             }
             .site-title {
                 font-size: 1.2rem;
-                letter-
+                letter-spacing: 0.15em;
+            }
+            h2 {
+                font-size: 1.4rem;
+                letter-spacing: 0.15em;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div>
+            <a href="index.html" class="site-title">Plastic Heart Surgery</a>
+            <div class="nav-columns">
+                <a href="index.html" class="nav-column-item active">Plastic Heart Surgery</a>
+                <a href="visualarts.html" class="nav-column-item">Visual Arts</a>
+                <a href="music.html" class="nav-column-item">Music</a>
+                <a href="tourdates.html" class="nav-column-item">Tour Dates</a>
+                <a href="comingupshows.html" class="nav-column-item">Coming Up Shows</a>
+                <a href="bigfanof....html" class="nav-column-item">Big Fan Of...</a>
+                <a href="links.html" class="nav-column-item">Links</a>
+            </div>
+        </div>
+        <div class="sidebar-footer">
+            <p style="margin-bottom: 4px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #000000;">Contact</p>
+            <a href="mailto:plasticheartsurgery@gmail.com">plasticheartsurgery@gmail.com</a>
+        </div>
+    </div>
+
+    <main>
+        <section>
+            <h2>Bio</h2>
+            
+            <div class="bio-container">
+                <div class="bio-text">
+                    <p>Plastic Heart Surgery (Plastic S.), is a Toronto-based multi-disciplinary artist, curator, and performer. She works on large scale canvas incorporating mixed-media. She is also a music producer and sound designer; being a producer, mixing engineer and collaborator for multiple recording-artists alongside her solo visual work. Plastic has shown paintings across Canada–self-curating and developing multiple exhibitions. She is in her final year of studies at Ontario College of Art and Design. She focuses on complicated subject matters such as sex, sexuality, biology, abstraction, neo-cubism and material. Her work encompasses multi-media art practices–focusing on abstraction, found media, collage, natural-materials such as foliage, earth and other constructive materials such as wood-pallets. She works on sculptural wood-pieces and is known for using oil-based resins. She is also known within the music scene for her music under the moniker Plastic Heart Surgery–having released multiple albums, playing shows across Canada along with sound designing video games.</p>
+                    <p>blah blah blah</p>
+                </div>
+
+                <div class="bio-image-frame">
+                    <img src="images/93954891_1415006468682362_9066604820017709056_n.jpg" alt="Plastic Heart Surgery">
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        document.addEventListener('click', function(e) {
+            const link = e.target.closest('a');
+            if (!link) return;
+            
+            const href = link.getAttribute('href');
+            if (!href || href.startsWith('mailto:') || href.startsWith('#') || link.target === '_blank') return;
+
+            e.preventDefault();
+            document.body.classList.add('glitch-transition');
+
+            setTimeout(() => {
+                window.location.href = href;
+            }, 750); // triggers right before the animation finishes
+        });
+    </script>
+</body>
+</html>
