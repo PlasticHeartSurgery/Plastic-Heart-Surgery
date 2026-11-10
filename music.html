@@ -89,7 +89,7 @@ text-decoration: underline;
 }
 
 main {
-margin-left: 340px; /* Keeps everything safely to the right of the fixed sidebar */
+margin-left: 340px;
 flex: 1;
 padding: 80px 60px;
 max-width: 1100px;
@@ -120,7 +120,7 @@ border: 2px solid #000000;
 box-shadow: 4px 4px 0px #000000;
 }
 
-/* Webamp Container Styling */
+/* Webamp Player Container */
 .webamp-section {
 margin-bottom: 40px;
 display: flex;
@@ -171,24 +171,6 @@ display: block;
 transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1), filter 0.7s ease;
 }
 
-/* Holographic Iridescent Fairy Sheen Overlay */
-.holo-sheen {
-position: absolute;
-inset: 0;
-background: linear-gradient(
-    135deg,
-    rgba(255, 192, 203, 0) 0%,
-    rgba(255, 105, 180, 0.35) 30%,
-    rgba(138, 43, 226, 0.4) 50%,
-    rgba(0, 255, 255, 0.35) 70%,
-    rgba(255, 255, 255, 0) 100%
-);
-opacity: 0;
-mix-blend-mode: overlay;
-pointer-events: none;
-transform: translateX(-100%) rotate(30deg);
-}
-
 .album-card:hover {
 transform: translateY(-6px);
 border-color: #ff0033;
@@ -198,12 +180,6 @@ box-shadow: 8px 12px 25px rgba(255, 0, 51, 0.2);
 .album-card:hover .album-image-frame img {
 transform: scale(1.1) rotate(1deg);
 filter: saturate(1.25) brightness(1.05);
-}
-
-.album-card:hover .holo-sheen {
-opacity: 1;
-transform: translateX(100%) rotate(30deg);
-transition: transform 0.8s ease-in-out, opacity 0.4s ease;
 }
 
 .album-info {
@@ -277,7 +253,7 @@ grid-template-columns: 1fr;
 <iframe style="border-radius:12px" src="https://open.spotify.com/embed/artist/5ZoUq3l7mN6OBgTMjpjfj7?utm_source=generator&theme=0" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
 </div>
 
-<!-- Webamp Player Container (Now safely inside main content area) -->
+<!-- Webamp Player Container -->
 <div class="webamp-section">
 <div id="webamp-container"></div>
 </div>
@@ -290,7 +266,6 @@ grid-template-columns: 1fr;
     <a href="https://your-album-link-1.com" class="album-card" target="_blank" rel="noopener noreferrer">
         <div class="album-image-frame">
             <img src="images/And Now She Is a Monster - Brighter - 3000 x 3000.png" alt="...And Now She Is a Monster">
-            <div class="holo-sheen"></div>
         </div>
         <div class="album-info">
             <div class="album-title">...And Now She Is a Monster</div>
@@ -302,7 +277,6 @@ grid-template-columns: 1fr;
     <a href="https://your-album-link-2.com" class="album-card" target="_blank" rel="noopener noreferrer">
         <div class="album-image-frame">
             <img src="images/Before She Became a Centipede Smaller For Bandcamp.png" alt="Before She Became a Centipede">
-            <div class="holo-sheen"></div>
         </div>
         <div class="album-info">
             <div class="album-title">Before She Became a Centipede</div>
