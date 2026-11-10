@@ -120,7 +120,7 @@ border: 2px solid #000000;
 box-shadow: 4px 4px 0px #000000;
 }
 
-/* Webamp Player Container - Forced Override */
+/* Webamp Player Container */
 .webamp-section {
 margin-bottom: 40px;
 display: flex;
@@ -135,15 +135,14 @@ justify-content: center;
 position: relative;
 }
 
-/* Force Webamp internal windows to drop absolute tracking and behave inline */
-#webamp-container #webamp,
-#webamp-container div[class^="webamp-"] {
-position: static !important;
-transform: none !important;
-left: auto !important;
+/* CRITICAL: Forces Webamp out of floating overlay mode and into normal page layout flow */
+#webamp-container #webamp {
+position: relative !important;
 top: auto !important;
+left: auto !important;
 right: auto !important;
 bottom: auto !important;
+transform: none !important;
 margin: 0 auto;
 }
 
@@ -320,18 +319,7 @@ grid-template-columns: 1fr;
         handleTracksWindowCentre: false,
     });
     
-    webamp.renderWhenReady(document.getElementById('webamp-container')).then(() => {
-        const container = document.getElementById('webamp-container');
-        const windows = container.querySelectorAll('#webamp, div[class^="webamp-"]');
-        windows.forEach(el => {
-            el.style.position = 'static';
-            el.style.transform = 'none';
-            el.style.top = 'auto';
-            el.style.left = 'auto';
-            el.style.right = 'auto';
-            el.style.bottom = 'auto';
-        });
-    });
+    webamp.renderWhenReady(document.getElementById('webamp-container'));
 </script>
 
 </body>
