@@ -125,25 +125,12 @@ box-shadow: 4px 4px 0px #000000;
 margin-bottom: 40px;
 display: flex;
 justify-content: center;
-width: 100%;
 }
 
 #webamp-container {
 width: 100%;
 display: flex;
 justify-content: center;
-position: relative;
-}
-
-/* CRITICAL: Forces Webamp out of floating overlay mode and into normal page layout flow */
-#webamp-container #webamp {
-position: relative !important;
-top: auto !important;
-left: auto !important;
-right: auto !important;
-bottom: auto !important;
-transform: none !important;
-margin: 0 auto;
 }
 
 /* Album Grid Layout - Enlarged */
@@ -316,7 +303,6 @@ grid-template-columns: 1fr;
             },
         ],
         initialSkin: { url: "images/Stone_Cold_Steve_Austin_by_Alaa_Saab.wsz" },
-        handleTracksWindowCentre: false,
     });
     
     webamp.renderWhenReady(document.getElementById('webamp-container'));
