@@ -1,188 +1,218 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plastic Heart Surgery</title>
-    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
-    <style>
-        @font-face {
-            font-family: 'Lyno Ulyscyr';
-            src: local('Lyno Ulyscyr'), url('fonts/lynoulyscyr.ttf') format('truetype');
-            font-weight: normal;
-            font-style: normal;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Plastic Heart Surgery</title>
+<style>
+@font-face {
+font-family: 'Lyno Ulyscyr';
+src: local('Lyno Ulyscyr'), url('fonts/lynoulyscyr.ttf') format('truetype');
+font-weight: normal;
+font-style: normal;
+}
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+* {
+box-sizing: border-box;
+margin: 0;
+padding: 0;
+}
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: #ffffff;
-            color: #111111;
-            display: flex;
-            min-height: 100vh;
-            line-height: 1.6;
-        }
+body {
+font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+background-color: #ffffff;
+color: #111111;
+display: flex;
+min-height: 100vh;
+line-height: 1.6;
+}
 
-        .sidebar {
-            width: 340px;
-            background-color: #ffffff;
-            border-right: none;
-            padding: 40px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            position: fixed;
-            height: 100vh;
-            top: 0;
-            left: 0;
-            overflow-y: auto;
-        }
+.sidebar {
+width: 340px;
+background-color: #ffffff;
+border-right: none;
+padding: 40px;
+display: flex;
+flex-direction: column;
+justify-content: space-between;
+position: fixed;
+height: 100vh;
+top: 0;
+left: 0;
+overflow-y: auto;
+}
 
-        .site-title {
-            font-family: 'Lyno Ulyscyr', sans-serif;
-            font-size: 1.5rem;
-            letter-spacing: 0.3em;
-            color: #ff0033;
-            margin-bottom: 40px;
-            text-decoration: none;
-            display: block;
-        }
+.site-title {
+font-family: 'Lyno Ulyscyr', sans-serif;
+font-size: 1.5rem;
+letter-spacing: 0.3em;
+color: #ff0033;
+margin-bottom: 40px;
+text-decoration: none;
+display: block;
+}
 
-        .nav-columns {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
+.nav-columns {
+display: flex;
+flex-direction: column;
+gap: 16px;
+}
 
-        .nav-column-item {
-            font-family: 'Lyno Ulyscyr', sans-serif;
-            font-size: 1.15rem;
-            letter-spacing: 0.2em;
-            color: #333333;
-            text-decoration: none;
-            transition: color 0.2s ease;
-        }
+.nav-column-item {
+font-family: 'Lyno Ulyscyr', sans-serif;
+font-size: 1.15rem;
+letter-spacing: 0.2em;
+color: #333333;
+text-decoration: none;
+transition: color 0.2s ease;
+}
 
-        .nav-column-item:hover, .nav-column-item.active {
-            color: #ff0033;
-        }
+.nav-column-item:hover, .nav-column-item.active {
+color: #ff0033;
+}
 
-        .sidebar-footer {
-            font-size: 0.85rem;
-            color: #333333;
-            word-break: break-all;
-            margin-top: 30px;
-        }
+.sidebar-footer {
+font-size: 0.85rem;
+color: #333333;
+word-break: break-all;
+margin-top: 30px;
+}
 
-        .sidebar-footer a {
-            color: #ff0033;
-            text-decoration: none;
-        }
+.sidebar-footer a {
+color: #ff0033;
+text-decoration: none;
+}
 
-        .sidebar-footer a:hover {
-            text-decoration: underline;
-        }
+.sidebar-footer a:hover {
+text-decoration: underline;
+}
 
-        main {
-            margin-left: 340px;
-            flex: 1;
-            padding: 80px 60px;
-            max-width: 950px;
-            background-color: #ffffff;
-        }
+main {
+margin-left: 340px;
+flex: 1;
+padding: 80px 60px;
+max-width: 950px;
+background-color: #ffffff;
+}
 
-        h2 {
-            font-family: 'Lyno Ulyscyr', sans-serif;
-            font-size: 1.8rem;
-            letter-spacing: 0.25em;
-            color: #ff0033;
-            margin-bottom: 24px;
-        }
+h2 {
+font-family: 'Lyno Ulyscyr', sans-serif;
+font-size: 1.8rem;
+letter-spacing: 0.25em;
+color: #ff0033;
+margin-bottom: 24px;
+}
 
-        p {
-            color: #222222;
-            margin-bottom: 16px;
-            font-size: 1rem;
-        }
+p {
+color: #222222;
+margin-bottom: 16px;
+font-size: 1rem;
+}
 
-        .bio-container {
-            display: flex;
-            gap: 40px;
-            align-items: flex-start;
-            margin-top: 20px;
-        }
+.bio-container {
+display: flex;
+gap: 40px;
+align-items: flex-start;
+margin-top: 20px;
+}
 
-        .bio-text {
-            flex: 1;
-        }
+.bio-text {
+flex: 1;
+}
 
-        .bio-image-frame {
-            width: 300px;
-            flex-shrink: 0;
-            background: #ffffff;
-            border: 2px solid #000000;
-            border-radius: 6px;
-            overflow: hidden;
-            box-shadow: 4px 4px 0px #000000;
-        }
+.bio-image-frame {
+width: 300px;
+flex-shrink: 0;
+background: #ffffff;
+border: 2px solid #000000;
+border-radius: 6px;
+overflow: hidden;
+box-shadow: 4px 4px 0px #000000;
+}
 
-        .bio-image-frame img {
-            width: 100%;
-            height: auto;
-            display: block;
-        }
+.bio-image-frame img {
+width: 100%;
+height: auto;
+display: block;
+}
 
-        @media (max-width: 900px) {
-            .bio-container {
-                flex-direction: column-reverse;
-            }
-            .bio-image-frame {
-                width: 100%;
-                max-width: 400px;
-                margin-bottom: 30px;
-            }
-        }
+@media (max-width: 900px) {
+.bio-container {
+flex-direction: column-reverse;
+}
+.bio-image-frame {
+width: 100%;
+max-width: 400px;
+margin-bottom: 30px;
+}
+}
 
-        @media (max-width: 768px) {
-            body {
-                flex-direction: column;
-            }
-            .sidebar {
-                position: relative;
-                width: 100%;
-                height: auto;
-                padding: 30px 20px;
-                border-right: none;
-                border-bottom: none;
-            }
-            main {
-                margin-left: 0;
-                padding: 40px 20px;
-                max-width: 100%;
-            }
-            .site-title {
-                font-size: 1.2rem;
-                letter-spacing: 0.15em;
-            }
-            h2 {
-                font-size: 1.4rem;
-                letter-spacing: 0.15em;
-            }
-        }
-    </style>
+@media (max-width: 768px) {
+body {
+flex-direction: column;
+}
+.sidebar {
+position: relative;
+width: 100%;
+height: auto;
+padding: 30px 20px;
+border-right: none;
+border-bottom: none;
+}
+main {
+margin-left: 0;
+padding: 40px 20px;
+max-width: 100%;
+}
+.site-title {
+font-size: 1.2rem;
+letter-spacing: 0.15em;
+}
+h2 {
+font-size: 1.4rem;
+letter-spacing: 0.15em;
+}
+}
+</style>
 </head>
 <body>
 
-    <div class="sidebar">
-        <div>
-            <a href="index.html" class="site-title">Plastic Heart Surgery</a>
-            <div class="nav-columns">
-                <a href="index.html" class="nav-column-item active">Plastic Heart Surgery</a>
-                <a href="visualarts.html" class="nav-column-item">Visual Arts</a>
-                <a href="music.html" class="nav-column-item">Music</a>
-                <a href="tourdates.html" class="nav-column-item">Tour Dates
+<div class="sidebar">
+<div>
+<a href="index.html" class="site-title">Plastic Heart Surgery</a>
+<div class="nav-columns">
+<a href="index.html" class="nav-column-item active">Plastic Heart Surgery</a>
+<a href="visualarts.html" class="nav-column-item">Visual Arts</a>
+<a href="music.html" class="nav-column-item">Music</a>
+<a href="tourdates.html" class="nav-column-item">Tour Dates</a>
+<a href="comingupshows.html" class="nav-column-item">Coming Up Shows</a>
+<a href="bigfanof....html" class="nav-column-item">Big Fan Of</a>
+<a href="links.html" class="nav-column-item">Links</a>
+</div>
+</div>
+<div class="sidebar-footer">
+<p style="margin-bottom: 4px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #000000;">Contact</p>
+<a href="mailto:plasticheartsurgery@gmail.com">plasticheartsurgery@gmail.com</a>
+</div>
+</div>
+
+<main>
+<section>
+<h2>Bio</h2>
+
+<div class="bio-container">
+<div class="bio-text">
+                    <p>Plastic Heart Surgery (Plastic S.), is a Toronto-based multi-disciplinary artist, curator, and performer. She works on large scale canvas incorporating mixed-media. She is also a music producer and sound designer; being a producer, mixing engineer and collaborator for multiple recording-artists alongside her solo visual work. Plastic has shown paintings across Canada–self-curating and developing multiple exhibitions. She is in her final year of studies at Ontario College of Art and Design. She focuses on complicated subject matters such as sex, sexuality, biology, abstraction, neo-cubism and material. Her work encompasses multi-media art practices–focusing on abstraction, found media, collage, natural-materials such as foliage, earth and other constructive materials such as wood-pallets. She works on sculptural wood-pieces and is known for using oil-based resins. She is also known within the music scene for her music under the moniker Plastic Heart Surgery–having released multiple albums, playing shows across Canada along with sound designing video games.</p>
+                    <p>Plastic Heart Surgery (Plastic S.), is a Toronto-based multi-disciplinary artist, curator, and performer. She works on large scale canvas incorporating mixed-media. She is also a music producer and sound designer; being a producer, mixing engineer and collaborator for multiple recording-artists alongside her solo visual work. Plastic has shown paintings across Canada–self-curating and developing multiple exhibitions. She is in her final year of studies at *Redacted*. She focuses on complicated subject matters such as sex, sexuality, biology, abstraction, neo-cubism and material. Her work encompasses multi-media art practices–focusing on abstraction, found media, collage, natural-materials such as foliage, earth and other constructive materials such as wood-pallets. She works on sculptural wood-pieces and is known for using oil-based resins. She is also known within the music scene for her music under the moniker Plastic Heart Surgery–having released multiple albums, playing shows across Canada along with sound designing video games.</p>
+<p>blah blah blah</p>
+</div>
+
+<div class="bio-image-frame">
+<img src="images/PFP 1.png" alt="Plastic Heart Surgery">
+</div>
+</div>
+</section>
+</main>
+
+</body>
+</html>
