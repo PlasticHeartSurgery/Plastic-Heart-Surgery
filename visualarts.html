@@ -139,6 +139,11 @@
             height: auto;
             display: block;
             object-fit: cover;
+            transition: opacity 0.2s ease;
+        }
+
+        .art-image-frame a:hover img {
+            opacity: 0.85;
         }
 
         .art-info {
@@ -219,8 +224,10 @@
                 <!-- Painting Item 1 -->
                 <div class="art-card">
                     <div class="art-image-frame">
-                        <img src="https://raw.githubusercontent.com/YOUR-USERNAME/YOUR-REPO/main/images/Landlord, Plastic, Oil on Canvas, 42 x 55, 2023.jpg" alt="Landlord One">
+                        <a href="landlord.html">
+                            <img src="images/Landlord, Plastic, Oil on Canvas, 42 x 55, 2023.jpg" alt="Painting Title One">
+                        </a>
                     </div>
                     <div class="art-info">
                         <div class="art-title">Landlord One</div>
-                        <p class="art-desc">
+                        <p class="art-desc">Oil on Canvas, 42" x 55", 202
