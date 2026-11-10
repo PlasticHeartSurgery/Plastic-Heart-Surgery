@@ -12,6 +12,13 @@
             font-style: normal;
         }
 
+        @font-face {
+            font-family: 'Hybrid';
+            src: local('Hybrid'), url('fonts/Hybrid.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
         * {
             box-sizing: border-box;
             margin: 0;
@@ -162,7 +169,7 @@
         }
 
         .link-title {
-            font-family: 'Lyno Ulyscyr', sans-serif;
+            font-family: 'Hybrid', sans-serif;
             font-size: 1.2rem;
             letter-spacing: 0.15em;
             color: #111111;
@@ -203,217 +210,4 @@
         .paypal-amt-btn {
             background: #ffffff;
             border: 2px solid #111111;
-            border-radius: 4px;
-            padding: 10px 0;
-            font-family: inherit;
-            font-size: 0.95rem;
-            font-weight: 600;
-            color: #111111;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        .paypal-amt-btn:hover {
-            border-color: #ff0033;
-            background: #fff5f7;
-            color: #ff0033;
-        }
-        .paypal-amt-btn.active {
-            background: #ff0033;
-            border-color: #ff0033;
-            color: #ffffff;
-            box-shadow: 0 0 10px rgba(255, 0, 51, 0.4);
-        }
-        .paypal-custom-input, .paypal-note-input {
-            width: 100%;
-            background: #ffffff;
-            border: 2px solid #111111;
-            border-radius: 4px;
-            padding: 10px 14px;
-            font-family: inherit;
-            font-size: 0.95rem;
-            color: #111111;
-            margin-bottom: 12px;
-            outline: none;
-            transition: border-color 0.2s ease, box-shadow 0.2s ease;
-        }
-        .paypal-custom-input:focus, .paypal-note-input:focus {
-            border-color: #ff0033;
-            box-shadow: 0 0 8px rgba(255, 0, 51, 0.3);
-        }
-        .paypal-note-input {
-            resize: vertical;
-            min-height: 50px;
-            max-height: 120px;
-        }
-        .paypal-donate-btn {
-            width: 100%;
-            background: linear-gradient(135deg, #ff0033, #ffffff);
-            border: 2px solid #ff0033;
-            border-radius: 4px;
-            padding: 12px;
-            font-family: inherit;
-            font-size: 1rem;
-            font-weight: 700;
-            color: #ffffff;
-            cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            transition: opacity 0.2s ease, box-shadow 0.2s ease;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
-        }
-        .paypal-donate-btn:hover {
-            opacity: 0.9;
-            box-shadow: 0 0 15px rgba(255, 0, 51, 0.6);
-        }
-
-        @media (max-width: 768px) {
-            body {
-                flex-direction: column;
-            }
-            .sidebar {
-                position: relative;
-                width: 100%;
-                height: auto;
-                padding: 30px 20px;
-                border-right: none;
-                border-bottom: none;
-            }
-            main {
-                margin-left: 0;
-                padding: 40px 20px;
-                max-width: 100%;
-            }
-            .site-title {
-                font-size: 1.2rem;
-                letter-spacing: 0.15em;
-            }
-            h2 {
-                font-size: 1.4rem;
-                letter-spacing: 0.15em;
-            }
-            .paypal-amounts {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-    </style>
-</head>
-<body>
-
-    <div class="sidebar">
-        <div>
-            <a href="index.html" class="site-title">Plastic Heart Surgery</a>
-            <div class="nav-columns">
-                <a href="hidden.html" class="nav-column-item">Plastic Heart Surgery</a>
-                <a href="hidden.html" class="nav-column-item">Visual Arts</a>
-                <a href="music.html" class="nav-column-item">Music</a>
-                <a href="tourdates.html" class="nav-column-item">Tour Dates</a>
-                <a href="comingupshows.html" class="nav-column-item">Coming Up Shows</a>
-                <a href="bigfanof....html" class="nav-column-item">Big Fan Of</a>
-                <a href="links.html" class="nav-column-item active">Links</a>
-            </div>
-        </div>
-        <div class="sidebar-footer">
-            <p style="margin-bottom: 4px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #000000;">Contact</p>
-            <a href="mailto:plasticheartsurgery@gmail.com">plasticheartsurgery@gmail.com</a>
-        </div>
-    </div>
-
-    <main>
-        <section>
-            <h2>Links</h2>
-            <p>Connect across platforms, streaming networks, and social channels.</p>
-
-            <!-- Links Grid -->
-            <div class="links-grid">
-                
-                <!-- Link Item 1 -->
-                <a href="https://www.instagram.com/plastic.heart.surgery/" target="_blank" class="link-card">
-                    <div class="link-tag">Instagram (Personal)</div>
-                    <div class="link-title">@plasticheartsurgery</div>
-                    <div class="link-desc">Plastic's Personal Instagram, DM for inquiries/bookings</div>
-                </a>
-
-                <!-- Link Item 2 -->
-                <a href="https://open.spotify.com/artist/5ZoUq3l7mN6OBgTMjpjfj7?si=aBR1jQfQRJK01qLKTHEZfQ" target="_blank" class="link-card">
-                    <div class="link-tag">Spotify</div>
-                    <div class="link-title">Plastic Heart Surgery on SoundCloud</div>
-                    <div class="link-desc">Experimental electronic tracks, mixes, and live recordings.</div>
-                </a>
-
-                <!-- Link Item 3 -->
-                <a href="https://plasticheartsurgery.bandcamp.com/" target="_blank" class="link-card">
-                    <div class="link-tag">Bandcamp</div>
-                    <div class="link-title">Plastic Heart Surgery on Bandcamp</div>
-                    <div class="link-desc">If... DJ/Marketing--want a free download? Please message me on Instagram</div>
-                </a>
-                
-                <!-- Link Item 4 -->
-                <a href="https://soundcloud.com/user-802528370" target="_blank" class="link-card">
-                    <div class="link-tag">SoundCloud</div>
-                    <div class="link-title">Plastic Heart Surgery on SoundCloud</div>
-                    <div class="link-desc">THIS APP IS TOO EXPENSIVE TO USE ANYMORE URGHHHH</div>
-                </a>
-
-                <!-- PayPal Widget Card -->
-                <div class="paypal-widget-card">
-                    <div class="link-tag">Support</div>
-                    <div class="link-title">
-                        <a href="https://www.paypal.com/paypalme/PlasticHeartSurgery" target="_blank">https://www.paypal.com/paypalme/PlasticHeartSurgery</a>
-                    </div>
-                    <div class="link-desc" style="margin-bottom: 16px;">Support the project directly via PayPal.</div>
-                    
-                    <div class="paypal-amounts" id="paypalAmounts">
-                        <button type="button" class="paypal-amt-btn" onclick="setPayPalAmount(50, this)">$50</button>
-                        <button type="button" class="paypal-amt-btn active" onclick="setPayPalAmount(100, this)">$100</button>
-                        <button type="button" class="paypal-amt-btn" onclick="setPayPalAmount(1000, this)">$1,000</button>
-                        <button type="button" class="paypal-amt-btn" onclick="setPayPalAmount(100000000, this)">$100,000,000</button>
-                    </div>
-
-                    <input type="number" id="paypalCustomInput" class="paypal-custom-input" placeholder="Custom amount ($)" value="100" min="1" oninput="syncPayPalInput(this)">
-                    <textarea id="paypalNoteInput" class="paypal-note-input" placeholder="Add a note (optional)..."></textarea>
-                    
-                    <button type="button" class="paypal-donate-btn" onclick="submitPayPal()">Send Support</button>
-                </div>
-
-            </div>
-        </section>
-    </main>
-
-    <script>
-        let currentPayPalAmount = 100;
-
-        function setPayPalAmount(amount, btn) {
-            currentPayPalAmount = amount;
-            document.getElementById('paypalCustomInput').value = amount;
-            
-            document.querySelectorAll('.paypal-amt-btn').forEach(b => b.classList.remove('active'));
-            if (btn) btn.classList.add('active');
-        }
-
-        function syncPayPalInput(input) {
-            currentPayPalAmount = input.value;
-            document.querySelectorAll('.paypal-amt-btn').forEach(b => {
-                b.classList.remove('active');
-                if (b.textContent.replace(/[^0-9]/g, '') === String(amountCleaner(input.value))) {
-                    b.classList.add('active');
-                }
-            });
-        }
-
-        function amountCleaner(val) {
-            return val.replace(/[^0-9]/g, '');
-        }
-
-        function submitPayPal() {
-            let amt = document.getElementById('paypalCustomInput').value || '100';
-            let note = document.getElementById('paypalNoteInput').value.trim();
-            let url = `https://www.paypal.com/paypalme/PlasticHeartSurgery/${amt}USD`;
-            if (note) {
-                // PayPal.me standard note formatting or query parameters if supported
-                url += `?note=${encodeURIComponent(note)}`;
-            }
-            window.open(url, '_blank');
-        }
-    </script>
-</body>
-</html>
+            border-radius: 4
