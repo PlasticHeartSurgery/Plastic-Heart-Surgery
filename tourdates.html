@@ -1,3 +1,6 @@
+Got it! I have kept all the duplicate past events and fixed the Resident Advisor widget container height (`.ra-widget-container`) so it cleanly crops out the copyright text at the bottom and eliminates the white gap.
+
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -106,7 +109,7 @@
         p {
             color: #222222;
             margin-bottom: 24px;
-            font-size: 1rem;
+            font-size: 1.0rem;
         }
 
         /* Resident Advisor Feature Box */
@@ -155,15 +158,27 @@
             color: #111111;
         }
 
-        /* Widget Container */
+        /* Widget Container with cropping to hide copyright and remove white gap */
         .ra-widget-container {
             margin-bottom: 40px;
             width: 100%;
+            height: 235px;
             border-radius: 8px;
             overflow: hidden;
             border: 2px solid #000000;
             box-shadow: 4px 4px 0px #000000;
             background: #ffffff;
+            position: relative;
+        }
+
+        .ra-widget-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 350px;
+            border: none;
+            display: block;
         }
 
         /* Tour Cards Container */
@@ -272,7 +287,7 @@
 
             <!-- Resident Advisor Widget Integration -->
             <div class="ra-widget-container">
-                <iframe id="ra-widget" src="https://ra.co/widget/eventlisting?dj=plasticheartsurgery" height="350" width="100%" frameborder="0" style="display: block; border: none;"></iframe>
+                <iframe id="ra-widget" src="https://ra.co/widget/eventlisting?dj=plasticheartsurgery" frameborder="0"></iframe>
             </div>
 
             <h2 style="font-size: 1.4rem; margin-top: 40px;">Past Events</h2>
@@ -291,19 +306,19 @@
                     <div class="tour-location">Three Dollar Bill, Toronto, ON</div>
                 </a>
 
-                <a href="hhttps://ra.co/events/2318589" target="_blank" class="tour-card">
+                <a href="https://ra.co/events/2318589" target="_blank" class="tour-card">
                     <div class="tour-date">Fri, 19 Dec 2025</div>
                     <div class="tour-title">T-4-T (Tit$Tat) NORTH POLE PARTY</div>
                     <div class="tour-location">Three Dollar Bill, Toronto, ON</div>
                 </a>
 
-                <a href="hhttps://ra.co/events/2318589" target="_blank" class="tour-card">
+                <a href="https://ra.co/events/2318589" target="_blank" class="tour-card">
                     <div class="tour-date">Fri, 19 Dec 2025</div>
                     <div class="tour-title">T-4-T (Tit$Tat) NORTH POLE PARTY</div>
                     <div class="tour-location">Three Dollar Bill, Toronto, ON</div>
                 </a>
 
-                <a href="hhttps://ra.co/events/2318589" target="_blank" class="tour-card">
+                <a href="https://ra.co/events/2318589" target="_blank" class="tour-card">
                     <div class="tour-date">Fri, 19 Dec 2025</div>
                     <div class="tour-title">T-4-T (Tit$Tat) NORTH POLE PARTY</div>
                     <div class="tour-location">Three Dollar Bill, Toronto, ON</div>
@@ -318,7 +333,7 @@
                 try {
                     const data = JSON.parse(event.data);
                     if (data.height) {
-                        document.getElementById('ra-widget').style.height = data.height + 'px';
+                        // Keep message listener active if needed, but height is constrained by container overflow
                     }
                 } catch (e) {
                     // Ignore non-JSON payload messages
@@ -328,3 +343,5 @@
     </script>
 </body>
 </html>
+
+```
