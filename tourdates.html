@@ -1,347 +1,330 @@
-Got it! I have kept all the duplicate past events and fixed the Resident Advisor widget container height (`.ra-widget-container`) so it cleanly crops out the copyright text at the bottom and eliminates the white gap.
-
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plastic Heart Surgery — Tour Dates</title>
-    <style>
-        @font-face {
-            font-family: 'Lyno Ulyscyr';
-            src: local('Lyno Ulyscyr'), url('fonts/lynoulyscyr.ttf') format('truetype');
-            font-weight: normal;
-            font-style: normal;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Plastic Heart Surgery — Tour Dates</title>
+<style>
+@font-face {
+font-family: 'Lyno Ulyscyr';
+src: local('Lyno Ulyscyr'), url('fonts/lynoulyscyr.ttf') format('truetype');
+font-weight: normal;
+font-style: normal;
+}
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+* {
+box-sizing: border-box;
+margin: 0;
+padding: 0;
+}
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: #ffffff;
-            color: #111111;
-            display: flex;
-            min-height: 100vh;
-            line-height: 1.6;
-        }
+body {
+font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+background-color: #ffffff;
+color: #111111;
+display: flex;
+min-height: 100vh;
+line-height: 1.6;
+}
 
-        .sidebar {
-            width: 340px;
-            background-color: #ffffff;
-            border-right: none;
-            padding: 40px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            position: fixed;
-            height: 100vh;
-            top: 0;
-            left: 0;
-            overflow-y: auto;
-        }
+.sidebar {
+width: 340px;
+background-color: #ffffff;
+border-right: none;
+padding: 40px;
+display: flex;
+flex-direction: column;
+justify-content: space-between;
+position: fixed;
+height: 100vh;
+top: 0;
+left: 0;
+overflow-y: auto;
+}
 
-        .site-title {
-            font-family: 'Lyno Ulyscyr', sans-serif;
-            font-size: 1.5rem;
-            letter-spacing: 0.3em;
-            color: #ff0033;
-            margin-bottom: 40px;
-            text-decoration: none;
-            display: block;
-        }
+.site-title {
+font-family: 'Lyno Ulyscyr', sans-serif;
+font-size: 1.5rem;
+letter-spacing: 0.3em;
+color: #ff0033;
+margin-bottom: 40px;
+text-decoration: none;
+display: block;
+}
 
-        .nav-columns {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
+.nav-columns {
+display: flex;
+flex-direction: column;
+gap: 16px;
+}
 
-        .nav-column-item {
-            font-family: 'Lyno Ulyscyr', sans-serif;
-            font-size: 1.15rem;
-            letter-spacing: 0.2em;
-            color: #333333;
-            text-decoration: none;
-            transition: color 0.2s ease;
-        }
+.nav-column-item {
+font-family: 'Lyno Ulyscyr', sans-serif;
+font-size: 1.15rem;
+letter-spacing: 0.2em;
+color: #333333;
+text-decoration: none;
+transition: color 0.2s ease;
+}
 
-        .nav-column-item:hover, .nav-column-item.active {
-            color: #ff0033;
-        }
+.nav-column-item:hover, .nav-column-item.active {
+color: #ff0033;
+}
 
-        .sidebar-footer {
-            font-size: 0.85rem;
-            color: #333333;
-            word-break: break-all;
-            margin-top: 30px;
-        }
+.sidebar-footer {
+font-size: 0.85rem;
+color: #333333;
+word-break: break-all;
+margin-top: 30px;
+}
 
-        .sidebar-footer a {
-            color: #ff0033;
-            text-decoration: none;
-        }
+.sidebar-footer a {
+color: #ff0033;
+text-decoration: none;
+}
 
-        .sidebar-footer a:hover {
-            text-decoration: underline;
-        }
+.sidebar-footer a:hover {
+text-decoration: underline;
+}
 
-        main {
-            margin-left: 340px;
-            flex: 1;
-            padding: 80px 60px;
-            max-width: 950px;
-            background-color: #ffffff;
-        }
+main {
+margin-left: 340px;
+flex: 1;
+padding: 80px 60px;
+max-width: 950px;
+background-color: #ffffff;
+}
 
-        h2 {
-            font-family: 'Lyno Ulyscyr', sans-serif;
-            font-size: 1.8rem;
-            letter-spacing: 0.25em;
-            color: #ff0033;
-            margin-bottom: 24px;
-        }
+h2 {
+font-family: 'Lyno Ulyscyr', sans-serif;
+font-size: 1.8rem;
+letter-spacing: 0.25em;
+color: #ff0033;
+margin-bottom: 24px;
+}
 
-        p {
-            color: #222222;
-            margin-bottom: 24px;
-            font-size: 1.0rem;
-        }
+p {
+color: #222222;
+margin-bottom: 24px;
+font-size: 1rem;
+}
 
-        /* Resident Advisor Feature Box */
-        .ra-feature-box {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            background: #ffffff;
-            border: 2px solid #000000;
-            border-radius: 6px;
-            padding: 20px;
-            text-decoration: none;
-            box-shadow: 4px 4px 0px #000000;
-            margin-bottom: 40px;
-            transition: all 0.2s ease;
-        }
+/* Resident Advisor Feature Box */
+.ra-feature-box {
+display: flex;
+align-items: center;
+gap: 20px;
+background: #ffffff;
+border: 2px solid #000000;
+border-radius: 6px;
+padding: 20px;
+text-decoration: none;
+box-shadow: 4px 4px 0px #000000;
+margin-bottom: 40px;
+transition: all 0.2s ease;
+}
 
-        .ra-feature-box:hover {
-            border-color: #ff0033;
-            box-shadow: 0px 0px 15px rgba(255, 0, 51, 0.4), 4px 4px 0px #ff0033;
-            transform: translateY(-2px);
-        }
+.ra-feature-box:hover {
+border-color: #ff0033;
+box-shadow: 0px 0px 15px rgba(255, 0, 51, 0.4), 4px 4px 0px #ff0033;
+transform: translateY(-2px);
+}
 
-        .ra-avatar {
-            width: 70px;
-            height: 70px;
-            border-radius: 4px;
-            object-fit: cover;
-            border: 2px solid #000000;
-            flex-shrink: 0;
-        }
+.ra-avatar {
+width: 70px;
+height: 70px;
+border-radius: 4px;
+object-fit: cover;
+border: 2px solid #000000;
+flex-shrink: 0;
+}
 
-        .ra-tag {
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 0.15em;
-            color: #ff0033;
-            margin-bottom: 4px;
-            font-weight: 600;
-        }
+.ra-tag {
+font-size: 0.8rem;
+text-transform: uppercase;
+letter-spacing: 0.15em;
+color: #ff0033;
+margin-bottom: 4px;
+font-weight: 600;
+}
 
-        .ra-title {
-            font-family: 'Lyno Ulyscyr', sans-serif;
-            font-size: 1.15rem;
-            letter-spacing: 0.15em;
-            color: #111111;
-        }
+.ra-title {
+font-family: 'Lyno Ulyscyr', sans-serif;
+font-size: 1.15rem;
+letter-spacing: 0.15em;
+color: #111111;
+}
 
-        /* Widget Container with cropping to hide copyright and remove white gap */
-        .ra-widget-container {
-            margin-bottom: 40px;
-            width: 100%;
-            height: 235px;
-            border-radius: 8px;
-            overflow: hidden;
-            border: 2px solid #000000;
-            box-shadow: 4px 4px 0px #000000;
-            background: #ffffff;
-            position: relative;
-        }
+/* Widget Container */
+.ra-widget-container {
+margin-bottom: 40px;
+width: 100%;
+border-radius: 8px;
+overflow: hidden;
+border: 2px solid #000000;
+box-shadow: 4px 4px 0px #000000;
+background: #ffffff;
+}
 
-        .ra-widget-container iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 350px;
-            border: none;
-            display: block;
-        }
+/* Tour Cards Container */
+.tours-grid {
+display: flex;
+flex-direction: column;
+gap: 20px;
+margin-top: 20px;
+}
 
-        /* Tour Cards Container */
-        .tours-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            margin-top: 20px;
-        }
+.tour-card {
+display: block;
+background: #ffffff;
+border: 2px solid #000000;
+border-radius: 6px;
+padding: 24px;
+text-decoration: none;
+box-shadow: 4px 4px 0px #000000;
+transition: all 0.2s ease;
+}
 
-        .tour-card {
-            display: block;
-            background: #ffffff;
-            border: 2px solid #000000;
-            border-radius: 6px;
-            padding: 24px;
-            text-decoration: none;
-            box-shadow: 4px 4px 0px #000000;
-            transition: all 0.2s ease;
-        }
+.tour-card:hover {
+border-color: #ff0033;
+box-shadow: 0px 0px 15px rgba(255, 0, 51, 0.4), 4px 4px 0px #ff0033;
+transform: translateY(-2px);
+}
 
-        .tour-card:hover {
-            border-color: #ff0033;
-            box-shadow: 0px 0px 15px rgba(255, 0, 51, 0.4), 4px 4px 0px #ff0033;
-            transform: translateY(-2px);
-        }
+.tour-date {
+font-size: 0.85rem;
+text-transform: uppercase;
+letter-spacing: 0.1em;
+color: #ff0033;
+margin-bottom: 6px;
+font-weight: 600;
+}
 
-        .tour-date {
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: #ff0033;
-            margin-bottom: 6px;
-            font-weight: 600;
-        }
+.tour-title {
+font-family: 'Lyno Ulyscyr', sans-serif;
+font-size: 1.2rem;
+letter-spacing: 0.15em;
+color: #111111;
+margin-bottom: 8px;
+}
 
-        .tour-title {
-            font-family: 'Lyno Ulyscyr', sans-serif;
-            font-size: 1.2rem;
-            letter-spacing: 0.15em;
-            color: #111111;
-            margin-bottom: 8px;
-        }
+.tour-location {
+font-size: 0.95rem;
+color: #444444;
+}
 
-        .tour-location {
-            font-size: 0.95rem;
-            color: #444444;
-        }
-
-        @media (max-width: 768px) {
-            body {
-                flex-direction: column;
-            }
-            .sidebar {
-                position: relative;
-                width: 100%;
-                height: auto;
-                padding: 30px 20px;
-                border-right: none;
-            }
-            main {
-                margin-left: 0;
-                padding: 40px 20px;
-            }
-            .ra-feature-box {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-        }
-    </style>
+@media (max-width: 768px) {
+body {
+flex-direction: column;
+}
+.sidebar {
+position: relative;
+width: 100%;
+height: auto;
+padding: 30px 20px;
+border-right: none;
+}
+main {
+margin-left: 0;
+padding: 40px 20px;
+}
+.ra-feature-box {
+flex-direction: column;
+align-items: flex-start;
+}
+}
+</style>
 </head>
 <body>
 
-    <div class="sidebar">
-        <div>
-            <a href="index.html" class="site-title">Plastic Heart Surgery</a>
-            <div class="nav-columns">
-                <a href="index.html" class="nav-column-item">Plastic Heart Surgery</a>
-                <a href="visualarts.html" class="nav-column-item">Visual Arts</a>
-                <a href="music.html" class="nav-column-item">Music</a>
-                <a href="tourdates.html" class="nav-column-item active">Tour Dates</a>
-                <a href="comingupshows.html" class="nav-column-item">Coming Up Shows</a>
-                <a href="bigfanof.html" class="nav-column-item">Big Fan Of</a>
-                <a href="links.html" class="nav-column-item">Links</a>
-            </div>
-        </div>
-        <div class="sidebar-footer">
-            <p style="margin-bottom: 4px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #000000;">Contact</p>
-            <a href="mailto:plasticheartsurgery@gmail.com">plasticheartsurgery@gmail.com</a>
-        </div>
-    </div>
+<div class="sidebar">
+<div>
+<a href="index.html" class="site-title">Plastic Heart Surgery</a>
+<div class="nav-columns">
+<a href="index.html" class="nav-column-item">Plastic Heart Surgery</a>
+<a href="visualarts.html" class="nav-column-item">Visual Arts</a>
+<a href="music.html" class="nav-column-item">Music</a>
+<a href="tourdates.html" class="nav-column-item active">Tour Dates</a>
+<a href="comingupshows.html" class="nav-column-item">Coming Up Shows</a>
+<a href="bigfanof.html" class="nav-column-item">Big Fan Of</a>
+<a href="links.html" class="nav-column-item">Links</a>
+</div>
+</div>
+<div class="sidebar-footer">
+<p style="margin-bottom: 4px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #000000;">Contact</p>
+<a href="mailto:plasticheartsurgery@gmail.com">plasticheartsurgery@gmail.com</a>
+</div>
+</div>
 
-    <main>
-        <section>
-            <h2>Tour Dates</h2>
-            <p>Live music performances, live hardware sets, and DJ appearances. Check listings below or follow profile updates directly on Resident Advisor.</p>
+<main>
+<section>
+<h2>Tour Dates</h2>
+<p>Live music performances, live hardware sets, and DJ appearances. Check listings below or follow profile updates directly on Resident Advisor.</p>
 
-            <!-- External RA Profile Link Box -->
-            <a href="https://ra.co/dj/plasticheartsurgery" target="_blank" class="ra-feature-box">
-                <img src="https://imgproxy.ra.co/_/quality:66/h:180/w:180/rt:fill/gravity:sm/aHR0cHM6Ly9zdGF0aWMucmEuY28vaW1hZ2VzL3Byb2ZpbGVzL3NxdWFyZS9wbGFzdGljaGVhcnRzdXJnZXJ5LmpwZz9kYXRlVXBkYXRlZD0xNzU2OTg3MDQzMDAw" alt="Plastic Heart Surgery RA Avatar" class="ra-avatar">
-                <div>
-                    <div class="ra-tag">Plastic RA</div>
-                    <div class="ra-title">Resident Advisor - Plastic Heart Surgery</div>
-                </div>
-            </a>
+<!-- External RA Profile Link Box -->
+<a href="https://ra.co/dj/plasticheartsurgery" target="_blank" class="ra-feature-box">
+<img src="https://imgproxy.ra.co/_/quality:66/h:180/w:180/rt:fill/gravity:sm/aHR0cHM6Ly9zdGF0aWMucmEuY28vaW1hZ2VzL3Byb2ZpbGVzL3NxdWFyZS9wbGFzdGljaGVhcnRzdXJnZXJ5LmpwZz9kYXRlVXBkYXRlZD0xNzU2OTg3MDQzMDAw" alt="Plastic Heart Surgery RA Avatar" class="ra-avatar">
+<div>
+<div class="ra-tag">Plastic RA</div>
+<div class="ra-title">Resident Advisor - Plastic Heart Surgery</div>
+</div>
+</a>
 
-            <!-- Resident Advisor Widget Integration -->
-            <div class="ra-widget-container">
-                <iframe id="ra-widget" src="https://ra.co/widget/eventlisting?dj=plasticheartsurgery" frameborder="0"></iframe>
-            </div>
+<!-- Resident Advisor Widget Integration -->
+<div class="ra-widget-container">
+<iframe id="ra-widget" src="https://ra.co/widget/eventlisting?dj=plasticheartsurgery" height="350" width="100%" frameborder="0" style="display: block; border: none;"></iframe>
+</div>
 
-            <h2 style="font-size: 1.4rem; margin-top: 40px;">Past Events</h2>
+<h2 style="font-size: 1.4rem; margin-top: 40px;">Past Events</h2>
 
-            <!-- Manual Tour Cards Grid -->
-            <div class="tours-grid">
-                <a href="https://ra.co/events/2450851" target="_blank" class="tour-card">
-                    <div class="tour-date">Fri, 26 Jun 2026</div>
-                    <div class="tour-title">tit4tat Trans March Afterparty RE-BIRTHDAY! T4T Gender Reveal</div>
-                    <div class="tour-location">Three Dollar Bill, Toronto, ON</div>
-                </a>
+<!-- Manual Tour Cards Grid -->
+<div class="tours-grid">
+<a href="https://ra.co/events/2450851" target="_blank" class="tour-card">
+<div class="tour-date">Fri, 26 Jun 2026</div>
+<div class="tour-title">tit4tat Trans March Afterparty RE-BIRTHDAY! T4T Gender Reveal</div>
+<div class="tour-location">Three Dollar Bill, Toronto, ON</div>
+</a>
 
-                <a href="https://ra.co/events/2417715" target="_blank" class="tour-card">
-                    <div class="tour-date">Thu, May 14, 2026</div>
-                    <div class="tour-title">Electronic Music Performance</div>
-                    <div class="tour-location">Three Dollar Bill, Toronto, ON</div>
-                </a>
+<a href="https://ra.co/events/2417715" target="_blank" class="tour-card">
+<div class="tour-date">Thu, May 14, 2026</div>
+<div class="tour-title">Electronic Music Performance</div>
+<div class="tour-location">Three Dollar Bill, Toronto, ON</div>
+</a>
 
-                <a href="https://ra.co/events/2318589" target="_blank" class="tour-card">
+<a href="hhttps://ra.co/events/2318589" target="_blank" class="tour-card">
+<div class="tour-date">Fri, 19 Dec 2025</div>
+<div class="tour-title">T-4-T (Tit$Tat) NORTH POLE PARTY</div>
+<div class="tour-location">Three Dollar Bill, Toronto, ON</div>
+</a>
+
+                <a href="hhttps://ra.co/events/2318589" target="_blank" class="tour-card">
                     <div class="tour-date">Fri, 19 Dec 2025</div>
                     <div class="tour-title">T-4-T (Tit$Tat) NORTH POLE PARTY</div>
                     <div class="tour-location">Three Dollar Bill, Toronto, ON</div>
                 </a>
 
-                <a href="https://ra.co/events/2318589" target="_blank" class="tour-card">
+                <a href="hhttps://ra.co/events/2318589" target="_blank" class="tour-card">
                     <div class="tour-date">Fri, 19 Dec 2025</div>
                     <div class="tour-title">T-4-T (Tit$Tat) NORTH POLE PARTY</div>
                     <div class="tour-location">Three Dollar Bill, Toronto, ON</div>
                 </a>
+</div>
+</section>
+</main>
 
-                <a href="https://ra.co/events/2318589" target="_blank" class="tour-card">
-                    <div class="tour-date">Fri, 19 Dec 2025</div>
-                    <div class="tour-title">T-4-T (Tit$Tat) NORTH POLE PARTY</div>
-                    <div class="tour-location">Three Dollar Bill, Toronto, ON</div>
-                </a>
-            </div>
-        </section>
-    </main>
-
-    <script>
-        window.addEventListener('message', function(event) {
-            if (event.origin.includes('ra.co')) {
-                try {
-                    const data = JSON.parse(event.data);
-                    if (data.height) {
-                        // Keep message listener active if needed, but height is constrained by container overflow
-                    }
-                } catch (e) {
-                    // Ignore non-JSON payload messages
-                }
-            }
-        });
-    </script>
+<script>
+window.addEventListener('message', function(event) {
+if (event.origin.includes('ra.co')) {
+try {
+const data = JSON.parse(event.data);
+if (data.height) {
+document.getElementById('ra-widget').style.height = data.height + 'px';
+}
+} catch (e) {
+// Ignore non-JSON payload messages
+}
+}
+});
+</script>
 </body>
 </html>
-
-```
