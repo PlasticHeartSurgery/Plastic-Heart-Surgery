@@ -1,1 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intense Red Particle Explosion</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background-color: #050505;
+            color: #f3f4f6;
+            font-family: system-ui, -apple-system, sans-serif;
+            overflow-x: hidden;
+        }
+        #particle-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 9999;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center p-6">
 
+    <canvas id="particle-canvas"></canvas>
+
+    <div class="max-w-4xl w-full text-center mb-12">
+        <h1 class="text-4xl font-extrabold tracking-tight text-red-500 mb-4">Maximum Density Cursor Explosion</h1>
+        <p class="text-gray-400">Hover over the cards below. Spawns thousands of pure red particles every frame to ensure intense lag and constant multi-directional explosive tracking.</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-3xl w-full">
+        <!-- Card 1 -->
+        <div class="card bg-neutral-900 border border-neutral-800 p-8 rounded-2xl shadow-2xl transition-all duration-300 hover:border-red-600 hover:shadow-[0_0_30px_rgba(220,38,38,0.4)] cursor-pointer">
+            <h2 class="text-2xl font-bold text-red-400 mb-3">Card Alpha</h2>
+            <p class="text-neutral-400">Move your cursor over this card to trigger continuous massive particle generation.</p>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="card bg-neutral-900 border border-neutral-800 p-8 rounded-2xl shadow-2xl transition-all duration-300 hover:border-red-600 hover:shadow-[0_0_30px_rgba(220,38,38,0.4)] cursor-pointer">
+            <h2 class="text-2xl font-bold text-red-400 mb-3">Card Beta</h2>
+            <p class="text-neutral-400">Pure red pixels exploding outward in every random direction simultaneously.</p>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('particle-canvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        let particles = [];
+        let mouseX = 0;
+        let mouseY = 0;
+        let isOverCard = false;
+
+        const cards = document.querySelectorAll('.card');
+
+        cards.forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                isOverCard = true;
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+            });
+            card.addEventListener('mouseleave', () => {
+                isOverCard = false;
+            });
