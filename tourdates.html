@@ -175,11 +175,13 @@ margin-top: 20px;
 }
 
 .tour-card {
-display: block;
+display: flex;
+align-items: center;
+gap: 20px;
 background: #ffffff;
 border: 2px solid #000000;
 border-radius: 6px;
-padding: 24px;
+padding: 20px;
 text-decoration: none;
 box-shadow: 4px 4px 0px #000000;
 transition: all 0.2s ease;
@@ -191,21 +193,34 @@ box-shadow: 0px 0px 15px rgba(255, 0, 51, 0.4), 4px 4px 0px #ff0033;
 transform: translateY(-2px);
 }
 
+.tour-thumb {
+width: 90px;
+height: 90px;
+border-radius: 4px;
+object-fit: cover;
+border: 2px solid #000000;
+flex-shrink: 0;
+}
+
+.tour-info {
+flex: 1;
+}
+
 .tour-date {
 font-size: 0.85rem;
 text-transform: uppercase;
 letter-spacing: 0.1em;
 color: #ff0033;
-margin-bottom: 6px;
+margin-bottom: 4px;
 font-weight: 600;
 }
 
 .tour-title {
 font-family: 'Lyno Ulyscyr', sans-serif;
-font-size: 1.2rem;
+font-size: 1.15rem;
 letter-spacing: 0.15em;
 color: #111111;
-margin-bottom: 8px;
+margin-bottom: 6px;
 }
 
 .tour-location {
@@ -228,9 +243,13 @@ main {
 margin-left: 0;
 padding: 40px 20px;
 }
-.ra-feature-box {
+.ra-feature-box, .tour-card {
 flex-direction: column;
 align-items: flex-start;
+}
+.tour-thumb {
+width: 100%;
+height: 160px;
 }
 }
 </style>
@@ -280,34 +299,31 @@ align-items: flex-start;
 <!-- Manual Tour Cards Grid -->
 <div class="tours-grid">
 <a href="https://ra.co/events/2450851" target="_blank" class="tour-card">
+<img src="https://imgproxy.ra.co/_/quality:66/w:1442/rt:fill/aHR0cHM6Ly9pbWFnZXMucmEuY28vNTJhZTk4Y2MzOWI1MzFjODA5NzAyYWFmYjU1YjQ4MTI2YTdkNjJiZC5wbmc=" alt="tit4tat Trans March Afterparty" class="tour-thumb">
+<div class="tour-info">
 <div class="tour-date">Fri, 26 Jun 2026</div>
 <div class="tour-title">tit4tat Trans March Afterparty RE-BIRTHDAY! T4T Gender Reveal</div>
 <div class="tour-location">Three Dollar Bill, Toronto, ON</div>
+</div>
 </a>
 
 <a href="https://ra.co/events/2417715" target="_blank" class="tour-card">
+<img src="images/event-2417715.jpg" alt="Electronic Music Performance" class="tour-thumb">
+<div class="tour-info">
 <div class="tour-date">Thu, May 14, 2026</div>
 <div class="tour-title">Electronic Music Performance</div>
 <div class="tour-location">Three Dollar Bill, Toronto, ON</div>
+</div>
 </a>
 
-<a href="hhttps://ra.co/events/2318589" target="_blank" class="tour-card">
+<a href="https://ra.co/events/2318589" target="_blank" class="tour-card">
+<img src="images/event-2318589.jpg" alt="T-4-T North Pole Party" class="tour-thumb">
+<div class="tour-info">
 <div class="tour-date">Fri, 19 Dec 2025</div>
 <div class="tour-title">T-4-T (Tit$Tat) NORTH POLE PARTY</div>
 <div class="tour-location">Three Dollar Bill, Toronto, ON</div>
+</div>
 </a>
-
-                <a href="hhttps://ra.co/events/2318589" target="_blank" class="tour-card">
-                    <div class="tour-date">Fri, 19 Dec 2025</div>
-                    <div class="tour-title">T-4-T (Tit$Tat) NORTH POLE PARTY</div>
-                    <div class="tour-location">Three Dollar Bill, Toronto, ON</div>
-                </a>
-
-                <a href="hhttps://ra.co/events/2318589" target="_blank" class="tour-card">
-                    <div class="tour-date">Fri, 19 Dec 2025</div>
-                    <div class="tour-title">T-4-T (Tit$Tat) NORTH POLE PARTY</div>
-                    <div class="tour-location">Three Dollar Bill, Toronto, ON</div>
-                </a>
 </div>
 </section>
 </main>
