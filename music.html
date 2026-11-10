@@ -1,256 +1,256 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Plastic Heart Surgery — Music</title>
-<style>
-@font-face {
-font-family: 'Lyno Ulyscyr';
-src: local('Lyno Ulyscyr'), url('fonts/lynoulyscyr.ttf') format('truetype');
-font-weight: normal;
-font-style: normal;
-}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plastic Heart Surgery — Music</title>
+    <style>
+        @font-face {
+            font-family: 'Lyno Ulyscyr';
+            src: local('Lyno Ulyscyr'), url('fonts/lynoulyscyr.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
 
-* {
-box-sizing: border-box;
-margin: 0;
-padding: 0;
-}
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-body {
-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-background-color: #ffffff;
-color: #111111;
-display: flex;
-min-height: 100vh;
-line-height: 1.6;
-}
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #ffffff;
+            color: #111111;
+            display: flex;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
 
-.sidebar {
-width: 340px;
-background-color: #ffffff;
-border-right: none;
-padding: 40px;
-display: flex;
-flex-direction: column;
-justify-content: space-between;
-position: fixed;
-height: 100vh;
-top: 0;
-left: 0;
-overflow-y: auto;
-}
+        .sidebar {
+            width: 340px;
+            background-color: #ffffff;
+            border-right: none;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: fixed;
+            height: 100vh;
+            top: 0;
+            left: 0;
+            overflow-y: auto;
+        }
 
-.site-title {
-font-family: 'Lyno Ulyscyr', sans-serif;
-font-size: 1.5rem;
-letter-spacing: 0.3em;
-color: #ff0033;
-margin-bottom: 40px;
-text-decoration: none;
-display: block;
-}
+        .site-title {
+            font-family: 'Lyno Ulyscyr', sans-serif;
+            font-size: 1.5rem;
+            letter-spacing: 0.3em;
+            color: #ff0033;
+            margin-bottom: 40px;
+            text-decoration: none;
+            display: block;
+        }
 
-.nav-columns {
-display: flex;
-flex-direction: column;
-gap: 16px;
-}
+        .nav-columns {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
 
-.nav-column-item {
-font-family: 'Lyno Ulyscyr', sans-serif;
-font-size: 1.15rem;
-letter-spacing: 0.2em;
-color: #333333;
-text-decoration: none;
-transition: color 0.2s ease;
-}
+        .nav-column-item {
+            font-family: 'Lyno Ulyscyr', sans-serif;
+            font-size: 1.15rem;
+            letter-spacing: 0.2em;
+            color: #333333;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
 
-.nav-column-item:hover, .nav-column-item.active {
-color: #ff0033;
-}
+        .nav-column-item:hover, .nav-column-item.active {
+            color: #ff0033;
+        }
 
-.sidebar-footer {
-font-size: 0.85rem;
-color: #333333;
-word-break: break-all;
-margin-top: 30px;
-}
+        .sidebar-footer {
+            font-size: 0.85rem;
+            color: #333333;
+            word-break: break-all;
+            margin-top: 30px;
+        }
 
-.sidebar-footer a {
-color: #ff0033;
-text-decoration: none;
-}
+        .sidebar-footer a {
+            color: #ff0033;
+            text-decoration: none;
+        }
 
-.sidebar-footer a:hover {
-text-decoration: underline;
-}
+        .sidebar-footer a:hover {
+            text-decoration: underline;
+        }
 
-main {
-margin-left: 340px;
-flex: 1;
-padding: 80px 60px;
-max-width: 950px;
-background-color: #ffffff;
-}
+        main {
+            margin-left: 340px;
+            flex: 1;
+            padding: 80px 60px;
+            max-width: 1100px;
+            background-color: #ffffff;
+        }
 
-h2 {
-font-family: 'Lyno Ulyscyr', sans-serif;
-font-size: 1.8rem;
-letter-spacing: 0.25em;
-color: #ff0033;
-margin-bottom: 24px;
-}
+        h2 {
+            font-family: 'Lyno Ulyscyr', sans-serif;
+            font-size: 1.8rem;
+            letter-spacing: 0.25em;
+            color: #ff0033;
+            margin-bottom: 24px;
+        }
 
-p {
-color: #222222;
-margin-bottom: 24px;
-font-size: 1rem;
-}
+        p {
+            color: #222222;
+            margin-bottom: 24px;
+            font-size: 1rem;
+        }
 
-/* Spotify Player Styling */
-.spotify-container {
-margin-bottom: 40px;
-width: 100%;
-border-radius: 8px;
-overflow: hidden;
-border: 2px solid #000000;
-box-shadow: 4px 4px 0px #000000;
-}
+        /* Spotify Player Styling */
+        .spotify-container {
+            margin-bottom: 40px;
+            width: 100%;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 2px solid #000000;
+            box-shadow: 4px 4px 0px #000000;
+        }
 
-/* Album Grid Layout */
-.albums-grid {
-display: grid;
-grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-gap: 30px;
-margin-top: 20px;
-}
+        /* Album Grid Layout - Enlarged */
+        .albums-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 40px;
+            margin-top: 20px;
+        }
 
-.album-card {
-background: #ffffff;
-border: 2px solid #000000;
-border-radius: 6px;
-overflow: hidden;
-box-shadow: 4px 4px 0px #000000;
-display: flex;
-flex-direction: column;
-}
+        .album-card {
+            background: #ffffff;
+            border: 2px solid #000000;
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: 6px 6px 0px #000000;
+            display: flex;
+            flex-direction: column;
+        }
 
-.album-image-frame {
-width: 100%;
-aspect-ratio: 1/1;
-background: #f0f0f0;
-overflow: hidden;
-border-bottom: 2px solid #000000;
-}
+        .album-image-frame {
+            width: 100%;
+            aspect-ratio: 1/1;
+            background: #f0f0f0;
+            overflow: hidden;
+            border-bottom: 2px solid #000000;
+        }
 
-.album-image-frame img {
-width: 100%;
-height: 100%;
-object-fit: cover;
-display: block;
-}
+        .album-image-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
 
-.album-info {
-padding: 16px;
-}
+        .album-info {
+            padding: 22px;
+        }
 
-.album-title {
-font-family: 'Lyno Ulyscyr', sans-serif;
-font-size: 1rem;
-letter-spacing: 0.15em;
-color: #ff0033;
-margin-bottom: 6px;
-}
+        .album-title {
+            font-family: 'Lyno Ulyscyr', sans-serif;
+            font-size: 1.2rem;
+            letter-spacing: 0.15em;
+            color: #ff0033;
+            margin-bottom: 8px;
+        }
 
-.album-desc {
-font-size: 0.9rem;
-color: #444444;
-margin-bottom: 0;
-}
+        .album-desc {
+            font-size: 1rem;
+            color: #444444;
+            margin-bottom: 0;
+        }
 
-@media (max-width: 768px) {
-body {
-flex-direction: column;
-}
-.sidebar {
-position: relative;
-width: 100%;
-height: auto;
-padding: 30px 20px;
-border-right: none;
-border-bottom: none;
-}
-main {
-margin-left: 0;
-padding: 40px 20px;
-}
-}
-</style>
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+                padding: 30px 20px;
+                border-right: none;
+                border-bottom: none;
+            }
+            main {
+                margin-left: 0;
+                padding: 40px 20px;
+            }
+            .albums-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
 
-<div class="sidebar">
-<div>
-<a href="index.html" class="site-title">Plastic Heart Surgery</a>
-<div class="nav-columns">
-<a href="index.html" class="nav-column-item">Plastic Heart Surgery</a>
-<a href="visualarts.html" class="nav-column-item">Visual Arts</a>
-<a href="music.html" class="nav-column-item active">Music</a>
-<a href="tourdates.html" class="nav-column-item">Tour Dates</a>
-<a href="comingupshows.html" class="nav-column-item">Coming Up Shows</a>
-<a href="bigfanof....html" class="nav-column-item">Big Fan Of</a>
-<a href="links.html" class="nav-column-item">Links</a>
-</div>
-</div>
-<div class="sidebar-footer">
-<p style="margin-bottom: 4px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #000000;">Contact</p>
-<a href="mailto:plasticheartsurgery@gmail.com">plasticheartsurgery@gmail.com</a>
-</div>
-</div>
+    <div class="sidebar">
+        <div>
+            <a href="index.html" class="site-title">Plastic Heart Surgery</a>
+            <div class="nav-columns">
+                <a href="index.html" class="nav-column-item">Plastic Heart Surgery</a>
+                <a href="visualarts.html" class="nav-column-item">Visual Arts</a>
+                <a href="music.html" class="nav-column-item active">Music</a>
+                <a href="tourdates.html" class="nav-column-item">Tour Dates</a>
+                <a href="comingupshows.html" class="nav-column-item">Coming Up Shows</a>
+                <a href="bigfanof....html" class="nav-column-item">Big Fan Of</a>
+                <a href="links.html" class="nav-column-item">Links</a>
+            </div>
+        </div>
+        <div class="sidebar-footer">
+            <p style="margin-bottom: 4px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #000000;">Contact</p>
+            <a href="mailto:plasticheartsurgery@gmail.com">plasticheartsurgery@gmail.com</a>
+        </div>
+    </div>
 
-<main>
-<section>
-<h2>Music</h2>
-<p>Experimental electronic music, techno, and noise releases. Stream current tracks below or explore complete releases across platforms.</p>
+    <main>
+        <section>
+            <h2>Music</h2>
+            <p>Experimental electronic music, techno, and noise releases. Stream current tracks below or explore complete releases across platforms.</p>
 
-<!-- Spotify Embed Player -->
-<div class="spotify-container">
-<iframe style="border-radius:12px" src="https://open.spotify.com/embed/artist/5ZoUq3l7mN6OBgTMjpjfj7?utm_source=generator&theme=0" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-</div>
+            <!-- Spotify Embed Player -->
+            <div class="spotify-container">
+                <iframe style="border-radius:12px" src="https://open.spotify.com/embed/artist/5ZoUq3l7mN6OBgTMjpjfj7?utm_source=generator&theme=0" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+            </div>
 
-<h2 style="font-size: 1.4rem; margin-top: 40px;">Selected Releases</h2>
+            <h2 style="font-size: 1.4rem; margin-top: 40px;">Selected Releases</h2>
+            
+            <!-- Album Covers Grid -->
+            <div class="albums-grid">
+                <!-- Album Item 1 -->
+                <div class="album-card">
+                    <div class="album-image-frame">
+                        <img src="images/And Now She Is a Monster - Brighter - 3000 x 3000.png" alt="...And Now She Is a Monster">
+                    </div>
+                    <div class="album-info">
+                        <div class="album-title">...And Now She Is a Monster</div>
+                        <p class="album-desc">2024</p>
+                    </div>
+                </div>
 
-<!-- Album Covers Grid -->
-<div class="albums-grid">
-<!-- Album Item 1 -->
-<div class="album-card">
-<div class="album-image-frame">
-<img src="images/And Now She Is a Monster - Brighter - 3000 x 3000.png" alt="Album Title">
-</div>
-<div class="album-info">
-<div class="album-title">...And Now She Is a Monster</div>
-<p class="album-desc">2024</p>
-</div>
-</div>
-
-<!-- Album Item 2 -->
-<div class="album-card">
-<div class="album-image-frame">
-                        <img src="images/your-album-cover-2.jpg" alt="Album Title">
-                        <img src="images/Before She Became a Centipede Smaller For Bandcamp.png" alt="Album Title">
-</div>
-<div class="album-info">
-                        <div class="album-title">Release Title Two</div>
-                        <p class="album-desc">Release description or year.</p>
+                <!-- Album Item 2 -->
+                <div class="album-card">
+                    <div class="album-image-frame">
+                        <img src="images/Before She Became a Centipede Smaller For Bandcamp.png" alt="Before She Became a Centipede">
+                    </div>
+                    <div class="album-info">
                         <div class="album-title">Before She Became a Centipede</div>
-                        <p class="album-desc">2023.</p>
-</div>
-</div>
-</div>
-</section>
-</main>
+                        <p class="album-desc">2023</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
 
 </body>
 </html>
