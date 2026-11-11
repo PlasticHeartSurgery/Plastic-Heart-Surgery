@@ -109,24 +109,38 @@ margin-bottom: 24px;
 font-size: 1rem;
 }
 
-/* Resident Advisor Feature Box */
+/* Red Glow Container Base Style */
+@keyframes glowRedWhite {
+  0%, 100% {
+    background-color: #ffffff; /* White */
+  }
+  50% {
+    background-color: #ff0000; /* Pure Red */
+  }
+}
+
+.glow-container {
+  border-radius: 8px;
+  overflow: hidden;
+  padding: 3px; /* Thin inner padding creates the slender glowing border */
+  border: 1px solid #e0e0e0;
+  animation: glowRedWhite 6s infinite ease-in-out;
+  margin-bottom: 40px;
+}
+
+/* Resident Advisor Feature Box Inside Glow */
 .ra-feature-box {
 display: flex;
 align-items: center;
 gap: 20px;
 background: #ffffff;
-border: 2px solid #000000;
 border-radius: 6px;
 padding: 20px;
 text-decoration: none;
-box-shadow: 4px 4px 0px #000000;
-margin-bottom: 40px;
 transition: all 0.2s ease;
 }
 
 .ra-feature-box:hover {
-border-color: #ff0033;
-box-shadow: 0px 0px 15px rgba(255, 0, 51, 0.4), 4px 4px 0px #ff0033;
 transform: translateY(-2px);
 }
 
@@ -155,15 +169,20 @@ letter-spacing: 0.15em;
 color: #111111;
 }
 
-/* Widget Container */
+/* Widget Container Inside Glow */
 .ra-widget-container {
-margin-bottom: 40px;
 width: 100%;
-border-radius: 8px;
+border-radius: 6px;
 overflow: hidden;
-border: 2px solid #000000;
-box-shadow: 4px 4px 0px #000000;
 background: #ffffff;
+}
+
+/* Compact wrapper to restrict the Songkick widget height */
+.songkick-compact-wrapper {
+max-height: 380px;
+overflow-y: auto;
+background: #ffffff;
+border-radius: 6px;
 }
 
 /* Tour Cards Container */
@@ -172,6 +191,11 @@ display: flex;
 flex-direction: column;
 gap: 20px;
 margin-top: 20px;
+margin-bottom: 40px;
+}
+
+.tours-grid .glow-container {
+margin-bottom: 0; /* Align seamlessly inside grid gap */
 }
 
 .tour-card {
@@ -179,17 +203,13 @@ display: flex;
 align-items: center;
 gap: 20px;
 background: #ffffff;
-border: 2px solid #000000;
 border-radius: 6px;
 padding: 20px;
 text-decoration: none;
-box-shadow: 4px 4px 0px #000000;
 transition: all 0.2s ease;
 }
 
 .tour-card:hover {
-border-color: #ff0033;
-box-shadow: 0px 0px 15px rgba(255, 0, 51, 0.4), 4px 4px 0px #ff0033;
 transform: translateY(-2px);
 }
 
@@ -299,47 +319,25 @@ height: 160px;
 <p>Live music performances, live hardware sets, and DJ appearances. Check listings below or follow profile updates directly on Resident Advisor.</p>
 
 <!-- External RA Profile Link Box -->
-<a href="https://ra.co/dj/plasticheartsurgery" target="_blank" class="ra-feature-box">
-<img src="https://imgproxy.ra.co/_/quality:66/h:180/w:180/rt:fill/gravity:sm/aHR0cHM6Ly9zdGF0aWMucmEuY28vaW1hZ2VzL3Byb2ZpbGVzL3NxdWFyZS9wbGFzdGljaGVhcnRzdXJnZXJ5LmpwZz9kYXRlVXBkYXRlZD0xNzU2OTg3MDQzMDAw" alt="Plastic Heart Surgery RA Avatar" class="ra-avatar">
-<div>
-<div class="ra-tag">Plastic RA</div>
-<div class="ra-title">Resident Advisor - Plastic Heart Surgery</div>
+<div class="glow-container">
+  <a href="https://ra.co/dj/plasticheartsurgery" target="_blank" class="ra-feature-box">
+    <img src="https://imgproxy.ra.co/_/quality:66/h:180/w:180/rt:fill/gravity:sm/aHR0cHM6Ly9zdGF0aWMucmEuY28vaW1hZ2VzL3Byb2ZpbGVzL3NxdWFyZS9wbGFzdGljaGVhcnRzdXJnZXJ5LmpwZz9kYXRlVXBkYXRlZD0xNzU2OTg3MDQzMDAw" alt="Plastic Heart Surgery RA Avatar" class="ra-avatar">
+    <div>
+      <div class="ra-tag">Plastic RA</div>
+      <div class="ra-title">Resident Advisor - Plastic Heart Surgery</div>
+    </div>
+  </a>
 </div>
-</a>
 
 <!-- Resident Advisor Widget Integration -->
-<div class="ra-widget-container">
-<iframe src="https://ra.co/widget/eventlisting?dj=plasticheartsurgery" height="300" width="100%" frameborder="0" style="display: block; border: none;"></iframe>
+<div class="glow-container">
+  <div class="ra-widget-container">
+    <iframe src="https://ra.co/widget/eventlisting?dj=plasticheartsurgery" height="300" width="100%" frameborder="0" style="display: block; border: none;"></iframe>
+  </div>
 </div>
 
-<style>
-  @keyframes glowRedWhite {
-    0%, 100% {
-      background-color: #ffffff; /* White */
-    }
-    50% {
-      background-color: #ff0000; /* Pure Red */
-    }
-  }
-
-  .songkick-glow-container {
-    border-radius: 8px;
-    overflow: hidden;
-    padding: 3px; /* Thin inner padding creates the slender glowing border */
-    border: 1px solid #e0e0e0;
-    animation: glowRedWhite 6s infinite ease-in-out;
-  }
-
-  /* Compact wrapper to restrict the Songkick widget height */
-  .songkick-compact-wrapper {
-    max-height: 380px;
-    overflow-y: auto;
-    background: #ffffff;
-    border-radius: 6px;
-  }
-</style>
-
-<div class="songkick-glow-container">
+<!-- Songkick Widget Integration -->
+<div class="glow-container">
   <div class="songkick-compact-wrapper">
     <a href="https://www.songkick.com/artists/10230307" class="songkick-widget" data-theme="light" data-track-button="on" data-detect-style="off" data-background-color="rgb(255,255,255,1)" data-font-color="rgb(0,0,0,1)" data-button-bg-color="rgb(0,0,0,1)" data-button-text-color="rgb(255,255,255,1)" data-locale="en" data-other-artists="on" data-share-button="on" data-country-filter="on" data-rsvp="on" data-request-show="off" data-past-events="off" data-past-events-offtour="off" data-remind-me="off" style="display: none;"></a>
   </div>
@@ -352,67 +350,80 @@ height: 160px;
 
 <div class="tours-grid">
   <!-- Blank Tour Card Placeholder -->
-  <a href="#" target="_blank" class="tour-card">
-    <div class="tour-thumb-placeholder"></div>
-    <div class="tour-info">
-      <div class="tour-date">Date TBA</div>
-      <div class="tour-title">Event Title</div>
-      <div class="tour-location">Location, City</div>
-    </div>
-  </a>
+  <div class="glow-container">
+    <a href="#" target="_blank" class="tour-card">
+      <div class="tour-thumb-placeholder"></div>
+      <div class="tour-info">
+        <div class="tour-date">Date TBA</div>
+        <div class="tour-title">Event Title</div>
+        <div class="tour-location">Location, City</div>
+      </div>
+    </a>
+  </div>
 </div>
 
 <h2 style="font-size: 1.4rem; margin-top: 40px;">Past Events</h2>
 
 <!-- Manual Tour Cards Grid -->
 <div class="tours-grid">
-<a href="https://ra.co/events/2450851" target="_blank" class="tour-card">
-<img src="https://imgproxy.ra.co/_/quality:66/w:1442/rt:fill/aHR0cHM6Ly9pbWFnZXMucmEuY28vNTJhZTk4Y2MzOWI1MzFjODA5NzAyYWFmYjU1YjQ4MTI2YTdkNjJiZC5wbmc=" alt="tit4tat Trans March Afterparty" class="tour-thumb">
-<div class="tour-info">
-<div class="tour-date">Fri, 26 Jun 2026</div>
-<div class="tour-title">tit4tat Trans March Afterparty RE-BIRTHDAY! T4T Gender Reveal</div>
-<div class="tour-location">Three Dollar Bill, Toronto, ON</div>
-</div>
-</a>
 
-<a href="https://ra.co/events/2417715" target="_blank" class="tour-card">
-<img src="https://imgproxy.ra.co/_/quality:66/w:1442/rt:fill/aHR0cHM6Ly9pbWFnZXMucmEuY28vYTQ1Mjk1ZTc4ZTZhMzc5YTQ5ZWM3MTI1NzdmYzdkMTlkMzg3YjAxMi5qcGc=" alt="Electronic Music Performance" class="tour-thumb">
-<div class="tour-info">
-<div class="tour-date">Thu, May 14, 2026</div>
-<div class="tour-title">Electronic Music Performance</div>
-<div class="tour-location">Three Dollar Bill, Toronto, ON</div>
+<div class="glow-container">
+  <a href="https://ra.co/events/2450851" target="_blank" class="tour-card">
+    <img src="https://imgproxy.ra.co/_/quality:66/w:1442/rt:fill/aHR0cHM6Ly9pbWFnZXMucmEuY28vNTJhZTk4Y2MzOWI1MzFjODA5NzAyYWFmYjU1YjQ4MTI2YTdkNjJiZC5wbmc=" alt="tit4tat Trans March Afterparty" class="tour-thumb">
+    <div class="tour-info">
+      <div class="tour-date">Fri, 26 Jun 2026</div>
+      <div class="tour-title">tit4tat Trans March Afterparty RE-BIRTHDAY! T4T Gender Reveal</div>
+      <div class="tour-location">Three Dollar Bill, Toronto, ON</div>
+    </div>
+  </a>
 </div>
-</a>
 
-<a href="https://ra.co/events/2318589" target="_blank" class="tour-card">
-<img src="images/North.jpg" alt="T-4-T North Pole Party" class="tour-thumb">
-<div class="tour-info">
-<div class="tour-date">Fri, 19 Dec 2025</div>
-<div class="tour-title">T-4-T (Tit$Tat) NORTH POLE PARTY</div>
-<div class="tour-location">Three Dollar Bill, Toronto, ON</div>
+<div class="glow-container">
+  <a href="https://ra.co/events/2417715" target="_blank" class="tour-card">
+    <img src="https://imgproxy.ra.co/_/quality:66/w:1442/rt:fill/aHR0cHM6Ly9pbWFnZXMucmEuY28vYTQ1Mjk1ZTc4ZTZhMzc5YTQ5ZWM3MTI1NzdmYzdkMTlkMzg3YjAxMi5qcGc=" alt="Electronic Music Performance" class="tour-thumb">
+    <div class="tour-info">
+      <div class="tour-date">Thu, May 14, 2026</div>
+      <div class="tour-title">Electronic Music Performance</div>
+      <div class="tour-location">Three Dollar Bill, Toronto, ON</div>
+    </div>
+  </a>
 </div>
-</a>
 
-<a href="https://ra.co/events/2198808" target="_blank" class="tour-card">
-<img src="https://imgproxy.ra.co/_/quality:66/w:1442/rt:fill/aHR0cHM6Ly9pbWFnZXMucmEuY28vYjA5OGVmMjZhZGIzMWRkYThhYzJmYTI1M2JkZDVmN2MxMzJmNWU1NC5qcGc=" alt="T-4-T North Pole Party" class="tour-thumb">
-<div class="tour-info">
-<div class="tour-date">Thurs, 26 Jun 2025</div>
-<div class="tour-title">Frequencies: Girls Rituals, Erin Corbett, STELLA, Plastic Heart Surgery</div>
-<div class="tour-location">Handlebar, Toronto, ON</div>
+<div class="glow-container">
+  <a href="https://ra.co/events/2318589" target="_blank" class="tour-card">
+    <img src="images/North.jpg" alt="T-4-T North Pole Party" class="tour-thumb">
+    <div class="tour-info">
+      <div class="tour-date">Fri, 19 Dec 2025</div>
+      <div class="tour-title">T-4-T (Tit$Tat) NORTH POLE PARTY</div>
+      <div class="tour-location">Three Dollar Bill, Toronto, ON</div>
+    </div>
+  </a>
 </div>
-</a>
 
-<a href="https://ra.co/events/2064104" target="_blank" class="tour-card">
-<img src="https://imgproxy.ra.co/_/quality:66/w:1442/rt:fill/aHR0cHM6Ly9pbWFnZXMucmEuY28vZDgxZTk5OTkzNDgzMjE0MWRjY2Y5OTI3ZTNjNTI4YTk2ODIxMzVhMy5qcGc=" alt="T-4-T North Pole Party" class="tour-thumb">
-<div class="tour-info">
-<div class="tour-date">Thurs, 19 Dec 2024</div>
-<div class="tour-title">Frequencies: Holiday Fundraiser Show: Measure x Wolfgang Grey
-Plastic Heart Surgery 
-Mother Of x Ensh 
-SHEMONA</div>
-<div class="tour-location">Handlebar, Toronto, ON</div>
+<div class="glow-container">
+  <a href="https://ra.co/events/2198808" target="_blank" class="tour-card">
+    <img src="https://imgproxy.ra.co/_/quality:66/w:1442/rt:fill/aHR0cHM6Ly9pbWFnZXMucmEuY28vYjA5OGVmMjZhZGIzMWRkYThhYzJmYTI1M2JkZDVmN2MxMzJmNWU1NC5qcGc=" alt="T-4-T North Pole Party" class="tour-thumb">
+    <div class="tour-info">
+      <div class="tour-date">Thurs, 26 Jun 2025</div>
+      <div class="tour-title">Frequencies: Girls Rituals, Erin Corbett, STELLA, Plastic Heart Surgery</div>
+      <div class="tour-location">Handlebar, Toronto, ON</div>
+    </div>
+  </a>
 </div>
-</a>
+
+<div class="glow-container">
+  <a href="https://ra.co/events/2064104" target="_blank" class="tour-card">
+    <img src="https://imgproxy.ra.co/_/quality:66/w:1442/rt:fill/aHR0cHM6Ly9pbWFnZXMucmEuY28vZDgxZTk5OTkzNDgzMjE0MWRjY2Y5OTI3ZTNjNTI4YTk2ODIxMzVhMy5qcGc=" alt="T-4-T North Pole Party" class="tour-thumb">
+    <div class="tour-info">
+      <div class="tour-date">Thurs, 19 Dec 2024</div>
+      <div class="tour-title">Frequencies: Holiday Fundraiser Show: Measure x Wolfgang Grey
+  Plastic Heart Surgery 
+  Mother Of x Ensh 
+  SHEMONA</div>
+      <div class="tour-location">Handlebar, Toronto, ON</div>
+    </div>
+  </a>
+</div>
 
 </div>
 </section>
