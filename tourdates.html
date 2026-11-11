@@ -109,39 +109,38 @@ margin-bottom: 24px;
 font-size: 1rem;
 }
 
-/* Red Glow Container Base Style */
-@keyframes glowRedWhite {
-  0%, 100% {
-    background-color: #ffffff; /* White */
+/* Keyframes for Internal Background Red Glow */
+@keyframes internalRedGlow {
+  0% {
+    background-color: #ffffff;
   }
   50% {
-    background-color: #ff0000; /* Pure Red */
+    background-color: #fff0f3; /* Subtle red wash inside */
+  }
+  100% {
+    background-color: #ffe0e6; /* Soft deep red tint inside */
   }
 }
 
-.glow-container {
-  border-radius: 8px;
-  overflow: hidden;
-  padding: 3px; /* Thin inner padding creates the slender glowing border */
-  border: 1px solid #e0e0e0;
-  animation: glowRedWhite 6s infinite ease-in-out;
-  margin-bottom: 40px;
-}
-
-/* Resident Advisor Feature Box Inside Glow */
+/* Resident Advisor Feature Box */
 .ra-feature-box {
 display: flex;
 align-items: center;
 gap: 20px;
-background: #ffffff;
+border: 2px solid #000000;
 border-radius: 6px;
 padding: 20px;
 text-decoration: none;
-transition: all 0.2s ease;
+box-shadow: 4px 4px 0px #000000;
+margin-bottom: 40px;
+animation: internalRedGlow 4s ease-in-out infinite alternate;
+transition: transform 0.2s ease, border-color 0.2s ease;
 }
 
 .ra-feature-box:hover {
+border-color: #ff0033;
 transform: translateY(-2px);
+box-shadow: 4px 4px 0px #ff0033;
 }
 
 .ra-avatar {
@@ -169,23 +168,35 @@ letter-spacing: 0.15em;
 color: #111111;
 }
 
-/* Widget Container Inside Glow */
+/* Widget Container */
 .ra-widget-container {
+margin-bottom: 40px;
 width: 100%;
-border-radius: 6px;
+border-radius: 8px;
 overflow: hidden;
-background: #ffffff;
+border: 2px solid #000000;
+box-shadow: 4px 4px 0px #000000;
+animation: internalRedGlow 4s ease-in-out infinite alternate;
 }
 
-/* Compact wrapper to restrict the Songkick widget height */
+/* Songkick Glow Box */
+.songkick-glow-container {
+border-radius: 8px;
+overflow: hidden;
+border: 2px solid #000000;
+box-shadow: 4px 4px 0px #000000;
+animation: internalRedGlow 4s ease-in-out infinite alternate;
+margin-bottom: 40px;
+}
+
 .songkick-compact-wrapper {
 max-height: 380px;
 overflow-y: auto;
-background: #ffffff;
+background: transparent;
 border-radius: 6px;
 }
 
-/* Tour Cards Container */
+/* Tour Cards Grid & Card Styles */
 .tours-grid {
 display: flex;
 flex-direction: column;
@@ -194,23 +205,23 @@ margin-top: 20px;
 margin-bottom: 40px;
 }
 
-.tours-grid .glow-container {
-margin-bottom: 0; /* Align seamlessly inside grid gap */
-}
-
 .tour-card {
 display: flex;
 align-items: center;
 gap: 20px;
-background: #ffffff;
+border: 2px solid #000000;
 border-radius: 6px;
 padding: 20px;
 text-decoration: none;
-transition: all 0.2s ease;
+box-shadow: 4px 4px 0px #000000;
+animation: internalRedGlow 4s ease-in-out infinite alternate;
+transition: transform 0.2s ease, border-color 0.2s ease;
 }
 
 .tour-card:hover {
+border-color: #ff0033;
 transform: translateY(-2px);
+box-shadow: 4px 4px 0px #ff0033;
 }
 
 .tour-thumb {
@@ -219,16 +230,6 @@ height: 90px;
 border-radius: 4px;
 object-fit: cover;
 border: 2px solid #000000;
-flex-shrink: 0;
-}
-
-/* Blank placeholder thumbnail styling */
-.tour-thumb-placeholder {
-width: 90px;
-height: 90px;
-border-radius: 4px;
-border: 2px dashed #cccccc;
-background-color: #f9f9f9;
 flex-shrink: 0;
 }
 
@@ -285,7 +286,7 @@ padding: 40px 20px;
 flex-direction: column;
 align-items: flex-start;
 }
-.tour-thumb, .tour-thumb-placeholder {
+.tour-thumb {
 width: 100%;
 height: 160px;
 }
@@ -319,25 +320,21 @@ height: 160px;
 <p>Live music performances, live hardware sets, and DJ appearances. Check listings below or follow profile updates directly on Resident Advisor.</p>
 
 <!-- External RA Profile Link Box -->
-<div class="glow-container">
-  <a href="https://ra.co/dj/plasticheartsurgery" target="_blank" class="ra-feature-box">
-    <img src="https://imgproxy.ra.co/_/quality:66/h:180/w:180/rt:fill/gravity:sm/aHR0cHM6Ly9zdGF0aWMucmEuY28vaW1hZ2VzL3Byb2ZpbGVzL3NxdWFyZS9wbGFzdGljaGVhcnRzdXJnZXJ5LmpwZz9kYXRlVXBkYXRlZD0xNzU2OTg3MDQzMDAw" alt="Plastic Heart Surgery RA Avatar" class="ra-avatar">
-    <div>
-      <div class="ra-tag">Plastic RA</div>
-      <div class="ra-title">Resident Advisor - Plastic Heart Surgery</div>
-    </div>
-  </a>
-</div>
+<a href="https://ra.co/dj/plasticheartsurgery" target="_blank" class="ra-feature-box">
+  <img src="https://imgproxy.ra.co/_/quality:66/h:180/w:180/rt:fill/gravity:sm/aHR0cHM6Ly9zdGF0aWMucmEuY28vaW1hZ2VzL3Byb2ZpbGVzL3NxdWFyZS9wbGFzdGljaGVhcnRzdXJnZXJ5LmpwZz9kYXRlVXBkYXRlZD0xNzU2OTg3MDQzMDAw" alt="Plastic Heart Surgery RA Avatar" class="ra-avatar">
+  <div>
+    <div class="ra-tag">Plastic RA</div>
+    <div class="ra-title">Resident Advisor - Plastic Heart Surgery</div>
+  </div>
+</a>
 
 <!-- Resident Advisor Widget Integration -->
-<div class="glow-container">
-  <div class="ra-widget-container">
-    <iframe src="https://ra.co/widget/eventlisting?dj=plasticheartsurgery" height="300" width="100%" frameborder="0" style="display: block; border: none;"></iframe>
-  </div>
+<div class="ra-widget-container">
+  <iframe src="https://ra.co/widget/eventlisting?dj=plasticheartsurgery" height="300" width="100%" frameborder="0" style="display: block; border: none;"></iframe>
 </div>
 
 <!-- Songkick Widget Integration -->
-<div class="glow-container">
+<div class="songkick-glow-container">
   <div class="songkick-compact-wrapper">
     <a href="https://www.songkick.com/artists/10230307" class="songkick-widget" data-theme="light" data-track-button="on" data-detect-style="off" data-background-color="rgb(255,255,255,1)" data-font-color="rgb(0,0,0,1)" data-button-bg-color="rgb(0,0,0,1)" data-button-text-color="rgb(255,255,255,1)" data-locale="en" data-other-artists="on" data-share-button="on" data-country-filter="on" data-rsvp="on" data-request-show="off" data-past-events="off" data-past-events-offtour="off" data-remind-me="off" style="display: none;"></a>
   </div>
@@ -350,16 +347,14 @@ height: 160px;
 
 <div class="tours-grid">
   <!-- XOXOFLDDAY Tour Card -->
-  <div class="glow-container">
-    <a href="#" target="_blank" class="tour-card">
-      <img src="images/XOXOFLDDAY 1 SMOL.png" alt="XOXOFLDDAY" class="tour-thumb">
-      <div class="tour-info">
-        <div class="tour-date">Date TBA</div>
-        <div class="tour-title">Event Title</div>
-        <div class="tour-location">Location, City</div>
-      </div>
-    </a>
-  </div>
+  <a href="#" target="_blank" class="tour-card">
+    <img src="images/XOXOFLDDAY 1 SMOL.png" alt="XOXOFLDDAY" class="tour-thumb">
+    <div class="tour-info">
+      <div class="tour-date">Date TBA</div>
+      <div class="tour-title">Event Title</div>
+      <div class="tour-location">Location, City</div>
+    </div>
+  </a>
 </div>
 
 <h2 style="font-size: 1.4rem; margin-top: 40px;">Past Events</h2>
@@ -367,7 +362,6 @@ height: 160px;
 <!-- Manual Tour Cards Grid -->
 <div class="tours-grid">
 
-<div class="glow-container">
   <a href="https://ra.co/events/2450851" target="_blank" class="tour-card">
     <img src="https://imgproxy.ra.co/_/quality:66/w:1442/rt:fill/aHR0cHM6Ly9pbWFnZXMucmEuY28vNTJhZTk4Y2MzOWI1MzFjODA5NzAyYWFmYjU1YjQ4MTI2YTdkNjJiZC5wbmc=" alt="tit4tat Trans March Afterparty" class="tour-thumb">
     <div class="tour-info">
@@ -376,9 +370,7 @@ height: 160px;
       <div class="tour-location">Three Dollar Bill, Toronto, ON</div>
     </div>
   </a>
-</div>
 
-<div class="glow-container">
   <a href="https://ra.co/events/2417715" target="_blank" class="tour-card">
     <img src="https://imgproxy.ra.co/_/quality:66/w:1442/rt:fill/aHR0cHM6Ly9pbWFnZXMucmEuY28vYTQ1Mjk1ZTc4ZTZhMzc5YTQ5ZWM3MTI1NzdmYzdkMTlkMzg3YjAxMi5qcGc=" alt="Electronic Music Performance" class="tour-thumb">
     <div class="tour-info">
@@ -387,9 +379,7 @@ height: 160px;
       <div class="tour-location">Three Dollar Bill, Toronto, ON</div>
     </div>
   </a>
-</div>
 
-<div class="glow-container">
   <a href="https://ra.co/events/2318589" target="_blank" class="tour-card">
     <img src="images/North.jpg" alt="T-4-T North Pole Party" class="tour-thumb">
     <div class="tour-info">
@@ -398,9 +388,7 @@ height: 160px;
       <div class="tour-location">Three Dollar Bill, Toronto, ON</div>
     </div>
   </a>
-</div>
 
-<div class="glow-container">
   <a href="https://ra.co/events/2198808" target="_blank" class="tour-card">
     <img src="https://imgproxy.ra.co/_/quality:66/w:1442/rt:fill/aHR0cHM6Ly9pbWFnZXMucmEuY28vYjA5OGVmMjZhZGIzMWRkYThhYzJmYTI1M2JkZDVmN2MxMzJmNWU1NC5qcGc=" alt="T-4-T North Pole Party" class="tour-thumb">
     <div class="tour-info">
@@ -409,9 +397,7 @@ height: 160px;
       <div class="tour-location">Handlebar, Toronto, ON</div>
     </div>
   </a>
-</div>
 
-<div class="glow-container">
   <a href="https://ra.co/events/2064104" target="_blank" class="tour-card">
     <img src="https://imgproxy.ra.co/_/quality:66/w:1442/rt:fill/aHR0cHM6Ly9pbWFnZXMucmEuY28vZDgxZTk5OTkzNDgzMjE0MWRjY2Y5OTI3ZTNjNTI4YTk2ODIxMzVhMy5qcGc=" alt="T-4-T North Pole Party" class="tour-thumb">
     <div class="tour-info">
@@ -423,7 +409,6 @@ height: 160px;
       <div class="tour-location">Handlebar, Toronto, ON</div>
     </div>
   </a>
-</div>
 
 </div>
 </section>
