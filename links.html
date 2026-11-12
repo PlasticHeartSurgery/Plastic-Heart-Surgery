@@ -3,18 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plastic Heart Surgery — Links</title>
+    <title>Plastic Heart Surgery — Coming Up Shows</title>
     <style>
         @font-face {
             font-family: 'Lyno Ulyscyr';
             src: local('Lyno Ulyscyr'), url('fonts/lynoulyscyr.ttf') format('truetype');
-            font-weight: normal;
-            font-style: normal;
-        }
-
-        @font-face {
-            font-family: 'Frostgiant3D';
-            src: local('Frostgiant3D'), url('fonts/frostgiant3d.ttf') format('truetype');
             font-weight: normal;
             font-style: normal;
         }
@@ -37,7 +30,6 @@
         .sidebar {
             width: 340px;
             background-color: #ffffff;
-            border-right: none;
             padding: 40px;
             display: flex;
             flex-direction: column;
@@ -116,50 +108,84 @@
             font-size: 1rem;
         }
 
-        /* Links Grid */
-        .links-grid {
+        /* Coming Up Shows List Grid */
+        .shows-grid {
             display: flex;
             flex-direction: column;
             gap: 20px;
             margin-top: 30px;
+            margin-bottom: 50px;
         }
 
-        /* Hyperlink Box with Animated Gradient Glow */
-        .link-card {
+        /* Hyperlink Box with Hover Glow Effect */
+        .show-card {
             display: block;
             background: #ffffff;
             border: 2px solid #000000;
             border-radius: 6px;
-            padding: 24px;
+            overflow: hidden;
             text-decoration: none;
             box-shadow: 4px 4px 0px #000000;
-            position: relative;
-            z-index: 1;
-            transition: transform 0.2s ease, border-color 0.4s ease, background-color 0.4s ease;
+            transition: all 0.2s ease;
         }
 
-        .link-card:hover {
+        .show-card:hover {
             border-color: #ff0033;
+            box-shadow: 0px 0px 15px rgba(255, 0, 51, 0.4), 4px 4px 0px #ff0033;
             transform: translateY(-2px);
-            animation: gradientGlow 3s ease-in-out infinite alternate;
         }
 
-        @keyframes gradientGlow {
-            0% {
-                background-color: #ffffff;
-                box-shadow: 0px 0px 5px rgba(255, 255, 255, 0.8), 4px 4px 0px #ff0033;
+        /* Image Container Styling */
+        .show-image {
+            width: 100%;
+            height: 240px;
+            overflow: hidden;
+            background-color: #f7f7f7;
+            border-bottom: 2px solid #000000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #888888;
+            font-style: italic;
+        }
+
+        .show-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        @keyframes redPulse {
+            0%, 85% {
+                background-color: #f7f7f7;
+                color: #888888;
+                border-bottom-color: #000000;
+                box-shadow: none;
             }
-            50% {
-                background-color: #fff5f7;
-                box-shadow: 0px 0px 20px rgba(255, 0, 51, 0.35), 4px 4px 0px #ff0033;
+            92%, 97% {
+                background-color: rgba(255, 0, 51, 0.12);
+                color: #ff0033;
+                border-bottom-color: #ff0033;
+                box-shadow: inset 0 0 15px rgba(255, 0, 51, 0.25);
             }
             100% {
-                background-color: #ffe6eb;
-                box-shadow: 0px 0px 35px rgba(255, 0, 51, 0.7), 4px 4px 0px #ff0033;
+                background-color: #f7f7f7;
+                color: #888888;
+                border-bottom-color: #000000;
+                box-shadow: none;
             }
         }
 
-        .link-tag {
+        .pulsing-booking-box {
+            animation: redPulse 10s infinite;
+        }
+
+        .show-content {
+            padding: 24px;
+        }
+
+        .show-date {
             font-size: 0.85rem;
             text-transform: uppercase;
             letter-spacing: 0.1em;
@@ -168,122 +194,26 @@
             font-weight: 600;
         }
 
-        /* Explicitly set the Frostgiant3D font for all link titles */
-        .link-title {
-            font-family: 'Frostgiant3D', sans-serif !important;
+        .show-title {
+            font-family: 'Lyno Ulyscyr', sans-serif;
             font-size: 1.2rem;
             letter-spacing: 0.15em;
             color: #111111;
             margin-bottom: 8px;
-            overflow-wrap: anywhere;
-            word-break: break-word;
         }
 
-        .link-desc {
+        .show-location {
             font-size: 0.95rem;
             color: #444444;
         }
 
-        /* PayPal Widget Styles */
-        .paypal-widget-card {
-            background: #ffffff;
-            border: 2px solid #000000;
-            border-radius: 6px;
-            padding: 24px;
-            box-shadow: 4px 4px 0px #000000;
-            max-width: 100%;
-            overflow: hidden;
-            transition: transform 0.2s ease, border-color 0.4s ease, background-color 0.4s ease;
-        }
-        .paypal-widget-card:hover {
-            border-color: #ff0033;
-            animation: gradientGlow 3s ease-in-out infinite alternate;
-        }
-        .paypal-widget-card .link-title a {
-            font-family: 'Frostgiant3D', sans-serif !important;
-            color: inherit;
-            text-decoration: none;
-            overflow-wrap: anywhere;
-            word-break: break-word;
-            display: inline-block;
-            max-width: 100%;
-        }
-        .paypal-widget-card .link-title a:hover {
-            text-decoration: underline;
-        }
-        .paypal-amounts {
-            display: grid;
-            grid-template-columns: repeat(4, minmax(0, 1fr));
-            gap: 10px;
-            margin-bottom: 16px;
-        }
-        .paypal-amt-btn {
-            background: #ffffff;
-            border: 2px solid #111111;
-            border-radius: 4px;
-            padding: 10px 4px;
-            font-family: inherit;
-            font-size: 0.95rem;
-            font-weight: 600;
-            color: #111111;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-        .paypal-amt-btn:hover {
-            border-color: #ff0033;
-            background: #fff5f7;
+        .show-location a {
             color: #ff0033;
+            text-decoration: none;
         }
-        .paypal-amt-btn.active {
-            background: #ff0033;
-            border-color: #ff0033;
-            color: #ffffff;
-            box-shadow: 0 0 10px rgba(255, 0, 51, 0.4);
-        }
-        .paypal-custom-input, .paypal-note-input {
-            width: 100%;
-            background: #ffffff;
-            border: 2px solid #111111;
-            border-radius: 4px;
-            padding: 10px 14px;
-            font-family: inherit;
-            font-size: 0.95rem;
-            color: #111111;
-            margin-bottom: 12px;
-            outline: none;
-            transition: border-color 0.2s ease, box-shadow 0.2s ease;
-        }
-        .paypal-custom-input:focus, .paypal-note-input:focus {
-            border-color: #ff0033;
-            box-shadow: 0 0 8px rgba(255, 0, 51, 0.3);
-        }
-        .paypal-note-input {
-            resize: vertical;
-            min-height: 50px;
-            max-height: 120px;
-        }
-        .paypal-donate-btn {
-            width: 100%;
-            background: linear-gradient(135deg, #ff0033, #ffffff);
-            border: 2px solid #ff0033;
-            border-radius: 4px;
-            padding: 12px;
-            font-family: inherit;
-            font-size: 1rem;
-            font-weight: 700;
-            color: #ffffff;
-            cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            transition: opacity 0.2s ease, box-shadow 0.2s ease;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
-        }
-        .paypal-donate-btn:hover {
-            opacity: 0.9;
-            box-shadow: 0 0 15px rgba(255, 0, 51, 0.6);
+
+        .show-location a:hover {
+            text-decoration: underline;
         }
 
         @media (max-width: 768px) {
@@ -311,21 +241,6 @@
                 font-size: 1.4rem;
                 letter-spacing: 0.15em;
             }
-            .paypal-widget-card {
-                padding: 18px;
-            }
-            .link-title {
-                font-size: 0.9rem;
-                letter-spacing: 0.06em;
-                line-height: 1.4;
-            }
-            .paypal-amounts {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-            }
-            .paypal-amt-btn {
-                font-size: 0.85rem;
-                padding: 10px 6px;
-            }
         }
     </style>
 </head>
@@ -335,13 +250,13 @@
         <div>
             <a href="index.html" class="site-title">Plastic Heart Surgery</a>
             <div class="nav-columns">
-                <a href="hidden.html" class="nav-column-item">Plastic Heart Surgery</a>
-                <a href="hidden.html" class="nav-column-item">Visual Arts</a>
+                <a href="index.html" class="nav-column-item">Plastic Heart Surgery</a>
+                <a href="visualarts.html" class="nav-column-item">Visual Arts</a>
                 <a href="music.html" class="nav-column-item">Music</a>
                 <a href="tourdates.html" class="nav-column-item">Tour Dates</a>
-                <a href="comingupshows.html" class="nav-column-item">Coming Up Shows</a>
+                <a href="comingupshows.html" class="nav-column-item active">Coming Up Shows</a>
                 <a href="bigfanof....html" class="nav-column-item">Big Fan Of</a>
-                <a href="links.html" class="nav-column-item active">Links</a>
+                <a href="links.html" class="nav-column-item">Links</a>
             </div>
         </div>
         <div class="sidebar-footer">
@@ -352,126 +267,44 @@
 
     <main>
         <section>
-            <h2>Links</h2>
-            <p>💢 This is the most exhaustive list of Plastic Heart Surgery-related content; below 👇 is all you will need, and all you will ever need... 💢</p>
+            <h2>Coming Up Shows</h2>
+            <p>Upcoming art exhibitions, current or future-installations and artist talks. Currently, I am (f)under-employed in the arts, contact me below for bookings/info:</p>
 
-            <!-- Links Grid -->
-            <div class="links-grid">
-                
-                <!-- Link Item 1 -->
-                <a href="https://www.instagram.com/plastic.heart.surgery/" target="_blank" class="link-card">
-                    <div class="link-tag">Instagram</div>
-                    <div class="link-desc">Plastic's Personal Instagram, DM for inquiries/bookings</div>
-                </a>
-
-                <!-- Link Item 2 -->
-                <a href="https://open.spotify.com/artist/5ZoUq3l7mN6OBgTMjpjfj7" target="_blank" class="link-card">
-                    <div class="link-tag">Spotify</div>
-                    <div class="link-desc">Experimental electronic tracks, mixes, and live recordings.</div>
-                </a>
-                
-                <!-- Link Item 3 -->
-                <a href="https://music.apple.com/ca/artist/plastic-heart-surgery/1539041975" target="_blank" class="link-card">
-                    <div class="link-tag">Plastic on 🍎 Apple Music 🍎</div>
-                    <div class="link-desc">(I actually prefer this apps white theme).</div>
-                </a>
-
-                <!-- Link Item 4 -->
-                <a href="https://plasticheartsurgery.bandcamp.com/" target="_blank" class="link-card">
-                    <div class="link-tag">Bandcamp</div>
-                    <div class="link-desc">If... DJ/Marketing--want a free download? Please message me on Instagram</div>
-                </a>
-                
-                <!-- Link Item 5 -->
-                <a href="https://soundcloud.com/user-802528370" target="_blank" class="link-card">
-                    <div class="link-tag">SoundCloud</div>
-                    <div class="link-desc">THIS APP IS TOO EXPENSIVE TO USE ANYMORE! (See Paypal below if you would like my music to be on there...)</div>
-                </a>
-
-                <!-- Link Item 6 -->
-                <a href="https://www.youtube.com/watch?v=IlVzly_dddQ&feature=youtu.be" target="_blank" class="link-card">
-                    <div class="link-tag">
-Plastic Heart Surgery - WHERE 🤷 👏 😭 IS 😄 💦🅱 ALL 😍 🏻🛑💯 🌝😏 OF 👏 🔥 ❗ MY 👦🙋 👨 🍆 MONEY?!???!??!?!?!?! 💰 😮</div>
-                    <div class="link-desc">Music Video</div>
-                </a>
-
-                <!-- PayPal Widget Card -->
-                <div class="paypal-widget-card">
-                    <div class="link-tag">Support</div>
-                    <div class="link-title">
-                        <a href="https://www.paypal.com/paypalme/PlasticHeartSurgery" target="_blank">https://www.paypal.com/paypalme/PlasticHeartSurgery</a>
+            <!-- Shows Hyperlink Boxes Grid -->
+            <div class="shows-grid">
+                <!-- Show Item 1 (Fully clickable mailto card) -->
+                <a href="mailto:plasticheartsurgery@gmail.com?subject=Booking%20Inquiry%20%E2%80%94%20Plastic%20Heart%20Surgery" class="show-card">
+                    <div class="show-image pulsing-booking-box">
+                        <span>Available for bookings</span>
                     </div>
-                    <div class="link-desc" style="margin-bottom: 16px;">Help fund Plastic: "Usually" art supplies, Music related-things like subscriptions, art practice and basic necessities.</div>
-                    
-                    <div class="paypal-amounts" id="paypalAmounts">
-                        <button type="button" class="paypal-amt-btn" onclick="setPayPalAmount(25, this)">$25</button>
-                        <button type="button" class="paypal-amt-btn active" onclick="setPayPalAmount(100, this)">$100</button>
-                        <button type="button" class="paypal-amt-btn" onclick="setPayPalAmount(1000, this)">$1,000</button>
-                        <button type="button" class="paypal-amt-btn" onclick="setPayPalAmount(100000000, this)">$100,000,000</button>
+                    <div class="show-content">
+                        <div class="show-date">Book Me!!!!!</div>
+                        <div class="show-title">Inquiries & Proposals</div>
+                        <div class="show-location">Get in touch: <span style="color: #ff0033;">plasticheartsurgery@gmail.com</span></div>
                     </div>
+                </a>
+            </div>
+        </section>
 
-                    <input type="number" id="paypalCustomInput" class="paypal-custom-input" placeholder="Custom amount ($)" value="100" min="1" oninput="syncPayPalInput(this)">
-                    <textarea id="paypalNoteInput" class="paypal-note-input" placeholder="Add a note (optional)..."></textarea>
-                    
-                    <button type="button" class="paypal-donate-btn" onclick="submitPayPal()">Send Support</button>
-                </div>
-
+        <section>
+            <h2>Past Exhibitions/Shows</h2>
+            <p>Painting Archive:</p>
+                 
+            <div class="shows-grid">
+                <!-- Archive Show Item 1 -->
+                <a href="https://www.instagram.com/p/Daz8J57kXmT/?img_index=1" target="_blank" class="show-card">
+                    <div class="show-image">
+                        <img src="images/Bazaart_8A5A0CA3-A634-4B7B-B2EA-45F3BFBA222A.jpeg" alt="The Body I'll Be Found in exhibition view">
+                    </div>
+                    <div class="show-content">
+                        <div class="show-date">November 24, 2026</div>
+                        <div class="show-title">The Body I'll Be Found in...</div>
+                        <div class="show-location">Archival Documentation & Installation View</div>
+                    </div>
+                </a>
             </div>
         </section>
     </main>
 
-    <script>
-        let currentPayPalAmount = 100;
-
-        function setPayPalAmount(amount, btn) {
-            currentPayPalAmount = amount;
-            document.getElementById('paypalCustomInput').value = amount;
-            
-            document.querySelectorAll('.paypal-amt-btn').forEach(b => b.classList.remove('active'));
-            if (btn) btn.classList.add('active');
-        }
-
-        function syncPayPalInput(input) {
-            currentPayPalAmount = input.value;
-            let cleanedVal = amountCleaner(input.value);
-            document.querySelectorAll('.paypal-amt-btn').forEach(b => {
-                b.classList.remove('active');
-                if (b.textContent.replace(/[^0-9]/g, '') === String(cleanedVal)) {
-                    b.classList.add('active');
-                }
-            });
-        }
-
-        function amountCleaner(val) {
-            return String(val).replace(/[^0-9]/g, '');
-        }
-
-        function submitPayPal() {
-            let amt = document.getElementById('paypalCustomInput').value || '100';
-            let note = document.getElementById('paypalNoteInput').value.trim();
-            let url = `https://www.paypal.com/paypalme/PlasticHeartSurgery/${amt}USD`;
-            if (note) {
-                url += `?note=${encodeURIComponent(note)}`;
-            }
-            window.open(url, '_blank');
-        }
-    </script>
-
-    <!-- 1. Add a placeholder element -->
-    <div id="twitch-embed"></div>
-
-    <!-- 2. Load the Twitch embed script -->
-    <script src="https://embed.twitch.tv/embed/v1.js"></script>
-
-    <!-- 3. Initialize the object -->
-    <script type="text/javascript">
-      new Twitch.Embed("twitch-embed", {
-        width: 854,
-        height: 480,
-        channel: "plasticheartsurgery",
-        layout: "video-with-chat",
-        parent: ["yourwebsite.com"]
-      });
-    </script>
 </body>
 </html>
