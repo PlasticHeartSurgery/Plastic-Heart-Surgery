@@ -108,6 +108,26 @@
             letter-spacing: 0.25em;
             color: #ff0033;
             margin-bottom: 24px;
+            display: inline-block;
+        }
+
+        /* Wave Animation for Header Letters */
+        @keyframes waveAnimation {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-8px);
+            }
+        }
+
+        .wave-container {
+            display: inline-block;
+        }
+
+        .wave-container span {
+            display: inline-block;
+            animation: waveAnimation 1.2s ease-in-out infinite;
         }
 
         p {
@@ -352,7 +372,7 @@
 
     <main>
         <section>
-            <h2>Links</h2>
+            <h2><span class="wave-container" id="waveHeader">Links</span></h2>
             <p>💢 This is the most exhaustive list of Plastic Heart Surgery-related content; below 👇 is all you will need, and all you will ever need... 💢</p>
 
             <!-- Links Grid -->
@@ -390,8 +410,7 @@
 
                 <!-- Link Item 6 -->
                 <a href="https://www.youtube.com/watch?v=IlVzly_dddQ&feature=youtu.be" target="_blank" class="link-card">
-                    <div class="link-tag">
-Plastic Heart Surgery - WHERE 🤷 👏 😭 IS 😄 💦🅱 ALL 😍 🏻🛑💯 🌝😏 OF 👏 🔥 ❗ MY 👦🙋 👨 🍆 MONEY?!???!??!?!?!?! 💰 😮</div>
+                    <div class="link-tag">Plastic Heart Surgery - WHERE 🤷 👏 😭 IS 😄 💦🅱 ALL 😍 🏻🛑💯 🌝😏 OF 👏 🔥 ❗ MY 👦🙋 👨 🍆 MONEY?!???!??!?!?!?! 💰 😮</div>
                     <div class="link-desc">Music Video</div>
                 </a>
 
@@ -421,6 +440,19 @@ Plastic Heart Surgery - WHERE 🤷 👏 😭 IS 😄 💦🅱 ALL 😍 🏻🛑�
     </main>
 
     <script>
+        // Split header into individual letters with staggered animation delay
+        const waveHeader = document.getElementById('waveHeader');
+        if (waveHeader) {
+            const text = waveHeader.textContent;
+            waveHeader.textContent = '';
+            text.split('').forEach((char, index) => {
+                const span = document.createElement('span');
+                span.textContent = char === ' ' ? '\u00A0' : char;
+                span.style.animationDelay = `${index * 0.1}s`;
+                waveHeader.appendChild(span);
+            });
+        }
+
         let currentPayPalAmount = 100;
 
         function setPayPalAmount(amount, btn) {
