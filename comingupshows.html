@@ -156,6 +156,29 @@
             display: block;
         }
 
+        @keyframes redPulse {
+            0%, 90% {
+                background-color: #f7f7f7;
+                color: #888888;
+                border-color: #000000;
+            }
+            95% {
+                background-color: rgba(255, 0, 51, 0.15);
+                color: #ff0033;
+                border-color: #ff0033;
+                box-shadow: 0 0 20px rgba(255, 0, 51, 0.4);
+            }
+            100% {
+                background-color: #f7f7f7;
+                color: #888888;
+                border-color: #000000;
+            }
+        }
+
+        .pulsing-booking-box {
+            animation: redPulse 10s infinite;
+        }
+
         .show-content {
             padding: 24px;
         }
@@ -249,12 +272,12 @@
             <div class="shows-grid">
                 <!-- Show Item 1 (Fully clickable mailto card) -->
                 <a href="mailto:plasticheartsurgery@gmail.com?subject=Booking%20Inquiry%20%E2%80%94%20Plastic%20Heart%20Surgery" class="show-card">
-                    <div class="show-image">
+                    <div class="show-image pulsing-booking-box">
                         <span>Available for bookings</span>
                     </div>
                     <div class="show-content">
                         <div class="show-date">Book Me!!!!!</div>
-                        <div class="show-title">Inquiries & Proposals (Double-click this box)</div>
+                        <div class="show-title">Inquiries & Proposals</div>
                         <div class="show-location">Get in touch: <span style="color: #ff0033;">plasticheartsurgery@gmail.com</span></div>
                     </div>
                 </a>
