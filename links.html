@@ -111,7 +111,7 @@
             display: inline-block;
         }
 
-        /* Wave Animation for Header Letters */
+        /* Periodic Wave Animation */
         @keyframes waveAnimation {
             0%, 100% {
                 transform: translateY(0);
@@ -127,7 +127,11 @@
 
         .wave-container span {
             display: inline-block;
-            animation: waveAnimation 1.2s ease-in-out infinite;
+            transform: translateY(0);
+        }
+
+        .wave-container.dancing span {
+            animation: waveAnimation 0.4s ease-in-out infinite alternate;
         }
 
         p {
@@ -451,6 +455,14 @@
                 span.style.animationDelay = `${index * 0.1}s`;
                 waveHeader.appendChild(span);
             });
+
+            // Trigger dance every 6 seconds for 1.2 seconds
+            setInterval(() => {
+                waveHeader.classList.add('dancing');
+                setTimeout(() => {
+                    waveHeader.classList.remove('dancing');
+                }, 1200); // 1.2 seconds dance duration
+            }, 6000);
         }
 
         let currentPayPalAmount = 100;
