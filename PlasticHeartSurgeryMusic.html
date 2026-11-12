@@ -3,42 +3,268 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plastic Heart Surgery</title>
+    <title>Plastic Heart Surgery — Music</title>
     <!-- 1. Essential Audio Stylesheet -->
     <link rel="stylesheet" href="essential_audio.css" />
     <style>
+        @font-face {
+            font-family: 'Lyno Ulyscyr';
+            src: local('Lyno Ulyscyr'), url('fonts/lynoulyscyr.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'Frostgiant3D';
+            src: local('Frostgiant3D'), url('fonts/frostgiant3d.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
         body {
-            font-family: system-ui, -apple-system, sans-serif;
-            background-color: #121212;
-            color: #f0f0f0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #ffffff;
+            color: #111111;
+            display: flex;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .sidebar {
+            width: 340px;
+            background-color: #ffffff;
+            border-right: none;
+            padding: 40px;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: center;
+            justify-content: space-between;
+            position: fixed;
             height: 100vh;
-            margin: 0;
+            top: 0;
+            left: 0;
+            overflow-y: auto;
         }
-        .container {
-            max-width: 600px;
-            width: 90%;
-            text-align: center;
+
+        .site-title {
+            font-family: 'Lyno Ulyscyr', sans-serif;
+            font-size: 1.5rem;
+            letter-spacing: 0.3em;
+            color: #ff0033;
+            margin-bottom: 40px;
+            text-decoration: none;
+            display: block;
         }
-        h1 {
-            letter-spacing: 2px;
-            margin-bottom: 2rem;
+
+        .nav-columns {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .nav-column-item {
+            font-family: 'Lyno Ulyscyr', sans-serif;
+            font-size: 1.15rem;
+            letter-spacing: 0.2em;
+            color: #333333;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .nav-column-item:hover, .nav-column-item.active {
+            color: #ff0033;
+        }
+
+        .sidebar-footer {
+            font-size: 0.85rem;
+            color: #333333;
+            word-break: break-all;
+            margin-top: 30px;
+        }
+
+        .sidebar-footer a {
+            color: #ff0033;
+            text-decoration: none;
+        }
+
+        .sidebar-footer a:hover {
+            text-decoration: underline;
+        }
+
+        main {
+            margin-left: 340px;
+            flex: 1;
+            padding: 80px 60px;
+            max-width: 950px;
+            background-color: #ffffff;
+        }
+
+        h2 {
+            font-family: 'Lyno Ulyscyr', sans-serif;
+            font-size: 1.8rem;
+            letter-spacing: 0.25em;
+            color: #ff0033;
+            margin-bottom: 24px;
+        }
+
+        p {
+            color: #222222;
+            margin-bottom: 24px;
+            font-size: 1rem;
+        }
+
+        /* Track Grid */
+        .links-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        /* Audio Card matching Link Card aesthetic */
+        .audio-card {
+            display: block;
+            background: #ffffff;
+            border: 2px solid #000000;
+            border-radius: 6px;
+            padding: 24px;
+            box-shadow: 4px 4px 0px #000000;
+            position: relative;
+            z-index: 1;
+            transition: transform 0.2s ease, border-color 0.4s ease, background-color 0.4s ease;
+        }
+
+        .audio-card:hover {
+            border-color: #ff0033;
+            transform: translateY(-2px);
+            animation: gradientGlow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes gradientGlow {
+            0% {
+                background-color: #ffffff;
+                box-shadow: 0px 0px 5px rgba(255, 255, 255, 0.8), 4px 4px 0px #ff0033;
+            }
+            50% {
+                background-color: #fff5f7;
+                box-shadow: 0px 0px 20px rgba(255, 0, 51, 0.35), 4px 4px 0px #ff0033;
+            }
+            100% {
+                background-color: #ffe6eb;
+                box-shadow: 0px 0px 35px rgba(255, 0, 51, 0.7), 4px 4px 0px #ff0033;
+            }
+        }
+
+        .link-tag {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #ff0033;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+
+        .link-title {
+            font-family: 'Frostgiant3D', sans-serif !important;
+            font-size: 1.2rem;
+            letter-spacing: 0.15em;
+            color: #111111;
+            margin-bottom: 12px;
+        }
+
+        .link-desc {
+            font-size: 0.95rem;
+            color: #444444;
+            margin-bottom: 20px;
+        }
+
+        /* Optional Essential Audio Theme Overrides to match #ff0033 */
+        .essential_audio {
+            margin-top: 10px;
+        }
+        div.essential_audio > div:nth-child(1) div {
+            background-color: #ff0033 !important;
+        }
+        div.essential_audio > div:nth-child(2) div:after {
+            background-color: #ff0033 !important;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+                padding: 30px 20px;
+                border-right: none;
+                border-bottom: none;
+            }
+            main {
+                margin-left: 0;
+                padding: 40px 20px;
+                max-width: 100%;
+            }
+            .site-title {
+                font-size: 1.2rem;
+                letter-spacing: 0.15em;
+            }
+            h2 {
+                font-size: 1.4rem;
+                letter-spacing: 0.15em;
+            }
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>Plastic Heart Surgery</h1>
-
-        <!-- 2. Essential Audio Player Embed -->
-        <div class="essential_audio" data-url="1.mp3">
-            <span class="no_js">Please activate JavaScript for the audio player.</span>
+    <div class="sidebar">
+        <div>
+            <a href="index.html" class="site-title">Plastic Heart Surgery</a>
+            <div class="nav-columns">
+                <a href="hidden.html" class="nav-column-item active">Plastic Heart Surgery</a>
+                <a href="hidden.html" class="nav-column-item">Visual Arts</a>
+                <a href="music.html" class="nav-column-item">Music</a>
+                <a href="tourdates.html" class="nav-column-item">Tour Dates</a>
+                <a href="comingupshows.html" class="nav-column-item">Coming Up Shows</a>
+                <a href="bigfanof....html" class="nav-column-item">Big Fan Of</a>
+                <a href="links.html" class="nav-column-item">Links</a>
+            </div>
+        </div>
+        <div class="sidebar-footer">
+            <p style="margin-bottom: 4px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #000000;">Contact</p>
+            <a href="mailto:plasticheartsurgery@gmail.com">plasticheartsurgery@gmail.com</a>
         </div>
     </div>
+
+    <main>
+        <section>
+            <h2>Plastic Heart Surgery</h2>
+
+            <!-- Audio Cards Grid -->
+            <div class="links-grid">
+
+                <!-- Singular Audio Card Template -->
+                <div class="audio-card">
+                    <div class="link-tag">Track 01</div>
+                    <div class="link-title">Track Title</div>
+                    <div class="link-desc"></div>
+
+                    <!-- 2. Essential Audio Player Embed -->
+                    <div class="essential_audio" data-url="1.mp3">
+                        <span class="no_js">Please activate JavaScript for the audio player.</span>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+    </main>
 
     <!-- 1. Essential Audio JavaScript -->
     <script src="essential_audio.js"></script>
