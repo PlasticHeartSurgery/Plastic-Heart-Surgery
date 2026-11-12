@@ -175,6 +175,8 @@
             letter-spacing: 0.15em;
             color: #111111;
             margin-bottom: 8px;
+            overflow-wrap: anywhere;
+            word-break: break-word;
         }
 
         .link-desc {
@@ -189,6 +191,8 @@
             border-radius: 6px;
             padding: 24px;
             box-shadow: 4px 4px 0px #000000;
+            max-width: 100%;
+            overflow: hidden;
             transition: transform 0.2s ease, border-color 0.4s ease, background-color 0.4s ease;
         }
         .paypal-widget-card:hover {
@@ -199,13 +203,17 @@
             font-family: 'Frostgiant3D', sans-serif !important;
             color: inherit;
             text-decoration: none;
+            overflow-wrap: anywhere;
+            word-break: break-word;
+            display: inline-block;
+            max-width: 100%;
         }
         .paypal-widget-card .link-title a:hover {
             text-decoration: underline;
         }
         .paypal-amounts {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(4, minmax(0, 1fr));
             gap: 10px;
             margin-bottom: 16px;
         }
@@ -213,13 +221,16 @@
             background: #ffffff;
             border: 2px solid #111111;
             border-radius: 4px;
-            padding: 10px 0;
+            padding: 10px 4px;
             font-family: inherit;
             font-size: 0.95rem;
             font-weight: 600;
             color: #111111;
             cursor: pointer;
             transition: all 0.2s ease;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
         .paypal-amt-btn:hover {
             border-color: #ff0033;
@@ -300,8 +311,20 @@
                 font-size: 1.4rem;
                 letter-spacing: 0.15em;
             }
+            .paypal-widget-card {
+                padding: 18px;
+            }
+            .link-title {
+                font-size: 0.9rem;
+                letter-spacing: 0.06em;
+                line-height: 1.4;
+            }
             .paypal-amounts {
-                grid-template-columns: repeat(2, 1fr);
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+            .paypal-amt-btn {
+                font-size: 0.85rem;
+                padding: 10px 6px;
             }
         }
     </style>
@@ -347,26 +370,25 @@
                     <div class="link-desc">Experimental electronic tracks, mixes, and live recordings.</div>
                 </a>
                 
-                <!-- Link Item 4 -->
+                <!-- Link Item 3 -->
                 <a href="https://music.apple.com/ca/artist/plastic-heart-surgery/1539041975" target="_blank" class="link-card">
                     <div class="link-tag">Plastic on 🍎 Apple Music 🍎</div>
                     <div class="link-desc">(I actually prefer this apps white theme).</div>
                 </a>
 
-                <!-- Link Item 3 -->
+                <!-- Link Item 4 -->
                 <a href="https://plasticheartsurgery.bandcamp.com/" target="_blank" class="link-card">
                     <div class="link-tag">Bandcamp</div>
                     <div class="link-desc">If... DJ/Marketing--want a free download? Please message me on Instagram</div>
                 </a>
                 
-                <!-- Link Item 4 -->
+                <!-- Link Item 5 -->
                 <a href="https://soundcloud.com/user-802528370" target="_blank" class="link-card">
                     <div class="link-tag">SoundCloud</div>
                     <div class="link-desc">THIS APP IS TOO EXPENSIVE TO USE ANYMORE! (See Paypal below if you would like my music to be on there...)</div>
                 </a>
 
-                
-                <!-- Link Item 4 -->
+                <!-- Link Item 6 -->
                 <a href="https://www.youtube.com/watch?v=IlVzly_dddQ&feature=youtu.be" target="_blank" class="link-card">
                     <div class="link-tag">
 Plastic Heart Surgery - WHERE 🤷 👏 😭 IS 😄 💦🅱 ALL 😍 🏻🛑💯 🌝😏 OF 👏 🔥 ❗ MY 👦🙋 👨 🍆 MONEY?!???!??!?!?!?! 💰 😮</div>
