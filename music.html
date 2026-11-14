@@ -110,6 +110,58 @@ margin-bottom: 24px;
 font-size: 1rem;
 }
 
+/* Fade-in keyframes */
+@keyframes fadeIn {
+from {
+opacity: 0;
+transform: translateY(15px);
+}
+to {
+opacity: 1;
+transform: translateY(0);
+}
+}
+
+/* Hidden initially */
+.spotify-container,
+.album-card {
+opacity: 0;
+transform: translateY(15px);
+}
+
+/* Webamp hidden initially until the 2-minute secret trigger */
+.webamp-section {
+opacity: 0;
+transform: translateY(15px);
+display: flex;
+justify-content: center;
+}
+
+body.images-loaded .spotify-container {
+animation: fadeIn 3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+animation-delay: 0.1s;
+}
+
+body.images-loaded .album-card {
+animation: fadeIn 3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Triggered for Webamp after 2 minutes */
+body.webamp-revealed .webamp-section {
+animation: fadeIn 3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Staggered delay for each card */
+body.images-loaded .album-card:nth-child(1) { animation-delay: 0.3s; }
+body.images-loaded .album-card:nth-child(2) { animation-delay: 0.4s; }
+body.images-loaded .album-card:nth-child(3) { animation-delay: 0.5s; }
+body.images-loaded .album-card:nth-child(4) { animation-delay: 0.6s; }
+body.images-loaded .album-card:nth-child(5) { animation-delay: 0.7s; }
+body.images-loaded .album-card:nth-child(6) { animation-delay: 0.8s; }
+body.images-loaded .album-card:nth-child(7) { animation-delay: 0.9s; }
+body.images-loaded .album-card:nth-child(8) { animation-delay: 1.0s; }
+body.images-loaded .album-card:nth-child(9) { animation-delay: 1.1s; }
+
 /* Spotify Player Styling */
 .spotify-container {
 margin-bottom: 40px;
@@ -118,12 +170,6 @@ border-radius: 8px;
 overflow: hidden;
 border: 2px solid #000000;
 box-shadow: 4px 4px 0px #000000;
-}
-
-/* Webamp Player Container */
-.webamp-section {
-display: flex;
-justify-content: center;
 }
 
 #webamp-container {
@@ -140,18 +186,6 @@ gap: 40px;
 margin-top: 20px;
 }
 
-/* Fade-in keyframes */
-@keyframes fadeIn {
-from {
-opacity: 0;
-transform: translateY(15px);
-}
-to {
-opacity: 1;
-transform: translateY(0);
-}
-}
-
 .album-card {
 background: #ffffff;
 border: 2px solid #000000;
@@ -162,26 +196,8 @@ display: flex;
 flex-direction: column;
 text-decoration: none;
 color: inherit;
-opacity: 0; /* Hidden initially until images are fully preloaded */
-transform: translateY(15px);
 transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease, border-color 0.4s ease;
 }
-
-/* Triggered only after preloading finishes */
-body.images-loaded .album-card {
-animation: fadeIn 3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-/* Staggered delay for each card */
-body.images-loaded .album-card:nth-child(1) { animation-delay: 0.2s; }
-body.images-loaded .album-card:nth-child(2) { animation-delay: 0.4s; }
-body.images-loaded .album-card:nth-child(3) { animation-delay: 0.6s; }
-body.images-loaded .album-card:nth-child(4) { animation-delay: 0.8s; }
-body.images-loaded .album-card:nth-child(5) { animation-delay: 1.0s; }
-body.images-loaded .album-card:nth-child(6) { animation-delay: 1.2s; }
-body.images-loaded .album-card:nth-child(7) { animation-delay: 1.4s; }
-body.images-loaded .album-card:nth-child(8) { animation-delay: 1.6s; }
-body.images-loaded .album-card:nth-child(9) { animation-delay: 1.8s; }
 
 .album-image-frame {
 position: relative;
@@ -261,7 +277,6 @@ grid-template-columns: 1fr;
 <a href="music.html" class="nav-column-item active">Music</a>
 <a href="tourdates.html" class="nav-column-item">Tour Dates</a>
 <a href="comingupshows.html" class="nav-column-item">Coming Up Shows</a>
-<a href="bigfanof....html" class="nav-column-item">Coming Up Shows</a>
 <a href="bigfanof....html" class="nav-column-item">Big Fan Of</a>
 <a href="links.html" class="nav-column-item">Links</a>
 </div>
@@ -282,7 +297,7 @@ grid-template-columns: 1fr;
 <iframe style="border-radius:12px" src="https://open.spotify.com/embed/artist/5ZoUq3l7mN6OBgTMjpjfj7?utm_source=generator&theme=0" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
 </div>
 
-<!-- Webamp Player Container -->
+<!-- Webamp Secret Player Container -->
 <div class="webamp-section">
 <div id="webamp-container"></div>
 </div>
@@ -414,10 +429,10 @@ grid-template-columns: 1fr;
 </section>
 </main>
     
-<!-- Image Preloader & Webamp Scripts -->
+<!-- Image Preloader & Webamp 2-Minute Secret Fade-in Scripts -->
 <script src="https://unpkg.com/webamp@1.4.2/built/webamp.bundle.min.js"></script>
 <script>
-    // Preload all album artwork images before starting fade-in transitions
+    // 1. Preload all album artwork images before starting main card fade-ins
     window.addEventListener('DOMContentLoaded', () => {
         const imageSources = [
             "images/And Now She Is a Monster - Brighter - 1700 x 1700.png",
@@ -437,7 +452,6 @@ grid-template-columns: 1fr;
         function checkAllLoaded() {
             loadedCount++;
             if (loadedCount >= totalImages) {
-                // All images are successfully preloaded into cache; trigger card animations
                 document.body.classList.add('images-loaded');
             }
         }
@@ -446,11 +460,11 @@ grid-template-columns: 1fr;
             const img = new Image();
             img.src = src;
             img.onload = checkAllLoaded;
-            img.onerror = checkAllLoaded; // Continue even if an image fails so the page doesn't hang
+            img.onerror = checkAllLoaded;
         });
     });
 
-    // Webamp Player Initialization
+    // 2. Secret Webamp Player Initialization (Triggers after exactly 2 minutes / 120,000ms)
     setTimeout(() => {
         const Webamp = window.Webamp;
         const webamp = new Webamp({
@@ -469,8 +483,10 @@ grid-template-columns: 1fr;
         
         webamp.renderWhenReady(document.getElementById('webamp-container')).then(() => {
             document.querySelector('.webamp-section').style.marginBottom = '40px';
+            // Trigger the secret fade-in animation for Webamp
+            document.body.classList.add('webamp-revealed');
         });
-    }, 60000); 
+    }, 120000); 
 </script>
 
 </body>
