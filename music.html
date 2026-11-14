@@ -28,7 +28,7 @@ line-height: 1.6;
 overflow-x: hidden;
 }
 
-/* --- PERFECTLY CENTERED RESPONSIVE RED LOADING BAR --- */
+/* --- CENTERED RESPONSIVE WHITE-TO-RED GRADIENT LOADING BAR --- */
 .loader-container {
 position: fixed;
 top: 50%;
@@ -42,18 +42,19 @@ border-radius: 999px;
 overflow: hidden;
 box-shadow: 3px 3px 0px #000000;
 z-index: 9999;
-transition: opacity 0.5s ease, visibility 0.5s ease;
+transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
 .loader-bar {
 width: 0%;
 height: 100%;
-background-color: #ff0033;
+/* Gradient from white to red (red being the full finished end) */
+background: linear-gradient(to right, #ffffff, #ff0033);
 border-radius: 999px;
-transition: width 0.2s ease-out;
+transition: width 0.15s ease-out;
 }
 
-/* Hides loader once preloading finishes */
+/* Hides loader instantly once preloading finishes */
 body.images-loaded .loader-container {
 opacity: 0;
 visibility: hidden;
@@ -168,27 +169,27 @@ display: flex;
 justify-content: center;
 }
 
-/* Spotify fades in FIRST with a 1-second delay and a slower, smoother duration (4s) */
+/* Spotify fades in right after loading bar fills (with a slight 0.2s offset) */
 body.images-loaded .spotify-container {
 animation: fadeIn 4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-animation-delay: 1s; 
+animation-delay: 0.2s; 
 }
 
-/* Cards follow shortly after */
+/* Cards follow right after */
 body.images-loaded .album-card {
 animation: fadeIn 3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 /* Staggered delay for each card */
-body.images-loaded .album-card:nth-child(1) { animation-delay: 1.4s; }
-body.images-loaded .album-card:nth-child(2) { animation-delay: 1.5s; }
-body.images-loaded .album-card:nth-child(3) { animation-delay: 1.6s; }
-body.images-loaded .album-card:nth-child(4) { animation-delay: 1.7s; }
-body.images-loaded .album-card:nth-child(5) { animation-delay: 1.8s; }
-body.images-loaded .album-card:nth-child(6) { animation-delay: 1.9s; }
-body.images-loaded .album-card:nth-child(7) { animation-delay: 2.0s; }
-body.images-loaded .album-card:nth-child(8) { animation-delay: 2.1s; }
-body.images-loaded .album-card:nth-child(9) { animation-delay: 2.2s; }
+body.images-loaded .album-card:nth-child(1) { animation-delay: 0.4s; }
+body.images-loaded .album-card:nth-child(2) { animation-delay: 0.5s; }
+body.images-loaded .album-card:nth-child(3) { animation-delay: 0.6s; }
+body.images-loaded .album-card:nth-child(4) { animation-delay: 0.7s; }
+body.images-loaded .album-card:nth-child(5) { animation-delay: 0.8s; }
+body.images-loaded .album-card:nth-child(6) { animation-delay: 0.9s; }
+body.images-loaded .album-card:nth-child(7) { animation-delay: 1.0s; }
+body.images-loaded .album-card:nth-child(8) { animation-delay: 1.1s; }
+body.images-loaded .album-card:nth-child(9) { animation-delay: 1.2s; }
 
 /* Triggered for Webamp after 2 minutes */
 body.webamp-revealed .webamp-section {
@@ -298,7 +299,6 @@ max-width: 100%;
 .albums-grid {
 grid-template-columns: 1fr;
 }
-/* Centers loading bar cleanly on mobile screens */
 .loader-container {
 left: 50%;
 }
@@ -307,7 +307,7 @@ left: 50%;
 </head>
 <body>
 
-<!-- Perfectly Centered Rounded Red Loading Bar -->
+<!-- Centered White-to-Red Gradient Loading Bar -->
 <div class="loader-container">
     <div class="loader-bar" id="loader-bar"></div>
 </div>
@@ -476,7 +476,7 @@ left: 50%;
 <!-- Image Preloader, Loading Bar, & Webamp Secret Fade-in Scripts -->
 <script src="https://unpkg.com/webamp@1.4.2/built/webamp.bundle.min.js"></script>
 <script>
-    // 1. Preload all album artwork images and update loading bar progress
+    // 1. Preload all album artwork images and update loading bar progress instantly
     window.addEventListener('DOMContentLoaded', () => {
         const imageSources = [
             "images/And Now She Is a Monster - Brighter - 1700 x 1700.png",
@@ -500,10 +500,8 @@ left: 50%;
             loaderBar.style.width = progressPercent + '%';
 
             if (loadedCount >= totalImages) {
-                // Short pause at 100% before triggering the fade-ins and hiding the loader bar
-                setTimeout(() => {
-                    document.body.classList.add('images-loaded');
-                }, 300);
+                // Instantly trigger fade-in animations the moment loading hits 100%
+                document.body.classList.add('images-loaded');
             }
         }
 
