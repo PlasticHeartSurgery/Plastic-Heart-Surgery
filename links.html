@@ -246,11 +246,8 @@
             object-fit: contain;
             background: transparent;
             will-change: transform;
-        }
-
-        .video-card:hover .custom-image-box.borderless img.user-thumbnail {
-            opacity: 1;
-            filter: none;
+            transform: scale(0.85); /* Default static state at 85% scale */
+            transition: none; /* Controlled dynamically by JS on hover */
         }
 
         /* Red-to-White Gradient Flash Overlay for See-Through SVG (Every 6 seconds) */
@@ -524,8 +521,8 @@
             <!-- Links Grid -->
             <div class="links-grid">
                 
-                <!-- Link Item 1 (Instagram Card - 15% smaller + staggered start) -->
-                <a href="https://www.instagram.com/plastic.heart.surgery/" target="_blank" class="link-card video-card">
+                <!-- Link Item 1 (Instagram Card - Hover Wiggle) -->
+                <a href="https://www.instagram.com/plastic.heart.surgery/" target="_blank" class="link-card video-card hover-wiggle-card">
                     <div class="custom-image-box borderless">
                         <img src="images/insta7.png" alt="Instagram Thumbnail" class="user-thumbnail wiggle-thumb" data-seed="1.0" data-freq="2.0" data-amp="15" data-rot="15" data-scale-base="0.85" data-time-offset="0.0">
                     </div>
@@ -535,8 +532,8 @@
                     </div>
                 </a>
 
-                <!-- Link Item 2 (Spotify Card - 15% smaller + staggered start) -->
-                <a href="https://open.spotify.com/artist/5ZoUq3l7mN6OBgTMjpjfj7" target="_blank" class="link-card video-card">
+                <!-- Link Item 2 (Spotify Card - Hover Wiggle) -->
+                <a href="https://open.spotify.com/artist/5ZoUq3l7mN6OBgTMjpjfj7" target="_blank" class="link-card video-card hover-wiggle-card">
                     <div class="custom-image-box borderless">
                         <img src="images/Spotify.svg" alt="Spotify Thumbnail" class="user-thumbnail wiggle-thumb" data-seed="4.5" data-freq="2.8" data-amp="18" data-rot="20" data-scale-base="0.85" data-time-offset="1.3">
                     </div>
@@ -546,8 +543,8 @@
                     </div>
                 </a>
                 
-                <!-- Link Item 3 (Apple Music Card - 15% smaller + staggered start) -->
-                <a href="https://music.apple.com/ca/artist/plastic-heart-surgery/1539041975" target="_blank" class="link-card video-card">
+                <!-- Link Item 3 (Apple Music Card - Hover Wiggle) -->
+                <a href="https://music.apple.com/ca/artist/plastic-heart-surgery/1539041975" target="_blank" class="link-card video-card hover-wiggle-card">
                     <div class="custom-image-box borderless">
                         <img src="images/APPLE.png" alt="Apple Music Thumbnail" class="user-thumbnail wiggle-thumb" data-seed="7.2" data-freq="1.8" data-amp="12" data-rot="10" data-scale-base="0.85" data-time-offset="2.7">
                     </div>
@@ -557,8 +554,8 @@
                     </div>
                 </a>
 
-                <!-- Link Item 4 (Bandcamp Card - 15% smaller + staggered start) -->
-                <a href="https://plasticheartsurgery.bandcamp.com/" target="_blank" class="link-card video-card">
+                <!-- Link Item 4 (Bandcamp Card - Hover Wiggle) -->
+                <a href="https://plasticheartsurgery.bandcamp.com/" target="_blank" class="link-card video-card hover-wiggle-card">
                     <div class="custom-image-box borderless">
                         <img src="images/BCC1.png" alt="Bandcamp Thumbnail" class="user-thumbnail wiggle-thumb" data-seed="9.1" data-freq="3.2" data-amp="22" data-rot="25" data-scale-base="0.85" data-time-offset="3.8">
                     </div>
@@ -568,8 +565,8 @@
                     </div>
                 </a>
                 
-                <!-- Link Item 5 (SoundCloud Card - 15% smaller + staggered start) -->
-                <a href="https://soundcloud.com/user-802528370" target="_blank" class="link-card video-card">
+                <!-- Link Item 5 (SoundCloud Card - Hover Wiggle) -->
+                <a href="https://soundcloud.com/user-802528370" target="_blank" class="link-card video-card hover-wiggle-card">
                     <div class="custom-image-box borderless">
                         <img src="images/SCSM.png" alt="SoundCloud Thumbnail" class="user-thumbnail wiggle-thumb" data-seed="12.4" data-freq="2.2" data-amp="16" data-rot="18" data-scale-base="0.85" data-time-offset="4.5">
                     </div>
@@ -689,7 +686,7 @@
             window.open(url, '_blank');
         }
 
-        // AE Wiggle Simulator Loop with 15% reduction & staggered start times
+        // AE Wiggle Simulator Loop with Hover Triggers
         function getRandomKeyframe(seed, index) {
             const x = Math.sin(index * 127.1 + seed * 311.7) * 43758.5453123;
             const frac = x - Math.floor(x);
@@ -705,32 +702,40 @@
             return v0 + (v1 - v0) * u;
         }
 
-        const wiggleThumbs = document.querySelectorAll('.wiggle-thumb');
+        const hoverCards = document.querySelectorAll('.hover-wiggle-card');
         const pageLoadTime = performance.now();
 
         function animateWiggleThumbs(now) {
             const globalElapsed = (now - pageLoadTime) / 1000;
 
-            wiggleThumbs.forEach((img) => {
-                const seed = parseFloat(img.getAttribute('data-seed')) || 1.0;
-                const freq = parseFloat(img.getAttribute('data-freq')) || 2.0;
-                const amp = parseFloat(img.getAttribute('data-amp')) || 15;
-                const maxRot = parseFloat(img.getAttribute('data-rot')) || 15;
+            hoverCards.forEach((card) => {
+                const img = card.querySelector('.wiggle-thumb');
+                if (!img) return;
+
                 const baseScaleFactor = parseFloat(img.getAttribute('data-scale-base')) || 0.85;
-                const timeOffset = parseFloat(img.getAttribute('data-time-offset')) || 0.0;
 
-                // Unique phase per thumbnail based on its offset
-                const localTime = globalElapsed + timeOffset;
-                const phase = localTime * freq;
+                // Check if the user is hovering over this specific card
+                if (card.matches(':hover')) {
+                    const seed = parseFloat(img.getAttribute('data-seed')) || 1.0;
+                    const freq = parseFloat(img.getAttribute('data-freq')) || 2.0;
+                    const amp = parseFloat(img.getAttribute('data-amp')) || 15;
+                    const maxRot = parseFloat(img.getAttribute('data-rot')) || 15;
+                    const timeOffset = parseFloat(img.getAttribute('data-time-offset')) || 0.0;
 
-                const noiseX = smoothWiggleNoise(phase, seed);
-                const noiseRot = smoothWiggleNoise(phase, seed + 5.0);
+                    const localTime = globalElapsed + timeOffset;
+                    const phase = localTime * freq;
 
-                // Apply 15% smaller base scale combined with the wiggle expression zoom offset
-                const currentScale = baseScaleFactor + (noiseX * (amp / 100));
-                const rot = noiseRot * maxRot;
+                    const noiseX = smoothWiggleNoise(phase, seed);
+                    const noiseRot = smoothWiggleNoise(phase, seed + 5.0);
 
-                img.style.transform = `scale(${currentScale.toFixed(4)}) rotate(${rot.toFixed(2)}deg)`;
+                    const currentScale = baseScaleFactor + (noiseX * (amp / 100));
+                    const rot = noiseRot * maxRot;
+
+                    img.style.transform = `scale(${currentScale.toFixed(4)}) rotate(${rot.toFixed(2)}deg)`;
+                } else {
+                    // Instantly or smoothly snap back to static 85% scale and 0 rotation when not hovered
+                    img.style.transform = `scale(${baseScaleFactor}) rotate(0deg)`;
+                }
             });
 
             requestAnimationFrame(animateWiggleThumbs);
