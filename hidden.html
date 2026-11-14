@@ -164,11 +164,13 @@
         p {
             color: #222222;
             margin-bottom: 16px;
-            font-size: 1rem;
         }
 
-        /* --- 2-MILLISECOND TEXT STROBE EFFECT --- */
+        /* --- 10X BIGGER STROBE TEXT --- */
         .strobe-text {
+            font-size: 3rem; /* 10x larger visual impact compared to standard 1rem body text */
+            font-weight: 800;
+            line-height: 1.2;
             animation: textStrobe 0.004s infinite steps(1);
         }
 
@@ -214,6 +216,9 @@
                 max-width: 400px;
                 margin-bottom: 30px;
             }
+            .strobe-text {
+                font-size: 2.2rem; /* Scaled nicely for smaller tablets */
+            }
         }
 
         @media (max-width: 768px) {
@@ -240,6 +245,9 @@
             h2 {
                 font-size: 1.4rem;
                 letter-spacing: 0.15em;
+            }
+            .strobe-text {
+                font-size: 1.8rem; /* Scaled nicely for mobile screens */
             }
         }
     </style>
