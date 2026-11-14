@@ -212,46 +212,53 @@
 
         .video-card:hover .custom-image-box img.user-thumbnail {
             transform: scale(1.03);
-            opacity: 0.9;
+            opacity: 0.85;
         }
 
-        /* Red-to-White Pulsing Play Button Animation (Every 6 seconds) */
-        @keyframes redWhitePulse {
+        /* Red-to-White Gradient Flash Overlay for See-Through SVG (Every 6 seconds) */
+        @keyframes svgGradientFlash {
             0%, 100% {
-                background: rgba(255, 0, 51, 0.85);
-                box-shadow: 0 0 8px rgba(255, 0, 51, 0.4);
+                background-position: 0% 50%;
+                filter: drop-shadow(0 0 6px rgba(255, 0, 51, 0.9)) drop-shadow(0 2px 3px rgba(0, 0, 0, 0.8));
             }
             50% {
-                background: rgba(255, 255, 255, 0.95);
-                box-shadow: 0 0 16px rgba(255, 255, 255, 0.9);
+                background-position: 100% 50%;
+                filter: drop-shadow(0 0 12px rgba(255, 255, 255, 1)) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.9));
             }
         }
 
-        .custom-play-overlay {
+        .svg-play-wrapper {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 36px;
-            height: 26px;
-            border-radius: 6px;
+            width: 48px;
+            height: 48px;
             display: flex;
             align-items: center;
             justify-content: center;
-            animation: redWhitePulse 6s ease-in-out infinite;
-            border: 1px solid #000000;
             transition: transform 0.2s ease;
+            pointer-events: none;
         }
 
-        .video-card:hover .custom-play-overlay {
-            transform: translate(-50%, -50%) scale(1.1);
+        .video-card:hover .svg-play-wrapper {
+            transform: translate(-50%, -50%) scale(1.12);
         }
 
-        .custom-play-overlay img.play-btn-png {
-            width: 14px;
-            height: 14px;
-            object-fit: contain;
-            margin-left: 1px;
+        .svg-gradient-mask {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #ff0033 0%, #ff0033 35%, #ffffff 65%, #ffffff 100%);
+            background-size: 300% 300%;
+            -webkit-mask-image: url("images/YOUTUBEPLAYPNG.svg");
+            mask-image: url("images/YOUTUBEPLAYPNG.svg");
+            -webkit-mask-size: contain;
+            mask-size: contain;
+            -webkit-mask-repeat: no-repeat;
+            mask-repeat: no-repeat;
+            -webkit-mask-position: center;
+            mask-position: center;
+            animation: svgGradientFlash 6s ease-in-out infinite;
         }
 
         .video-card-content {
@@ -510,12 +517,12 @@
                     <div class="link-desc">THIS APP IS TOO EXPENSIVE TO USE ANYMORE! (See Paypal below if you would like my music to be on there...)</div>
                 </a>
 
-                <!-- Link Item 6 (Compact Video Card with your exact image path) -->
+                <!-- Link Item 6 (Compact Video Card with your exact image & gradient-masked SVG play button) -->
                 <a href="https://www.youtube.com/watch?v=IlVzly_dddQ&feature=youtu.be" target="_blank" class="video-card">
                     <div class="custom-image-box">
                         <img src="images/Plastic Heart Surgery - WHERE 🤷 👏 😭 IS 😄 💦🅱 ALL 😍 🏻🛑💯 🌝😏 OF 👏 🔥 ❗ MY 👦🙋 👨 🍆 MONEY_!___!__!_!_!_! 💰 😮 2-20 screenshot.png" alt="Music Video Thumbnail" class="user-thumbnail">
-                        <div class="custom-play-overlay">
-                            <img src="play-button.png" alt="Play" class="play-btn-png">
+                        <div class="svg-play-wrapper">
+                            <div class="svg-gradient-mask"></div>
                         </div>
                     </div>
                     <div class="video-card-content">
