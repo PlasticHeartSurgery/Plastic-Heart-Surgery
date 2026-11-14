@@ -161,11 +161,12 @@
             margin-bottom: 24px;
         }
 
-        /* --- MASSIVELY INCREASED STROBE TEXT --- */
+        /* --- CENTERED MASSIVE STROBE TEXT --- */
         .strobe-text {
-            font-size: 2.5rem; /* Massive size that spans comfortably and loudly */
+            font-size: 2.5rem;
             font-weight: 900;
             line-height: 1.25;
+            text-align: center; /* Centers the text alignment */
             margin-bottom: 40px;
             animation: textStrobe 0.004s infinite steps(1);
         }
@@ -178,8 +179,7 @@
 
         .bio-container {
             display: flex;
-            gap: 40px;
-            align-items: flex-start;
+            justify-content: center; /* Centers the image frame as well */
             margin-top: 20px;
         }
 
@@ -202,6 +202,7 @@
         @media (max-width: 900px) {
             .bio-container {
                 flex-direction: column;
+                align-items: center;
             }
             .bio-image-frame {
                 width: 100%;
@@ -272,7 +273,7 @@
         <section>
             <h2>I know where you live now...</h2>
             
-            <!-- Massive warning text now placed outside the cramped flex row -->
+            <!-- Centered warning text -->
             <p class="strobe-text">You are not supposed to be here. You think you know me, but you don't. Go away! I am tracking your IP and your real-time location. You aren't safe, I hope you used a VPN. The longer you stay on this page, the more information I gather. Leave this page immediately if you care for your safety and privacy.</p>
             
             <div class="bio-container">
