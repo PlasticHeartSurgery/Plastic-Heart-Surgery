@@ -26,28 +26,6 @@
             font-style: normal;
         }
 
-        /* Register custom angle property for smooth Crimson/White Conic rotation */
-        @property --border-angle {
-            syntax: "<angle>";
-            inherits: false;
-            initial-value: 0turn;
-        }
-
-        @keyframes spinConic {
-            to {
-                --border-angle: 1turn;
-            }
-        }
-
-        @keyframes iconCrimsonGlow {
-            0%, 100% {
-                filter: drop-shadow(0 0 8px rgba(255, 0, 51, 0.9));
-            }
-            50% {
-                filter: drop-shadow(0 0 14px rgba(255, 255, 255, 1)) drop-shadow(0 0 6px rgba(255, 0, 51, 0.8));
-            }
-        }
-
         * {
             box-sizing: border-box;
             margin: 0;
@@ -253,65 +231,23 @@
             opacity: 0.85;
         }
 
-        /* Animated Crimson/White Glowing Edge for Music Cards (No Black Border, Zero Rainbows) */
-        .custom-image-box.static-border {
-            border: 3px solid transparent !important;
-            border-radius: 6px;
-            overflow: visible !important;
-            background-color: #ffffff !important;
-            background-image:
-                linear-gradient(#ffffff, #ffffff),
-                conic-gradient(
-                    from var(--border-angle),
-                    #ff0033 0%,
-                    #ffffff 35%,
-                    #ff0033 70%,
-                    #ffffff 100%
-                ) !important;
-            background-origin: border-box !important;
-            background-clip: padding-box, border-box !important;
-            animation: spinConic 4s linear infinite !important;
+        /* Clean Borderless Image Box for Music Cards */
+        .custom-image-box.borderless {
+            border: none !important;
+            background-color: transparent !important;
             box-shadow: none !important;
+            animation: none !important;
         }
 
-        /* Crimson/White Rotating Halo Behind Music Thumbnail Box */
-        .custom-image-box.static-border::before {
-            content: "";
-            position: absolute;
-            inset: -4px;
-            border-radius: 8px;
-            background: conic-gradient(
-                from var(--border-angle),
-                #ff0033 0%,
-                #ffffff 35%,
-                #ff0033 70%,
-                #ffffff 100%
-            );
-            filter: blur(10px);
-            opacity: 0.6;
-            z-index: -1;
-            animation: spinConic 4s linear infinite;
-            transition: opacity 0.3s ease, filter 0.3s ease;
-            pointer-events: none;
-        }
-
-        .video-card:hover .custom-image-box.static-border::before {
-            opacity: 0.9;
-            filter: blur(14px);
-        }
-
-        .custom-image-box.static-border img.user-thumbnail {
+        .custom-image-box.borderless img.user-thumbnail {
             object-fit: contain;
-            padding: 18px;
-            position: relative;
-            z-index: 2;
-            animation: iconCrimsonGlow 3s ease-in-out infinite;
+            background: transparent;
         }
 
-        .video-card:hover .custom-image-box.static-border img.user-thumbnail {
-            transform: scale(1.07);
+        .video-card:hover .custom-image-box.borderless img.user-thumbnail {
+            transform: scale(1.03);
             opacity: 1;
-            filter: drop-shadow(0 0 12px #ff0033);
+            filter: none;
         }
 
         /* Red-to-White Gradient Flash Overlay for See-Through SVG (Every 6 seconds) */
@@ -591,9 +527,9 @@
                     <div class="link-desc">Plastic's Personal Instagram, DM for inquiries/bookings</div>
                 </a>
 
-                <!-- Link Item 2 (Spotify Card with Rotating Conic Border Effect) -->
+                <!-- Link Item 2 (Spotify Card - Borderless) -->
                 <a href="https://open.spotify.com/artist/5ZoUq3l7mN6OBgTMjpjfj7" target="_blank" class="link-card video-card">
-                    <div class="custom-image-box static-border">
+                    <div class="custom-image-box borderless">
                         <img src="images/Spotify.svg" alt="Spotify Thumbnail" class="user-thumbnail">
                     </div>
                     <div class="video-card-content">
@@ -602,9 +538,9 @@
                     </div>
                 </a>
                 
-                <!-- Link Item 3 (Apple Music Card with Rotating Conic Border Effect) -->
+                <!-- Link Item 3 (Apple Music Card - Borderless) -->
                 <a href="https://music.apple.com/ca/artist/plastic-heart-surgery/1539041975" target="_blank" class="link-card video-card">
-                    <div class="custom-image-box static-border">
+                    <div class="custom-image-box borderless">
                         <img src="images/Apple_Music_icon.svg" alt="Apple Music Thumbnail" class="user-thumbnail">
                     </div>
                     <div class="video-card-content">
@@ -613,9 +549,9 @@
                     </div>
                 </a>
 
-                <!-- Link Item 4 (Bandcamp Card with Rotating Conic Border Effect) -->
+                <!-- Link Item 4 (Bandcamp Card - Borderless) -->
                 <a href="https://plasticheartsurgery.bandcamp.com/" target="_blank" class="link-card video-card">
-                    <div class="custom-image-box static-border">
+                    <div class="custom-image-box borderless">
                         <img src="images/BCC.png" alt="Bandcamp Thumbnail" class="user-thumbnail">
                     </div>
                     <div class="video-card-content">
@@ -624,9 +560,9 @@
                     </div>
                 </a>
                 
-                <!-- Link Item 5 (SoundCloud Card with Rotating Conic Border Effect) -->
+                <!-- Link Item 5 (SoundCloud Card - Borderless) -->
                 <a href="https://soundcloud.com/user-802528370" target="_blank" class="link-card video-card">
-                    <div class="custom-image-box static-border">
+                    <div class="custom-image-box borderless">
                         <img src="images/Logo_black_on_Yellow.webp" alt="SoundCloud Thumbnail" class="user-thumbnail">
                     </div>
                     <div class="video-card-content">
