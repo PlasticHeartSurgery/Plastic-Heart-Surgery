@@ -204,7 +204,7 @@
             }
         }
 
-        /* 1/4 Size Scaled Image Box */
+        /* 1/4 Size Scaled Image Box for Videos */
         .custom-image-box {
             position: relative;
             width: 200px;
@@ -231,71 +231,26 @@
             opacity: 0.85;
         }
 
-        /* Clean Borderless Image Box for Music Cards */
+        /* Completely borderless wrapper matching your original layout */
         .custom-image-box.borderless {
             border: none !important;
             background-color: transparent !important;
             box-shadow: none !important;
             animation: none !important;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .custom-image-box.borderless img.user-thumbnail {
             object-fit: contain;
             background: transparent;
+            will-change: transform;
         }
 
         .video-card:hover .custom-image-box.borderless img.user-thumbnail {
-            transform: scale(1.03);
             opacity: 1;
             filter: none;
-        }
-
-        /* Mini AE Simulator Stage embedded inside thumbnail boxes */
-        .mini-ae-stage {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            background-color: #fafafa;
-            background-image: 
-                linear-gradient(to right, #e5e5e5 1px, transparent 1px),
-                linear-gradient(to bottom, #e5e5e5 1px, transparent 1px);
-            background-size: 12px 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-
-        .mini-ae-target {
-            width: 64px;
-            height: 64px;
-            background: #ffffff;
-            border: 2px solid #000000;
-            box-shadow: 2px 2px 0px #000000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            will-change: transform;
-            position: relative;
-        }
-
-        .mini-ae-target img {
-            width: 36px;
-            height: 36px;
-            object-fit: contain;
-        }
-
-        .mini-telemetry {
-            position: absolute;
-            bottom: 2px;
-            left: 2px;
-            background: rgba(0, 0, 0, 0.75);
-            color: #ffffff;
-            font-family: monospace;
-            font-size: 7px;
-            padding: 1px 3px;
-            border-radius: 2px;
-            letter-spacing: -0.05em;
         }
 
         /* Red-to-White Gradient Flash Overlay for See-Through SVG (Every 6 seconds) */
@@ -569,15 +524,10 @@
             <!-- Links Grid -->
             <div class="links-grid">
                 
-                <!-- Link Item 1 (Instagram Card with Live AE Simulator Thumbnail) -->
+                <!-- Link Item 1 (Instagram Card - Borderless with Wiggle) -->
                 <a href="https://www.instagram.com/plastic.heart.surgery/" target="_blank" class="link-card video-card">
                     <div class="custom-image-box borderless">
-                        <div class="mini-ae-stage">
-                            <div class="mini-ae-target" data-seed="1.0" data-freq="2.0" data-amp="15" data-rot="15">
-                                <img src="images/insta7.png" alt="Instagram Thumbnail">
-                            </div>
-                            <div class="mini-telemetry">AE // WIGGLE</div>
-                        </div>
+                        <img src="images/insta7.png" alt="Instagram Thumbnail" class="user-thumbnail wiggle-thumb" data-seed="1.0" data-freq="2.0" data-amp="15" data-rot="15">
                     </div>
                     <div class="video-card-content">
                         <div class="link-tag">Instagram</div>
@@ -585,15 +535,10 @@
                     </div>
                 </a>
 
-                <!-- Link Item 2 (Spotify Card with Live AE Simulator Thumbnail) -->
+                <!-- Link Item 2 (Spotify Card - Borderless with Wiggle) -->
                 <a href="https://open.spotify.com/artist/5ZoUq3l7mN6OBgTMjpjfj7" target="_blank" class="link-card video-card">
                     <div class="custom-image-box borderless">
-                        <div class="mini-ae-stage">
-                            <div class="mini-ae-target" data-seed="4.5" data-freq="2.8" data-amp="18" data-rot="20">
-                                <img src="images/Spotify.svg" alt="Spotify Thumbnail">
-                            </div>
-                            <div class="mini-telemetry">AE // WIGGLE</div>
-                        </div>
+                        <img src="images/Spotify.svg" alt="Spotify Thumbnail" class="user-thumbnail wiggle-thumb" data-seed="4.5" data-freq="2.8" data-amp="18" data-rot="20">
                     </div>
                     <div class="video-card-content">
                         <div class="link-tag">Spotify</div>
@@ -601,15 +546,10 @@
                     </div>
                 </a>
                 
-                <!-- Link Item 3 (Apple Music Card with Live AE Simulator Thumbnail) -->
+                <!-- Link Item 3 (Apple Music Card - Borderless with Wiggle) -->
                 <a href="https://music.apple.com/ca/artist/plastic-heart-surgery/1539041975" target="_blank" class="link-card video-card">
                     <div class="custom-image-box borderless">
-                        <div class="mini-ae-stage">
-                            <div class="mini-ae-target" data-seed="7.2" data-freq="1.8" data-amp="12" data-rot="10">
-                                <img src="images/APPLE.png" alt="Apple Music Thumbnail">
-                            </div>
-                            <div class="mini-telemetry">AE // WIGGLE</div>
-                        </div>
+                        <img src="images/APPLE.png" alt="Apple Music Thumbnail" class="user-thumbnail wiggle-thumb" data-seed="7.2" data-freq="1.8" data-amp="12" data-rot="10">
                     </div>
                     <div class="video-card-content">
                         <div class="link-tag">Plastic on 🍎 Apple Music 🍎</div>
@@ -617,15 +557,10 @@
                     </div>
                 </a>
 
-                <!-- Link Item 4 (Bandcamp Card with Live AE Simulator Thumbnail) -->
+                <!-- Link Item 4 (Bandcamp Card - Borderless with Wiggle) -->
                 <a href="https://plasticheartsurgery.bandcamp.com/" target="_blank" class="link-card video-card">
                     <div class="custom-image-box borderless">
-                        <div class="mini-ae-stage">
-                            <div class="mini-ae-target" data-seed="9.1" data-freq="3.2" data-amp="22" data-rot="25">
-                                <img src="images/BCC1.png" alt="Bandcamp Thumbnail">
-                            </div>
-                            <div class="mini-telemetry">AE // WIGGLE</div>
-                        </div>
+                        <img src="images/BCC1.png" alt="Bandcamp Thumbnail" class="user-thumbnail wiggle-thumb" data-seed="9.1" data-freq="3.2" data-amp="22" data-rot="25">
                     </div>
                     <div class="video-card-content">
                         <div class="link-tag">Bandcamp</div>
@@ -633,15 +568,10 @@
                     </div>
                 </a>
                 
-                <!-- Link Item 5 (SoundCloud Card with Live AE Simulator Thumbnail) -->
+                <!-- Link Item 5 (SoundCloud Card - Borderless with Wiggle) -->
                 <a href="https://soundcloud.com/user-802528370" target="_blank" class="link-card video-card">
                     <div class="custom-image-box borderless">
-                        <div class="mini-ae-stage">
-                            <div class="mini-ae-target" data-seed="12.4" data-freq="2.2" data-amp="16" data-rot="18">
-                                <img src="images/SCSM.png" alt="SoundCloud Thumbnail">
-                            </div>
-                            <div class="mini-telemetry">AE // WIGGLE</div>
-                        </div>
+                        <img src="images/SCSM.png" alt="SoundCloud Thumbnail" class="user-thumbnail wiggle-thumb" data-seed="12.4" data-freq="2.2" data-amp="16" data-rot="18">
                     </div>
                     <div class="video-card-content">
                         <div class="link-tag">SoundCloud</div>
@@ -759,7 +689,7 @@
             window.open(url, '_blank');
         }
 
-        // Mini AE Wiggle Simulator Loop for Thumbnail Cards
+        // AE Wiggle Simulator Loop for Borderless Thumbnails
         function getRandomKeyframe(seed, index) {
             const x = Math.sin(index * 127.1 + seed * 311.7) * 43758.5453123;
             const frac = x - Math.floor(x);
@@ -775,18 +705,18 @@
             return v0 + (v1 - v0) * u;
         }
 
-        const miniTargets = document.querySelectorAll('.mini-ae-target');
-        let miniStartTime = performance.now();
+        const wiggleThumbs = document.querySelectorAll('.wiggle-thumb');
+        let wiggleStartTime = performance.now();
 
-        function animateMiniStages(now) {
-            const dt = (now - miniStartTime) / 1000;
-            miniStartTime = now;
+        function animateWiggleThumbs(now) {
+            const dt = (now - wiggleStartTime) / 1000;
+            wiggleStartTime = now;
 
-            miniTargets.forEach((target, idx) => {
-                const seed = parseFloat(target.getAttribute('data-seed')) || 1.0;
-                const freq = parseFloat(target.getAttribute('data-freq')) || 2.0;
-                const amp = parseFloat(target.getAttribute('data-amp')) || 15;
-                const maxRot = parseFloat(target.getAttribute('data-rot')) || 15;
+            wiggleThumbs.forEach((img) => {
+                const seed = parseFloat(img.getAttribute('data-seed')) || 1.0;
+                const freq = parseFloat(img.getAttribute('data-freq')) || 2.0;
+                const amp = parseFloat(img.getAttribute('data-amp')) || 15;
+                const maxRot = parseFloat(img.getAttribute('data-rot')) || 15;
 
                 const phase = (now / 1000) * freq;
                 const noiseX = smoothWiggleNoise(phase, seed);
@@ -795,13 +725,13 @@
                 const scale = 100 + noiseX * amp;
                 const rot = noiseRot * maxRot;
 
-                target.style.transform = `scale(${scale / 100}) rotate(${rot}deg)`;
+                img.style.transform = `scale(${scale / 100}) rotate(${rot}deg)`;
             });
 
-            requestAnimationFrame(animateMiniStages);
+            requestAnimationFrame(animateWiggleThumbs);
         }
 
-        requestAnimationFrame(animateMiniStages);
+        requestAnimationFrame(animateWiggleThumbs);
     </script>
 
     <!-- 1. Add a placeholder element -->
