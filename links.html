@@ -330,13 +330,26 @@
             border-color: #ff0033;
             animation: gradientGlow 3s ease-in-out infinite alternate;
         }
+
+        /* Photoshop-style Multiply Blend Mode Wrapper for Header */
+        .paypal-title-wrapper {
+            position: relative;
+            display: inline-block;
+            background-color: #ff0033;
+            max-width: 100%;
+            overflow: hidden;
+            border-radius: 2px;
+        }
+
         .paypal-widget-card .link-title a {
             font-family: 'Frostgiant3D', sans-serif !important;
-            color: inherit;
+            color: #ffffff;
+            mix-blend-mode: multiply;
             text-decoration: none;
             overflow-wrap: anywhere;
             word-break: break-word;
-            display: inline-block;
+            display: block;
+            padding: 2px 4px;
             max-width: 100%;
         }
         .paypal-widget-card .link-title a:hover {
@@ -544,7 +557,9 @@
                 <div class="paypal-widget-card">
                     <div class="link-tag">Support</div>
                     <div class="link-title">
-                        <a href="https://www.paypal.com/paypalme/PlasticHeartSurgery" target="_blank">https://www.paypal.com/paypalme/PlasticHeartSurgery</a>
+                        <div class="paypal-title-wrapper">
+                            <a href="https://www.paypal.com/paypalme/PlasticHeartSurgery" target="_blank">https://www.paypal.com/paypalme/PlasticHeartSurgery</a>
+                        </div>
                     </div>
                     <div class="link-desc" style="margin-bottom: 16px;">Help fund Plastic: "Usually" art supplies, Music related-things like subscriptions, art practice and basic necessities.</div>
                     
