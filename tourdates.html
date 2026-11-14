@@ -170,7 +170,8 @@ transform: translateY(0);
 .ra-widget-container,
 .songkick-glow-container,
 .tour-card,
-.fade-section-title {
+.fade-section-title,
+.fade-section-subtitle {
 opacity: 0;
 transform: translateY(10px);
 }
@@ -191,11 +192,8 @@ animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 animation-delay: 0.3s;
 }
 
-body.images-loaded .fade-section-title {
-animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-animation-delay: calc(0.35s + (var(--i, 0) * 0.05s));
-}
-
+body.images-loaded .fade-section-title,
+body.images-loaded .fade-section-subtitle,
 body.images-loaded .tour-card {
 animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 animation-delay: calc(0.1s + (var(--i, 0) * 0.06s));
@@ -433,7 +431,6 @@ left: 50%;
 
 <!-- XOXOFLDDAY Section -->
 <h2 class="fade-section-title" style="font-size: 1.4rem; margin-top: 40px; --i: 1;">XOXOFLDDAY</h2>
-<p class="section-subheader">XOXOFLDDAY is an annually held outdoor rave/festival that showcases unique local artists and local DJ's hosted by Plastic Heart Surgery.</p>
 
 <div class="tours-grid">
   <!-- XOXOFLDDAY Tour Card -->
@@ -447,9 +444,12 @@ left: 50%;
   </a>
 </div>
 
+<!-- Subheader text fades in right after the 2024 card -->
+<p class="fade-section-subtitle section-subheader" style="--i: 3;">XOXOFLDDAY is an annually held outdoor rave/festival that showcases unique local artists and local DJ's hosted by Plastic Heart Surgery.</p>
+
 <div class="tours-grid">
   <!-- XOXOFLDDAY Tour Card -->
-  <a href="https://www.instagram.com/p/DNFbAiusxeP/" target="_blank" class="tour-card" style="--i: 3;">
+  <a href="https://www.instagram.com/p/DNFbAiusxeP/" target="_blank" class="tour-card" style="--i: 4;">
     <img src="images/XOXOFLDDAY2025 smol smol.png" alt="XOXOFLDDAY 2.0" class="tour-thumb">
     <div class="tour-info">
       <div class="tour-date">Aug 9, 2025</div>
@@ -459,12 +459,12 @@ left: 50%;
   </a>
 </div>
 
-<h2 class="fade-section-title" style="font-size: 1.4rem; margin-top: 40px; --i: 4;">Past Events</h2>
+<h2 class="fade-section-title" style="font-size: 1.4rem; margin-top: 40px; --i: 5;">Past Events</h2>
 
 <!-- Manual Tour Cards Grid -->
 <div class="tours-grid">
 
-  <a href="https://ra.co/events/2450851" target="_blank" class="tour-card" style="--i: 5;">
+  <a href="https://ra.co/events/2450851" target="_blank" class="tour-card" style="--i: 6;">
     <img src="images/TIT4TATSQSM.png" alt="tit4tat Trans March Afterparty" class="tour-thumb">
     <div class="tour-info">
       <div class="tour-date">Fri, 26 Jun 2026</div>
@@ -473,7 +473,7 @@ left: 50%;
     </div>
   </a>
 
-  <a href="https://ra.co/events/2417715" target="_blank" class="tour-card" style="--i: 6;">
+  <a href="https://ra.co/events/2417715" target="_blank" class="tour-card" style="--i: 7;">
     <img src="images/SOMASMSQ.png" alt="SOMA" class="tour-thumb">
     <div class="tour-info">
       <div class="tour-date">Thu, May 14, 2026</div>
@@ -482,7 +482,7 @@ left: 50%;
     </div>
   </a>
 
-  <a href="https://ra.co/events/2318589" target="_blank" class="tour-card" style="--i: 7;">
+  <a href="https://ra.co/events/2318589" target="_blank" class="tour-card" style="--i: 8;">
     <img src="images/NPSQSM2.png" alt="T-4-T North Pole Party" class="tour-thumb">
     <div class="tour-info">
       <div class="tour-date">Fri, 19 Dec 2025</div>
@@ -491,7 +491,7 @@ left: 50%;
     </div>
   </a>
 
-  <a href="https://ra.co/events/2198808" target="_blank" class="tour-card" style="--i: 8;">
+  <a href="https://ra.co/events/2198808" target="_blank" class="tour-card" style="--i: 9;">
     <img src="https://imgproxy.ra.co/_/quality:66/w:1442/rt:fill/aHR0cHM6Ly9pbWFnZXMucmEuY28vYjA5OGVmMjZhZGIzMWRkYThhYzJmYTI1M2JkZDVmN2MxMzJmNWU1NC5qcGc=" alt="Frequencies" class="tour-thumb">
     <div class="tour-info">
       <div class="tour-date">Thurs, 26 Jun 2025</div>
@@ -500,7 +500,7 @@ left: 50%;
     </div>
   </a>
 
-  <a href="https://ra.co/events/2064104" target="_blank" class="tour-card" style="--i: 9;">
+  <a href="https://ra.co/events/2064104" target="_blank" class="tour-card" style="--i: 10;">
     <img src="https://imgproxy.ra.co/_/quality:66/w:1442/rt:fill/aHR0cHM6Ly9pbWFnZXMucmEuY28vZDgxZTk5OTkzNDgzMjE0MWRjY2Y5OTI3ZTNjNTI4YTk2ODIxMzVhMy5qcGc=" alt="Holiday Fundraiser" class="tour-thumb">
     <div class="tour-info">
       <div class="tour-date">Thurs, 19 Dec 2024</div>
@@ -509,7 +509,7 @@ left: 50%;
     </div>
   </a>
 
-  <a href="https://www.instagram.com/p/C7KoL3jPm_T/" target="_blank" class="tour-card" style="--i: 10;">
+  <a href="https://www.instagram.com/p/C7KoL3jPm_T/" target="_blank" class="tour-card" style="--i: 11;">
     <img src="images/PHX Blash.png" alt="Super Kill Me Now" class="tour-thumb">
     <div class="tour-info">
       <div class="tour-date">Tues, 25 Dec 2023</div>
