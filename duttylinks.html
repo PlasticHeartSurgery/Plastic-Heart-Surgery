@@ -34,7 +34,7 @@
         .cards-stack {
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 24px;
             width: 100%;
             max-width: 500px;
         }
@@ -55,13 +55,14 @@
         }
 
         .link-card {
-            display: block;
+            display: flex;
+            flex-direction: column;
             width: 100%;
             max-width: 500px;
             background: #ffffff;
             border: 2px solid #000000;
             border-radius: 6px;
-            padding: 24px;
+            overflow: hidden;
             text-decoration: none;
             box-shadow: 4px 4px 0px #000000;
             cursor: pointer;
@@ -72,6 +73,34 @@
             border-color: #ff0033;
             transform: translateY(-2px);
             animation: gradientGlow 3s ease-in-out infinite alternate;
+        }
+
+        .link-image-frame {
+            width: 100%;
+            background: #f0f0f0;
+            overflow: hidden;
+            border-bottom: 2px solid #000000;
+            transition: border-color 0.4s ease;
+        }
+
+        .link-card:hover .link-image-frame {
+            border-bottom-color: #ff0033;
+        }
+
+        .link-image-frame img {
+            width: 100%;
+            height: auto;
+            display: block;
+            object-fit: cover;
+            transition: opacity 0.2s ease;
+        }
+
+        .link-card:hover .link-image-frame img {
+            opacity: 0.85;
+        }
+
+        .link-info {
+            padding: 20px 24px;
         }
 
         .link-tag {
@@ -102,105 +131,190 @@
     <div class="cards-stack">
 
         <a href="#" target="_blank" rel="noopener noreferrer" class="link-card" onclick="playClickSound('audio/Sound 1.mp3')">
-            <div class="link-tag">Event</div>
-            <div class="link-title">Art Show / Performance</div>
-            <div class="link-desc">Thursday / Friday July 16/17</div>
+            <div class="link-image-frame">
+                <img src="images/art-show.jpg" alt="Art Show / Performance">
+            </div>
+            <div class="link-info">
+                <div class="link-tag">Event</div>
+                <div class="link-title">Art Show / Performance</div>
+                <div class="link-desc">Thursday / Friday July 16/17</div>
+            </div>
         </a>
 
         <a href="#" target="_blank" rel="noopener noreferrer" class="link-card" onclick="playClickSound('audio/Sound 1.mp3')">
-            <div class="link-tag">Exclusive • 18+</div>
-            <div class="link-title">OnlyFans</div>
-            <div class="link-desc">Official exclusive content &amp; account.</div>
+            <div class="link-image-frame">
+                <img src="images/onlyfans.jpg" alt="OnlyFans">
+            </div>
+            <div class="link-info">
+                <div class="link-tag">Exclusive • 18+</div>
+                <div class="link-title">OnlyFans</div>
+                <div class="link-desc">Official exclusive content &amp; account.</div>
+            </div>
         </a>
 
         <a href="#" target="_blank" rel="noopener noreferrer" class="link-card" onclick="playClickSound('audio/Sound 1.mp3')">
-            <div class="link-tag">Support</div>
-            <div class="link-title">Pay / Support / Donate 💖</div>
-            <div class="link-desc">Directly support Plastic Heart Surgery.</div>
+            <div class="link-image-frame">
+                <img src="images/donate.jpg" alt="Pay / Support / Donate">
+            </div>
+            <div class="link-info">
+                <div class="link-tag">Support</div>
+                <div class="link-title">Pay / Support / Donate 💖</div>
+                <div class="link-desc">Directly support Plastic Heart Surgery.</div>
+            </div>
         </a>
 
         <a href="#" target="_blank" rel="noopener noreferrer" class="link-card" onclick="playClickSound('audio/Sound 1.mp3')">
-            <div class="link-tag">Release</div>
-            <div class="link-title">M.L.D.W.M. TKNØRMX</div>
-            <div class="link-desc">Plastic Heart Surgery x Ellen Flowerhill</div>
+            <div class="link-image-frame">
+                <img src="images/mldwm-tknormx.jpg" alt="M.L.D.W.M. TKNØRMX">
+            </div>
+            <div class="link-info">
+                <div class="link-tag">Release</div>
+                <div class="link-title">M.L.D.W.M. TKNØRMX</div>
+                <div class="link-desc">Plastic Heart Surgery x Ellen Flowerhill</div>
+            </div>
         </a>
 
         <a href="#" target="_blank" rel="noopener noreferrer" class="link-card" onclick="playClickSound('audio/Sound 1.mp3')">
-            <div class="link-tag">YouTube</div>
-            <div class="link-title">M.L.D.W.M. TKNØRMX (Video)</div>
-            <div class="link-desc">Plastic Heart Surgery x Ellen Flowerhill on YouTube.</div>
+            <div class="link-image-frame">
+                <img src="images/mldwm-youtube.jpg" alt="M.L.D.W.M. TKNØRMX Video">
+            </div>
+            <div class="link-info">
+                <div class="link-tag">YouTube</div>
+                <div class="link-title">M.L.D.W.M. TKNØRMX (Video)</div>
+                <div class="link-desc">Plastic Heart Surgery x Ellen Flowerhill on YouTube.</div>
+            </div>
         </a>
 
         <a href="#" target="_blank" rel="noopener noreferrer" class="link-card" onclick="playClickSound('audio/Sound 1.mp3')">
-            <div class="link-tag">Music Video</div>
-            <div class="link-title">Where Is All My Money</div>
-            <div class="link-desc">Official music video by Plastic Heart Surgery.</div>
+            <div class="link-image-frame">
+                <img src="images/where-is-all-my-money.jpg" alt="Where Is All My Money">
+            </div>
+            <div class="link-info">
+                <div class="link-tag">Music Video</div>
+                <div class="link-title">Where Is All My Money</div>
+                <div class="link-desc">Official music video by Plastic Heart Surgery.</div>
+            </div>
         </a>
 
         <a href="#" target="_blank" rel="noopener noreferrer" class="link-card" onclick="playClickSound('audio/Sound 1.mp3')">
-            <div class="link-tag">Audio</div>
-            <div class="link-title">Spotify</div>
-            <div class="link-desc">Stream releases on Spotify.</div>
+            <div class="link-image-frame">
+                <img src="images/spotify.jpg" alt="Spotify">
+            </div>
+            <div class="link-info">
+                <div class="link-tag">Audio</div>
+                <div class="link-title">Spotify</div>
+                <div class="link-desc">Stream releases on Spotify.</div>
+            </div>
         </a>
 
         <a href="#" target="_blank" rel="noopener noreferrer" class="link-card" onclick="playClickSound('audio/Sound 1.mp3')">
-            <div class="link-tag">Audio</div>
-            <div class="link-title">Bandcamp</div>
-            <div class="link-desc">Digital albums, tracks, and discography.</div>
+            <div class="link-image-frame">
+                <img src="images/bandcamp.jpg" alt="Bandcamp">
+            </div>
+            <div class="link-info">
+                <div class="link-tag">Audio</div>
+                <div class="link-title">Bandcamp</div>
+                <div class="link-desc">Digital albums, tracks, and discography.</div>
+            </div>
         </a>
 
         <a href="#" target="_blank" rel="noopener noreferrer" class="link-card" onclick="playClickSound('audio/Sound 1.mp3')">
-            <div class="link-tag">Audio</div>
-            <div class="link-title">SoundCloud</div>
-            <div class="link-desc">Sets, mixes, and experimental tracks.</div>
+            <div class="link-image-frame">
+                <img src="images/soundcloud.jpg" alt="SoundCloud">
+            </div>
+            <div class="link-info">
+                <div class="link-tag">Audio</div>
+                <div class="link-title">SoundCloud</div>
+                <div class="link-desc">Sets, mixes, and experimental tracks.</div>
+            </div>
         </a>
 
         <a href="#" target="_blank" rel="noopener noreferrer" class="link-card" onclick="playClickSound('audio/Sound 1.mp3')">
-            <div class="link-tag">Audio</div>
-            <div class="link-title">Apple Music</div>
-            <div class="link-desc">Listen on Apple Music.</div>
+            <div class="link-image-frame">
+                <img src="images/apple-music.jpg" alt="Apple Music">
+            </div>
+            <div class="link-info">
+                <div class="link-tag">Audio</div>
+                <div class="link-title">Apple Music</div>
+                <div class="link-desc">Listen on Apple Music.</div>
+            </div>
         </a>
 
         <a href="https://twitch.tv/plasticheartsurgery" target="_blank" rel="noopener noreferrer" class="link-card" onclick="playClickSound('audio/Sound 1.mp3')">
-            <div class="link-tag">Live</div>
-            <div class="link-title">Twitch</div>
-            <div class="link-desc">Plastic Heart Surgery live streams.</div>
+            <div class="link-image-frame">
+                <img src="images/twitch.jpg" alt="Twitch">
+            </div>
+            <div class="link-info">
+                <div class="link-tag">Live</div>
+                <div class="link-title">Twitch</div>
+                <div class="link-desc">Plastic Heart Surgery live streams.</div>
+            </div>
         </a>
 
         <a href="https://instagram.com/plastic.heart.surgery" target="_blank" rel="noopener noreferrer" class="link-card" onclick="playClickSound('audio/Sound 1.mp3')">
-            <div class="link-tag">Social</div>
-            <div class="link-title">Instagram</div>
-            <div class="link-desc">@plastic.heart.surgery</div>
+            <div class="link-image-frame">
+                <img src="images/instagram.jpg" alt="Instagram">
+            </div>
+            <div class="link-info">
+                <div class="link-tag">Social</div>
+                <div class="link-title">Instagram</div>
+                <div class="link-desc">@plastic.heart.surgery</div>
+            </div>
         </a>
 
         <a href="#" target="_blank" rel="noopener noreferrer" class="link-card" onclick="playClickSound('audio/Sound 1.mp3')">
-            <div class="link-tag">Social</div>
-            <div class="link-title">Bluesky</div>
-            <div class="link-desc">Follow updates on Bluesky.</div>
+            <div class="link-image-frame">
+                <img src="images/bluesky.jpg" alt="Bluesky">
+            </div>
+            <div class="link-info">
+                <div class="link-tag">Social</div>
+                <div class="link-title">Bluesky</div>
+                <div class="link-desc">Follow updates on Bluesky.</div>
+            </div>
         </a>
 
         <a href="#" target="_blank" rel="noopener noreferrer" class="link-card" onclick="playClickSound('audio/Sound 1.mp3')">
-            <div class="link-tag">Social</div>
-            <div class="link-title">Twitter SFW</div>
-            <div class="link-desc">Main art &amp; music feed.</div>
+            <div class="link-image-frame">
+                <img src="images/twitter-sfw.jpg" alt="Twitter SFW">
+            </div>
+            <div class="link-info">
+                <div class="link-tag">Social</div>
+                <div class="link-title">Twitter SFW</div>
+                <div class="link-desc">Main art &amp; music feed.</div>
+            </div>
         </a>
 
         <a href="#" target="_blank" rel="noopener noreferrer" class="link-card" onclick="playClickSound('audio/Sound 1.mp3')">
-            <div class="link-tag">Social • 18+</div>
-            <div class="link-title">Twitter 18+</div>
-            <div class="link-desc">NSFW feed and updates.</div>
+            <div class="link-image-frame">
+                <img src="images/twitter-18.jpg" alt="Twitter 18+">
+            </div>
+            <div class="link-info">
+                <div class="link-tag">Social • 18+</div>
+                <div class="link-title">Twitter 18+</div>
+                <div class="link-desc">NSFW feed and updates.</div>
+            </div>
         </a>
 
         <a href="#" target="_blank" rel="noopener noreferrer" class="link-card" onclick="playClickSound('audio/Sound 1.mp3')">
-            <div class="link-tag">Exclusive • 18+</div>
-            <div class="link-title">Fansly</div>
-            <div class="link-desc">Exclusive content on Fansly.</div>
+            <div class="link-image-frame">
+                <img src="images/fansly.jpg" alt="Fansly">
+            </div>
+            <div class="link-info">
+                <div class="link-tag">Exclusive • 18+</div>
+                <div class="link-title">Fansly</div>
+                <div class="link-desc">Exclusive content on Fansly.</div>
+            </div>
         </a>
 
         <a href="#" target="_blank" rel="noopener noreferrer" class="link-card" onclick="playClickSound('audio/Sound 1.mp3')">
-            <div class="link-tag">Support</div>
-            <div class="link-title">Wish List 🎶</div>
-            <div class="link-desc">What a Plastic wants, what a Plastic needs.</div>
+            <div class="link-image-frame">
+                <img src="images/wishlist.jpg" alt="Wish List">
+            </div>
+            <div class="link-info">
+                <div class="link-tag">Support</div>
+                <div class="link-title">Wish List 🎶</div>
+                <div class="link-desc">What a Plastic wants, what a Plastic needs.</div>
+            </div>
         </a>
 
     </div>
