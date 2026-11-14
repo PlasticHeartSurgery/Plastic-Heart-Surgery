@@ -26,6 +26,7 @@
             display: flex;
             min-height: 100vh;
             line-height: 1.6;
+            overflow-x: hidden; /* Prevents any accidental horizontal overflow */
         }
 
         /* --- SERUM 2 GLITCH PAGE MELT & STROBE EFFECT --- */
@@ -98,6 +99,7 @@
             top: 0;
             left: 0;
             overflow-y: auto;
+            z-index: 10;
         }
 
         .site-title {
@@ -151,6 +153,7 @@
             padding: 80px 60px;
             max-width: 1100px;
             background-color: #ffffff;
+            overflow-x: hidden;
         }
 
         h2 {
@@ -159,15 +162,17 @@
             letter-spacing: 0.25em;
             color: #ff0033;
             margin-bottom: 24px;
+            text-align: center;
         }
 
-        /* --- CENTERED MASSIVE STROBE TEXT --- */
+        /* --- RESPONSIVE CENTERED STROBE TEXT --- */
         .strobe-text {
-            font-size: 2.5rem;
+            font-size: clamp(1.4rem, 3vw, 2.5rem); /* Scales smoothly so it never clips on smaller screens */
             font-weight: 900;
             line-height: 1.25;
-            text-align: center; /* Centers the text alignment */
+            text-align: center;
             margin-bottom: 40px;
+            word-wrap: break-word;
             animation: textStrobe 0.004s infinite steps(1);
         }
 
@@ -179,13 +184,14 @@
 
         .bio-container {
             display: flex;
-            justify-content: center; /* Centers the image frame as well */
+            justify-content: center;
             margin-top: 20px;
+            width: 100%;
         }
 
         .bio-image-frame {
-            width: 350px;
-            flex-shrink: 0;
+            width: 100%;
+            max-width: 350px;
             background: #ffffff;
             border: 2px solid #000000;
             border-radius: 6px;
@@ -199,21 +205,7 @@
             display: block;
         }
 
-        @media (max-width: 900px) {
-            .bio-container {
-                flex-direction: column;
-                align-items: center;
-            }
-            .bio-image-frame {
-                width: 100%;
-                max-width: 400px;
-                margin-top: 20px;
-            }
-            .strobe-text {
-                font-size: 2rem; 
-            }
-        }
-
+        /* --- MOBILE RESPONSIVE FIXES --- */
         @media (max-width: 768px) {
             body {
                 flex-direction: column;
@@ -223,8 +215,6 @@
                 width: 100%;
                 height: auto;
                 padding: 30px 20px;
-                border-right: none;
-                border-bottom: none;
             }
             main {
                 margin-left: 0;
@@ -236,11 +226,8 @@
                 letter-spacing: 0.15em;
             }
             h2 {
-                font-size: 1.4rem;
-                letter-spacing: 0.15em;
-            }
-            .strobe-text {
-                font-size: 1.6rem; 
+                font-size: 1.3rem;
+                letter-spacing: 0.1em;
             }
         }
     </style>
@@ -273,7 +260,7 @@
         <section>
             <h2>I know where you live now...</h2>
             
-            <!-- Centered warning text -->
+            <!-- Centered & responsive warning text -->
             <p class="strobe-text">You are not supposed to be here. You think you know me, but you don't. Go away! I AM TRACKING YOUR IP and your real-time location. You aren't safe, I hope you used a VPN. The longer you stay on this page, the more information I gather. Leave this page immediately if you care for your safety and privacy.</p>
             
             <div class="bio-container">
