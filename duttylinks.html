@@ -27,14 +27,15 @@
             align-items: center;
             justify-content: flex-start;
             min-height: 100vh;
-            padding: 40px 20px;
+            padding: 0 20px 40px 20px;
             line-height: 1.6;
         }
 
         .top-header {
-            width: 100%;
+            width: calc(100% + 40px);
+            margin: 0 -20px;
+            padding: 40px 40px 30px 40px;
             align-self: flex-start;
-            margin-bottom: 30px;
         }
 
         .site-title {
@@ -43,7 +44,7 @@
             letter-spacing: 0.3em;
             color: #ff0033;
             text-decoration: none;
-            display: inline-block;
+            display: block;
         }
 
         .cards-stack {
@@ -141,7 +142,7 @@
         }
 
         @media (max-width: 768px) {
-            body {
+            .top-header {
                 padding: 30px 20px;
             }
             .site-title {
@@ -161,12 +162,23 @@
 
         <a href="#" target="_blank" rel="noopener noreferrer" class="link-card" onclick="playClickSound('audio/Sound 1.mp3')">
             <div class="link-image-frame">
+                <img src="images/art-show.jpg" alt="Art Show / Performance">
+            </div>
+            <div class="link-info">
+                <div class="link-tag">Event</div>
+                <div class="link-title">Art Show / Performance</div>
+                <div class="link-desc">Thursday / Friday July 16/17</div>
+            </div>
+        </a>
+
+        <a href="#" target="_blank" rel="noopener noreferrer" class="link-card" onclick="playClickSound('audio/Sound 1.mp3')">
+            <div class="link-image-frame">
                 <img src="images/onlyfans.jpg" alt="OnlyFans">
             </div>
             <div class="link-info">
                 <div class="link-tag">Exclusive • 18+</div>
                 <div class="link-title">OnlyFans</div>
-                <div class="link-desc">Enter at your own peril...</div>
+                <div class="link-desc">Official exclusive content &amp; account.</div>
             </div>
         </a>
 
@@ -177,7 +189,7 @@
             <div class="link-info">
                 <div class="link-tag">Support</div>
                 <div class="link-title">Pay / Support / Donate 💖</div>
-                <div class="link-desc">Support Plastic Heart Surgery.</div>
+                <div class="link-desc">Directly support Plastic Heart Surgery.</div>
             </div>
         </a>
 
@@ -215,149 +227,4 @@
         </a>
 
         <a href="#" target="_blank" rel="noopener noreferrer" class="link-card" onclick="playClickSound('audio/Sound 1.mp3')">
-            <div class="link-image-frame">
-                <img src="images/spotify.jpg" alt="Spotify">
-            </div>
-            <div class="link-info">
-                <div class="link-tag">Audio</div>
-                <div class="link-title">Spotify</div>
-                <div class="link-desc">Stream releases on Spotify.</div>
-            </div>
-        </a>
-
-        <a href="#" target="_blank" rel="noopener noreferrer" class="link-card" onclick="playClickSound('audio/Sound 1.mp3')">
-            <div class="link-image-frame">
-                <img src="images/bandcamp.jpg" alt="Bandcamp">
-            </div>
-            <div class="link-info">
-                <div class="link-tag">Audio</div>
-                <div class="link-title">Bandcamp</div>
-                <div class="link-desc">Digital albums, tracks, and discography.</div>
-            </div>
-        </a>
-
-        <a href="#" target="_blank" rel="noopener noreferrer" class="link-card" onclick="playClickSound('audio/Sound 1.mp3')">
-            <div class="link-image-frame">
-                <img src="images/soundcloud.jpg" alt="SoundCloud">
-            </div>
-            <div class="link-info">
-                <div class="link-tag">Audio</div>
-                <div class="link-title">SoundCloud</div>
-                <div class="link-desc">Sets, mixes, and experimental tracks.</div>
-            </div>
-        </a>
-
-        <a href="#" target="_blank" rel="noopener noreferrer" class="link-card" onclick="playClickSound('audio/Sound 1.mp3')">
-            <div class="link-image-frame">
-                <img src="images/art-show.jpg" alt="Art Show / Performance">
-            </div>
-            <div class="link-info">
-                <div class="link-tag">Event</div>
-                <div class="link-title">Art Show / Performance</div>
-                <div class="link-desc">Thursday / Friday July 16/17</div>
-            </div>
-        </a>
-
-        <a href="#" target="_blank" rel="noopener noreferrer" class="link-card" onclick="playClickSound('audio/Sound 1.mp3')">
-            <div class="link-image-frame">
-                <img src="images/apple-music.jpg" alt="Apple Music">
-            </div>
-            <div class="link-info">
-                <div class="link-tag">Audio</div>
-                <div class="link-title">Apple Music</div>
-                <div class="link-desc">Listen on Apple Music.</div>
-            </div>
-        </a>
-
-        <a href="https://twitch.tv/plasticheartsurgery" target="_blank" rel="noopener noreferrer" class="link-card" onclick="playClickSound('audio/Sound 1.mp3')">
-            <div class="link-image-frame">
-                <img src="images/twitch.jpg" alt="Twitch">
-            </div>
-            <div class="link-info">
-                <div class="link-tag">Live</div>
-                <div class="link-title">Twitch</div>
-                <div class="link-desc">Plastic Heart Surgery live streams.</div>
-            </div>
-        </a>
-
-        <a href="https://instagram.com/plastic.heart.surgery" target="_blank" rel="noopener noreferrer" class="link-card" onclick="playClickSound('audio/Sound 1.mp3')">
-            <div class="link-image-frame">
-                <img src="images/instagram.jpg" alt="Instagram">
-            </div>
-            <div class="link-info">
-                <div class="link-tag">Social</div>
-                <div class="link-title">Instagram</div>
-                <div class="link-desc">@plastic.heart.surgery</div>
-            </div>
-        </a>
-
-        <a href="#" target="_blank" rel="noopener noreferrer" class="link-card" onclick="playClickSound('audio/Sound 1.mp3')">
-            <div class="link-image-frame">
-                <img src="images/bluesky.jpg" alt="Bluesky">
-            </div>
-            <div class="link-info">
-                <div class="link-tag">Social</div>
-                <div class="link-title">Bluesky</div>
-                <div class="link-desc">Follow updates on Bluesky.</div>
-            </div>
-        </a>
-
-        <a href="#" target="_blank" rel="noopener noreferrer" class="link-card" onclick="playClickSound('audio/Sound 1.mp3')">
-            <div class="link-image-frame">
-                <img src="images/twitter-sfw.jpg" alt="Twitter SFW">
-            </div>
-            <div class="link-info">
-                <div class="link-tag">Social</div>
-                <div class="link-title">Twitter SFW</div>
-                <div class="link-desc">Main art &amp; music feed.</div>
-            </div>
-        </a>
-
-        <a href="#" target="_blank" rel="noopener noreferrer" class="link-card" onclick="playClickSound('audio/Sound 1.mp3')">
-            <div class="link-image-frame">
-                <img src="images/twitter-18.jpg" alt="Twitter 18+">
-            </div>
-            <div class="link-info">
-                <div class="link-tag">Social • 18+</div>
-                <div class="link-title">Twitter 18+</div>
-                <div class="link-desc">NSFW feed and updates.</div>
-            </div>
-        </a>
-
-        <a href="#" target="_blank" rel="noopener noreferrer" class="link-card" onclick="playClickSound('audio/Sound 1.mp3')">
-            <div class="link-image-frame">
-                <img src="images/fansly.jpg" alt="Fansly">
-            </div>
-            <div class="link-info">
-                <div class="link-tag">Exclusive • 18+</div>
-                <div class="link-title">Fansly</div>
-                <div class="link-desc">Exclusive content on Fansly.</div>
-            </div>
-        </a>
-
-        <a href="#" target="_blank" rel="noopener noreferrer" class="link-card" onclick="playClickSound('audio/Sound 1.mp3')">
-            <div class="link-image-frame">
-                <img src="images/wishlist.jpg" alt="Wish List">
-            </div>
-            <div class="link-info">
-                <div class="link-tag">Support</div>
-                <div class="link-title">Wish List 🎶</div>
-                <div class="link-desc">What a Plastic wants, what a Plastic needs.</div>
-            </div>
-        </a>
-
-    </div>
-
-    <script>
-        function playClickSound(soundPath) {
-            const clickSound = new Audio(soundPath);
-            clickSound.volume = 0.5;
-            clickSound.currentTime = 0;
-            clickSound.play().catch(error => {
-                console.log("Audio playback error:", error);
-            });
-        }
-    </script>
-
-</body>
-</html>
+            <div class
