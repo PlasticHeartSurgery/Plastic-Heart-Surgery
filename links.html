@@ -231,12 +231,14 @@
             opacity: 0.85;
         }
 
-        /* Transparent thumbnail box variation for SVG/PNG/WebP icons */
-        .custom-image-box.transparent-bg {
+        /* Static non-glowing thumbnail box for music cards */
+        .custom-image-box.static-border {
+            border: 2px solid #000000 !important;
+            animation: none !important;
             background-color: transparent !important;
         }
 
-        .custom-image-box.transparent-bg img.user-thumbnail {
+        .custom-image-box.static-border img.user-thumbnail {
             object-fit: contain;
             padding: 18px;
         }
@@ -519,9 +521,9 @@
                     <div class="link-desc">Plastic's Personal Instagram, DM for inquiries/bookings</div>
                 </a>
 
-                <!-- Link Item 2 (Spotify Card with Transparent Thumbnail Box & SVG) -->
+                <!-- Link Item 2 (Spotify Card with Static Border) -->
                 <a href="https://open.spotify.com/artist/5ZoUq3l7mN6OBgTMjpjfj7" target="_blank" class="link-card video-card">
-                    <div class="custom-image-box transparent-bg">
+                    <div class="custom-image-box static-border">
                         <img src="images/Spotify.svg" alt="Spotify Thumbnail" class="user-thumbnail">
                     </div>
                     <div class="video-card-content">
@@ -530,9 +532,9 @@
                     </div>
                 </a>
                 
-                <!-- Link Item 3 (Apple Music Card with Transparent Thumbnail Box & Apple Music SVG) -->
+                <!-- Link Item 3 (Apple Music Card with Static Border) -->
                 <a href="https://music.apple.com/ca/artist/plastic-heart-surgery/1539041975" target="_blank" class="link-card video-card">
-                    <div class="custom-image-box transparent-bg">
+                    <div class="custom-image-box static-border">
                         <img src="images/Apple_Music_icon.svg" alt="Apple Music Thumbnail" class="user-thumbnail">
                     </div>
                     <div class="video-card-content">
@@ -541,9 +543,9 @@
                     </div>
                 </a>
 
-                <!-- Link Item 4 (Bandcamp Card with Transparent Thumbnail Box & BCC.png) -->
+                <!-- Link Item 4 (Bandcamp Card with Static Border) -->
                 <a href="https://plasticheartsurgery.bandcamp.com/" target="_blank" class="link-card video-card">
-                    <div class="custom-image-box transparent-bg">
+                    <div class="custom-image-box static-border">
                         <img src="images/BCC.png" alt="Bandcamp Thumbnail" class="user-thumbnail">
                     </div>
                     <div class="video-card-content">
@@ -552,9 +554,9 @@
                     </div>
                 </a>
                 
-                <!-- Link Item 5 (SoundCloud Card with Transparent Thumbnail Box & Logo_black_on_Yellow.webp) -->
+                <!-- Link Item 5 (SoundCloud Card with Static Border) -->
                 <a href="https://soundcloud.com/user-802528370" target="_blank" class="link-card video-card">
-                    <div class="custom-image-box transparent-bg">
+                    <div class="custom-image-box static-border">
                         <img src="images/Logo_black_on_Yellow.webp" alt="SoundCloud Thumbnail" class="user-thumbnail">
                     </div>
                     <div class="video-card-content">
@@ -563,7 +565,7 @@
                     </div>
                 </a>
 
-                <!-- Link Item 6 (Video Card 1) -->
+                <!-- Link Item 6 (Video Card 1 - Kept glowing animation) -->
                 <a href="https://www.youtube.com/watch?v=IlVzly_dddQ&feature=youtu.be" target="_blank" class="link-card video-card">
                     <div class="custom-image-box">
                         <img src="images/Plastic Heart Surgery - WHERE 🤷 👏 😭 IS 😄 💦🅱 ALL 😍 🏻🛑💯 🌝😏 OF 👏 🔥 ❗ MY 👦🙋 👨 🍆 MONEY_!___!__!_!_!_! 💰 😮.gif" alt="Music Video Thumbnail" class="user-thumbnail">
@@ -577,7 +579,7 @@
                     </div>
                 </a>
 
-                <!-- Link Item 7 (Video Card 2) -->
+                <!-- Link Item 7 (Video Card 2 - Kept glowing animation) -->
                 <a href="https://youtu.be/deAcD_VN1sU" target="_blank" class="link-card video-card">
                     <div class="custom-image-box">
                         <img src="images/💥 Site Walk 💥 Highway 407 💥 Subway Station 💥.gif" alt="Music Video Thumbnail" class="user-thumbnail">
