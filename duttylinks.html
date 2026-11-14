@@ -3,108 +3,195 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plastic Heart Surgery — Card</title>
+    <title>Plastic Heart Surgery - Links</title>
     <style>
-        @font-face {
-            font-family: 'Frostgiant3D';
-            src: local('Frostgiant3D'), url('fonts/frostgiant3d.ttf') format('truetype');
-            font-weight: normal;
-            font-style: normal;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #000000;
+            --accent-red: #ff0033;
+            --border-width: 4px;
+            --shadow-offset: 6px;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: #ffffff;
-            color: #111111;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Courier New', Courier, monospace; /* Swap for your custom font if loaded */
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            border: var(--border-width) solid var(--text-color);
             padding: 20px;
+            box-shadow: 
+                var(--shadow-offset) var(--shadow-offset) 0px var(--text-color),
+                0 0 14px rgba(255, 0, 51, 0.35);
+            background: var(--bg-color);
         }
 
-        @keyframes gradientGlow {
-            0% {
-                background-color: #ffffff;
-                box-shadow: 0px 0px 5px rgba(255, 255, 255, 0.8), 4px 4px 0px #ff0033;
-            }
-            50% {
-                background-color: #fff5f7;
-                box-shadow: 0px 0px 20px rgba(255, 0, 51, 0.35), 4px 4px 0px #ff0033;
-            }
-            100% {
-                background-color: #ffe6eb;
-                box-shadow: 0px 0px 35px rgba(255, 0, 51, 0.7), 4px 4px 0px #ff0033;
-            }
-        }
-
-        .link-card {
-            display: block;
-            width: 100%;
-            max-width: 500px;
-            background: #ffffff;
-            border: 2px solid #000000;
-            border-radius: 6px;
-            padding: 24px;
-            text-decoration: none;
-            box-shadow: 4px 4px 0px #000000;
-            cursor: pointer;
-            transition: transform 0.2s ease, border-color 0.4s ease, background-color 0.4s ease;
-        }
-
-        .link-card:hover {
-            border-color: #ff0033;
-            transform: translateY(-2px);
-            animation: gradientGlow 3s ease-in-out infinite alternate;
-        }
-
-        .link-tag {
-            font-size: 0.85rem;
+        h1 {
+            font-size: 1.8rem;
+            margin: 0;
             text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: #ff0033;
-            margin-bottom: 6px;
-            font-weight: 600;
+            letter-spacing: 2px;
         }
 
-        .link-title {
-            font-family: 'Frostgiant3D', sans-serif;
-            font-size: 1.2rem;
-            letter-spacing: 0.15em;
-            color: #111111;
-            margin-bottom: 8px;
+        .links-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
         }
 
-        .link-desc {
-            font-size: 0.95rem;
-            color: #444444;
+        .card {
+            background: var(--bg-color);
+            border: var(--border-width) solid var(--text-color);
+            padding: 18px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: bold;
+            font-size: 1.1rem;
+            box-shadow: 
+                var(--shadow-offset) var(--shadow-offset) 0px var(--text-color),
+                0 0 14px rgba(255, 0, 51, 0.35);
+            transition: transform 0.1s ease, box-shadow 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+        }
+
+        .card:hover {
+            transform: translate(-2px, -2px);
+            border-color: var(--accent-red);
+            color: var(--accent-red);
+            box-shadow: 
+                calc(var(--shadow-offset) + 2px) calc(var(--shadow-offset) + 2px) 0px var(--text-color),
+                0 0 24px rgba(255, 0, 51, 0.75);
+        }
+
+        .card:active {
+            transform: translate(2px, 2px);
+            box-shadow: 
+                2px 2px 0px var(--text-color),
+                0 0 10px rgba(255, 0, 51, 0.5);
+        }
+
+        .category-tag {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            border: 2px solid var(--text-color);
+            padding: 2px 6px;
+            background: var(--text-color);
+            color: var(--bg-color);
+            transition: background 0.15s ease, border-color 0.15s ease;
+        }
+
+        .card:hover .category-tag {
+            background: var(--accent-red);
+            border-color: var(--accent-red);
         }
     </style>
 </head>
 <body>
 
-    <div class="link-card" onclick="playClickSound('audio/Sound 1.mp3')">
-        <div class="link-tag">Tag</div>
-        <div class="link-title">Card Title</div>
-        <div class="link-desc">Click this card to play the sound effect.</div>
-    </div>
+    <header>
+        <h1>Plastic Heart Surgery</h1>
+        <p>Links & Hubs</p>
+    </header>
 
-    <script>
-        function playClickSound(soundPath) {
-            const clickSound = new Audio(soundPath);
-            clickSound.volume = 0.5;
-            clickSound.currentTime = 0;
-            clickSound.play().catch(error => {
-                console.log("Audio playback error:", error);
-            });
-        }
-    </script>
+    <div class="links-container">
+        <!-- Featured / Upcoming -->
+        <a href="#" class="card" target="_blank" rel="noopener noreferrer">
+            <span>Art Show / Performance (July 16/17)</span>
+            <span class="category-tag">Event</span>
+        </a>
+
+        <a href="#" class="card" target="_blank" rel="noopener noreferrer">
+            <span>M.L.D.W.M. TKNØRMX | Plastic Heart Surgery x Ellen Flowerhill</span>
+            <span class="category-tag">Audio</span>
+        </a>
+
+        <a href="#" class="card" target="_blank" rel="noopener noreferrer">
+            <span>YouTube | M.L.D.W.M. TKNØRMX | Plastic Heart Surgery x Ellen Flowerhill</span>
+            <span class="category-tag">Video</span>
+        </a>
+
+        <a href="#" class="card" target="_blank" rel="noopener noreferrer">
+            <span>Where Is All My Money (Music Video)</span>
+            <span class="category-tag">Video</span>
+        </a>
+
+        <!-- Music Platforms -->
+        <a href="#" class="card" target="_blank" rel="noopener noreferrer">
+            <span>Spotify</span>
+            <span class="category-tag">Audio</span>
+        </a>
+
+        <a href="#" class="card" target="_blank" rel="noopener noreferrer">
+            <span>Apple Music</span>
+            <span class="category-tag">Audio</span>
+        </a>
+
+        <a href="#" class="card" target="_blank" rel="noopener noreferrer">
+            <span>SoundCloud</span>
+            <span class="category-tag">Audio</span>
+        </a>
+
+        <a href="#" class="card" target="_blank" rel="noopener noreferrer">
+            <span>Bandcamp</span>
+            <span class="category-tag">Audio</span>
+        </a>
+
+        <!-- Live & Socials -->
+        <a href="https://twitch.tv/plasticheartsurgery" class="card" target="_blank" rel="noopener noreferrer">
+            <span>Plastic Heart Surgery's - Twitch</span>
+            <span class="category-tag">Live</span>
+        </a>
+
+        <a href="https://instagram.com/plastic.heart.surgery" class="card" target="_blank" rel="noopener noreferrer">
+            <span>Instagram</span>
+            <span class="category-tag">Social</span>
+        </a>
+
+        <a href="#" class="card" target="_blank" rel="noopener noreferrer">
+            <span>Bluesky</span>
+            <span class="category-tag">Social</span>
+        </a>
+
+        <a href="#" class="card" target="_blank" rel="noopener noreferrer">
+            <span>Twitter SFW</span>
+            <span class="category-tag">Social</span>
+        </a>
+
+        <a href="#" class="card" target="_blank" rel="noopener noreferrer">
+            <span>Twitter 18+</span>
+            <span class="category-tag">18+</span>
+        </a>
+
+        <!-- Exclusive & Support -->
+        <a href="#" class="card" target="_blank" rel="noopener noreferrer">
+            <span>OnlyFans 18+</span>
+            <span class="category-tag">18+</span>
+        </a>
+
+        <a href="#" class="card" target="_blank" rel="noopener noreferrer">
+            <span>Fansly</span>
+            <span class="category-tag">18+</span>
+        </a>
+
+        <a href="#" class="card" target="_blank" rel="noopener noreferrer">
+            <span>Pay/Support/Donate to Plastic 💖</span>
+            <span class="category-tag">Support</span>
+        </a>
+
+        <a href="#" class="card" target="_blank" rel="noopener noreferrer">
+            <span>🎶 What a Plastic wants, what a Plastic needs 🎶 (Wish List)</span>
+            <span class="category-tag">Support</span>
+        </a>
+    </div>
 
 </body>
 </html>
