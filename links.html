@@ -19,6 +19,13 @@
             font-style: normal;
         }
 
+        @font-face {
+            font-family: 'Hypik';
+            src: local('Hypik'), url('fonts/hypik.otf') format('opentype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
         * {
             box-sizing: border-box;
             margin: 0;
@@ -299,7 +306,7 @@
             font-weight: 600;
         }
 
-        /* Explicitly set the Frostgiant3D font for all link titles */
+        /* Explicitly set the Frostgiant3D font for general link titles */
         .link-title {
             font-family: 'Frostgiant3D', sans-serif !important;
             font-size: 1.2rem;
@@ -315,7 +322,7 @@
             color: #444444;
         }
 
-        /* PayPal Widget Styles (Original Format Restored) */
+        /* PayPal Widget Styles with Hypik Font & Pure Red */
         .paypal-widget-card {
             background: #ffffff;
             border: 2px solid #000000;
@@ -331,8 +338,8 @@
             animation: gradientGlow 3s ease-in-out infinite alternate;
         }
         .paypal-widget-card .link-title a {
-            font-family: 'Frostgiant3D', sans-serif !important;
-            color: inherit;
+            font-family: 'Hypik', sans-serif !important;
+            color: #ff0033; /* Pure red font */
             text-decoration: none;
             overflow-wrap: anywhere;
             word-break: break-word;
