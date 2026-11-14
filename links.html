@@ -717,7 +717,10 @@
             if (note) {
                 url += `?note=${encodeURIComponent(note)}`;
             }
-            window.open(url, '_blank');
+
+            // Route PayPal support button click through the same audio sound check
+            let dummyEvent = { preventDefault: () => {} };
+            playClickSound(dummyEvent, url);
         }
 
         // AE Wiggle Simulator Loop with Hover Triggers
