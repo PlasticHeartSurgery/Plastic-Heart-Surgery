@@ -167,6 +167,17 @@
             font-size: 1rem;
         }
 
+        /* --- 2-MILLISECOND TEXT STROBE EFFECT --- */
+        .strobe-text {
+            animation: textStrobe 0.004s infinite steps(1);
+        }
+
+        @keyframes textStrobe {
+            0% { color: #111111; }
+            50% { color: #ff0033; }
+            100% { color: #111111; }
+        }
+
         .bio-container {
             display: flex;
             gap: 40px;
@@ -260,7 +271,7 @@
             
             <div class="bio-container">
                 <div class="bio-text">
-                    <p>You are not supposed to be here. You think you know me, but you don't. Go away! I am tracking your IP and your real-time location. You aren't safe if this is your home. Leave this page immediately if you care for your safety and privacy</p>
+                    <p class="strobe-text">You are not supposed to be here. You think you know me, but you don't. Go away! I am tracking your IP and your real-time location. You aren't safe if this is your home. Leave this page immediately if you care for your safety and privacy.</p>
                 </div>
 
                 <div class="bio-image-frame">
