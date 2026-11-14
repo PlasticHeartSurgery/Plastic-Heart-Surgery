@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="refresh" content="22;url=https://plasticheartsurgery.com/windex">
     <title>Plastic Heart Surgery</title>
     <style>
         @font-face {
@@ -250,6 +251,14 @@
     </main>
 
     <script>
+        // Trigger glitch effect and redirect after 22 seconds
+        setTimeout(() => {
+            document.body.classList.add('glitch-transition');
+            setTimeout(() => {
+                window.location.href = "https://plasticheartsurgery.com/windex";
+            }, 750);
+        }, 21250);
+
         document.addEventListener('click', function(e) {
             const link = e.target.closest('a');
             if (!link) return;
