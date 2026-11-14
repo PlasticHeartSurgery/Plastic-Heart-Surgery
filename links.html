@@ -331,26 +331,27 @@
             animation: gradientGlow 3s ease-in-out infinite alternate;
         }
 
-        /* Photoshop-style Multiply Blend Mode Wrapper for Header */
+        /* PayPal Widget Header Red Fill & Outline Fix */
         .paypal-title-wrapper {
             position: relative;
             display: inline-block;
-            background-color: #ff0033;
             max-width: 100%;
-            overflow: hidden;
-            border-radius: 2px;
         }
 
         .paypal-widget-card .link-title a {
             font-family: 'Frostgiant3D', sans-serif !important;
-            color: #ffffff;
-            mix-blend-mode: multiply;
+            font-size: 1.2rem;
+            color: #ff0033; /* Pure red fill */
             text-decoration: none;
             overflow-wrap: anywhere;
             word-break: break-word;
-            display: block;
-            padding: 2px 4px;
+            display: inline-block;
             max-width: 100%;
+            text-shadow: 
+                -1px -1px 0 #000,  
+                 1px -1px 0 #000,
+                -1px  1px 0 #000,
+                 1px  1px 0 #000; /* Crisp dark outline effect */
         }
         .paypal-widget-card .link-title a:hover {
             text-decoration: underline;
