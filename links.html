@@ -168,13 +168,15 @@
             animation: gradientGlow 3s ease-in-out infinite alternate;
         }
 
-        /* Custom Video Card Styles with Red-to-White Pulsing Play Overlay */
+        /* Custom Video Card Styles */
         .video-card {
-            display: block;
+            display: flex;
+            align-items: center;
+            gap: 24px;
             background: #ffffff;
             border: 2px solid #000000;
             border-radius: 6px;
-            overflow: hidden;
+            padding: 20px 24px;
             text-decoration: none;
             box-shadow: 4px 4px 0px #000000;
             position: relative;
@@ -188,13 +190,16 @@
             animation: gradientGlow 3s ease-in-out infinite alternate;
         }
 
+        /* 1/4 Size Scaled Image Box */
         .custom-image-box {
             position: relative;
-            width: 100%;
+            width: 200px;
+            flex-shrink: 0;
             aspect-ratio: 16 / 9;
             background-color: #111111;
             overflow: hidden;
-            border-radius: 4px; /* little rounded box */
+            border-radius: 4px;
+            border: 1px solid #000000;
         }
 
         .custom-image-box img.user-thumbnail {
@@ -214,11 +219,11 @@
         @keyframes redWhitePulse {
             0%, 100% {
                 background: rgba(255, 0, 51, 0.85);
-                box-shadow: 0 0 10px rgba(255, 0, 51, 0.4);
+                box-shadow: 0 0 8px rgba(255, 0, 51, 0.4);
             }
             50% {
                 background: rgba(255, 255, 255, 0.95);
-                box-shadow: 0 0 25px rgba(255, 255, 255, 0.9);
+                box-shadow: 0 0 16px rgba(255, 255, 255, 0.9);
             }
         }
 
@@ -227,14 +232,14 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 68px;
-            height: 48px;
-            border-radius: 12px;
+            width: 36px;
+            height: 26px;
+            border-radius: 6px;
             display: flex;
             align-items: center;
             justify-content: center;
             animation: redWhitePulse 6s ease-in-out infinite;
-            border: 2px solid #000000;
+            border: 1px solid #000000;
             transition: transform 0.2s ease;
         }
 
@@ -243,14 +248,15 @@
         }
 
         .custom-play-overlay img.play-btn-png {
-            width: 24px;
-            height: 24px;
+            width: 14px;
+            height: 14px;
             object-fit: contain;
-            margin-left: 2px; /* optical centering */
+            margin-left: 1px;
         }
 
         .video-card-content {
-            padding: 20px 24px;
+            flex: 1;
+            min-width: 0;
         }
 
         @keyframes gradientGlow {
@@ -420,6 +426,13 @@
                 font-size: 1.4rem;
                 letter-spacing: 0.15em;
             }
+            .video-card {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .custom-image-box {
+                width: 100%;
+            }
             .paypal-widget-card {
                 padding: 18px;
             }
@@ -497,13 +510,11 @@
                     <div class="link-desc">THIS APP IS TOO EXPENSIVE TO USE ANYMORE! (See Paypal below if you would like my music to be on there...)</div>
                 </a>
 
-                <!-- Link Item 6 (Custom Video Card with your image & pulsing play PNG) -->
+                <!-- Link Item 6 (Compact Video Card with 1/4 size image & pulsing play PNG) -->
                 <a href="https://www.youtube.com/watch?v=IlVzly_dddQ&feature=youtu.be" target="_blank" class="video-card">
                     <div class="custom-image-box">
-                        <!-- Replace 'your-image-path.jpg' with your own image file/url -->
                         <img src="your-image-path.jpg" alt="Music Video Thumbnail" class="user-thumbnail">
                         <div class="custom-play-overlay">
-                            <!-- Replace 'play-button.png' with your own play button PNG file -->
                             <img src="play-button.png" alt="Play" class="play-btn-png">
                         </div>
                     </div>
