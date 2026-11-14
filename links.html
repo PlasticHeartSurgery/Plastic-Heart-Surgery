@@ -246,7 +246,7 @@
             object-fit: contain;
             background: transparent;
             will-change: transform;
-            transform: scale(0.85); /* Default static state at 85% scale */
+            transform: scale(0.85); /* Default static state */
             transition: none; /* Controlled dynamically by JS on hover */
         }
 
@@ -565,10 +565,10 @@
                     </div>
                 </a>
                 
-                <!-- Link Item 5 (SoundCloud Card - Hover Wiggle) -->
+                <!-- Link Item 5 (SoundCloud Card - Hover Wiggle, 12% smaller scale base) -->
                 <a href="https://soundcloud.com/user-802528370" target="_blank" class="link-card video-card hover-wiggle-card">
                     <div class="custom-image-box borderless">
-                        <img src="images/SCSM.png" alt="SoundCloud Thumbnail" class="user-thumbnail wiggle-thumb" data-seed="12.4" data-freq="2.2" data-amp="16" data-rot="18" data-scale-base="0.85" data-time-offset="4.5">
+                        <img src="images/SCSM.png" alt="SoundCloud Thumbnail" class="user-thumbnail wiggle-thumb" data-seed="12.4" data-freq="2.2" data-amp="16" data-rot="18" data-scale-base="0.75" data-time-offset="4.5">
                     </div>
                     <div class="video-card-content">
                         <div class="link-tag">SoundCloud</div>
@@ -733,7 +733,7 @@
 
                     img.style.transform = `scale(${currentScale.toFixed(4)}) rotate(${rot.toFixed(2)}deg)`;
                 } else {
-                    // Instantly or smoothly snap back to static 85% scale and 0 rotation when not hovered
+                    // Snap back to static base scale and 0 rotation when not hovered
                     img.style.transform = `scale(${baseScaleFactor}) rotate(0deg)`;
                 }
             });
