@@ -204,5 +204,18 @@
             </div>
         </a>
 
-        <a href="#" target="_blank" rel="noopener noreferrer" class="link-card" onclick="playClickSound('audio/Sound 1.mp3')">
-            <div class
+    </div>
+
+    <script>
+        function playClickSound(soundPath) {
+            const clickSound = new Audio(soundPath);
+            clickSound.volume = 0.5;
+            clickSound.currentTime = 0;
+            clickSound.play().catch(error => {
+                console.log("Audio playback error:", error);
+            });
+        }
+    </script>
+
+</body>
+</html>
