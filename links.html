@@ -248,7 +248,7 @@
             object-fit: contain;
             background: transparent;
             will-change: transform;
-            transition: none; /* Controlled dynamically by JS on hover */
+            transition: none; /* Handled smoothly via JS animation loop */
         }
 
         /* Red-to-White Gradient Flash Overlay for See-Through SVG (Every 6 seconds) */
@@ -725,7 +725,7 @@
             playClickSound(dummyEvent, url);
         }
 
-        // AE Wiggle Simulator Loop with Hover Triggers
+        // AE Wiggle Simulator Loop with 5-Second Hover Build-Up and Ramp-Down
         function getRandomKeyframe(seed, index) {
             const x = Math.sin(index * 127.1 + seed * 311.7) * 43758.5453123;
             const frac = x - Math.floor(x);
@@ -744,17 +744,36 @@
         const hoverCards = document.querySelectorAll('.hover-wiggle-card');
         const pageLoadTime = performance.now();
 
+        // Track hover progress (0.0 to 1.0) for each card independently
+        const cardHoverStates = new Map();
+        hoverCards.forEach(card => cardHoverStates.set(card, 0.0));
+
+        let lastFrameTime = pageLoadTime;
+
         function animateWiggleThumbs(now) {
             const globalElapsed = (now - pageLoadTime) / 1000;
+            const deltaTime = (now - lastFrameTime) / 1000;
+            lastFrameTime = now;
+
+            const buildUpDuration = 5.0; // 5 seconds to fully build up
+            const rampDownDuration = 1.0; // 1 second to ramp down smoothly back to static
 
             hoverCards.forEach((card) => {
                 const img = card.querySelector('.wiggle-thumb');
                 if (!img) return;
 
                 const baseScaleFactor = parseFloat(img.getAttribute('data-scale-base')) || 0.85;
+                let currentProgress = cardHoverStates.get(card) || 0.0;
 
-                // Check if the user is hovering over this specific card
+                // Update hover progress based on hover state
                 if (card.matches(':hover')) {
+                    currentProgress = Math.min(1.0, currentProgress + (deltaTime / buildUpDuration));
+                } else {
+                    currentProgress = Math.max(0.0, currentProgress - (deltaTime / rampDownDuration));
+                }
+                cardHoverStates.set(card, currentProgress);
+
+                if (currentProgress > 0) {
                     const seed = parseFloat(img.getAttribute('data-seed')) || 1.0;
                     const freq = parseFloat(img.getAttribute('data-freq')) || 2.0;
                     const amp = parseFloat(img.getAttribute('data-amp')) || 15;
@@ -767,12 +786,15 @@
                     const noiseX = smoothWiggleNoise(phase, seed);
                     const noiseRot = smoothWiggleNoise(phase, seed + 5.0);
 
-                    const currentScale = baseScaleFactor + (noiseX * (amp / 100));
-                    const rot = noiseRot * maxRot;
+                    const targetScale = baseScaleFactor + (noiseX * (amp / 100));
+                    const targetRot = noiseRot * maxRot;
 
-                    img.style.transform = `scale(${currentScale.toFixed(4)}) rotate(${rot.toFixed(2)}deg)`;
+                    // Interpolate scale and rotation based on current progress factor
+                    const interpolatedScale = baseScaleFactor + (targetScale - baseScaleFactor) * currentProgress;
+                    const interpolatedRot = targetRot * currentProgress;
+
+                    img.style.transform = `scale(${interpolatedScale.toFixed(4)}) rotate(${interpolatedRot.toFixed(2)}deg)`;
                 } else {
-                    // Snap back to static base scale and 0 rotation when not hovered
                     img.style.transform = `scale(${baseScaleFactor}) rotate(0deg)`;
                 }
             });
