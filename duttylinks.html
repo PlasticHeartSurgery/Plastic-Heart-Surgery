@@ -31,6 +31,21 @@
             line-height: 1.6;
         }
 
+        .top-header {
+            width: 100%;
+            align-self: flex-start;
+            margin-bottom: 30px;
+        }
+
+        .site-title {
+            font-family: 'Lyno Ulyscyr', sans-serif;
+            font-size: 1.5rem;
+            letter-spacing: 0.3em;
+            color: #ff0033;
+            text-decoration: none;
+            display: inline-block;
+        }
+
         .cards-stack {
             display: flex;
             flex-direction: column;
@@ -124,9 +139,23 @@
             font-size: 0.95rem;
             color: #444444;
         }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 30px 20px;
+            }
+            .site-title {
+                font-size: 1.2rem;
+                letter-spacing: 0.15em;
+            }
+        }
     </style>
 </head>
 <body>
+
+    <header class="top-header">
+        <a href="index.html" class="site-title">Plastic Heart Surgery</a>
+    </header>
 
     <div class="cards-stack">
 
