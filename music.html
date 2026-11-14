@@ -141,7 +141,7 @@ margin-bottom: 24px;
 font-size: 1rem;
 }
 
-/* Snappier fade-in keyframes (0.8s instead of slow 3s) */
+/* Snappier fade-in keyframes */
 @keyframes fadeIn {
 from {
 opacity: 0;
@@ -150,6 +150,22 @@ transform: translateY(10px);
 to {
 opacity: 1;
 transform: translateY(0);
+}
+}
+
+/* Pulsating Red Gradient Glow Effect for Spotify Widget */
+@keyframes redGlowPulse {
+0% {
+box-shadow: 0 0 5px rgba(255, 0, 51, 0.3), 0 0 10px rgba(255, 0, 51, 0.2);
+border-color: rgba(255, 0, 51, 0.4);
+}
+50% {
+box-shadow: 0 0 20px rgba(255, 0, 51, 0.8), 0 0 35px rgba(255, 0, 51, 0.5);
+border-color: rgba(255, 0, 51, 1);
+}
+100% {
+box-shadow: 0 0 5px rgba(255, 0, 51, 0.3), 0 0 10px rgba(255, 0, 51, 0.2);
+border-color: rgba(255, 0, 51, 0.4);
 }
 }
 
@@ -169,8 +185,8 @@ justify-content: center;
 
 /* Fast, smooth appearance right after loading bar fills */
 body.images-loaded .spotify-container {
-animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-animation-delay: 0.1s; 
+animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards, redGlowPulse 3s infinite ease-in-out;
+animation-delay: 0.1s, 0.9s; /* Starts pulsing right after fade-in completes */
 }
 
 body.images-loaded .album-card {
@@ -193,14 +209,14 @@ body.webamp-revealed .webamp-section {
 animation: fadeIn 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* Spotify Player Styling */
+/* Spotify Player Styling (Drop shadow removed, red glow border added) */
 .spotify-container {
 margin-bottom: 40px;
 width: 100%;
 border-radius: 8px;
 overflow: hidden;
-border: 2px solid #000000;
-box-shadow: 4px 4px 0px #000000;
+border: 2px solid #ff0033;
+box-shadow: none; /* Black drop shadow removed */
 }
 
 #webamp-container {
@@ -332,7 +348,7 @@ left: 50%;
 <h2>Music</h2>
 <p>Experimental electronic music, techno, and noise releases. Stream current tracks below or explore complete releases across platforms.</p>
 
-<!-- Spotify Embed Player -->
+<!-- Spotify Embed Player (Drop shadow removed, pulsating red glow added) -->
 <div class="spotify-container">
 <iframe style="border-radius:12px" src="https://open.spotify.com/embed/artist/5ZoUq3l7mN6OBgTMjpjfj7?utm_source=generator&theme=0" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
 </div>
