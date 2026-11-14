@@ -25,6 +25,38 @@ color: #111111;
 display: flex;
 min-height: 100vh;
 line-height: 1.6;
+overflow-x: hidden;
+}
+
+/* --- PERFECTLY CENTERED RESPONSIVE RED LOADING BAR --- */
+.loader-container {
+position: fixed;
+top: 50%;
+left: calc(340px + ((100vw - 340px) / 2));
+transform: translate(-50%, -50%);
+width: min(300px, 80vw);
+height: 10px;
+background-color: #f0f0f0;
+border: 2px solid #000000;
+border-radius: 999px;
+overflow: hidden;
+box-shadow: 3px 3px 0px #000000;
+z-index: 9999;
+transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+.loader-bar {
+width: 0%;
+height: 100%;
+background-color: #ff0033;
+border-radius: 999px;
+transition: width 0.2s ease-out;
+}
+
+/* Hides loader once preloading finishes */
+body.images-loaded .loader-container {
+opacity: 0;
+visibility: hidden;
 }
 
 .sidebar {
@@ -245,6 +277,7 @@ color: #444444;
 margin-bottom: 0;
 }
 
+/* --- MOBILE RESPONSIVE ADJUSTMENTS --- */
 @media (max-width: 768px) {
 body {
 flex-direction: column;
@@ -260,14 +293,24 @@ border-bottom: none;
 main {
 margin-left: 0;
 padding: 40px 20px;
+max-width: 100%;
 }
 .albums-grid {
 grid-template-columns: 1fr;
+}
+/* Centers loading bar cleanly on mobile screens */
+.loader-container {
+left: 50%;
 }
 }
 </style>
 </head>
 <body>
+
+<!-- Perfectly Centered Rounded Red Loading Bar -->
+<div class="loader-container">
+    <div class="loader-bar" id="loader-bar"></div>
+</div>
 
 <div class="sidebar">
 <div>
@@ -430,10 +473,10 @@ grid-template-columns: 1fr;
 </section>
 </main>
     
-<!-- Image Preloader & Webamp 2-Minute Secret Fade-in Scripts -->
+<!-- Image Preloader, Loading Bar, & Webamp Secret Fade-in Scripts -->
 <script src="https://unpkg.com/webamp@1.4.2/built/webamp.bundle.min.js"></script>
 <script>
-    // 1. Preload all album artwork images before starting main card fade-ins
+    // 1. Preload all album artwork images and update loading bar progress
     window.addEventListener('DOMContentLoaded', () => {
         const imageSources = [
             "images/And Now She Is a Monster - Brighter - 1700 x 1700.png",
@@ -449,19 +492,26 @@ grid-template-columns: 1fr;
 
         let loadedCount = 0;
         const totalImages = imageSources.length;
+        const loaderBar = document.getElementById('loader-bar');
 
-        function checkAllLoaded() {
+        function updateProgress() {
             loadedCount++;
+            const progressPercent = (loadedCount / totalImages) * 100;
+            loaderBar.style.width = progressPercent + '%';
+
             if (loadedCount >= totalImages) {
-                document.body.classList.add('images-loaded');
+                // Short pause at 100% before triggering the fade-ins and hiding the loader bar
+                setTimeout(() => {
+                    document.body.classList.add('images-loaded');
+                }, 300);
             }
         }
 
         imageSources.forEach(src => {
             const img = new Image();
             img.src = src;
-            img.onload = checkAllLoaded;
-            img.onerror = checkAllLoaded;
+            img.onload = updateProgress;
+            img.onerror = updateProgress;
         });
     });
 
