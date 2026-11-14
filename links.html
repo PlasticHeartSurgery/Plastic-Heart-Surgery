@@ -162,7 +162,8 @@
             transition: transform 0.2s ease, border-color 0.4s ease, background-color 0.4s ease;
         }
 
-        .link-card:hover {
+        .link-card:hover,
+        .video-card:hover {
             border-color: #ff0033;
             transform: translateY(-2px);
             animation: gradientGlow 3s ease-in-out infinite alternate;
@@ -184,10 +185,16 @@
             transition: transform 0.2s ease, border-color 0.4s ease, background-color 0.4s ease;
         }
 
-        .video-card:hover {
-            border-color: #ff0033;
-            transform: translateY(-2px);
-            animation: gradientGlow 3s ease-in-out infinite alternate;
+        /* Animated Border Glow for Thumbnail Box (Every 6 seconds) */
+        @keyframes thumbnailBorderGlow {
+            0%, 100% {
+                border-color: #ff0033;
+                box-shadow: 0 0 10px rgba(255, 0, 51, 0.7), inset 0 0 5px rgba(255, 0, 51, 0.3);
+            }
+            50% {
+                border-color: #ffffff;
+                box-shadow: 0 0 18px rgba(255, 255, 255, 0.9), inset 0 0 8px rgba(255, 255, 255, 0.5);
+            }
         }
 
         /* 1/4 Size Scaled Image Box */
@@ -199,7 +206,9 @@
             background-color: #111111;
             overflow: hidden;
             border-radius: 4px;
-            border: 1px solid #000000;
+            border: 2px solid #ff0033;
+            animation: thumbnailBorderGlow 6s ease-in-out infinite;
+            transition: transform 0.4s ease;
         }
 
         .custom-image-box img.user-thumbnail {
@@ -517,8 +526,8 @@
                     <div class="link-desc">THIS APP IS TOO EXPENSIVE TO USE ANYMORE! (See Paypal below if you would like my music to be on there...)</div>
                 </a>
 
-                <!-- Link Item 6 (Compact Video Card with your exact image & gradient-masked SVG play button) -->
-                <a href="https://www.youtube.com/watch?v=IlVzly_dddQ&feature=youtu.be" target="_blank" class="video-card">
+                <!-- Link Item 6 (Compact Video Card with glowing border thumbnail & gradient-masked SVG play button) -->
+                <a href="https://www.youtube.com/watch?v=IlVzly_dddQ&feature=youtu.be" target="_blank" class="link-card video-card">
                     <div class="custom-image-box">
                         <img src="images/Plastic Heart Surgery - WHERE 🤷 👏 😭 IS 😄 💦🅱 ALL 😍 🏻🛑💯 🌝😏 OF 👏 🔥 ❗ MY 👦🙋 👨 🍆 MONEY_!___!__!_!_!_! 💰 😮 2-20 screenshot.png" alt="Music Video Thumbnail" class="user-thumbnail">
                         <div class="svg-play-wrapper">
@@ -540,10 +549,10 @@
                     <div class="link-desc" style="margin-bottom: 16px;">Help fund Plastic: "Usually" art supplies, Music related-things like subscriptions, art practice and basic necessities.</div>
                     
                     <div class="paypal-amounts" id="paypalAmounts">
-                        <button type="button" class="paypal-amt-btn" onclick="setPayPalAmount(25, this)">$50</button>
+                        <button type="button" class="paypal-amt-btn" onclick="setPayPalAmount(25, this)">$25</button>
                         <button type="button" class="paypal-amt-btn active" onclick="setPayPalAmount(100, this)">$100</button>
                         <button type="button" class="paypal-amt-btn" onclick="setPayPalAmount(1000, this)">$1,000</button>
-                        <button type="button" class="paypal-amt-btn" onclick="setPayPalAmount(100000000, this)">$100,000,000,000,000</button>
+                        <button type="button" class="paypal-amt-btn" onclick="setPayPalAmount(100000000, this)">$100,000,000</button>
                     </div>
 
                     <input type="number" id="paypalCustomInput" class="paypal-custom-input" placeholder="Custom amount ($)" value="100" min="1" oninput="syncPayPalInput(this)">
