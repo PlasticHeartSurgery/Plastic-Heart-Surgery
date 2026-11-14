@@ -26,7 +26,7 @@
             font-style: normal;
         }
 
-        /* inherits: false is strictly required for smooth @property conic rotation across browsers */
+        /* Register custom angle property for smooth Crimson/White Conic rotation */
         @property --border-angle {
             syntax: "<angle>";
             inherits: false;
@@ -39,12 +39,12 @@
             }
         }
 
-        @keyframes iconConicGlow {
+        @keyframes iconCrimsonGlow {
             0%, 100% {
-                filter: drop-shadow(0 0 6px rgba(255, 0, 51, 0.85)) drop-shadow(0 0 12px rgba(255, 0, 170, 0.45));
+                filter: drop-shadow(0 0 8px rgba(255, 0, 51, 0.9));
             }
             50% {
-                filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.95)) drop-shadow(0 0 16px rgba(255, 0, 51, 0.95));
+                filter: drop-shadow(0 0 14px rgba(255, 255, 255, 1)) drop-shadow(0 0 6px rgba(255, 0, 51, 0.8));
             }
         }
 
@@ -253,7 +253,7 @@
             opacity: 0.85;
         }
 
-        /* Animated Conic Glowing Edge for Music Cards (No Black Border + Glowing Icons) */
+        /* Animated Crimson/White Glowing Edge for Music Cards (No Black Border, Zero Rainbows) */
         .custom-image-box.static-border {
             border: 3px solid transparent !important;
             border-radius: 6px;
@@ -264,18 +264,17 @@
                 conic-gradient(
                     from var(--border-angle),
                     #ff0033 0%,
-                    #ff00aa 25%,
-                    #ffffff 50%,
-                    #ffd700 75%,
-                    #ff0033 100%
+                    #ffffff 35%,
+                    #ff0033 70%,
+                    #ffffff 100%
                 ) !important;
             background-origin: border-box !important;
             background-clip: padding-box, border-box !important;
-            animation: spinConic 3s linear infinite !important;
+            animation: spinConic 4s linear infinite !important;
             box-shadow: none !important;
         }
 
-        /* Blurred Rotating Halo Behind Music Thumbnail Box */
+        /* Crimson/White Rotating Halo Behind Music Thumbnail Box */
         .custom-image-box.static-border::before {
             content: "";
             position: absolute;
@@ -284,21 +283,20 @@
             background: conic-gradient(
                 from var(--border-angle),
                 #ff0033 0%,
-                #ff00aa 25%,
-                #ffffff 50%,
-                #ffd700 75%,
-                #ff0033 100%
+                #ffffff 35%,
+                #ff0033 70%,
+                #ffffff 100%
             );
             filter: blur(10px);
-            opacity: 0.65;
+            opacity: 0.6;
             z-index: -1;
-            animation: spinConic 3s linear infinite;
+            animation: spinConic 4s linear infinite;
             transition: opacity 0.3s ease, filter 0.3s ease;
             pointer-events: none;
         }
 
         .video-card:hover .custom-image-box.static-border::before {
-            opacity: 0.95;
+            opacity: 0.9;
             filter: blur(14px);
         }
 
@@ -307,13 +305,13 @@
             padding: 18px;
             position: relative;
             z-index: 2;
-            animation: iconConicGlow 3s ease-in-out infinite;
+            animation: iconCrimsonGlow 3s ease-in-out infinite;
         }
 
         .video-card:hover .custom-image-box.static-border img.user-thumbnail {
             transform: scale(1.07);
             opacity: 1;
-            filter: drop-shadow(0 0 10px #ff0033) drop-shadow(0 0 20px rgba(255, 0, 170, 0.85));
+            filter: drop-shadow(0 0 12px #ff0033);
         }
 
         /* Red-to-White Gradient Flash Overlay for See-Through SVG (Every 6 seconds) */
@@ -509,18 +507,6 @@
             box-shadow: 0 0 15px rgba(255, 0, 51, 0.6);
         }
 
-        #twitch-embed {
-            margin-top: 32px;
-            width: 100%;
-            max-width: 100%;
-            overflow: hidden;
-        }
-
-        #twitch-embed iframe {
-            width: 100%;
-            max-width: 100%;
-        }
-
         @media (max-width: 768px) {
             body {
                 flex-direction: column;
@@ -601,13 +587,13 @@
             <div class="links-grid">
                 
                 <!-- Link Item 1 -->
-                <a href="https://www.instagram.com/plastic.heart.surgery/" target="_blank" rel="noopener noreferrer" class="link-card">
+                <a href="https://www.instagram.com/plastic.heart.surgery/" target="_blank" class="link-card">
                     <div class="link-tag">Instagram</div>
                     <div class="link-desc">Plastic's Personal Instagram, DM for inquiries/bookings</div>
                 </a>
 
-                <!-- Link Item 2 (Spotify Card with Animated Conic Glow) -->
-                <a href="https://open.spotify.com/artist/5ZoUq3l7mN6OBgTMjpjfj7" target="_blank" rel="noopener noreferrer" class="link-card video-card">
+                <!-- Link Item 2 (Spotify Card with Crimson/White Glowing Edge) -->
+                <a href="https://open.spotify.com/artist/5ZoUq3l7mN6OBgTMjpjfj7" target="_blank" class="link-card video-card">
                     <div class="custom-image-box static-border">
                         <img src="images/Spotify.svg" alt="Spotify Thumbnail" class="user-thumbnail">
                     </div>
@@ -617,8 +603,8 @@
                     </div>
                 </a>
                 
-                <!-- Link Item 3 (Apple Music Card with Animated Conic Glow) -->
-                <a href="https://music.apple.com/ca/artist/plastic-heart-surgery/1539041975" target="_blank" rel="noopener noreferrer" class="link-card video-card">
+                <!-- Link Item 3 (Apple Music Card with Crimson/White Glowing Edge) -->
+                <a href="https://music.apple.com/ca/artist/plastic-heart-surgery/1539041975" target="_blank" class="link-card video-card">
                     <div class="custom-image-box static-border">
                         <img src="images/Apple_Music_icon.svg" alt="Apple Music Thumbnail" class="user-thumbnail">
                     </div>
@@ -628,8 +614,8 @@
                     </div>
                 </a>
 
-                <!-- Link Item 4 (Bandcamp Card with Animated Conic Glow) -->
-                <a href="https://plasticheartsurgery.bandcamp.com/" target="_blank" rel="noopener noreferrer" class="link-card video-card">
+                <!-- Link Item 4 (Bandcamp Card with Crimson/White Glowing Edge) -->
+                <a href="https://plasticheartsurgery.bandcamp.com/" target="_blank" class="link-card video-card">
                     <div class="custom-image-box static-border">
                         <img src="images/BCC.png" alt="Bandcamp Thumbnail" class="user-thumbnail">
                     </div>
@@ -639,8 +625,8 @@
                     </div>
                 </a>
                 
-                <!-- Link Item 5 (SoundCloud Card with Animated Conic Glow) -->
-                <a href="https://soundcloud.com/user-802528370" target="_blank" rel="noopener noreferrer" class="link-card video-card">
+                <!-- Link Item 5 (SoundCloud Card with Crimson/White Glowing Edge) -->
+                <a href="https://soundcloud.com/user-802528370" target="_blank" class="link-card video-card">
                     <div class="custom-image-box static-border">
                         <img src="images/Logo_black_on_Yellow.webp" alt="SoundCloud Thumbnail" class="user-thumbnail">
                     </div>
@@ -650,8 +636,8 @@
                     </div>
                 </a>
 
-                <!-- Link Item 6 (Video Card 1) -->
-                <a href="https://www.youtube.com/watch?v=IlVzly_dddQ&feature=youtu.be" target="_blank" rel="noopener noreferrer" class="link-card video-card">
+                <!-- Link Item 6 (Video Card 1 - Kept glowing animation) -->
+                <a href="https://www.youtube.com/watch?v=IlVzly_dddQ&feature=youtu.be" target="_blank" class="link-card video-card">
                     <div class="custom-image-box">
                         <img src="images/Plastic Heart Surgery - WHERE 🤷 👏 😭 IS 😄 💦🅱 ALL 😍 🏻🛑💯 🌝😏 OF 👏 🔥 ❗ MY 👦🙋 👨 🍆 MONEY_!___!__!_!_!_! 💰 😮.gif" alt="Music Video Thumbnail" class="user-thumbnail">
                         <div class="svg-play-wrapper">
@@ -664,8 +650,8 @@
                     </div>
                 </a>
 
-                <!-- Link Item 7 (Video Card 2) -->
-                <a href="https://youtu.be/deAcD_VN1sU" target="_blank" rel="noopener noreferrer" class="link-card video-card">
+                <!-- Link Item 7 (Video Card 2 - Kept glowing animation) -->
+                <a href="https://youtu.be/deAcD_VN1sU" target="_blank" class="link-card video-card">
                     <div class="custom-image-box">
                         <img src="images/💥 Site Walk 💥 Highway 407 💥 Subway Station 💥.gif" alt="Music Video Thumbnail" class="user-thumbnail">
                         <div class="svg-play-wrapper">
@@ -682,15 +668,15 @@
                 <div class="paypal-widget-card">
                     <div class="link-tag">Support</div>
                     <div class="link-title">
-                        <a href="https://www.paypal.com/paypalme/PlasticHeartSurgery" target="_blank" rel="noopener noreferrer">https://www.paypal.com/paypalme/PlasticHeartSurgery</a>
+                        <a href="https://www.paypal.com/paypalme/PlasticHeartSurgery" target="_blank">https://www.paypal.com/paypalme/PlasticHeartSurgery</a>
                     </div>
                     <div class="link-desc" style="margin-bottom: 16px;">Help fund Plastic: "usually" art supplies, Music related-things like subscriptions, art practice and basic necessities.</div>
                     
                     <div class="paypal-amounts" id="paypalAmounts">
-                        <button type="button" class="paypal-amt-btn" onclick="setPayPalAmount(50, this)">$50</button>
+                        <button type="button" class="paypal-amt-btn" onclick="setPayPalAmount(25, this)">$50</button>
                         <button type="button" class="paypal-amt-btn active" onclick="setPayPalAmount(100, this)">$100</button>
                         <button type="button" class="paypal-amt-btn" onclick="setPayPalAmount(1000, this)">$1,000</button>
-                        <button type="button" class="paypal-amt-btn" onclick="setPayPalAmount(1000000000000, this)">$1,000,000,000,000</button>
+                        <button type="button" class="paypal-amt-btn" onclick="setPayPalAmount(100000000, this)">$1,000,000,000,000</button>
                     </div>
 
                     <input type="number" id="paypalCustomInput" class="paypal-custom-input" placeholder="Custom amount ($)" value="100" min="1" oninput="syncPayPalInput(this)">
@@ -700,9 +686,6 @@
                 </div>
 
             </div>
-
-            <!-- Twitch Embed placed cleanly inside <main> -->
-            <div id="twitch-embed"></div>
         </section>
     </main>
 
@@ -724,7 +707,7 @@
                 waveHeader.classList.add('dancing');
                 setTimeout(() => {
                     waveHeader.classList.remove('dancing');
-                }, 1200);
+                }, 1200); // 1.2 seconds dance duration
             }, 6000);
         }
 
@@ -760,19 +743,24 @@
             if (note) {
                 url += `?note=${encodeURIComponent(note)}`;
             }
-            window.open(url, '_blank', 'noopener,noreferrer');
+            window.open(url, '_blank');
         }
     </script>
 
-    <!-- Twitch Embed Script -->
+    <!-- 1. Add a placeholder element -->
+    <div id="twitch-embed"></div>
+
+    <!-- 2. Load the Twitch embed script -->
     <script src="https://embed.twitch.tv/embed/v1.js"></script>
+
+    <!-- 3. Initialize the object -->
     <script type="text/javascript">
       new Twitch.Embed("twitch-embed", {
         width: 854,
         height: 480,
         channel: "plasticheartsurgery",
         layout: "video-with-chat",
-        parent: ["plasticheartsurgery.com", "www.plasticheartsurgery.com"]
+        parent: ["yourwebsite.com"]
       });
     </script>
 </body>
