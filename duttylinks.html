@@ -3,195 +3,217 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plastic Heart Surgery - Links</title>
+    <title>Plastic Heart Surgery — Links</title>
     <style>
-        :root {
-            --bg-color: #ffffff;
-            --text-color: #000000;
-            --accent-red: #ff0033;
-            --border-width: 4px;
-            --shadow-offset: 6px;
+        @font-face {
+            font-family: 'Frostgiant3D';
+            src: local('Frostgiant3D'), url('fonts/frostgiant3d.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
         body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            font-family: 'Courier New', Courier, monospace; /* Swap for your custom font if loaded */
-            max-width: 600px;
-            margin: 0 auto;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #ffffff;
+            color: #111111;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh;
             padding: 40px 20px;
         }
 
-        header {
-            text-align: center;
-            margin-bottom: 40px;
-            border: var(--border-width) solid var(--text-color);
-            padding: 20px;
-            box-shadow: 
-                var(--shadow-offset) var(--shadow-offset) 0px var(--text-color),
-                0 0 14px rgba(255, 0, 51, 0.35);
-            background: var(--bg-color);
-        }
-
-        h1 {
-            font-size: 1.8rem;
-            margin: 0;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        .links-container {
+        .cards-stack {
             display: flex;
             flex-direction: column;
             gap: 20px;
+            width: 100%;
+            max-width: 500px;
         }
 
-        .card {
-            background: var(--bg-color);
-            border: var(--border-width) solid var(--text-color);
-            padding: 18px 24px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        @keyframes gradientGlow {
+            0% {
+                background-color: #ffffff;
+                box-shadow: 0px 0px 5px rgba(255, 255, 255, 0.8), 4px 4px 0px #ff0033;
+            }
+            50% {
+                background-color: #fff5f7;
+                box-shadow: 0px 0px 20px rgba(255, 0, 51, 0.35), 4px 4px 0px #ff0033;
+            }
+            100% {
+                background-color: #ffe6eb;
+                box-shadow: 0px 0px 35px rgba(255, 0, 51, 0.7), 4px 4px 0px #ff0033;
+            }
+        }
+
+        .link-card {
+            display: block;
+            width: 100%;
+            max-width: 500px;
+            background: #ffffff;
+            border: 2px solid #000000;
+            border-radius: 6px;
+            padding: 24px;
             text-decoration: none;
-            color: var(--text-color);
-            font-weight: bold;
-            font-size: 1.1rem;
-            box-shadow: 
-                var(--shadow-offset) var(--shadow-offset) 0px var(--text-color),
-                0 0 14px rgba(255, 0, 51, 0.35);
-            transition: transform 0.1s ease, box-shadow 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+            box-shadow: 4px 4px 0px #000000;
+            cursor: pointer;
+            transition: transform 0.2s ease, border-color 0.4s ease, background-color 0.4s ease;
         }
 
-        .card:hover {
-            transform: translate(-2px, -2px);
-            border-color: var(--accent-red);
-            color: var(--accent-red);
-            box-shadow: 
-                calc(var(--shadow-offset) + 2px) calc(var(--shadow-offset) + 2px) 0px var(--text-color),
-                0 0 24px rgba(255, 0, 51, 0.75);
+        .link-card:hover {
+            border-color: #ff0033;
+            transform: translateY(-2px);
+            animation: gradientGlow 3s ease-in-out infinite alternate;
         }
 
-        .card:active {
-            transform: translate(2px, 2px);
-            box-shadow: 
-                2px 2px 0px var(--text-color),
-                0 0 10px rgba(255, 0, 51, 0.5);
-        }
-
-        .category-tag {
-            font-size: 0.75rem;
+        .link-tag {
+            font-size: 0.85rem;
             text-transform: uppercase;
-            border: 2px solid var(--text-color);
-            padding: 2px 6px;
-            background: var(--text-color);
-            color: var(--bg-color);
-            transition: background 0.15s ease, border-color 0.15s ease;
+            letter-spacing: 0.1em;
+            color: #ff0033;
+            margin-bottom: 6px;
+            font-weight: 600;
         }
 
-        .card:hover .category-tag {
-            background: var(--accent-red);
-            border-color: var(--accent-red);
+        .link-title {
+            font-family: 'Frostgiant3D', sans-serif;
+            font-size: 1.2rem;
+            letter-spacing: 0.15em;
+            color: #111111;
+            margin-bottom: 8px;
+        }
+
+        .link-desc {
+            font-size: 0.95rem;
+            color: #444444;
         }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>Plastic Heart Surgery</h1>
-        <p>Links & Hubs</p>
-    </header>
+    <div class="cards-stack">
 
-    <div class="links-container">
-        <!-- Featured / Upcoming -->
-        <a href="#" class="card" target="_blank" rel="noopener noreferrer">
-            <span>Art Show / Performance (July 16/17)</span>
-            <span class="category-tag">Event</span>
+        <a href="#" target="_blank" rel="noopener noreferrer" class="link-card" onclick="playClickSound('audio/Sound 1.mp3')">
+            <div class="link-tag">Event</div>
+            <div class="link-title">Art Show / Performance</div>
+            <div class="link-desc">Thursday / Friday July 16/17</div>
         </a>
 
-        <a href="#" class="card" target="_blank" rel="noopener noreferrer">
-            <span>M.L.D.W.M. TKNØRMX | Plastic Heart Surgery x Ellen Flowerhill</span>
-            <span class="category-tag">Audio</span>
+        <a href="#" target="_blank" rel="noopener noreferrer" class="link-card" onclick="playClickSound('audio/Sound 1.mp3')">
+            <div class="link-tag">Exclusive • 18+</div>
+            <div class="link-title">OnlyFans</div>
+            <div class="link-desc">Official exclusive content &amp; account.</div>
         </a>
 
-        <a href="#" class="card" target="_blank" rel="noopener noreferrer">
-            <span>YouTube | M.L.D.W.M. TKNØRMX | Plastic Heart Surgery x Ellen Flowerhill</span>
-            <span class="category-tag">Video</span>
+        <a href="#" target="_blank" rel="noopener noreferrer" class="link-card" onclick="playClickSound('audio/Sound 1.mp3')">
+            <div class="link-tag">Support</div>
+            <div class="link-title">Pay / Support / Donate 💖</div>
+            <div class="link-desc">Directly support Plastic Heart Surgery.</div>
         </a>
 
-        <a href="#" class="card" target="_blank" rel="noopener noreferrer">
-            <span>Where Is All My Money (Music Video)</span>
-            <span class="category-tag">Video</span>
+        <a href="#" target="_blank" rel="noopener noreferrer" class="link-card" onclick="playClickSound('audio/Sound 1.mp3')">
+            <div class="link-tag">Release</div>
+            <div class="link-title">M.L.D.W.M. TKNØRMX</div>
+            <div class="link-desc">Plastic Heart Surgery x Ellen Flowerhill</div>
         </a>
 
-        <!-- Music Platforms -->
-        <a href="#" class="card" target="_blank" rel="noopener noreferrer">
-            <span>Spotify</span>
-            <span class="category-tag">Audio</span>
+        <a href="#" target="_blank" rel="noopener noreferrer" class="link-card" onclick="playClickSound('audio/Sound 1.mp3')">
+            <div class="link-tag">YouTube</div>
+            <div class="link-title">M.L.D.W.M. TKNØRMX (Video)</div>
+            <div class="link-desc">Plastic Heart Surgery x Ellen Flowerhill on YouTube.</div>
         </a>
 
-        <a href="#" class="card" target="_blank" rel="noopener noreferrer">
-            <span>Apple Music</span>
-            <span class="category-tag">Audio</span>
+        <a href="#" target="_blank" rel="noopener noreferrer" class="link-card" onclick="playClickSound('audio/Sound 1.mp3')">
+            <div class="link-tag">Music Video</div>
+            <div class="link-title">Where Is All My Money</div>
+            <div class="link-desc">Official music video by Plastic Heart Surgery.</div>
         </a>
 
-        <a href="#" class="card" target="_blank" rel="noopener noreferrer">
-            <span>SoundCloud</span>
-            <span class="category-tag">Audio</span>
+        <a href="#" target="_blank" rel="noopener noreferrer" class="link-card" onclick="playClickSound('audio/Sound 1.mp3')">
+            <div class="link-tag">Audio</div>
+            <div class="link-title">Spotify</div>
+            <div class="link-desc">Stream releases on Spotify.</div>
         </a>
 
-        <a href="#" class="card" target="_blank" rel="noopener noreferrer">
-            <span>Bandcamp</span>
-            <span class="category-tag">Audio</span>
+        <a href="#" target="_blank" rel="noopener noreferrer" class="link-card" onclick="playClickSound('audio/Sound 1.mp3')">
+            <div class="link-tag">Audio</div>
+            <div class="link-title">Bandcamp</div>
+            <div class="link-desc">Digital albums, tracks, and discography.</div>
         </a>
 
-        <!-- Live & Socials -->
-        <a href="https://twitch.tv/plasticheartsurgery" class="card" target="_blank" rel="noopener noreferrer">
-            <span>Plastic Heart Surgery's - Twitch</span>
-            <span class="category-tag">Live</span>
+        <a href="#" target="_blank" rel="noopener noreferrer" class="link-card" onclick="playClickSound('audio/Sound 1.mp3')">
+            <div class="link-tag">Audio</div>
+            <div class="link-title">SoundCloud</div>
+            <div class="link-desc">Sets, mixes, and experimental tracks.</div>
         </a>
 
-        <a href="https://instagram.com/plastic.heart.surgery" class="card" target="_blank" rel="noopener noreferrer">
-            <span>Instagram</span>
-            <span class="category-tag">Social</span>
+        <a href="#" target="_blank" rel="noopener noreferrer" class="link-card" onclick="playClickSound('audio/Sound 1.mp3')">
+            <div class="link-tag">Audio</div>
+            <div class="link-title">Apple Music</div>
+            <div class="link-desc">Listen on Apple Music.</div>
         </a>
 
-        <a href="#" class="card" target="_blank" rel="noopener noreferrer">
-            <span>Bluesky</span>
-            <span class="category-tag">Social</span>
+        <a href="https://twitch.tv/plasticheartsurgery" target="_blank" rel="noopener noreferrer" class="link-card" onclick="playClickSound('audio/Sound 1.mp3')">
+            <div class="link-tag">Live</div>
+            <div class="link-title">Twitch</div>
+            <div class="link-desc">Plastic Heart Surgery live streams.</div>
         </a>
 
-        <a href="#" class="card" target="_blank" rel="noopener noreferrer">
-            <span>Twitter SFW</span>
-            <span class="category-tag">Social</span>
+        <a href="https://instagram.com/plastic.heart.surgery" target="_blank" rel="noopener noreferrer" class="link-card" onclick="playClickSound('audio/Sound 1.mp3')">
+            <div class="link-tag">Social</div>
+            <div class="link-title">Instagram</div>
+            <div class="link-desc">@plastic.heart.surgery</div>
         </a>
 
-        <a href="#" class="card" target="_blank" rel="noopener noreferrer">
-            <span>Twitter 18+</span>
-            <span class="category-tag">18+</span>
+        <a href="#" target="_blank" rel="noopener noreferrer" class="link-card" onclick="playClickSound('audio/Sound 1.mp3')">
+            <div class="link-tag">Social</div>
+            <div class="link-title">Bluesky</div>
+            <div class="link-desc">Follow updates on Bluesky.</div>
         </a>
 
-        <!-- Exclusive & Support -->
-        <a href="#" class="card" target="_blank" rel="noopener noreferrer">
-            <span>OnlyFans 18+</span>
-            <span class="category-tag">18+</span>
+        <a href="#" target="_blank" rel="noopener noreferrer" class="link-card" onclick="playClickSound('audio/Sound 1.mp3')">
+            <div class="link-tag">Social</div>
+            <div class="link-title">Twitter SFW</div>
+            <div class="link-desc">Main art &amp; music feed.</div>
         </a>
 
-        <a href="#" class="card" target="_blank" rel="noopener noreferrer">
-            <span>Fansly</span>
-            <span class="category-tag">18+</span>
+        <a href="#" target="_blank" rel="noopener noreferrer" class="link-card" onclick="playClickSound('audio/Sound 1.mp3')">
+            <div class="link-tag">Social • 18+</div>
+            <div class="link-title">Twitter 18+</div>
+            <div class="link-desc">NSFW feed and updates.</div>
         </a>
 
-        <a href="#" class="card" target="_blank" rel="noopener noreferrer">
-            <span>Pay/Support/Donate to Plastic 💖</span>
-            <span class="category-tag">Support</span>
+        <a href="#" target="_blank" rel="noopener noreferrer" class="link-card" onclick="playClickSound('audio/Sound 1.mp3')">
+            <div class="link-tag">Exclusive • 18+</div>
+            <div class="link-title">Fansly</div>
+            <div class="link-desc">Exclusive content on Fansly.</div>
         </a>
 
-        <a href="#" class="card" target="_blank" rel="noopener noreferrer">
-            <span>🎶 What a Plastic wants, what a Plastic needs 🎶 (Wish List)</span>
-            <span class="category-tag">Support</span>
+        <a href="#" target="_blank" rel="noopener noreferrer" class="link-card" onclick="playClickSound('audio/Sound 1.mp3')">
+            <div class="link-tag">Support</div>
+            <div class="link-title">Wish List 🎶</div>
+            <div class="link-desc">What a Plastic wants, what a Plastic needs.</div>
         </a>
+
     </div>
+
+    <script>
+        function playClickSound(soundPath) {
+            const clickSound = new Audio(soundPath);
+            clickSound.volume = 0.5;
+            clickSound.currentTime = 0;
+            clickSound.play().catch(error => {
+                console.log("Audio playback error:", error);
+            });
+        }
+    </script>
 
 </body>
 </html>
