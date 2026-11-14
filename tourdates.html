@@ -12,7 +12,7 @@ font-weight: normal;
 font-style: normal;
 }
 
-* {
+*, *::before, *::after {
 box-sizing: border-box;
 margin: 0;
 padding: 0;
@@ -25,6 +25,37 @@ color: #111111;
 display: flex;
 min-height: 100vh;
 line-height: 1.6;
+overflow-x: hidden;
+}
+
+/* --- CENTERED GRADIENT LOADING BAR --- */
+.loader-container {
+position: fixed;
+top: 50%;
+left: calc(340px + ((100vw - 340px) / 2));
+transform: translate(-50%, -50%);
+width: min(300px, 80vw);
+height: 10px;
+background-color: #f0f0f0;
+border: 2px solid #000000;
+border-radius: 999px;
+overflow: hidden;
+box-shadow: 3px 3px 0px #000000;
+z-index: 9999;
+transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.loader-bar {
+width: 0%;
+height: 100%;
+background: linear-gradient(to right, #ffffff, #ff0033);
+border-radius: 999px;
+transition: width 0.1s ease-out;
+}
+
+body.images-loaded .loader-container {
+opacity: 0;
+visibility: hidden;
 }
 
 .sidebar {
@@ -40,6 +71,7 @@ height: 100vh;
 top: 0;
 left: 0;
 overflow-y: auto;
+z-index: 10;
 }
 
 .site-title {
@@ -120,6 +152,53 @@ font-size: 1rem;
   100% {
     background-color: #ffe0e6;
   }
+}
+
+@keyframes fadeIn {
+from {
+opacity: 0;
+transform: translateY(10px);
+}
+to {
+opacity: 1;
+transform: translateY(0);
+}
+}
+
+/* Initially hidden elements for fade-in */
+.ra-feature-box,
+.ra-widget-container,
+.songkick-glow-container,
+.tour-card,
+.fade-section-title {
+opacity: 0;
+transform: translateY(10px);
+}
+
+/* Triggered immediately when preloading finishes with clean staggered loops */
+body.images-loaded .ra-feature-box {
+animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+animation-delay: 0.1s;
+}
+
+body.images-loaded .ra-widget-container {
+animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+animation-delay: 0.2s;
+}
+
+body.images-loaded .songkick-glow-container {
+animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+animation-delay: 0.3s;
+}
+
+body.images-loaded .fade-section-title {
+animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+animation-delay: calc(0.35s + (var(--i, 0) * 0.05s));
+}
+
+body.images-loaded .tour-card {
+animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+animation-delay: calc(0.1s + (var(--i, 0) * 0.06s));
 }
 
 /* Resident Advisor Feature Box */
@@ -283,6 +362,7 @@ border-right: none;
 main {
 margin-left: 0;
 padding: 40px 20px;
+max-width: 100%;
 }
 .ra-feature-box, .tour-card {
 flex-direction: column;
@@ -292,10 +372,18 @@ align-items: flex-start;
 width: 100%;
 height: 160px;
 }
+.loader-container {
+left: 50%;
+}
 }
 </style>
 </head>
 <body>
+
+<!-- Centered White-to-Red Gradient Loading Bar -->
+<div class="loader-container">
+    <div class="loader-bar" id="loader-bar"></div>
+</div>
 
 <div class="sidebar">
 <div>
@@ -344,12 +432,12 @@ height: 160px;
 </div>
 
 <!-- XOXOFLDDAY Section -->
-<h2 style="font-size: 1.4rem; margin-top: 40px;">XOXOFLDDAY</h2>
+<h2 class="fade-section-title" style="font-size: 1.4rem; margin-top: 40px; --i: 1;">XOXOFLDDAY</h2>
 <p class="section-subheader">XOXOFLDDAY is an annually held outdoor rave/festival that showcases unique local artists and local DJ's hosted by Plastic Heart Surgery.</p>
 
 <div class="tours-grid">
   <!-- XOXOFLDDAY Tour Card -->
-  <a href="https://www.instagram.com/p/C7ukdYiPNDx/" target="_blank" class="tour-card">
+  <a href="https://www.instagram.com/p/C7ukdYiPNDx/" target="_blank" class="tour-card" style="--i: 2;">
     <img src="images/xoxo smol.png" alt="XOXOFLDDAY" class="tour-thumb">
     <div class="tour-info">
       <div class="tour-date">Jun 23, 2024</div>
@@ -361,7 +449,7 @@ height: 160px;
 
 <div class="tours-grid">
   <!-- XOXOFLDDAY Tour Card -->
-  <a href="https://www.instagram.com/p/DNFbAiusxeP/" target="_blank" class="tour-card">
+  <a href="https://www.instagram.com/p/DNFbAiusxeP/" target="_blank" class="tour-card" style="--i: 3;">
     <img src="images/XOXOFLDDAY2025 smol smol.png" alt="XOXOFLDDAY 2.0" class="tour-thumb">
     <div class="tour-info">
       <div class="tour-date">Aug 9, 2025</div>
@@ -371,12 +459,12 @@ height: 160px;
   </a>
 </div>
 
-<h2 style="font-size: 1.4rem; margin-top: 40px;">Past Events</h2>
+<h2 class="fade-section-title" style="font-size: 1.4rem; margin-top: 40px; --i: 4;">Past Events</h2>
 
 <!-- Manual Tour Cards Grid -->
 <div class="tours-grid">
 
-  <a href="https://ra.co/events/2450851" target="_blank" class="tour-card">
+  <a href="https://ra.co/events/2450851" target="_blank" class="tour-card" style="--i: 5;">
     <img src="images/TIT4TATSQSM.png" alt="tit4tat Trans March Afterparty" class="tour-thumb">
     <div class="tour-info">
       <div class="tour-date">Fri, 26 Jun 2026</div>
@@ -385,7 +473,7 @@ height: 160px;
     </div>
   </a>
 
-  <a href="https://ra.co/events/2417715" target="_blank" class="tour-card">
+  <a href="https://ra.co/events/2417715" target="_blank" class="tour-card" style="--i: 6;">
     <img src="images/SOMASMSQ.png" alt="SOMA" class="tour-thumb">
     <div class="tour-info">
       <div class="tour-date">Thu, May 14, 2026</div>
@@ -394,7 +482,7 @@ height: 160px;
     </div>
   </a>
 
-  <a href="https://ra.co/events/2318589" target="_blank" class="tour-card">
+  <a href="https://ra.co/events/2318589" target="_blank" class="tour-card" style="--i: 7;">
     <img src="images/NPSQSM2.png" alt="T-4-T North Pole Party" class="tour-thumb">
     <div class="tour-info">
       <div class="tour-date">Fri, 19 Dec 2025</div>
@@ -403,8 +491,8 @@ height: 160px;
     </div>
   </a>
 
-  <a href="https://ra.co/events/2198808" target="_blank" class="tour-card">
-    <img src="https://imgproxy.ra.co/_/quality:66/w:1442/rt:fill/aHR0cHM6Ly9pbWFnZXMucmEuY28vYjA5OGVmMjZhZGIzMWRkYThhYzJmYTI1M2JkZDVmN2MxMzJmNWU1NC5qcGc=" alt="T-4-T North Pole Party" class="tour-thumb">
+  <a href="https://ra.co/events/2198808" target="_blank" class="tour-card" style="--i: 8;">
+    <img src="https://imgproxy.ra.co/_/quality:66/w:1442/rt:fill/aHR0cHM6Ly9pbWFnZXMucmEuY28vYjA5OGVmMjZhZGIzMWRkYThhYzJmYTI1M2JkZDVmN2MxMzJmNWU1NC5qcGc=" alt="Frequencies" class="tour-thumb">
     <div class="tour-info">
       <div class="tour-date">Thurs, 26 Jun 2025</div>
       <div class="tour-title">Frequencies: Girls Rituals, Erin Corbett, STELLA, Plastic Heart Surgery</div>
@@ -412,20 +500,17 @@ height: 160px;
     </div>
   </a>
 
-  <a href="https://ra.co/events/2064104" target="_blank" class="tour-card">
-    <img src="https://imgproxy.ra.co/_/quality:66/w:1442/rt:fill/aHR0cHM6Ly9pbWFnZXMucmEuY28vZDgxZTk5OTkzNDgzMjE0MWRjY2Y5OTI3ZTNjNTI4YTk2ODIxMzVhMy5qcGc=" alt="T-4-T North Pole Party" class="tour-thumb">
+  <a href="https://ra.co/events/2064104" target="_blank" class="tour-card" style="--i: 9;">
+    <img src="https://imgproxy.ra.co/_/quality:66/w:1442/rt:fill/aHR0cHM6Ly9pbWFnZXMucmEuY28vZDgxZTk5OTkzNDgzMjE0MWRjY2Y5OTI3ZTNjNTI4YTk2ODIxMzVhMy5qcGc=" alt="Holiday Fundraiser" class="tour-thumb">
     <div class="tour-info">
       <div class="tour-date">Thurs, 19 Dec 2024</div>
-      <div class="tour-title">Frequencies: Holiday Fundraiser Show: Measure x Wolfgang Grey
-  Plastic Heart Surgery 
-  Mother Of x Ensh 
-  SHEMONA</div>
+      <div class="tour-title">Frequencies: Holiday Fundraiser Show: Measure x Wolfgang Grey Plastic Heart Surgery Mother Of x Ensh SHEMONA</div>
       <div class="tour-location">Handlebar, Toronto, ON</div>
     </div>
   </a>
 
-  <a href="https://www.instagram.com/p/C7KoL3jPm_T/" target="_blank" class="tour-card">
-    <img src="images/PHX Blash.png" alt="T-4-T North Pole Party" class="tour-thumb">
+  <a href="https://www.instagram.com/p/C7KoL3jPm_T/" target="_blank" class="tour-card" style="--i: 10;">
+    <img src="images/PHX Blash.png" alt="Super Kill Me Now" class="tour-thumb">
     <div class="tour-info">
       <div class="tour-date">Tues, 25 Dec 2023</div>
       <div class="tour-title">Super Kill Me Now x Plastic Heart Surgery x Blash Belmar x Brian Ruryk</div>
@@ -449,6 +534,37 @@ document.getElementById('ra-widget').style.height = data.height + 'px';
 // Ignore non-JSON payload messages
 }
 }
+});
+
+// Image Preloader & Gradient Loading Bar Script
+window.addEventListener('DOMContentLoaded', () => {
+    const imageSources = [
+        "https://imgproxy.ra.co/_/quality:66/h:180/w:180/rt:fill/gravity:sm/aHR0cHM6Ly9zdGF0aWMucmEuY28vaW1hZ2VzL3Byb2ZpbGVzL3NxdWFyZS9wbGFzdGljaGVhcnRzdXJnZXJ5LmpwZz9kYXRlVXBkYXRlZD0xNzU2OTg3MDQzMDAw",
+        "images/xoxo smol.png",
+        "images/XOXOFLDDAY2025 smol smol.png",
+        "images/TIT4TATSQSM.png",
+        "images/SOMASMSQ.png",
+        "images/NPSQSM2.png",
+        "https://imgproxy.ra.co/_/quality:66/w:1442/rt:fill/aHR0cHM6Ly9pbWFnZXMucmEuY28vYjA5OGVmMjZhZGIzMWRkYThhYzJmYTI1M2JkZDVmN2MxMzJmNWU1NC5qcGc=",
+        "https://imgproxy.ra.co/_/quality:66/w:1442/rt:fill/aHR0cHM6Ly9pbWFnZXMucmEuY28vZDgxZTk5OTkzNDgzMjE0MWRjY2Y5OTI3ZTNjNTI4YTk2ODIxMzVhMy5qcGc=",
+        "images/PHX Blash.png"
+    ];
+
+    let loadedCount = 0;
+    const totalImages = imageSources.length;
+    const loaderBar = document.getElementById('loader-bar');
+
+    imageSources.forEach(src => {
+        const img = new Image();
+        img.src = src;
+        img.onload = img.onerror = () => {
+            loadedCount++;
+            loaderBar.style.width = (loadedCount / totalImages) * 100 + '%';
+            if (loadedCount >= totalImages) {
+                document.body.classList.add('images-loaded');
+            }
+        };
+    });
 });
 </script>
 </body>
