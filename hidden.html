@@ -254,8 +254,8 @@
 </head>
 <body>
 
-    <!-- Hidden audio element to play the cassette spam sound automatically -->
-    <audio id="bg-audio" src="audio/cASSETTE sPAM.mp3" autoplay></audio>
+    <!-- Audio element with preload -->
+    <audio id="bg-audio" src="audio/cASSETTE sPAM.mp3" preload="auto"></audio>
 
     <div class="sidebar">
         <div>
@@ -282,7 +282,7 @@
             
             <div class="bio-container">
                 <div class="bio-text">
-                    <p class="strobe-text">You are not supposed to be here. You think you know me, but you don't. Go away! I am tracking your IP and your real-time geolocation. You aren't safe, I hope you used a VPN. The longer you stay on this page, the more information I gather. Leave this page immediately if you care for your safety and privacy.</p>
+                    <p class="strobe-text">You are not supposed to be here. You think you know me, but you don't. Go away! I am tracking your IP and your real-time location. You aren't safe, I hope you used a VPN. The longer you stay on this page, the more information I gather. Leave this page immediately if you care for your safety and privacy.</p>
                 </div>
 
                 <div class="bio-image-frame">
@@ -293,6 +293,20 @@
     </main>
 
     <script>
+        // Attempt autoplay immediately on load (works if browser policies allow)
+        window.addEventListener('DOMContentLoaded', () => {
+            const audio = document.getElementById('bg-audio');
+            audio.play().catch(() => {
+                // Autoplay was blocked by the browser. 
+                // We'll unlock and play it on the user's very first click anywhere on the page.
+                const unlockAudio = () => {
+                    audio.play();
+                    window.removeEventListener('click', unlockAudio);
+                };
+                window.addEventListener('click', unlockAudio);
+            });
+        });
+
         // Trigger 4-second glitch & strobe effect at 18 seconds so it finishes right at the 22-second redirect
         setTimeout(() => {
             document.body.classList.add('glitch-transition');
