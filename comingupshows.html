@@ -12,7 +12,7 @@
             font-style: normal;
         }
 
-        * {
+        *, *::before, *::after {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
@@ -25,6 +25,37 @@
             display: flex;
             min-height: 100vh;
             line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* --- CENTERED GRADIENT LOADING BAR --- */
+        .loader-container {
+            position: fixed;
+            top: 50%;
+            left: calc(340px + ((100vw - 340px) / 2));
+            transform: translate(-50%, -50%);
+            width: min(300px, 80vw);
+            height: 10px;
+            background-color: #f0f0f0;
+            border: 2px solid #000000;
+            border-radius: 999px;
+            overflow: hidden;
+            box-shadow: 3px 3px 0px #000000;
+            z-index: 9999;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .loader-bar {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(to right, #ffffff, #ff0033);
+            border-radius: 999px;
+            transition: width 0.1s ease-out;
+        }
+
+        body.images-loaded .loader-container {
+            opacity: 0;
+            visibility: hidden;
         }
 
         .sidebar {
@@ -39,6 +70,7 @@
             top: 0;
             left: 0;
             overflow-y: auto;
+            z-index: 10;
         }
 
         .site-title {
@@ -108,6 +140,17 @@
             font-size: 1rem;
         }
 
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         /* Coming Up Shows List Grid */
         .shows-grid {
             display: flex;
@@ -115,6 +158,24 @@
             gap: 20px;
             margin-top: 30px;
             margin-bottom: 50px;
+        }
+
+        /* Initially hidden elements for fade-in */
+        .show-card,
+        .fade-section-title {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        /* Triggered immediately when preloading finishes with clean staggered loops */
+        body.images-loaded .fade-section-title {
+            animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            animation-delay: calc(0.1s + (var(--i, 0) * 0.05s));
+        }
+
+        body.images-loaded .show-card {
+            animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            animation-delay: calc(0.15s + (var(--i, 0) * 0.08s));
         }
 
         /* Hyperlink Box with Hover Glow Effect */
@@ -236,10 +297,18 @@
                 font-size: 1.4rem;
                 letter-spacing: 0.15em;
             }
+            .loader-container {
+                left: 50%;
+            }
         }
     </style>
 </head>
 <body>
+
+    <!-- Centered White-to-Red Gradient Loading Bar -->
+    <div class="loader-container">
+        <div class="loader-bar" id="loader-bar"></div>
+    </div>
 
     <div class="sidebar">
         <div>
@@ -268,7 +337,7 @@
             <!-- Shows Hyperlink Boxes Grid -->
             <div class="shows-grid">
                 <!-- Show Item 1 (Fully clickable mailto card with pulsing banner) -->
-                <a href="mailto:plasticheartsurgery@gmail.com?subject=Booking%20Inquiry%20%E2%80%94%20Plastic%20Heart%20Surgery" class="show-card">
+                <a href="mailto:plasticheartsurgery@gmail.com?subject=Booking%20Inquiry%20%E2%80%94%20Plastic%20Heart%20Surgery" class="show-card" style="--i: 1;">
                     <div class="show-image booking-banner">
                         <span>Available for bookings</span>
                     </div>
@@ -282,12 +351,12 @@
         </section>
 
         <section>
-            <h2>Past Exhibitions/Shows</h2>
+            <h2 class="fade-section-title" style="--i: 2;">Past Exhibitions/Shows</h2>
             <p>Painting Archive:</p>
                  
             <div class="shows-grid">
                 <!-- Archive Show Item 1 -->
-                <a href="https://www.instagram.com/p/Daz8J57kXmT/?img_index=1" target="_blank" class="show-card">
+                <a href="https://www.instagram.com/p/Daz8J57kXmT/?img_index=1" target="_blank" class="show-card" style="--i: 3;">
                     <div class="show-image">
                         <img src="images/Bazaart_8A5A0CA3-A634-4B7B-B2EA-45F3BFBA222A.jpeg" alt="The Body I'll Be Found in exhibition view">
                     </div>
@@ -299,7 +368,7 @@
                 </a>
 
                 <!-- Archive Show Item 2 -->
-                <a href="https://www.instagram.com/p/BvUJDNIhSDJ/" target="_blank" class="show-card">
+                <a href="https://www.instagram.com/p/BvUJDNIhSDJ/" target="_blank" class="show-card" style="--i: 4;">
                     <div class="show-image">
                         <img src="images/HUMANSANDARTWIDE.png" alt="Humans & Art exhibition view">
                     </div>
@@ -313,5 +382,30 @@
         </section>
     </main>
 
+    <script>
+        // Image Preloader & Gradient Loading Bar Script
+        window.addEventListener('DOMContentLoaded', () => {
+            const imageSources = [
+                "images/Bazaart_8A5A0CA3-A634-4B7B-B2EA-45F3BFBA222A.jpeg",
+                "images/HUMANSANDARTWIDE.png"
+            ];
+
+            let loadedCount = 0;
+            const totalImages = imageSources.length;
+            const loaderBar = document.getElementById('loader-bar');
+
+            imageSources.forEach(src => {
+                const img = new Image();
+                img.src = src;
+                img.onload = img.onerror = () => {
+                    loadedCount++;
+                    loaderBar.style.width = (loadedCount / totalImages) * 100 + '%';
+                    if (loadedCount >= totalImages) {
+                        document.body.classList.add('images-loaded');
+                    }
+                };
+            });
+        });
+    </script>
 </body>
 </html>
