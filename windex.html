@@ -3,91 +3,225 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blank Page Red Explosion</title>
+    <title>Interactive Flipping Cards with Images</title>
     <style>
-        body {
-            background-color: #ffffff;
+        * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            width: 100vw;
-            height: 100vh;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #0f172a;
+            color: #f8fafc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            letter-spacing: 0.05em;
+            color: #38bdf8;
+        }
+
+        p.subtitle {
+            color: #94a3b8;
+            margin-bottom: 40px;
+            font-size: 1rem;
+        }
+
+        /* Grid Layout for the 4 Boxes */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 30px;
+            perspective: 1000px; /* Required for 3D flip effect */
+        }
+
+        /* Card Wrapper / Box */
+        .card-box {
+            background-color: transparent;
+            height: 320px;
+            cursor: pointer;
+        }
+
+        /* Inner Card that rotates */
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+            transform-style: preserve-3d;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+        }
+
+        /* Flipped state triggered by JS class */
+        .card-box.flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        /* Common styles for Front and Back faces */
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden; /* Safari */
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
             overflow: hidden;
-            cursor: default;
         }
 
-        /* Invisible full-screen interactive zone acting as the trigger area */
-        #trigger-zone {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
+        /* Front Face Style */
+        .card-front {
+            background: #1e293b;
+            color: #ffffff;
         }
 
-        #particle-canvas {
-            position: fixed;
+        .card-front img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
             top: 0;
             left: 0;
-            width: 100vw;
-            height: 100vh;
-            pointer-events: none;
-            z-index: 9999;
+            border-radius: 12px;
+        }
+
+        .card-front .overlay-text {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(4px);
+            padding: 12px;
+            font-size: 0.9rem;
+            letter-spacing: 0.05em;
+            color: #f8fafc;
+        }
+
+        /* Back Face Style */
+        .card-back {
+            background: linear-gradient(135deg, #0369a1 0%, #0284c7 100%);
+            color: #ffffff;
+            transform: rotateY(180deg);
+        }
+
+        .card-back h3 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        .card-back p {
+            font-size: 0.9rem;
+            line-height: 1.4;
+            color: #e0f2fe;
+            margin-bottom: 15px;
+        }
+
+        /* Link button style on Card 1 Back */
+        .card-link-btn {
+            display: inline-block;
+            background-color: #ffffff;
+            color: #0369a1;
+            padding: 8px 16px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 0.85rem;
+            transition: background-color 0.2s ease;
+        }
+
+        .card-link-btn:hover {
+            background-color: #e0f2fe;
         }
     </style>
 </head>
 <body>
 
-    <div id="trigger-zone"></div>
-    <canvas id="particle-canvas"></canvas>
+    <div class="container">
+        <h1>Interactive Gallery Cards</h1>
+        <p class="subtitle">Click any card to flip it. Card 1 includes a link to a new page!</p>
 
-    <script>
-        const canvas = document.getElementById('particle-canvas');
-        const ctx = canvas.getContext('2d');
-        const triggerZone = document.getElementById('trigger-zone');
+        <div class="card-grid">
+            <!-- Card 1 (Has Link on Back) -->
+            <div class="card-box" onclick="this.classList.toggle('flipped')">
+                <div class="card-inner">
+                    <div class="card-front">
+                        <img src="images/image1.jpg" alt="Gallery Image 1">
+                        <div class="overlay-text">Card 1 (Click to Flip)</div>
+                    </div>
+                    <div class="card-back">
+                        <h3>Featured Destination</h3>
+                        <p>Discover more about this project or view the full gallery layout.</p>
+                        <!-- Prevents the flip toggle when clicking the link directly -->
+                        <a href="new-page.html" class="card-link-btn" onclick="event.stopPropagation()">Open New Page</a>
+                    </div>
+                </div>
+            </div>
 
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
+            <!-- Card 2 -->
+            <div class="card-box" onclick="this.classList.toggle('flipped')">
+                <div class="card-inner">
+                    <div class="card-front">
+                        <img src="images/image2.jpg" alt="Gallery Image 2">
+                        <div class="overlay-text">Card 2</div>
+                    </div>
+                    <div class="card-back">
+                        <h3>Modern Aesthetics</h3>
+                        <p>Clean gradients, subtle shadows, and crisp typography tailored for immersive digital experiences.</p>
+                    </div>
+                </div>
+            </div>
 
-        let particles = [];
-        let mouseX = 0;
-        let mouseY = 0;
-        let isOverCard = false;
+            <!-- Card 3 -->
+            <div class="card-box" onclick="this.classList.toggle('flipped')">
+                <div class="card-inner">
+                    <div class="card-front">
+                        <img src="images/image3.jpg" alt="Gallery Image 3">
+                        <div class="overlay-text">Card 3</div>
+                    </div>
+                    <div class="card-back">
+                        <h3>Fluid & Responsive</h3>
+                        <p>Fully fluid grid layout that scales seamlessly from ultra-wide monitors down to mobile screens.</p>
+                    </div>
+                </div>
+            </div>
 
-        triggerZone.addEventListener('mousemove', (e) => {
-            isOverCard = true;
-            mouseX = e.clientX;
-            mouseY = e.clientY;
-        });
+            <!-- Card 4 -->
+            <div class="card-box" onclick="this.classList.toggle('flipped')">
+                <div class="card-inner">
+                    <div class="card-front">
+                        <img src="images/image4.jpg" alt="Gallery Image 4">
+                        <div class="overlay-text">Card 4</div>
+                    </div>
+                    <div class="card-back">
+                        <h3>Secure & Reliable</h3>
+                        <p>Engineered using best practices to isolate processes and protect your user interactions.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-        triggerZone.addEventListener('mouseleave', () => {
-            isOverCard = false;
-        });
-
-        class Particle {
-            constructor(x, y) {
-                this.x = x;
-                this.y = y;
-                // Random angle in full 360 degrees
-                const angle = Math.random() * Math.PI * 2;
-                // High velocity range for explosive spread
-                const speed = Math.random() * 15 + 2;
-                this.vx = Math.cos(angle) * speed;
-                this.vy = Math.sin(angle) * speed;
-                // Pure red variations (no white, only RGB red channel active)
-                this.red = Math.floor(Math.random() * 155) + 100;
-                this.size = Math.random() * 3 + 1.5;
-                this.life = 1.0;
-                this.decay = Math.random() * 0.03 + 0.01;
-            }
-
-            update() {
-                this.x += this.vx;
-                this.y += this.vy;
-                this.life -= this.decay;
-            }
-
-            draw(ctx) {
+</body>
+</html>
