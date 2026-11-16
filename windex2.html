@@ -27,11 +27,25 @@
             align-items: center;
             min-height: 100vh;
             padding: 40px 20px;
+            animation: backgroundPulse 4s infinite ease-in-out;
+        }
+
+        /* --- BACKGROUND PULSE: WHITE TO RED REPEATING --- */
+        @keyframes backgroundPulse {
+            0% {
+                background-color: #ffffff;
+            }
+            50% {
+                background-color: #ff0000;
+            }
+            100% {
+                background-color: #ffffff;
+            }
         }
 
         /* --- SERUM 2 GLITCH PAGE MELT, STROBE & RAPID ZOOM EFFECT --- */
         body.glitch-transition {
-            animation: fullPageMeltdown 4s forwards ease-in-out;
+            animation: fullPageMeltdown 4s forwards ease-in-out !important;
             pointer-events: none;
         }
 
