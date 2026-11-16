@@ -62,22 +62,22 @@
             transform: translateY(0);
         }
 
-        /* --- IMAGE CONTAINER & MAGNIFICATION --- */
+        /* --- IMAGE CONTAINER & SECRET DOUBLE-CLICK MAGNIFICATION --- */
         .photo-frame {
             width: 80%; /* 80% on mobile */
             max-width: 800px;
             border-radius: 4px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             overflow: hidden;
-            cursor: zoom-in;
+            cursor: default; /* Keeps standard cursor unchanged */
             position: relative;
             user-select: none;
             -webkit-user-select: none;
         }
 
         .photo-frame.is-zoomed {
-            cursor: zoom-out;
-            touch-action: none; /* Allows smooth panning while zoomed on mobile */
+            cursor: default; /* Keeps standard cursor unchanged while zoomed */
+            touch-action: none;
         }
 
         .photo {
@@ -159,7 +159,7 @@
                 img.style.transformOrigin = `${x}% ${y}%`;
             }
 
-            // 2. Desktop: Toggle 4x Zoom ONLY on Double-Click
+            // 2. Desktop: Secret Toggle 4x Zoom ONLY on Double-Click
             frame.addEventListener('dblclick', (e) => {
                 e.preventDefault();
                 const willZoom = !frame.classList.contains('is-zoomed');
@@ -179,7 +179,7 @@
                 setOrigin(e.clientX, e.clientY);
             });
 
-            // 3. Mobile: Toggle 4x Zoom ONLY on Double-Tap
+            // 3. Mobile: Secret Toggle 4x Zoom ONLY on Double-Tap
             let lastTap = 0;
             frame.addEventListener('touchend', (e) => {
                 if (e.touches.length > 0) return;
