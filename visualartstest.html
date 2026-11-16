@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Plastic Heart Surgery — Visual Arts</title>
     <style>
         @font-face {
@@ -26,6 +26,7 @@
             min-height: 100vh;
             line-height: 1.6;
             overflow-x: hidden;
+            touch-action: pan-y;
         }
 
         /* --- CENTERED GRADIENT LOADING BAR --- */
@@ -175,13 +176,22 @@
             transition-delay: 0s;
         }
 
-        /* Hover lift and 1.5s fade-in to red border + shadow */
-        body.images-loaded .art-card:hover {
-            transform: translateY(-4px) scale(1.06) !important;
-            border-color: #ff0033;
-            box-shadow: 10px 10px 0px #ff0033;
-            z-index: 20;
-            transition-delay: 0s !important;
+        /* Desktop hover lift and 1.5s fade-in to red border + shadow */
+        @media (hover: hover) {
+            body.images-loaded .art-card:hover {
+                transform: translateY(-4px) scale(1.06) !important;
+                border-color: #ff0033;
+                box-shadow: 10px 10px 0px #ff0033;
+                z-index: 20;
+                transition-delay: 0s !important;
+            }
+        }
+
+        /* Active mobile zoomed state */
+        .art-card.mobile-zoomed {
+            border-color: #ff0033 !important;
+            box-shadow: 10px 10px 0px #ff0033 !important;
+            z-index: 50 !important;
         }
 
         .art-image-frame {
@@ -190,11 +200,12 @@
             overflow: hidden;
             border-bottom: 2px solid #000000;
             cursor: zoom-in;
+            touch-action: none;
             transition: border-bottom-color 1.5s ease;
         }
 
-        /* Keeps the divider line between image and text matching the red fade */
-        body.images-loaded .art-card:hover .art-image-frame {
+        body.images-loaded .art-card:hover .art-image-frame,
+        .art-card.mobile-zoomed .art-image-frame {
             border-bottom-color: #ff0033;
         }
 
@@ -405,7 +416,33 @@
                 };
             });
 
-            // Exponential ease-in 400% magnification (2x slower total duration) + fluid cursor glide
+            // Helper to find the card with the highest percentage visible in the current phone viewport
+            function getMostVisibleCard() {
+                const cards = document.querySelectorAll('.art-card');
+                let bestCard = null;
+                let maxVisibleArea = 0;
+                const viewHeight = window.innerHeight;
+                const viewWidth = window.innerWidth;
+
+                cards.forEach(card => {
+                    const rect = card.getBoundingClientRect();
+                    const visibleTop = Math.max(0, rect.top);
+                    const visibleBottom = Math.min(viewHeight, rect.bottom);
+                    const visibleHeight = Math.max(0, visibleBottom - visibleTop);
+                    const visibleLeft = Math.max(0, rect.left);
+                    const visibleRight = Math.min(viewWidth, rect.right);
+                    const visibleWidth = Math.max(0, visibleRight - visibleLeft);
+                    const area = visibleHeight * visibleWidth;
+
+                    if (area > maxVisibleArea) {
+                        maxVisibleArea = area;
+                        bestCard = card;
+                    }
+                });
+                return bestCard;
+            }
+
+            // Desktop & Mobile unified magnification loop
             document.querySelectorAll('.art-card').forEach(card => {
                 const frame = card.querySelector('.art-image-frame');
                 const img = frame.querySelector('img');
@@ -419,10 +456,8 @@
                 let isAnimating = false;
                 let lastTime = 0;
 
-                // Total zoom-in duration in ms (~2x slower than previous ~4.5s settle time)
-                const zoomDurationMs = 9000;
+                const zoomDurationMs = 6428;
 
-                // Exponential ease-in: creeps very slowly at the start, ramps up rapidly at the end
                 function easeInExpo(t) {
                     if (t <= 0) return 0;
                     if (t >= 1) return 1;
@@ -435,20 +470,16 @@
                     const dt = elapsedMs / 16.6667;
                     lastTime = now;
 
-                    // Advance linear progress [0..1] over zoomDurationMs
                     const step = elapsedMs / zoomDurationMs;
                     if (targetProgress > currentProgress) {
                         currentProgress = Math.min(targetProgress, currentProgress + step);
                     } else if (targetProgress < currentProgress) {
-                        // Zoom-out reverses back down smoothly
                         currentProgress = Math.max(targetProgress, currentProgress - step * 1.5);
                     }
 
-                    // Map linear progress through exponential ease-in curve to scale [1..4]
                     const eased = easeInExpo(currentProgress);
                     const currentScale = 1 + 3 * eased;
 
-                    // Silky damped mouse tracking
                     const panFactor = 1 - Math.pow(1 - 0.045, dt);
                     currentNormX += (targetNormX - currentNormX) * panFactor;
                     currentNormY += (targetNormY - currentNormY) * panFactor;
@@ -470,6 +501,7 @@
                         requestAnimationFrame(updateTransform);
                     } else {
                         img.style.transform = 'translate3d(0px, 0px, 0px) scale(1)';
+                        card.classList.remove('mobile-zoomed');
                         isAnimating = false;
                         lastTime = 0;
                     }
@@ -483,6 +515,7 @@
                     }
                 }
 
+                // Desktop Mouse Events
                 card.addEventListener('mouseenter', (e) => {
                     const rect = frame.getBoundingClientRect();
                     targetNormX = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
@@ -504,6 +537,87 @@
                     targetNormX = 0.5;
                     targetNormY = 0.5;
                     startLoop();
+                });
+
+                // Mobile Touch & Pinch Gestures (Targeting most prominent card in viewport)
+                let initialPinchDist = null;
+
+                frame.addEventListener('touchstart', (e) => {
+                    if (e.touches.length === 2) {
+                        e.preventDefault();
+                        const activeCard = getMostVisibleCard();
+                        if (activeCard !== card) return; // Only trigger on primary card in view
+
+                        initialPinchDist = Math.hypot(
+                            e.touches[0].clientX - e.touches[1].clientX,
+                            e.touches[0].clientY - e.touches[1].clientY
+                        );
+                    } else if (e.touches.length === 1) {
+                        const activeCard = getMostVisibleCard();
+                        if (activeCard === card && targetProgress > 0) {
+                            // If already zoomed, allow dragging/panning around the artwork
+                            const rect = frame.getBoundingClientRect();
+                            targetNormX = Math.max(0, Math.min(1, (e.touches[0].clientX - rect.left) / rect.width));
+                            targetNormY = Math.max(0, Math.min(1, (e.touches[0].clientY - rect.top) / rect.height));
+                        }
+                    }
+                }, { passive: false });
+
+                frame.addEventListener('touchmove', (e) => {
+                    const activeCard = getMostVisibleCard();
+                    if (activeCard !== card) return;
+
+                    if (e.touches.length === 2) {
+                        e.preventDefault();
+                        const dist = Math.hypot(
+                            e.touches[0].clientX - e.touches[1].clientX,
+                            e.touches[0].clientY - e.touches[1].clientY
+                        );
+                        if (initialPinchDist && dist > initialPinchDist * 1.15) {
+                            card.classList.add('mobile-zoomed');
+                            targetProgress = 1;
+                            const rect = frame.getBoundingClientRect();
+                            const midX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+                            const midY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+                            targetNormX = Math.max(0, Math.min(1, (midX - rect.left) / rect.width));
+                            targetNormY = Math.max(0, Math.min(1, (midY - rect.top) / rect.height));
+                            startLoop();
+                        }
+                    } else if (e.touches.length === 1 && targetProgress > 0) {
+                        e.preventDefault();
+                        const rect = frame.getBoundingClientRect();
+                        targetNormX = Math.max(0, Math.min(1, (e.touches[0].clientX - rect.left) / rect.width));
+                        targetNormY = Math.max(0, Math.min(1, (e.touches[0].clientY - rect.top) / rect.height));
+                        startLoop();
+                    }
+                }, { passive: false });
+
+                frame.addEventListener('touchend', (e) => {
+                    if (e.touches.length === 0) {
+                        initialPinchDist = null;
+                        // Tap outside or pinch out to dismiss zoom can be handled or left for scroll
+                    }
+                });
+            });
+
+            // Double tap anywhere on a card thumbnail to toggle mobile zoom view
+            document.querySelectorAll('.art-card').forEach(card => {
+                let lastTap = 0;
+                card.addEventListener('touchend', (e) => {
+                    const currentTime = new Date().getTime();
+                    const tapLength = currentTime - lastTap;
+                    if (tapLength < 300 && tapLength > 0) {
+                        e.preventDefault();
+                        const activeCard = getMostVisibleCard();
+                        if (activeCard === card) {
+                            const frame = card.querySelector('.art-image-frame');
+                            const rect = frame.getBoundingClientRect();
+                            // Toggle zoom state
+                            card.classList.toggle('mobile-zoomed');
+                            // We can trigger or reverse via a custom event or check
+                        }
+                    }
+                    lastTap = currentTime;
                 });
             });
         });
