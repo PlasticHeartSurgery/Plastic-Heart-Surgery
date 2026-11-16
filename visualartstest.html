@@ -396,8 +396,8 @@
                 "images/Sapphic-Sex;--Established Eroticism, Joy, Excitement & Frivolous Love (Name in JPG Info), Plastic, Oil on Pallet, 40 x 82, 2026.jpg",
                 "images/Self Portrait (Name in JPG Info), Plastic, Oil on Canvas, 38 x 46, 2026.jpg",
                 "images/I Brushed My Teeth--100th Bout of Dysphoria, but I Think I Scared Myself Less Than Prior., Plastic, Oil, Lacquer, Urethane, Pastel, Pencil, Crayon on Canvas, 35 x 50, 2025.jpg",
-                "images/Swan done 2 (1).png",
-                "images/JesseSM.png"
+                "images/Swan.png",
+                "images/Jesse.png"
             ];
 
             let loadedCount = 0;
@@ -416,7 +416,7 @@
                 };
             });
 
-            // Find the card most prominent in the current phone viewport viewport quadrant
+            // Find the card most prominent in the current phone viewport quadrant
             function getMostVisibleCard() {
                 const cards = document.querySelectorAll('.art-card');
                 let bestCard = null;
@@ -606,10 +606,6 @@
                         if (activeCard === card) {
                             e.preventDefault();
                             card.classList.toggle('mobile-zoomed');
-                            const frame = card.querySelector('.art-image-frame');
-                            const img = frame.querySelector('img');
-                            // Toggle progress state on double-tap
-                            // (Handled via script checks)
                         }
                     }
                     lastTap = currentTime;
