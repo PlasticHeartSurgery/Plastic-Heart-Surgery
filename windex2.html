@@ -301,15 +301,15 @@
             color: #000000;
         }
 
-        /* --- COMPLETELY INVISIBLE SECRET LISTEN TEXT --- */
+        /* --- TRUE INVISIBLE SECRET LISTEN TEXT --- */
         .secret-listen {
             position: fixed;
             bottom: 15px;
             left: 50%;
             transform: translateX(-50%);
-            background-color: transparent;
+            background-color: #ffffff;
             color: #ffffff;
-            mix-blend-mode: difference;
+            mix-blend-mode: exclusion;
             font-size: 1rem;
             font-weight: bold;
             letter-spacing: 0.15em;
@@ -565,13 +565,7 @@
                 triggerGlitchAndAlarm();
 
                 setTimeout(() => {
-                    window.close();
-                    
-                    setTimeout(() => {
-                        if (!window.closed) {
-                            window.location.href = "about:blank";
-                        }
-                    }, 500);
+                    window.location.replace("https://plasticheartsurgery.com/index");
                 }, 4000);
             }
         }, 20000);
