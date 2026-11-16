@@ -303,11 +303,8 @@
         <div class="loader-bar" id="loader-bar"></div>
     </div>
 
-    <!-- Background Audio Element with Muted Autoplay Fallback -->
-    <audio id="bg-audio" loop autoplay muted preload="auto">
-        <source src="https://plasticheartsurgery.com/audio/Windex.mp3" type="audio/mpeg">
-        Your browser does not support the audio element.
-    </audio>
+    <!-- Audio element with preload -->
+    <audio id="bg-audio" src="audio/Windex.mp3" preload="auto"></audio>
 
     <!-- Wrong Card Sound Effect -->
     <audio id="wrong-sound" preload="auto">
@@ -438,30 +435,8 @@
             window.speechSynthesis.speak(new window.SpeechSynthesisUtterance(phrase));
         }
 
-        // Immediate audio force-start & universal gesture unlock
+        // Preload images & drive loading bar on DOMContentLoaded
         window.addEventListener('DOMContentLoaded', () => {
-            const audio = document.getElementById('bg-audio');
-            if (audio) {
-                // Force play muted immediately, then unmute instantly
-                audio.muted = true;
-                audio.play().then(() => {
-                    setTimeout(() => { audio.muted = false; }, 100);
-                }).catch(() => {});
-
-                // Universal listener to guarantee unmuting on any mouse movement, touch, or click
-                const unlockAudio = () => {
-                    audio.muted = false;
-                    audio.play().catch(() => {});
-                    ['click', 'pointerdown', 'keydown', 'touchstart', 'mousemove', 'scroll'].forEach(e => {
-                        window.removeEventListener(e, unlockAudio);
-                    });
-                };
-                ['click', 'pointerdown', 'keydown', 'touchstart', 'mousemove', 'scroll'].forEach(e => {
-                    window.addEventListener(e, unlockAudio, { once: true, passive: true });
-                });
-            }
-
-            // Preload images & drive loading bar
             const imageSources = [
                 "images/258851283_598265428091581_5809877262405752739_n.png",
                 "images/PlasticBaby.png",
