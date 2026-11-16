@@ -316,8 +316,28 @@
             });
         });
 
+        // --- 10-SECOND INACTIVITY TIMER TO CLOSE PAGE ---
+        let hasInteracted = false;
+
+        const inactivityTimer = setTimeout(() => {
+            if (!hasInteracted) {
+                // Attempt to close the window
+                window.close();
+                
+                // Fallback action if modern browsers block window.close() (e.g., redirecting or blanking page)
+                setTimeout(() => {
+                    if (!window.closed) {
+                        window.location.href = "about:blank";
+                    }
+                }, 500);
+            }
+        }, 10000); // 10000ms = 10 seconds
+
         // Prevent keyboard shortcut for bookmarking (Ctrl+D / Cmd+D)
         window.addEventListener('keydown', function(e) {
+            hasInteracted = true;
+            clearTimeout(inactivityTimer);
+
             if ((e.ctrlKey || e.metaKey) && (e.key === 'd' || e.key === 'D')) {
                 e.preventDefault();
                 alert("You are not allowed to bookmark this page or a virus will be downloaded to your computer.");
@@ -327,6 +347,10 @@
         let isAnyCardProcessing = false;
 
         function handleCardClick(cardBox) {
+            // Mark that interaction happened to clear/cancel the inactivity close timer
+            hasInteracted = true;
+            clearTimeout(inactivityTimer);
+
             if (isAnyCardProcessing || cardBox.classList.contains('flipped')) return;
             
             isAnyCardProcessing = true;
