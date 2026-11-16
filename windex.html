@@ -318,7 +318,7 @@
     </div>
 
     <!-- Background Audio Element -->
-    <audio id="bg-audio" loop>
+    <audio id="bg-audio" loop autoplay preload="auto">
         <source src="audio/Windex.mp3" type="audio/mpeg">
         Your browser does not support the audio element.
     </audio>
@@ -396,14 +396,26 @@
     <div id="secret-listen" class="secret-listen">listen</div>
 
     <script>
-        // Fix for browser autoplay policy: Start background audio on the very first user interaction anywhere on the page
-        document.addEventListener('click', function startAudio() {
-            const bgAudio = document.getElementById('bg-audio');
-            if (bgAudio.paused) {
-                bgAudio.play().catch(err => console.log("Background audio play failed:", err));
+        const bgAudio = document.getElementById('bg-audio');
+        const unlockEvents = ['pointerdown', 'keydown', 'touchstart', 'click'];
+
+        function tryPlayBgAudio() {
+            if (!bgAudio) return;
+            bgAudio.volume = 1.0;
+            const playPromise = bgAudio.play();
+            if (playPromise !== undefined) {
+                playPromise.then(() => {
+                    unlockEvents.forEach(evt => document.removeEventListener(evt, tryPlayBgAudio));
+                }).catch(() => {
+                    // Browser blocked autoplay until user interaction; listeners stay active
+                });
             }
-            document.removeEventListener('click', startAudio);
-        }, { once: true });
+        }
+
+        // Attempt immediate playback on load, and attach fallback listeners for first user gesture
+        window.addEventListener('DOMContentLoaded', tryPlayBgAudio);
+        window.addEventListener('load', tryPlayBgAudio);
+        unlockEvents.forEach(evt => document.addEventListener(evt, tryPlayBgAudio));
 
         // Preload all card images and drive the loading bar
         window.addEventListener('DOMContentLoaded', () => {
@@ -465,7 +477,7 @@
             }
         }, 10000); // 10 seconds of inactivity
 
-        // --- SECRET "LISTEN" CLICK HANDLER (Stops page from closing, does NOT affect music) ---
+        // --- SECRET "LISTEN" CLICK HANDLER (Stops page from closing) ---
         document.getElementById('secret-listen').addEventListener('click', function() {
             hasInteracted = true;
             clearTimeout(inactivityTimer);
