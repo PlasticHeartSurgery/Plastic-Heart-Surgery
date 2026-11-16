@@ -147,7 +147,7 @@
             margin-top: 30px;
         }
 
-        /* Art cards hidden initially using transitions instead of animation-fill-mode lock */
+        /* Art cards hidden initially; border-color and box-shadow fade over 1.5s */
         .art-card {
             background: #ffffff;
             border: 2px solid #000000;
@@ -163,8 +163,8 @@
             transition: 
                 opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
                 transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
-                box-shadow 0.3s ease,
-                border-color 0.3s ease;
+                box-shadow 1.5s ease,
+                border-color 1.5s ease;
             transition-delay: calc(var(--i, 0) * 0.08s), 0s, 0s, 0s;
         }
 
@@ -172,9 +172,10 @@
         body.images-loaded .art-card {
             opacity: 1;
             transform: translateY(0) scale(1);
+            transition-delay: 0s;
         }
 
-        /* Hover magnification on the entire card */
+        /* Hover lift and 1.5s fade-in to red border + shadow */
         body.images-loaded .art-card:hover {
             transform: translateY(-4px) scale(1.06) !important;
             border-color: #ff0033;
@@ -189,6 +190,12 @@
             overflow: hidden;
             border-bottom: 2px solid #000000;
             cursor: zoom-in;
+            transition: border-bottom-color 1.5s ease;
+        }
+
+        /* Keeps the divider line between image and text matching the red fade */
+        body.images-loaded .art-card:hover .art-image-frame {
+            border-bottom-color: #ff0033;
         }
 
         .art-image-frame img {
@@ -196,12 +203,13 @@
             height: auto;
             display: block;
             object-fit: cover;
-            transition: transform 0.25s ease-out;
+            transition: transform 0.15s ease-out;
             transform-origin: center center;
         }
 
+        /* 400% magnification on hover */
         .art-card:hover .art-image-frame img {
-            transform: scale(1.25);
+            transform: scale(4);
         }
 
         .art-info {
@@ -400,7 +408,7 @@
                 };
             });
 
-            // Interactive cursor-following magnification inside each artwork frame
+            // Interactive cursor-following 400% magnification inside each artwork frame
             document.querySelectorAll('.art-image-frame').forEach(frame => {
                 const img = frame.querySelector('img');
                 frame.addEventListener('mousemove', (e) => {
