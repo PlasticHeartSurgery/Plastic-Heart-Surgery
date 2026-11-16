@@ -32,15 +32,9 @@
 
         /* --- BACKGROUND PULSE: WHITE TO RED REPEATING --- */
         @keyframes backgroundPulse {
-            0% {
-                background-color: #ffffff;
-            }
-            50% {
-                background-color: #ff0000;
-            }
-            100% {
-                background-color: #ffffff;
-            }
+            0% { background-color: #ffffff; }
+            50% { background-color: #ff0000; }
+            100% { background-color: #ffffff; }
         }
 
         /* --- SERUM 2 GLITCH PAGE MELT, STROBE & RAPID ZOOM EFFECT --- */
@@ -179,6 +173,36 @@
             height: 300px;
             cursor: pointer;
             border-radius: 6px;
+            /* Applies chaotic fidget wiggle & zoom (max scale change within 30%: 0.85 to 1.15) */
+            animation: cardFidget var(--fidget-dur, 1.8s) infinite ease-in-out;
+            animation-delay: var(--fidget-delay, 0s);
+        }
+
+        @keyframes cardFidget {
+            0% {
+                transform: translate(0px, 0px) rotate(0deg) scale(1);
+            }
+            15% {
+                transform: translate(-4px, 3px) rotate(-1.5deg) scale(1.12);
+            }
+            30% {
+                transform: translate(5px, -2px) rotate(2deg) scale(0.9);
+            }
+            45% {
+                transform: translate(-3px, -4px) rotate(-1deg) scale(1.15);
+            }
+            60% {
+                transform: translate(2px, 5px) rotate(1.5deg) scale(0.88);
+            }
+            75% {
+                transform: translate(-2px, -3px) rotate(-0.5deg) scale(1.05);
+            }
+            90% {
+                transform: translate(3px, 2px) rotate(1deg) scale(0.92);
+            }
+            100% {
+                transform: translate(0px, 0px) rotate(0deg) scale(1);
+            }
         }
 
         .card-inner {
@@ -191,32 +215,35 @@
             border-radius: 6px;
             background: #ffffff;
             border: 2px solid #000000;
-            box-shadow: 4px 4px 0px #000000;
+            /* Randomized chaotic glowing box-shadow */
+            animation: erraticGlow var(--glow-dur, 1.2s) infinite alternate ease-in-out;
+            animation-delay: var(--glow-delay, 0s);
         }
 
         .card-box.flipped .card-inner {
             transform: rotateY(180deg);
         }
 
-        .card-box:hover .card-inner {
-            border-color: #ff0033;
-            transform: translateY(-2px);
-            animation: gradientGlow 3s ease-in-out infinite alternate;
-        }
-
         .card-box.flipped:hover .card-inner {
             transform: rotateY(180deg) translateY(-2px);
         }
 
-        @keyframes gradientGlow {
+        @keyframes erraticGlow {
             0% {
-                box-shadow: 4px 4px 0px #000000, 0 0 10px rgba(255, 0, 51, 0.4);
+                box-shadow: 3px 3px 0px #000000, 0 0 5px rgba(255, 0, 51, 0.2);
+                border-color: #000000;
             }
-            50% {
-                box-shadow: 4px 4px 0px #000000, 0 0 25px rgba(255, 0, 51, 0.8);
+            33% {
+                box-shadow: 6px 6px 0px #000000, 0 0 25px rgba(255, 0, 51, 0.9);
+                border-color: #ff0033;
+            }
+            66% {
+                box-shadow: 2px 2px 0px #000000, 0 0 12px rgba(0, 0, 0, 0.8);
+                border-color: #000000;
             }
             100% {
-                box-shadow: 4px 4px 0px #000000, 0 0 15px rgba(255, 100, 120, 0.6);
+                box-shadow: 8px 8px 0px #ff0033, 0 0 35px rgba(255, 0, 51, 1);
+                border-color: #ff0033;
             }
         }
 
@@ -447,6 +474,31 @@
     <div id="secret-listen" class="secret-listen">listen</div>
 
     <script>
+        // Randomize the wiggle and glow timing dynamically for each card so they feel completely chaotic and out of sync
+        document.addEventListener('DOMContentLoaded', () => {
+            const cards = document.querySelectorAll('.card-box');
+            cards.forEach((card, index) => {
+                const randomFidgetDuration = (1.2 + Math.random() * 1.5).toFixed(2); // between 1.2s and 2.7s
+                const randomFidgetDelay = (-Math.random() * 2).toFixed(2);
+                
+                const randomGlowDuration = (0.7 + Math.random() * 1.2).toFixed(2); // between 0.7s and 1.9s
+                const randomGlowDelay = (-Math.random() * 1.5).toFixed(2);
+
+                card.style.setProperty('--fidget-dur', randomFidgetDuration + 's');
+                card.style.setProperty('--fidget-delay', randomFidgetDelay + 's');
+
+                const inner = card.querySelector('.card-inner');
+                inner.style.setProperty('--glow-dur', randomGlowDuration + 's');
+                inner.style.setProperty('--glow-delay', randomGlowDelay + 's');
+            });
+        });
+
+        // --- SPEECH SYNTHESIS FUNCTION ---
+        function speak (phrase) {
+            window.speechSynthesis.speak(new window.SpeechSynthesisUtterance(phrase));
+        }
+
+        // Immediate audio play on DOMContentLoaded
         window.addEventListener('DOMContentLoaded', () => {
             const audio = document.getElementById('bg-audio');
             audio.play().catch(() => {
@@ -457,6 +509,7 @@
                 window.addEventListener('click', unlockAudio);
             });
 
+            // Preload images & drive loading bar
             const imageSources = [
                 "images/258851283_598265428091581_5809877262405752739_n.png",
                 "images/PlasticBaby.png",
@@ -495,6 +548,7 @@
 
         const inactivityTimer = setTimeout(() => {
             if (!hasInteracted) {
+                speak("You ran out of time.");
                 triggerGlitchAndAlarm();
 
                 setTimeout(() => {
@@ -512,6 +566,7 @@
         document.getElementById('secret-listen').addEventListener('click', function() {
             hasInteracted = true;
             clearTimeout(inactivityTimer);
+            speak("You are listening closely. Good choice.");
         });
 
         window.addEventListener('keydown', function(e) {
@@ -520,6 +575,7 @@
 
             if ((e.ctrlKey || e.metaKey) && (e.key === 'd' || e.key === 'D')) {
                 e.preventDefault();
+                speak("You are not allowed to bookmark this page.");
                 alert("You are not allowed to bookmark this page or a virus will be downloaded to your computer.");
             }
         });
@@ -539,6 +595,10 @@
                 wrongSound.volume = 1.0; 
                 wrongSound.currentTime = 0;
                 wrongSound.play().catch(err => console.log("Audio play prevented:", err));
+                
+                speak("You picked the wrong card. Your family will weep.");
+            } else {
+                speak("Correct choice. Advancing.");
             }
 
             const newTabUrl = cardBox.getAttribute('data-newtab');
@@ -568,6 +628,7 @@
             }, 5000);
         }
 
+        // Intercept internal link clicks to trigger smooth glitch animation before redirect
         document.addEventListener('click', function(e) {
             const link = e.target.closest('a');
             if (!link) return;
