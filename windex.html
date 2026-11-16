@@ -247,9 +247,10 @@
             setTimeout(() => {
                 cardBox.classList.remove('flipped');
 
-                // 3. 1 second after unflipping (total 6 seconds), redirect to the page
+                // 3. 1 second after unflipping, use .replace() so it overwrites history 
+                // and prevents the back button from returning to this page
                 setTimeout(() => {
-                    window.location.href = redirectUrl;
+                    window.location.replace(redirectUrl);
                 }, 1000);
 
             }, 5000);
