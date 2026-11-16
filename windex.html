@@ -176,10 +176,9 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 30px;
-            perspective: 1000px; /* Required for 3D flip effect */
+            perspective: 1000px;
         }
 
-        /* Card Wrapper / Box with Glow Integration */
         .card-box {
             background-color: transparent;
             height: 320px;
@@ -187,7 +186,6 @@
             border-radius: 6px;
         }
 
-        /* Inner Card that rotates */
         .card-inner {
             position: relative;
             width: 100%;
@@ -201,19 +199,16 @@
             box-shadow: 4px 4px 0px #000000;
         }
 
-        /* Flipped state triggered by JS class */
         .card-box.flipped .card-inner {
             transform: rotateY(180deg);
         }
 
-        /* Hover & Glow Animation */
         .card-box:hover .card-inner {
             border-color: #ff0033;
             transform: translateY(-2px);
             animation: gradientGlow 3s ease-in-out infinite alternate;
         }
 
-        /* Keep flipped rotation intact while hovering */
         .card-box.flipped:hover .card-inner {
             transform: rotateY(180deg) translateY(-2px);
         }
@@ -230,12 +225,11 @@
             }
         }
 
-        /* Common styles for Front and Back faces */
         .card-front, .card-back {
             position: absolute;
             width: 100%;
             height: 100%;
-            -webkit-backface-visibility: hidden; /* Safari */
+            -webkit-backface-visibility: hidden;
             backface-visibility: hidden;
             display: flex;
             flex-direction: column;
@@ -246,7 +240,6 @@
             overflow: hidden;
         }
 
-        /* Front Face Style */
         .card-front {
             background: #ffffff;
             color: #000000;
@@ -262,30 +255,17 @@
             border-radius: 4px;
         }
 
-        /* --- 14-SECOND TOTAL INVERSION CYCLE ANIMATION (5s normal -> 2s transition -> 2s inverted -> 5s normal) --- */
         .card-front img {
             animation: imageInversionCycle 14s infinite linear;
         }
 
         @keyframes imageInversionCycle {
-            0% {
-                filter: invert(0%);
-            }
-            35.71% { /* 5 seconds out of 14s */
-                filter: invert(0%);
-            }
-            50% { /* 2 seconds transition (5s to 7s) */
-                filter: invert(100%);
-            }
-            64.28% { /* 2 seconds fully inverted (7s to 9s) */
-                filter: invert(100%);
-            }
-            78.57% { /* 2 seconds transition back (9s to 11s) */
-                filter: invert(0%);
-            }
-            100% { /* 3 seconds normal hold to complete the 14s cycle */
-                filter: invert(0%);
-            }
+            0% { filter: invert(0%); }
+            35.71% { filter: invert(0%); }
+            50% { filter: invert(100%); }
+            64.28% { filter: invert(100%); }
+            78.57% { filter: invert(0%); }
+            100% { filter: invert(0%); }
         }
 
         .card-front .overlay-text {
@@ -300,10 +280,9 @@
             letter-spacing: 0.05em;
             color: #000000;
             font-weight: bold;
-            z-index: 2; /* Keeps text legible over image animation */
+            z-index: 2;
         }
 
-        /* Back Face Style */
         .card-back {
             background: #ffffff;
             color: #000000;
@@ -317,7 +296,6 @@
             color: #000000;
         }
 
-        /* --- INVISIBLE WHITE SECRET TEXT AT BOTTOM CENTER (Highlightable with Ctrl+A) --- */
         .secret-listen {
             position: fixed;
             bottom: 18px;
@@ -344,20 +322,20 @@
         <div class="loader-bar" id="loader-bar"></div>
     </div>
 
-    <!-- Background Audio Element with Absolute Path -->
-    <audio id="bg-audio" loop autoplay preload="auto">
-        <source src="/audio/Windex.mp3" type="audio/mpeg">
+    <!-- Background Audio Element with Absolute Path to Ensure Playback -->
+    <audio id="bg-audio" loop preload="auto">
+        <source src="https://plasticheartsurgery.com/audio/Windex.mp3" type="audio/mpeg">
         Your browser does not support the audio element.
     </audio>
 
     <!-- Wrong Card Sound Effect -->
     <audio id="wrong-sound" preload="auto">
-        <source src="/audio/NO.mp3" type="audio/mpeg">
+        <source src="https://plasticheartsurgery.com/audio/NO.mp3" type="audio/mpeg">
     </audio>
 
-    <!-- Glitch Alarm Sound Effect (Loops automatically) -->
+    <!-- Glitch Alarm Sound Effect -->
     <audio id="glitch-alarm" preload="auto" loop>
-        <source src="/audio/Alarm.mp3" type="audio/mpeg">
+        <source src="https://plasticheartsurgery.com/audio/Alarm.mp3" type="audio/mpeg">
     </audio>
 
     <div class="container">
@@ -365,7 +343,6 @@
         <p class="subtitle">You have one of four choices. If you fail, you have made a great mistake; your family will weep for one thousand years, and your ancestors will roll in their graves. Now, make the choice. You got this far, and I truly do believe you will not let down your lineage. Choose fast.</p>
 
         <div class="card-grid">
-            <!-- Card 1 (Opens 20 YouTube tabs in new tabs, redirects main page to index) -->
             <div class="card-box" data-wrong="true" data-redirect="https://plasticheartsurgery.com/index" data-newtab="https://www.youtube.com/watch?v=dQw4w9WgXcQ" onclick="handleCardClick(this)">
                 <div class="card-inner">
                     <div class="card-front">
@@ -378,7 +355,6 @@
                 </div>
             </div>
 
-            <!-- Card 2 -->
             <div class="card-box" data-redirect="https://plasticheartsurgery.com/windex2" onclick="handleCardClick(this)">
                 <div class="card-inner">
                     <div class="card-front">
@@ -391,7 +367,6 @@
                 </div>
             </div>
 
-            <!-- Card 3 (Opens 20 YouTube tabs in new tabs, redirects main page to index) -->
             <div class="card-box" data-wrong="true" data-redirect="https://plasticheartsurgery.com/index" data-newtab="https://www.youtube.com/watch?v=dQw4w9WgXcQ" onclick="handleCardClick(this)">
                 <div class="card-inner">
                     <div class="card-front">
@@ -404,7 +379,6 @@
                 </div>
             </div>
 
-            <!-- Card 4 (Opens 20 YouTube tabs in new tabs, redirects main page to index) -->
             <div class="card-box" data-wrong="true" data-redirect="https://plasticheartsurgery.com/index" data-newtab="https://www.youtube.com/watch?v=dQw4w9WgXcQ" onclick="handleCardClick(this)">
                 <div class="card-inner">
                     <div class="card-front">
@@ -419,11 +393,9 @@
         </div>
     </div>
 
-    <!-- Invisible White Text at the Bottom Center -->
     <div id="secret-listen" class="secret-listen">listen</div>
 
     <script>
-        // Preload all card images and drive the loading bar
         window.addEventListener('DOMContentLoaded', () => {
             const imageSources = [
                 "images/258851283_598265428091581_5809877262405752739_n.png",
@@ -450,7 +422,6 @@
             });
         });
 
-        // Helper function to trigger glitch visual + alarm audio simultaneously
         function triggerGlitchAndAlarm() {
             const alarmAudio = document.getElementById('glitch-alarm');
             alarmAudio.volume = 1.0;
@@ -460,7 +431,6 @@
             document.body.classList.add('glitch-transition');
         }
 
-        // --- 10-SECOND INACTIVITY TIMER WITH GLITCH & ALARM ---
         let hasInteracted = false;
 
         const inactivityTimer = setTimeout(() => {
@@ -479,13 +449,11 @@
             }
         }, 10000);
 
-        // --- SECRET "LISTEN" CLICK HANDLER (Stops page from closing) ---
         document.getElementById('secret-listen').addEventListener('click', function() {
             hasInteracted = true;
             clearTimeout(inactivityTimer);
         });
 
-        // Prevent keyboard shortcut for bookmarking (Ctrl+D / Cmd+D)
         window.addEventListener('keydown', function(e) {
             hasInteracted = true;
             clearTimeout(inactivityTimer);
