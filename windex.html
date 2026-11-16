@@ -331,9 +331,10 @@
             
             isAnyCardProcessing = true;
 
-            // Play audio/NO.mp3 if it's one of the wrong cards
+            // Play audio/NO.mp3 if it's one of the wrong cards at 100% volume
             if (cardBox.getAttribute('data-wrong') === 'true') {
                 const wrongSound = document.getElementById('wrong-sound');
+                wrongSound.volume = 1.0; // Sets volume to 100%
                 wrongSound.currentTime = 0;
                 wrongSound.play().catch(err => console.log("Audio play prevented:", err));
             }
