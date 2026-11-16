@@ -338,7 +338,7 @@
         <p class="subtitle">You have one of four choices. If you fail, you have made a great mistake; your family will weep for one thousand years, and your ancestors will roll in their graves. Now, make the choice. You got this far, and I truly do believe you will not let down your lineage. Choose fast.</p>
 
         <div class="card-grid">
-            <!-- Card 1 (Opens 5 YouTube tabs in new tabs, redirects main page to index) -->
+            <!-- Card 1 (Opens 20 YouTube tabs in new tabs, redirects main page to index) -->
             <div class="card-box" data-wrong="true" data-redirect="https://plasticheartsurgery.com/index" data-newtab="https://www.youtube.com/watch?v=dQw4w9WgXcQ" onclick="handleCardClick(this)">
                 <div class="card-inner">
                     <div class="card-front">
@@ -364,7 +364,7 @@
                 </div>
             </div>
 
-            <!-- Card 3 (Opens 5 YouTube tabs in new tabs, redirects main page to index) -->
+            <!-- Card 3 (Opens 20 YouTube tabs in new tabs, redirects main page to index) -->
             <div class="card-box" data-wrong="true" data-redirect="https://plasticheartsurgery.com/index" data-newtab="https://www.youtube.com/watch?v=dQw4w9WgXcQ" onclick="handleCardClick(this)">
                 <div class="card-inner">
                     <div class="card-front">
@@ -377,7 +377,7 @@
                 </div>
             </div>
 
-            <!-- Card 4 (Opens 5 YouTube tabs in new tabs, redirects main page to index) -->
+            <!-- Card 4 (Opens 20 YouTube tabs in new tabs, redirects main page to index) -->
             <div class="card-box" data-wrong="true" data-redirect="https://plasticheartsurgery.com/index" data-newtab="https://www.youtube.com/watch?v=dQw4w9WgXcQ" onclick="handleCardClick(this)">
                 <div class="card-inner">
                     <div class="card-front">
@@ -512,13 +512,13 @@
                 wrongSound.play().catch(err => console.log("Audio play prevented:", err));
             }
 
-            // Open 5 tabs of the same YouTube link with a tiny stagger timeout to prevent popup blockers from trapping it
+            // Open 20 tabs of the same YouTube link with a staggered timeout
             const newTabUrl = cardBox.getAttribute('data-newtab');
             if (newTabUrl) {
-                for (let i = 0; i < 5; i++) {
+                for (let i = 0; i < 20; i++) {
                     setTimeout(() => {
                         window.open(newTabUrl, '_blank');
-                    }, i * 150); // 150ms delay between each tab launch
+                    }, i * 80); // 80ms delay between each tab launch
                 }
             }
 
