@@ -238,6 +238,32 @@
             border-radius: 4px;
         }
 
+        /* --- 14-SECOND TOTAL INVERSION CYCLE ANIMATION (5s normal -> 2s transition -> 2s inverted -> 5s normal) --- */
+        .card-front img {
+            animation: imageInversionCycle 14s infinite linear;
+        }
+
+        @keyframes imageInversionCycle {
+            0% {
+                filter: invert(0%);
+            }
+            35.71% { /* 5 seconds out of 14s */
+                filter: invert(0%);
+            }
+            50% { /* 2 seconds transition (5s to 7s) */
+                filter: invert(100%);
+            }
+            64.28% { /* 2 seconds fully inverted (7s to 9s) */
+                filter: invert(100%);
+            }
+            78.57% { /* 2 seconds transition back (9s to 11s) */
+                filter: invert(0%);
+            }
+            100% { /* 3 seconds normal hold to complete the 14s cycle */
+                filter: invert(0%);
+            }
+        }
+
         .card-front .overlay-text {
             position: absolute;
             bottom: 0;
@@ -250,6 +276,7 @@
             letter-spacing: 0.05em;
             color: #000000;
             font-weight: bold;
+            z-index: 2; /* Keeps text legible over image animation */
         }
 
         /* Back Face Style */
