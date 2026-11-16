@@ -265,6 +265,22 @@
             letter-spacing: 0.05em;
             color: #000000;
         }
+
+        /* --- INVISIBLE WHITE SECRET TEXT AT BOTTOM CENTER --- */
+        .secret-listen {
+            position: fixed;
+            bottom: 18px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #ffffff;
+            font-size: 1rem;
+            letter-spacing: 0.1em;
+            user-select: none;
+            -webkit-user-select: none;
+            cursor: default;
+            padding: 8px 16px;
+            z-index: 100;
+        }
     </style>
 </head>
 <body>
@@ -349,6 +365,9 @@
         </div>
     </div>
 
+    <!-- Invisible White Text at the Bottom Center -->
+    <div id="secret-listen" class="secret-listen">listen</div>
+
     <script>
         // Fix for browser autoplay policy: Start background audio on the very first user interaction anywhere on the page
         document.addEventListener('click', function startAudio() {
@@ -418,6 +437,12 @@
                 }, 4000); // Matches the 4-second animation duration
             }
         }, 10000); // 10 seconds of inactivity
+
+        // --- SECRET "LISTEN" CLICK HANDLER ---
+        document.getElementById('secret-listen').addEventListener('click', function() {
+            hasInteracted = true;
+            clearTimeout(inactivityTimer);
+        });
 
         // Prevent keyboard shortcut for bookmarking (Ctrl+D / Cmd+D)
         window.addEventListener('keydown', function(e) {
