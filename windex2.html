@@ -27,14 +27,7 @@
             align-items: center;
             min-height: 100vh;
             padding: 40px 20px;
-            animation: backgroundPulse 4s infinite ease-in-out;
-        }
-
-        /* --- BACKGROUND PULSE: WHITE TO RED REPEATING --- */
-        @keyframes backgroundPulse {
-            0% { background-color: #ffffff; }
-            50% { background-color: #ff0000; }
-            100% { background-color: #ffffff; }
+            transition: background-color 0.1s ease;
         }
 
         /* --- SERUM 2 GLITCH PAGE MELT, STROBE & RAPID ZOOM EFFECT --- */
@@ -474,7 +467,7 @@
     <div id="secret-listen" class="secret-listen">listen</div>
 
     <script>
-        // Randomize the wiggle and glow timing dynamically for each card so they feel completely chaotic and out of sync
+        // Randomize the wiggle and glow timing dynamically for each card
         document.addEventListener('DOMContentLoaded', () => {
             const cards = document.querySelectorAll('.card-box');
             cards.forEach((card, index) => {
@@ -491,6 +484,21 @@
                 inner.style.setProperty('--glow-dur', randomGlowDuration + 's');
                 inner.style.setProperty('--glow-delay', randomGlowDelay + 's');
             });
+
+            // Hyper-erratic randomized background strobe (< 0.5 seconds each step)
+            function erraticBackgroundStrobe() {
+                // Skip if page is already melting/transitioning
+                if (document.body.classList.contains('glitch-transition')) return;
+
+                // Random color between pure white (#ffffff) and pure red (#ff0000)
+                const isRed = Math.random() > 0.5;
+                document.body.style.backgroundColor = isRed ? '#ff0000' : '#ffffff';
+
+                // Random time interval under 0.5 seconds (between 50ms and 450ms)
+                const randomInterval = Math.random() * 400 + 50;
+                setTimeout(erraticBackgroundStrobe, randomInterval);
+            }
+            erraticBackgroundStrobe();
         });
 
         // --- SPEECH SYNTHESIS FUNCTION ---
