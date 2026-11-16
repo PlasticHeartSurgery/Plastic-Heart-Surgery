@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html>
 <body style="background:white;margin:0;overflow:hidden;height:100vh;display:flex;justify-content:center;align-items:center;cursor:pointer;" onclick="goNext()">
-  <video id="v" src="images/PlasticBowling.mp4" autoplay muted playsinline style="width:100vw;height:100vh;object-fit:cover;"></video>
+  <!-- Note: muted is removed so the Web Audio API can capture and amplify the track -->
+  <video id="v" src="images/PlasticBowling.mp4" autoplay playsinline style="width:100vw;height:100vh;object-fit:cover;"></video>
+  
   <script>
     const v = document.getElementById('v');
     
@@ -11,7 +13,31 @@
 
     v.onended = goNext;
 
-    // Ensures playback starts immediately even with autoplay restrictions
+    // Amplify audio using Web Audio API
+    window.addEventListener('DOMContentLoaded', () => {
+      try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const source = audioCtx.createMediaElementSource(v);
+        const gainNode = audioCtx.createGain();
+        
+        // Set gain to 3.0 (300% volume)
+        gainNode.gain.value = 3.0;
+        
+        source.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        
+        // Resume audio context on user interaction if browser policy blocks it
+        document.addEventListener('click', () => {
+          if (audioCtx.state === 'suspended') {
+            audioCtx.resume();
+          }
+        }, { once: true });
+      } catch (e) {
+        console.log('Web Audio API boost not supported or blocked', e);
+      }
+    });
+
+    // Ensures playback starts immediately
     v.play().catch(() => {});
   </script>
 </body>
