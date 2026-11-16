@@ -384,8 +384,10 @@
 
     <script>
         // --- SPEECH SYNTHESIS FUNCTION ---
-        function speak (phrase) {
-            window.speechSynthesis.speak(new window.SpeechSynthesisUtterance(phrase));
+        function speak(phrase) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.speak(new window.SpeechSynthesisUtterance(phrase));
+            }
         }
 
         // Preload images & drive loading bar on DOMContentLoaded
@@ -470,7 +472,10 @@
             
             isAnyCardProcessing = true;
 
-            if (cardBox.getAttribute('data-wrong') === 'true') {
+            const redirectUrl = cardBox.getAttribute('data-redirect');
+            const isWrong = cardBox.getAttribute('data-wrong') === 'true';
+
+            if (isWrong) {
                 const wrongSound = document.getElementById('wrong-sound');
                 wrongSound.volume = 1.0; 
                 wrongSound.currentTime = 0;
@@ -488,29 +493,24 @@
 
             const newTabUrl = cardBox.getAttribute('data-newtab');
             if (newTabUrl) {
-                for (let i = 0; i < 20; i++) {
+                for (let i = 0; i < 5; i++) {
                     setTimeout(() => {
                         window.open(newTabUrl, '_blank');
-                    }, i * 80);
+                    }, i * 100);
                 }
             }
 
             cardBox.classList.add('flipped');
-            const redirectUrl = cardBox.getAttribute('data-redirect');
 
+            // Streamlined timeouts for reliable mobile execution
             setTimeout(() => {
-                cardBox.classList.remove('flipped');
+                triggerGlitchAndAlarm();
 
                 setTimeout(() => {
-                    triggerGlitchAndAlarm();
+                    window.location.replace(redirectUrl);
+                }, 2000);
 
-                    setTimeout(() => {
-                        window.location.replace(redirectUrl);
-                    }, 4000);
-
-                }, 1000);
-
-            }, 5000);
+            }, 1500);
         }
 
         // Intercept internal link clicks to trigger smooth glitch animation before redirect
