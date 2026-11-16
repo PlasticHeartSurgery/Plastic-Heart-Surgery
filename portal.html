@@ -1,9 +1,12 @@
 <!DOCTYPE html>
 <html>
-<body style="background:white;margin:0;display:flex;justify-content:center;align-items:center;height:100vh;">
-  <video id="v" src="PlasticBowling.mp4" autoplay controls style="max-width:100%;max-height:100%;"></video>
+<body style="background:white;margin:0;overflow:hidden;height:100vh;display:flex;justify-content:center;align-items:center;">
+  <video id="v" src="PlasticBowling.mp4" autoplay muted playsinline style="width:100vw;height:100vh;object-fit:cover;"></video>
   <script>
-    document.getElementById('v').onended = () => location.href = 'https://plasticheartsurgery.com/plussyimages/PlasticBowling.mp4';
+    const v = document.getElementById('v');
+    v.onended = () => location.href = 'https://plasticheartsurgery.com/plussyimages/PlasticBowling.mp4';
+    // Ensures playback starts immediately even with autoplay restrictions
+    v.play().catch(() => {});
   </script>
 </body>
 </html>
