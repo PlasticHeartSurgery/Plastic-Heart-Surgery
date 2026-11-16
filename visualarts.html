@@ -217,14 +217,20 @@
             object-fit: cover;
             will-change: transform;
             transform-origin: center center;
-            /* 25% faster transition duration (1.6s) with buttery smooth easing */
-            transition: transform 1.6s cubic-bezier(0.25, 1, 0.5, 1);
+            /* Zoom in takes 1.8s (10% slower), Zoom out takes 3.6s (2x as slow) */
+            transition: transform 1.8s cubic-bezier(0.25, 1, 0.5, 1);
         }
 
         /* 400% magnification on hover */
         .art-card:hover .art-image-frame img,
         .art-card.mobile-zoomed .art-image-frame img {
             transform: scale(4);
+            transition: transform 1.8s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        /* Slower zoom-out transition when unhovering */
+        .art-image-frame img {
+            transition: transform 3.6s cubic-bezier(0.25, 1, 0.5, 1);
         }
 
         .art-info {
