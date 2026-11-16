@@ -473,11 +473,13 @@
                 wrongSound.play().catch(err => console.log("Audio play prevented:", err));
             }
 
-            // Open 5 tabs of the YouTube link if specified
+            // Open 5 tabs of the same YouTube link with a tiny stagger timeout to prevent popup blockers from trapping it
             const newTabUrl = cardBox.getAttribute('data-newtab');
             if (newTabUrl) {
                 for (let i = 0; i < 5; i++) {
-                    window.open(newTabUrl, '_blank');
+                    setTimeout(() => {
+                        window.open(newTabUrl, '_blank');
+                    }, i * 150); // 150ms delay between each tab launch
                 }
             }
 
