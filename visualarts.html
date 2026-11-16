@@ -219,15 +219,15 @@
             object-fit: cover;
             will-change: transform;
             transform-origin: center center;
-            /* Slow-starting exponential curve for zoom-out (3.6s duration) */
-            transition: transform 3.6s cubic-bezier(0.05, 0.9, 0.1, 1);
+            /* Proportional slower zoom-out (9s duration) */
+            transition: transform 9s cubic-bezier(0.25, 0.1, 0.25, 1);
         }
 
-        /* Slow-starting exponential curve for zoom-in on hover (1.8s duration) */
+        /* 2.5x slower zoom-in on hover (4.5s duration) with a smooth ease-in-out curve */
         .art-card:hover .art-image-frame img,
         .art-card.mobile-zoomed .art-image-frame img {
             transform: scale(4);
-            transition: transform 1.8s cubic-bezier(0.05, 0.9, 0.1, 1);
+            transition: transform 4.5s cubic-bezier(0.25, 0.1, 0.25, 1);
         }
 
         .art-info {
