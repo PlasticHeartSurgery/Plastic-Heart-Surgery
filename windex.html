@@ -4,26 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stage 1</title>
-    <!-- Immediate Audio Force-Start Script -->
-    <script>
-        window.addEventListener('DOMContentLoaded', () => {
-            const audio = document.getElementById('bg-audio');
-            if (audio) {
-                audio.play().catch(() => {
-                    // Fallback listeners if browser policy requires first interaction
-                    const unlock = () => {
-                        audio.play().catch(() => {});
-                        ['click', 'pointerdown', 'keydown', 'touchstart', 'mousemove', 'scroll'].forEach(e => {
-                            window.removeEventListener(e, unlock);
-                        });
-                    };
-                    ['click', 'pointerdown', 'keydown', 'touchstart', 'mousemove', 'scroll'].forEach(e => {
-                        window.addEventListener(e, unlock, { once: true });
-                    });
-                });
-            }
-        });
-    </script>
     <style>
         @font-face {
             font-family: 'Black Witcher';
@@ -322,7 +302,7 @@
         <div class="loader-bar" id="loader-bar"></div>
     </div>
 
-    <!-- Background Audio Element with Absolute Path to Ensure Playback -->
+    <!-- Background Audio Element (Directly pointing to Windex.mp3) -->
     <audio id="bg-audio" loop preload="auto">
         <source src="https://plasticheartsurgery.com/audio/Windex.mp3" type="audio/mpeg">
         Your browser does not support the audio element.
@@ -396,7 +376,18 @@
     <div id="secret-listen" class="secret-listen">listen</div>
 
     <script>
+        // Immediate audio play on DOMContentLoaded (inherits click gesture token when navigated to via link)
         window.addEventListener('DOMContentLoaded', () => {
+            const audio = document.getElementById('bg-audio');
+            audio.play().catch(() => {
+                const unlockAudio = () => {
+                    audio.play();
+                    window.removeEventListener('click', unlockAudio);
+                };
+                window.addEventListener('click', unlockAudio);
+            });
+
+            // Preload images & drive loading bar
             const imageSources = [
                 "images/258851283_598265428091581_5809877262405752739_n.png",
                 "images/PlasticBaby.png",
@@ -507,6 +498,22 @@
 
             }, 5000);
         }
+
+        // Intercept internal link clicks to trigger smooth glitch animation before redirect
+        document.addEventListener('click', function(e) {
+            const link = e.target.closest('a');
+            if (!link) return;
+            
+            const href = link.getAttribute('href');
+            if (!href || href.startsWith('mailto:') || href.startsWith('#') || link.target === '_blank') return;
+
+            e.preventDefault();
+            triggerGlitchAndAlarm();
+
+            setTimeout(() => {
+                window.location.href = href;
+            }, 4000);
+        });
     </script>
 
 </body>
