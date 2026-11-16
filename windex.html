@@ -29,6 +29,62 @@
             padding: 40px 20px;
         }
 
+        /* --- SERUM 2 GLITCH PAGE MELT & STROBE EFFECT --- */
+        body.glitch-transition {
+            animation: fullPageMeltdown 4s forwards ease-in-out;
+            pointer-events: none;
+        }
+
+        @keyframes fullPageMeltdown {
+            0% {
+                transform: skewX(0deg) translateY(0px) scale(1);
+                filter: blur(0px) contrast(100%);
+                background-color: #ffffff;
+                opacity: 1;
+            }
+            25% {
+                transform: skewX(-15deg) translateY(20px) scale(1.02);
+                filter: blur(2px) contrast(150%) hue-rotate(90deg);
+                opacity: 1;
+            }
+            50% {
+                transform: skewX(25deg) translateY(-40px) scale(0.98) rotate(1deg);
+                filter: blur(6px) contrast(200%) hue-rotate(180deg) invert(15%);
+                background-color: #ffffff;
+                opacity: 1;
+            }
+            52% { background-color: #ff0000; color: #ffffff; }
+            54% { background-color: #ffffff; color: #111111; }
+            56% { background-color: #ff0000; color: #ffffff; }
+            58% { background-color: #ffffff; color: #111111; }
+            60% { background-color: #ff0000; color: #ffffff; }
+            62% { background-color: #ffffff; color: #111111; }
+            64% { background-color: #ff0000; color: #ffffff; }
+            66% { background-color: #ffffff; color: #111111; }
+            68% { background-color: #ff0000; color: #ffffff; }
+            70% { background-color: #ffffff; color: #111111; }
+            72% { background-color: #ff0000; color: #ffffff; }
+            74% { background-color: #ffffff; color: #111111; }
+            76% { background-color: #ff0000; color: #ffffff; }
+            78% { background-color: #ffffff; color: #111111; }
+            80% { background-color: #ff0000; color: #ffffff; }
+            82% { background-color: #ffffff; color: #111111; }
+            84% { background-color: #ff0000; color: #ffffff; }
+            86% { background-color: #ffffff; color: #111111; }
+            88% { background-color: #ff0000; color: #ffffff; }
+            90% { background-color: #ffffff; color: #111111; }
+            92% { background-color: #ff0000; color: #ffffff; }
+            94% { background-color: #ffffff; color: #111111; }
+            96% { background-color: #ff0000; color: #ffffff; }
+            98% { background-color: #ffffff; color: #111111; }
+            100% {
+                transform: skewX(-40deg) translateY(100px) scale(1.1);
+                filter: blur(15px) contrast(300%) invert(100%);
+                background-color: #ff0000;
+                opacity: 0;
+            }
+        }
+
         /* --- CENTERED GRADIENT LOADING BAR --- */
         .loader-container {
             position: fixed;
@@ -229,6 +285,11 @@
         <source src="audio/NO.mp3" type="audio/mpeg">
     </audio>
 
+    <!-- Glitch Alarm Sound Effect (Loops automatically) -->
+    <audio id="glitch-alarm" preload="auto" loop>
+        <source src="audio/Alarm.mp3" type="audio/mpeg">
+    </audio>
+
     <div class="container">
         <h1>Choose Your Fate</h1>
         <p class="subtitle">You have one of four choices. If you fail, you have made a great mistake; your family will weep for one thousand years, and your ancestors will roll in their graves. Now, make the choice. You got this far, and I truly do believe you will not let down your lineage.</p>
@@ -316,22 +377,38 @@
             });
         });
 
-        // --- 10-SECOND INACTIVITY TIMER TO CLOSE PAGE ---
+        // Helper function to trigger glitch visual + alarm audio simultaneously
+        function triggerGlitchAndAlarm() {
+            // Play the alarm sound (loops continuously)
+            const alarmAudio = document.getElementById('glitch-alarm');
+            alarmAudio.volume = 1.0;
+            alarmAudio.currentTime = 0;
+            alarmAudio.play().catch(err => console.log("Alarm audio play prevented:", err));
+
+            // Trigger visual glitch transition
+            document.body.classList.add('glitch-transition');
+        }
+
+        // --- 10-SECOND INACTIVITY TIMER WITH GLITCH & ALARM ---
         let hasInteracted = false;
 
         const inactivityTimer = setTimeout(() => {
             if (!hasInteracted) {
-                // Attempt to close the window
-                window.close();
-                
-                // Fallback action if modern browsers block window.close() (e.g., redirecting or blanking page)
+                // Trigger glitch animation + repeating Alarm.mp3
+                triggerGlitchAndAlarm();
+
                 setTimeout(() => {
-                    if (!window.closed) {
-                        window.location.href = "about:blank";
-                    }
-                }, 500);
+                    window.close();
+                    
+                    // Fallback if window.close() is blocked by browser policies
+                    setTimeout(() => {
+                        if (!window.closed) {
+                            window.location.href = "about:blank";
+                        }
+                    }, 500);
+                }, 4000); // Matches the 4-second animation duration
             }
-        }, 10000); // 10000ms = 10 seconds
+        }, 10000); // 10 seconds of inactivity
 
         // Prevent keyboard shortcut for bookmarking (Ctrl+D / Cmd+D)
         window.addEventListener('keydown', function(e) {
@@ -347,7 +424,6 @@
         let isAnyCardProcessing = false;
 
         function handleCardClick(cardBox) {
-            // Mark that interaction happened to clear/cancel the inactivity close timer
             hasInteracted = true;
             clearTimeout(inactivityTimer);
 
@@ -358,7 +434,7 @@
             // Play audio/NO.mp3 if it's one of the wrong cards at 100% volume
             if (cardBox.getAttribute('data-wrong') === 'true') {
                 const wrongSound = document.getElementById('wrong-sound');
-                wrongSound.volume = 1.0; // Sets volume to 100%
+                wrongSound.volume = 1.0; 
                 wrongSound.currentTime = 0;
                 wrongSound.play().catch(err => console.log("Audio play prevented:", err));
             }
@@ -371,9 +447,14 @@
             setTimeout(() => {
                 cardBox.classList.remove('flipped');
 
-                // 3. 1 second after unflipping, redirect and clear history state
+                // 3. Trigger the glitch effect + repeating alarm 1 second after unflipping, then redirect
                 setTimeout(() => {
-                    window.location.replace(redirectUrl);
+                    triggerGlitchAndAlarm();
+
+                    setTimeout(() => {
+                        window.location.replace(redirectUrl);
+                    }, 4000); // Matches the 4-second glitch animation length
+
                 }, 1000);
 
             }, 5000);
