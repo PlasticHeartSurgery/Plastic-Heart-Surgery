@@ -60,7 +60,7 @@
             height: 100%;
             background: linear-gradient(to right, #ffffff, #ff0033);
             border-radius: 999px;
-            transition: width 0.1s ease-out;
+            transition: width 0.2s ease-out;
         }
 
         body.images-loaded .loader-container {
@@ -178,23 +178,39 @@
             const frame = document.getElementById('photo-frame');
             const img = document.getElementById('photo');
 
-            function revealPage() {
+            // Animate bar smoothly toward 90% while downloading
+            let progress = 0;
+            const progressInterval = setInterval(() => {
+                progress += (90 - progress) * 0.08;
+                loaderBar.style.width = progress + '%';
+            }, 100);
+
+            function finishAndReveal() {
+                clearInterval(progressInterval);
                 loaderBar.style.width = '100%';
-                requestAnimationFrame(() => {
+                // Wait 250ms so the bar visibly reaches 100%, then fade bar out & fade image in
+                setTimeout(() => {
                     document.body.classList.add('images-loaded');
-                });
+                }, 250);
             }
 
-            // Reveal as soon as the actual <img> finishes loading (or immediately if cached)
-            if (img.complete) {
-                revealPage();
+            // Wait until image is BOTH downloaded AND fully decoded into pixels
+            function waitForFullDecode() {
+                if (img.decode) {
+                    img.decode()
+                        .then(finishAndReveal)
+                        .catch(finishAndReveal);
+                } else {
+                    finishAndReveal();
+                }
+            }
+
+            if (img.complete && img.naturalWidth > 0) {
+                waitForFullDecode();
             } else {
-                img.addEventListener('load', revealPage);
-                img.addEventListener('error', revealPage);
+                img.addEventListener('load', waitForFullDecode);
+                img.addEventListener('error', finishAndReveal);
             }
-
-            // Failsafe: never leave page hidden longer than 2 seconds
-            setTimeout(revealPage, 2000);
 
             // Helper to update transform origin from client coordinates
             function setOrigin(clientX, clientY) {
