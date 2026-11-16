@@ -122,7 +122,7 @@
 
         /* Hide main content smoothly until assets finish loading */
         .container {
-            max-width: 1100px;
+            max-width: 1200px;
             width: 100%;
             text-align: center;
             opacity: 0;
@@ -153,12 +153,22 @@
             margin-right: auto;
         }
 
-        /* Grid Layout for the 8 Boxes (4 columns x 2 rows) */
+        /* Grid Layout for the 8 Boxes with 2-second Breathing Expansion */
         .card-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
             gap: 25px;
             perspective: 1000px;
+            animation: gridBreath 2s infinite ease-in-out;
+        }
+
+        @keyframes gridBreath {
+            0%, 100% {
+                gap: 25px;
+            }
+            50% {
+                gap: 75px; /* Cards separate further apart like an inhale */
+            }
         }
 
         .card-box {
@@ -166,7 +176,7 @@
             height: 300px;
             cursor: pointer;
             border-radius: 6px;
-            /* Applies chaotic fidget wiggle & zoom (max scale change within 30%: 0.85 to 1.15) */
+            /* Applies chaotic fidget wiggle & zoom */
             animation: cardFidget var(--fidget-dur, 1.8s) infinite ease-in-out;
             animation-delay: var(--fidget-delay, 0s);
         }
@@ -268,19 +278,17 @@
             top: 0;
             left: 0;
             border-radius: 4px;
+            /* Randomized chaotic image negative strobe effect */
+            animation: erraticNegative var(--neg-dur, 0.3s) infinite steps(1);
+            animation-delay: var(--neg-delay, 0s);
         }
 
-        .card-front img {
-            animation: imageInversionCycle 14s infinite linear;
-        }
-
-        @keyframes imageInversionCycle {
-            0% { filter: invert(0%); }
-            35.71% { filter: invert(0%); }
-            50% { filter: invert(100%); }
-            64.28% { filter: invert(100%); }
-            78.57% { filter: invert(0%); }
-            100% { filter: invert(0%); }
+        @keyframes erraticNegative {
+            0% { filter: invert(0%) contrast(100%); }
+            25% { filter: invert(100%) contrast(200%) hue-rotate(90deg); }
+            50% { filter: invert(0%) brightness(150%) contrast(180%); }
+            75% { filter: invert(100%) grayscale(100%) contrast(250%); }
+            100% { filter: invert(0%) contrast(100%); }
         }
 
         .card-front .overlay-text {
@@ -467,15 +475,18 @@
     <div id="secret-listen" class="secret-listen">listen</div>
 
     <script>
-        // Randomize the wiggle and glow timing dynamically for each card
+        // Randomize wiggle, glow, and negative filter timing dynamically for each card
         document.addEventListener('DOMContentLoaded', () => {
             const cards = document.querySelectorAll('.card-box');
             cards.forEach((card, index) => {
-                const randomFidgetDuration = (1.2 + Math.random() * 1.5).toFixed(2); // between 1.2s and 2.7s
+                const randomFidgetDuration = (1.2 + Math.random() * 1.5).toFixed(2);
                 const randomFidgetDelay = (-Math.random() * 2).toFixed(2);
                 
-                const randomGlowDuration = (0.7 + Math.random() * 1.2).toFixed(2); // between 0.7s and 1.9s
+                const randomGlowDuration = (0.7 + Math.random() * 1.2).toFixed(2);
                 const randomGlowDelay = (-Math.random() * 1.5).toFixed(2);
+
+                const randomNegDuration = (0.15 + Math.random() * 0.3).toFixed(2);
+                const randomNegDelay = (-Math.random() * 0.5).toFixed(2);
 
                 card.style.setProperty('--fidget-dur', randomFidgetDuration + 's');
                 card.style.setProperty('--fidget-delay', randomFidgetDelay + 's');
@@ -483,18 +494,21 @@
                 const inner = card.querySelector('.card-inner');
                 inner.style.setProperty('--glow-dur', randomGlowDuration + 's');
                 inner.style.setProperty('--glow-delay', randomGlowDelay + 's');
+
+                const imgs = card.querySelectorAll('img');
+                imgs.forEach(img => {
+                    img.style.setProperty('--neg-dur', randomNegDuration + 's');
+                    img.style.setProperty('--neg-delay', randomNegDelay + 's');
+                });
             });
 
             // Hyper-erratic randomized background strobe (< 0.5 seconds each step)
             function erraticBackgroundStrobe() {
-                // Skip if page is already melting/transitioning
                 if (document.body.classList.contains('glitch-transition')) return;
 
-                // Random color between pure white (#ffffff) and pure red (#ff0000)
                 const isRed = Math.random() > 0.5;
                 document.body.style.backgroundColor = isRed ? '#ff0000' : '#ffffff';
 
-                // Random time interval under 0.5 seconds (between 50ms and 450ms)
                 const randomInterval = Math.random() * 400 + 50;
                 setTimeout(erraticBackgroundStrobe, randomInterval);
             }
