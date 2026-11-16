@@ -438,7 +438,7 @@
             }
         }, 10000); // 10 seconds of inactivity
 
-        // --- SECRET "LISTEN" CLICK HANDLER ---
+        // --- SECRET "LISTEN" CLICK HANDLER (Stops page from closing, does NOT affect music) ---
         document.getElementById('secret-listen').addEventListener('click', function() {
             hasInteracted = true;
             clearTimeout(inactivityTimer);
