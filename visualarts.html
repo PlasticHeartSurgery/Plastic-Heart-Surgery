@@ -219,15 +219,15 @@
             object-fit: cover;
             will-change: transform;
             transform-origin: center center;
-            /* Default zoom-out transition (3.6s, 2x slower) */
-            transition: transform 3.6s cubic-bezier(0.25, 1, 0.5, 1);
+            /* Slow-starting exponential curve for zoom-out (3.6s duration) */
+            transition: transform 3.6s cubic-bezier(0.05, 0.9, 0.1, 1);
         }
 
-        /* Zoom-in on hover (1.8s) */
+        /* Slow-starting exponential curve for zoom-in on hover (1.8s duration) */
         .art-card:hover .art-image-frame img,
         .art-card.mobile-zoomed .art-image-frame img {
             transform: scale(4);
-            transition: transform 1.8s cubic-bezier(0.25, 1, 0.5, 1);
+            transition: transform 1.8s cubic-bezier(0.05, 0.9, 0.1, 1);
         }
 
         .art-info {
@@ -380,7 +380,7 @@
                         <p class="art-desc">Oil, Pencil, Acrylic, Polyurethane, China Marker, Gesso, Wall Paint on Canvas, 35" x 50", 2025"</p>
                     </div>
                 </div>
-                      
+                    
                 <!-- Painting Item 7 -->
                 <div class="art-card" style="--i: 7;">
                     <div class="art-image-frame">
