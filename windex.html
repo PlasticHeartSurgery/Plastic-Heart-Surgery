@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stage 1</title>
+    <meta http-equiv="refresh" content="22;url=https://plasticheartsurgery.com/windex">
+    <title>Plastic Heart Surgery</title>
     <style>
         @font-face {
-            font-family: 'Black Witcher';
-            src: url('fonts/Black Witcher.otf') format('opentype');
+            font-family: 'Lyno Ulyscyr';
+            src: local('Lyno Ulyscyr'), url('fonts/lynoulyscyr.ttf') format('truetype');
             font-weight: normal;
             font-style: normal;
         }
@@ -21,15 +22,14 @@
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: #ffffff;
-            color: #0f172a;
+            color: #111111;
             display: flex;
-            justify-content: center;
-            align-items: center;
             min-height: 100vh;
-            padding: 40px 20px;
+            line-height: 1.6;
+            overflow-x: hidden;
         }
 
-        /* --- SERUM 2 GLITCH PAGE MELT, STROBE & RAPID ZOOM EFFECT --- */
+        /* --- SERUM 2 GLITCH PAGE MELT & STROBE EFFECT --- */
         body.glitch-transition {
             animation: fullPageMeltdown 4s forwards ease-in-out;
             pointer-events: none;
@@ -42,478 +42,254 @@
                 background-color: #ffffff;
                 opacity: 1;
             }
-            10% { transform: skewX(-5deg) translateY(10px) scale(1.5); }
-            20% { transform: skewX(10deg) translateY(-10px) scale(0.8); }
             25% {
-                transform: skewX(-15deg) translateY(20px) scale(2);
+                transform: skewX(-15deg) translateY(20px) scale(1.02);
                 filter: blur(2px) contrast(150%) hue-rotate(90deg);
                 opacity: 1;
             }
-            30% { transform: skewX(15deg) translateY(-15px) scale(1); }
-            40% { transform: skewX(-20deg) translateY(25px) scale(1.8); }
             50% {
-                transform: skewX(25deg) translateY(-40px) scale(0.7) rotate(1deg);
+                transform: skewX(25deg) translateY(-40px) scale(0.98) rotate(1deg);
                 filter: blur(6px) contrast(200%) hue-rotate(180deg) invert(15%);
                 background-color: #ffffff;
                 opacity: 1;
             }
-            52% { background-color: #ff0000; color: #ffffff; transform: scale(2); }
-            54% { background-color: #ffffff; color: #111111; transform: scale(1); }
-            56% { background-color: #ff0000; color: #ffffff; transform: scale(1.9); }
-            58% { background-color: #ffffff; color: #111111; transform: scale(0.8); }
-            60% { background-color: #ff0000; color: #ffffff; transform: scale(2); }
-            62% { background-color: #ffffff; color: #111111; transform: scale(1); }
-            64% { background-color: #ff0000; color: #ffffff; transform: scale(1.7); }
-            66% { background-color: #ffffff; color: #111111; transform: scale(0.9); }
-            68% { background-color: #ff0000; color: #ffffff; transform: scale(2); }
-            70% { background-color: #ffffff; color: #111111; transform: scale(1); }
-            72% { background-color: #ff0000; color: #ffffff; transform: scale(1.8); }
-            74% { background-color: #ffffff; color: #111111; transform: scale(0.8); }
-            76% { background-color: #ff0000; color: #ffffff; transform: scale(2); }
-            78% { background-color: #ffffff; color: #111111; transform: scale(1); }
-            80% { background-color: #ff0000; color: #ffffff; transform: scale(1.9); }
-            82% { background-color: #ffffff; color: #111111; transform: scale(0.9); }
-            84% { background-color: #ff0000; color: #ffffff; transform: scale(2); }
-            86% { background-color: #ffffff; color: #111111; transform: scale(1); }
-            88% { background-color: #ff0000; color: #ffffff; transform: scale(1.7); }
-            90% { background-color: #ffffff; color: #111111; transform: scale(0.8); }
-            92% { background-color: #ff0000; color: #ffffff; transform: scale(2); }
-            94% { background-color: #ffffff; color: #111111; transform: scale(1); }
-            96% { background-color: #ff0000; color: #ffffff; transform: scale(1.9); }
-            98% { background-color: #ffffff; color: #111111; transform: scale(0.9); }
+            52% { background-color: #ff0000; color: #ffffff; }
+            54% { background-color: #ffffff; color: #111111; }
+            56% { background-color: #ff0000; color: #ffffff; }
+            58% { background-color: #ffffff; color: #111111; }
+            60% { background-color: #ff0000; color: #ffffff; }
+            62% { background-color: #ffffff; color: #111111; }
+            64% { background-color: #ff0000; color: #ffffff; }
+            66% { background-color: #ffffff; color: #111111; }
+            68% { background-color: #ff0000; color: #ffffff; }
+            70% { background-color: #ffffff; color: #111111; }
+            72% { background-color: #ff0000; color: #ffffff; }
+            74% { background-color: #ffffff; color: #111111; }
+            76% { background-color: #ff0000; color: #ffffff; }
+            78% { background-color: #ffffff; color: #111111; }
+            80% { background-color: #ff0000; color: #ffffff; }
+            82% { background-color: #ffffff; color: #111111; }
+            84% { background-color: #ff0000; color: #ffffff; }
+            86% { background-color: #ffffff; color: #111111; }
+            88% { background-color: #ff0000; color: #ffffff; }
+            90% { background-color: #ffffff; color: #111111; }
+            92% { background-color: #ff0000; color: #ffffff; }
+            94% { background-color: #ffffff; color: #111111; }
+            96% { background-color: #ff0000; color: #ffffff; }
+            98% { background-color: #ffffff; color: #111111; }
             100% {
-                transform: skewX(-40deg) translateY(100px) scale(2);
+                transform: skewX(-40deg) translateY(100px) scale(1.1);
                 filter: blur(15px) contrast(300%) invert(100%);
                 background-color: #ff0000;
                 opacity: 0;
             }
         }
 
-        /* --- CENTERED GRADIENT LOADING BAR --- */
-        .loader-container {
+        .sidebar {
+            width: 340px;
+            background-color: #ffffff;
+            border-right: none;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
             position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: min(300px, 80vw);
-            height: 10px;
-            background-color: #f0f0f0;
-            border: 2px solid #000000;
-            border-radius: 999px;
-            overflow: hidden;
-            box-shadow: 3px 3px 0px #000000;
-            z-index: 9999;
-            transition: opacity 0.3s ease, visibility 0.3s ease;
+            height: 100vh;
+            top: 0;
+            left: 0;
+            overflow-y: auto;
+            z-index: 10;
         }
 
-        .loader-bar {
-            width: 0%;
-            height: 100%;
-            background: linear-gradient(to right, #ffffff, #ff0033);
-            border-radius: 999px;
-            transition: width 0.1s ease-out;
-        }
-
-        body.images-loaded .loader-container {
-            opacity: 0;
-            visibility: hidden;
-        }
-
-        /* Hide main content smoothly until assets finish loading */
-        .container {
-            max-width: 1100px;
-            width: 100%;
-            text-align: center;
-            opacity: 0;
-            transform: translateY(10px);
-            transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-            padding: 20px 0;
-        }
-
-        body.images-loaded .container {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        h1 {
-            font-size: 2.2rem;
-            margin-bottom: 15px;
-            letter-spacing: 0.05em;
-            color: #0f172a;
-        }
-
-        p.subtitle {
-            color: #64748b;
+        .site-title {
+            font-family: 'Lyno Ulyscyr', sans-serif;
+            font-size: 1.5rem;
+            letter-spacing: 0.3em;
+            color: #ff0033;
             margin-bottom: 40px;
-            font-size: 1.05rem;
-            line-height: 1.5;
-            max-width: 750px;
-            margin-left: auto;
-            margin-right: auto;
+            text-decoration: none;
+            display: block;
         }
 
-        /* Grid Layout for the Boxes */
-        .card-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 25px;
-            perspective: 1000px;
+        .nav-columns {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
         }
 
-        .card-box {
-            background-color: transparent;
-            height: 300px;
-            cursor: pointer;
-            border-radius: 6px;
+        .nav-column-item {
+            font-family: 'Lyno Ulyscyr', sans-serif;
+            font-size: 1.15rem;
+            letter-spacing: 0.2em;
+            color: #333333;
+            text-decoration: none;
+            transition: color 0.2s ease;
         }
 
-        .card-inner {
-            position: relative;
-            width: 100%;
-            height: 100%;
+        .nav-column-item:hover, .nav-column-item.active {
+            color: #ff0033;
+        }
+
+        .sidebar-footer {
+            font-size: 0.85rem;
+            color: #333333;
+            word-break: break-all;
+            margin-top: 30px;
+        }
+
+        .sidebar-footer a {
+            color: #ff0033;
+            text-decoration: none;
+        }
+
+        .sidebar-footer a:hover {
+            text-decoration: underline;
+        }
+
+        main {
+            margin-left: 340px;
+            flex: 1;
+            padding: 80px 60px;
+            max-width: 1100px;
+            background-color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        h2 {
+            font-family: 'Lyno Ulyscyr', sans-serif;
+            font-size: 1.8rem;
+            letter-spacing: 0.25em;
+            color: #ff0033;
+            margin-bottom: 24px;
             text-align: center;
-            transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
-            transform-style: preserve-3d;
-            border-radius: 6px;
+        }
+
+        .strobe-text {
+            font-size: clamp(1.4rem, 3vw, 2.5rem);
+            font-weight: 900;
+            line-height: 1.25;
+            text-align: center;
+            margin-bottom: 40px;
+            word-wrap: break-word;
+            animation: textStrobe 0.004s infinite steps(1);
+        }
+
+        @keyframes textStrobe {
+            0% { color: #111111; }
+            50% { color: #ff0033; }
+            100% { color: #111111; }
+        }
+
+        .bio-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        .bio-image-frame {
+            width: 100%;
+            max-width: 350px;
             background: #ffffff;
             border: 2px solid #000000;
+            border-radius: 6px;
+            overflow: hidden;
             box-shadow: 4px 4px 0px #000000;
         }
 
-        .card-box.flipped .card-inner {
-            transform: rotateY(180deg);
-        }
-
-        .card-box:hover .card-inner {
-            border-color: #ff0033;
-            transform: translateY(-2px);
-            animation: gradientGlow 3s ease-in-out infinite alternate;
-        }
-
-        .card-box.flipped:hover .card-inner {
-            transform: rotateY(180deg) translateY(-2px);
-        }
-
-        @keyframes gradientGlow {
-            0% {
-                box-shadow: 4px 4px 0px #000000, 0 0 10px rgba(255, 0, 51, 0.4);
-            }
-            50% {
-                box-shadow: 4px 4px 0px #000000, 0 0 25px rgba(255, 0, 51, 0.8);
-            }
-            100% {
-                box-shadow: 4px 4px 0px #000000, 0 0 15px rgba(255, 100, 120, 0.6);
-            }
-        }
-
-        .card-front, .card-back {
-            position: absolute;
+        .bio-image-frame img {
             width: 100%;
-            height: 100%;
-            -webkit-backface-visibility: hidden;
-            backface-visibility: hidden;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            border-radius: 4px;
-            overflow: hidden;
+            height: auto;
+            display: block;
         }
 
-        .card-front {
-            background: #ffffff;
-            color: #000000;
-        }
-
-        .card-front img, .card-back img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            position: absolute;
-            top: 0;
-            left: 0;
-            border-radius: 4px;
-        }
-
-        .card-front img {
-            animation: imageInversionCycle 14s infinite linear;
-        }
-
-        @keyframes imageInversionCycle {
-            0% { filter: invert(0%); }
-            35.71% { filter: invert(0%); }
-            50% { filter: invert(100%); }
-            64.28% { filter: invert(100%); }
-            78.57% { filter: invert(0%); }
-            100% { filter: invert(0%); }
-        }
-
-        .card-front .overlay-text {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(4px);
-            padding: 12px;
-            font-size: 0.9rem;
-            letter-spacing: 0.05em;
-            color: #000000;
-            font-weight: bold;
-            z-index: 2;
-        }
-
-        .card-back {
-            background: #ffffff;
-            color: #000000;
-            transform: rotateY(180deg);
-        }
-
-        .card-back h3 {
-            font-family: 'Black Witcher', sans-serif;
-            font-size: 2.2rem;
-            letter-spacing: 0.05em;
-            color: #000000;
-        }
-
-        .secret-listen {
-            position: fixed;
-            bottom: 18px;
-            left: 50%;
-            transform: translateX(-50%);
-            color: #ffffff;
-            font-size: 1rem;
-            letter-spacing: 0.1em;
-            cursor: default;
-            padding: 8px 16px;
-            z-index: 100;
-        }
-
-        .secret-listen::selection {
-            background-color: #000000;
-            color: #ffffff;
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+                padding: 30px 20px;
+            }
+            main {
+                margin-left: 0;
+                padding: 40px 20px;
+                max-width: 100%;
+            }
+            .site-title {
+                font-size: 1.2rem;
+                letter-spacing: 0.15em;
+            }
+            h2 {
+                font-size: 1.3rem;
+                letter-spacing: 0.1em;
+            }
         }
     </style>
 </head>
 <body>
 
-    <!-- Centered White-to-Red Gradient Loading Bar -->
-    <div class="loader-container">
-        <div class="loader-bar" id="loader-bar"></div>
-    </div>
-
     <!-- Audio element with preload -->
     <audio id="bg-audio" src="audio/Windex.mp3" preload="auto"></audio>
 
-    <!-- Wrong Card Sound Effect -->
-    <audio id="wrong-sound" preload="auto">
-        <source src="https://plasticheartsurgery.com/audio/NO.mp3" type="audio/mpeg">
-    </audio>
-
-    <!-- Correct Card Sound Effect (Sound 3) -->
-    <audio id="correct-sound" preload="auto">
-        <source src="audio/Sound 3.mp3" type="audio/mpeg">
-    </audio>
-
-    <!-- Glitch Alarm Sound Effect -->
-    <audio id="glitch-alarm" preload="auto" loop>
-        <source src="https://plasticheartsurgery.com/audio/Alarm.mp3" type="audio/mpeg">
-    </audio>
-
-    <div class="container">
-        <h1>Choose Your Fate</h1>
-        <p class="subtitle">You have one of four choices. If you fail, you have made a great mistake; your family will weep for one thousand years, and your ancestors will roll in their graves. Now, make the choice. You got this far, and I truly do believe you will not let down your lineage. Choose fast.</p>
-
-        <div class="card-grid">
-            <!-- Card 1 (Wrong) -->
-            <div class="card-box" data-wrong="true" data-redirect="https://plasticheartsurgery.com/index" data-newtab="https://www.youtube.com/watch?v=dQw4w9WgXcQ" onclick="handleCardClick(this)">
-                <div class="card-inner">
-                    <div class="card-front">
-                        <img src="images/258851283_598265428091581_5809877262405752739_n.png" alt="Gallery Image 1">
-                        <div class="overlay-text">Click to Flip Card</div>
-                    </div>
-                    <div class="card-back">
-                        <h3>Wrong Card</h3>
-                    </div>
-                </div>
+    <div class="sidebar">
+        <div>
+            <a href="index.html" class="site-title">Plastic Heart Surgery</a>
+            <div class="nav-columns">
+                <a href="windex.html" class="nav-column-item active">Plastic Heart Surgery</a>
+                <a href="visualarts.html" class="nav-column-item">Visual Arts</a>
+                <a href="music.html" class="nav-column-item">Music</a>
+                <a href="tourdates.html" class="nav-column-item">Tour Dates</a>
+                <a href="comingupshows.html" class="nav-column-item">Coming Up Shows</a>
+                <a href="bigfanof....html" class="nav-column-item">Big Fan Of...</a>
+                <a href="treasurehunt.html" class="nav-column-item">Links</a>
             </div>
-
-            <!-- Card 2 (Correct Path) -->
-            <div class="card-box" data-redirect="https://plasticheartsurgery.com/windex2" onclick="handleCardClick(this)">
-                <div class="card-inner">
-                    <div class="card-front">
-                        <img src="images/PlasticBaby.png" alt="Gallery Image 2">
-                        <div class="overlay-text">Click to Flip Card</div>
-                    </div>
-                    <div class="card-back">
-                        <img src="images/image2-back.jpg" alt="Card 2 Back Image">
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 3 (Wrong) -->
-            <div class="card-box" data-wrong="true" data-redirect="https://plasticheartsurgery.com/index" data-newtab="https://www.youtube.com/watch?v=dQw4w9WgXcQ" onclick="handleCardClick(this)">
-                <div class="card-inner">
-                    <div class="card-front">
-                        <img src="images/CDN FIREARMS 212312 sa.png" alt="Gallery Image 3">
-                        <div class="overlay-text">Click to Flip Card</div>
-                    </div>
-                    <div class="card-back">
-                        <h3>Wrong Card</h3>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 4 (Wrong) -->
-            <div class="card-box" data-wrong="true" data-redirect="https://plasticheartsurgery.com/index" data-newtab="https://www.youtube.com/watch?v=dQw4w9WgXcQ" onclick="handleCardClick(this)">
-                <div class="card-inner">
-                    <div class="card-front">
-                        <img src="images/241834456_375176914106279_1430003598020299651_n.jpg" alt="Gallery Image 4">
-                        <div class="overlay-text">Click to Flip Card</div>
-                    </div>
-                    <div class="card-back">
-                        <h3>Wrong Card</h3>
-                    </div>
-                </div>
-            </div>
+        </div>
+        <div class="sidebar-footer">
+            <p style="margin-bottom: 4px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #000000;">Contact</p>
+            <a href="mailto:plasticheartsurgery@gmail.com">plasticheartsurgery@gmail.com</a>
         </div>
     </div>
 
-    <div id="secret-listen" class="secret-listen">listen</div>
+    <main>
+        <section>
+            <h2>I know where you live now...</h2>
+            
+            <p class="strobe-text">You are not supposed to be here. You think you know me, but you don't. Go away! I AM TRACKING YOUR IP and your geolocation. You aren't safe, I hope you used a VPN. The longer you stay on this page, the more information I gather. Leave this page immediately if you care for your safety and privacy. A virus will be downloaded in 10 seconds.</p>
+            
+            <div class="bio-container">
+                <div class="bio-image-frame">
+                    <img src="images/93954891_1415006468682362_9066604820017709056_n.jpg" alt="Plastic Heart Surgery">
+                </div>
+            </div>
+        </section>
+    </main>
 
     <script>
-        // --- SPEECH SYNTHESIS FUNCTION ---
-        function speak (phrase) {
-            window.speechSynthesis.speak(new window.SpeechSynthesisUtterance(phrase));
-        }
-
-        // Preload images & drive loading bar on DOMContentLoaded
+        // Attempt autoplay immediately on load (works if browser policies allow)
         window.addEventListener('DOMContentLoaded', () => {
-            const imageSources = [
-                "images/258851283_598265428091581_5809877262405752739_n.png",
-                "images/PlasticBaby.png",
-                "images/image2-back.jpg",
-                "images/CDN FIREARMS 212312 sa.png",
-                "images/241834456_375176914106279_1430003598020299651_n.jpg"
-            ];
-
-            let loadedCount = 0;
-            const totalImages = imageSources.length;
-            const loaderBar = document.getElementById('loader-bar');
-
-            imageSources.forEach(src => {
-                const img = new Image();
-                img.src = src;
-                img.onload = img.onerror = () => {
-                    loadedCount++;
-                    loaderBar.style.width = (loadedCount / totalImages) * 100 + '%';
-                    if (loadedCount >= totalImages) {
-                        document.body.classList.add('images-loaded');
-                    }
+            const audio = document.getElementById('bg-audio');
+            audio.play().catch(() => {
+                // Autoplay was blocked by the browser. 
+                // We'll unlock and play it on the user's very first click anywhere on the page.
+                const unlockAudio = () => {
+                    audio.play();
+                    window.removeEventListener('click', unlockAudio);
                 };
+                window.addEventListener('click', unlockAudio);
             });
         });
 
-        function triggerGlitchAndAlarm() {
-            const alarmAudio = document.getElementById('glitch-alarm');
-            alarmAudio.volume = 1.0;
-            alarmAudio.currentTime = 0;
-            alarmAudio.play().catch(err => console.log("Alarm audio play prevented:", err));
-
+        // Trigger 4-second glitch & strobe effect at 18 seconds so it finishes right at the 22-second redirect
+        setTimeout(() => {
             document.body.classList.add('glitch-transition');
-        }
-
-        let hasInteracted = false;
-
-        const inactivityTimer = setTimeout(() => {
-            if (!hasInteracted) {
-                speak("You ran out of time.");
-                triggerGlitchAndAlarm();
-
-                setTimeout(() => {
-                    window.close();
-                    
-                    setTimeout(() => {
-                        if (!window.closed) {
-                            window.location.href = "about:blank";
-                        }
-                    }, 500);
-                }, 4000);
-            }
-        }, 10000);
-
-        document.getElementById('secret-listen').addEventListener('click', function() {
-            hasInteracted = true;
-            clearTimeout(inactivityTimer);
-            speak("You are listening closely. Good choice.");
-        });
-
-        window.addEventListener('keydown', function(e) {
-            hasInteracted = true;
-            clearTimeout(inactivityTimer);
-
-            if ((e.ctrlKey || e.metaKey) && (e.key === 'd' || e.key === 'D')) {
-                e.preventDefault();
-                speak("You are not allowed to bookmark this page.");
-                alert("You are not allowed to bookmark this page or a virus will be downloaded to your computer.");
-            }
-        });
-
-        let isAnyCardProcessing = false;
-
-        function handleCardClick(cardBox) {
-            hasInteracted = true;
-            clearTimeout(inactivityTimer);
-
-            if (isAnyCardProcessing || cardBox.classList.contains('flipped')) return;
-            
-            isAnyCardProcessing = true;
-
-            if (cardBox.getAttribute('data-wrong') === 'true') {
-                const wrongSound = document.getElementById('wrong-sound');
-                wrongSound.volume = 1.0; 
-                wrongSound.currentTime = 0;
-                wrongSound.play().catch(err => console.log("Audio play prevented:", err));
-                
-                speak("You picked the wrong card. Your family will weep.");
-            } else {
-                const correctSound = document.getElementById('correct-sound');
-                correctSound.volume = 1.0;
-                correctSound.currentTime = 0;
-                correctSound.play().catch(err => console.log("Audio play prevented:", err));
-
-                speak("Correct choice. Advancing.");
-            }
-
-            const newTabUrl = cardBox.getAttribute('data-newtab');
-            if (newTabUrl) {
-                for (let i = 0; i < 20; i++) {
-                    setTimeout(() => {
-                        window.open(newTabUrl, '_blank');
-                    }, i * 80);
-                }
-            }
-
-            cardBox.classList.add('flipped');
-            const redirectUrl = cardBox.getAttribute('data-redirect');
-
             setTimeout(() => {
-                cardBox.classList.remove('flipped');
+                window.location.href = "https://plasticheartsurgery.com/windex";
+            }, 4000);
+        }, 18000);
 
-                setTimeout(() => {
-                    triggerGlitchAndAlarm();
-
-                    setTimeout(() => {
-                        window.location.replace(redirectUrl);
-                    }, 4000);
-
-                }, 1000);
-
-            }, 5000);
-        }
-
-        // Intercept internal link clicks to trigger smooth glitch animation before redirect
         document.addEventListener('click', function(e) {
             const link = e.target.closest('a');
             if (!link) return;
@@ -522,13 +298,12 @@
             if (!href || href.startsWith('mailto:') || href.startsWith('#') || link.target === '_blank') return;
 
             e.preventDefault();
-            triggerGlitchAndAlarm();
+            document.body.classList.add('glitch-transition');
 
             setTimeout(() => {
                 window.location.href = href;
-            }, 4000);
+            }, 4000); // matches the 4s animation length
         });
     </script>
-
 </body>
 </html>
