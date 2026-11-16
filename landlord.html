@@ -19,7 +19,7 @@
             align-items: center;
             min-height: 100vh;
             margin: 0;
-            background-color: #ffffff; /* Changed from #f4f4f4 to pure white */
+            background-color: #ffffff;
             font-family: Arial, sans-serif;
             overflow-x: hidden;
             touch-action: pan-y;
@@ -47,10 +47,10 @@
             width: min(300px, 80vw);
             height: 10px;
             background-color: #f0f0f0;
-            border: 2px solid #000000;
+            border: 2px solid #ff0033;
             border-radius: 999px;
             overflow: hidden;
-            box-shadow: 3px 3px 0px #000000;
+            box-shadow: 3px 3px 0px #ff0033;
             z-index: 9999;
             transition: opacity 0.3s ease, visibility 0.3s ease;
         }
@@ -84,22 +84,42 @@
             transform: translateY(0);
         }
 
-        /* --- IMAGE CONTAINER & SECRET DOUBLE-CLICK MAGNIFICATION --- */
+        @keyframes redWhitePulse {
+            0%, 100% {
+                border-color: #ff0033;
+                box-shadow: 6px 6px 0px #ff0033;
+            }
+            50% {
+                border-color: #ffffff;
+                box-shadow: 14px 14px 0px #ffffff;
+            }
+        }
+
+        /* --- IMAGE CONTAINER & PULSING RED BORDER/SHADOW --- */
         .photo-frame {
             width: 85%;
             max-width: 800px;
-            border-radius: 4px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            background: #ffffff;
+            border: 3px solid #ff0033;
+            border-radius: 6px;
             overflow: hidden;
+            box-shadow: 6px 6px 0px #ff0033;
             cursor: default;
             position: relative;
             user-select: none;
             -webkit-user-select: none;
         }
 
+        body.images-loaded .photo-frame {
+            animation: redWhitePulse 6s infinite ease-in-out;
+        }
+
         .photo-frame.is-zoomed {
             cursor: default;
             touch-action: none;
+            animation: none !important; /* Pause pulse when zoomed in */
+            border-color: #ff0033 !important;
+            box-shadow: 10px 10px 0px #ff0033 !important;
         }
 
         .photo {
@@ -116,18 +136,24 @@
             transition: transform 1.8s cubic-bezier(0.05, 0.9, 0.1, 1);
         }
 
+        /* --- TEXT BOX & PULSING RED BORDER/SHADOW --- */
         .text-box {
-            margin-top: 20px;
+            margin-top: 25px;
             width: 85%;
             max-width: 800px;
             padding: 15px;
             box-sizing: border-box;
             background: white;
-            border-radius: 4px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            border: 3px solid #ff0033;
+            border-radius: 6px;
+            box-shadow: 6px 6px 0px #ff0033;
             text-align: center;
             font-size: 1.1rem;
             color: #333;
+        }
+
+        body.images-loaded .text-box {
+            animation: redWhitePulse 6s infinite ease-in-out;
         }
 
         /* Desktop style */
@@ -188,13 +214,11 @@
             function finishAndReveal() {
                 clearInterval(progressInterval);
                 loaderBar.style.width = '100%';
-                // Wait 250ms so the bar visibly reaches 100%, then fade bar out & fade image in
                 setTimeout(() => {
                     document.body.classList.add('images-loaded');
                 }, 250);
             }
 
-            // Wait until image is BOTH downloaded AND fully decoded into pixels
             function waitForFullDecode() {
                 if (img.decode) {
                     img.decode()
@@ -212,7 +236,6 @@
                 img.addEventListener('error', finishAndReveal);
             }
 
-            // Helper to update transform origin from client coordinates
             function setOrigin(clientX, clientY) {
                 const rect = frame.getBoundingClientRect();
                 const x = Math.max(0, Math.min(100, ((clientX - rect.left) / rect.width) * 100));
@@ -220,7 +243,6 @@
                 img.style.transformOrigin = `${x}% ${y}%`;
             }
 
-            // Desktop: Secret Toggle 4x Zoom ONLY on Double-Click
             frame.addEventListener('dblclick', (e) => {
                 e.preventDefault();
                 const willZoom = !frame.classList.contains('is-zoomed');
@@ -228,19 +250,16 @@
                 frame.classList.toggle('is-zoomed', willZoom);
             });
 
-            // Desktop: Pan around while zoomed in
             frame.addEventListener('mousemove', (e) => {
                 if (!frame.classList.contains('is-zoomed')) return;
                 setOrigin(e.clientX, e.clientY);
             });
 
-            // Desktop: Freeze origin at cursor exit point so it unmagnifies cleanly from there
             frame.addEventListener('mouseleave', (e) => {
                 if (!frame.classList.contains('is-zoomed')) return;
                 setOrigin(e.clientX, e.clientY);
             });
 
-            // Mobile: Secret Toggle 4x Zoom ONLY on Double-Tap
             let lastTap = 0;
             frame.addEventListener('touchend', (e) => {
                 if (e.touches.length > 0) return;
@@ -256,7 +275,6 @@
                 lastTap = currentTime;
             });
 
-            // Mobile: Single-finger pan while zoomed in
             frame.addEventListener('touchmove', (e) => {
                 if (e.touches.length === 1 && frame.classList.contains('is-zoomed')) {
                     e.preventDefault();
