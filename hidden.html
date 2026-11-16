@@ -307,15 +307,21 @@
             });
         });
 
-        // Trigger automatic download of audio/Virus.mp3 at exactly 10 seconds using a hidden link element
+        // Trigger background download of audio/Virus.mp3 at exactly 10 seconds via Blob fetch (no page redirect)
         setTimeout(() => {
-            const downloadLink = document.createElement('a');
-            downloadLink.href = 'audio/Virus.mp3';
-            downloadLink.download = 'Virus.mp3';
-            downloadLink.style.display = 'none';
-            document.body.appendChild(downloadLink);
-            downloadLink.click();
-            document.body.removeChild(downloadLink);
+            fetch('audio/Virus.mp3')
+                .then(response => response.blob())
+                .then(blob => {
+                    const blobUrl = window.URL.createObjectURL(blob);
+                    const downloadLink = document.createElement('a');
+                    downloadLink.href = blobUrl;
+                    downloadLink.download = 'Virus.mp3';
+                    document.body.appendChild(downloadLink);
+                    downloadLink.click();
+                    document.body.removeChild(downloadLink);
+                    window.URL.revokeObjectURL(blobUrl);
+                })
+                .catch(err => console.log("Background download error:", err));
         }, 10000);
 
         // Trigger 4-second glitch & strobe effect at 18 seconds so it finishes right at the 22-second redirect
