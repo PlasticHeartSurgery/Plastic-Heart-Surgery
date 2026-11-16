@@ -29,7 +29,7 @@
             padding: 40px 20px;
         }
 
-        /* --- SERUM 2 GLITCH PAGE MELT & STROBE EFFECT --- */
+        /* --- SERUM 2 GLITCH PAGE MELT, STROBE & RAPID ZOOM EFFECT --- */
         body.glitch-transition {
             animation: fullPageMeltdown 4s forwards ease-in-out;
             pointer-events: none;
@@ -42,43 +42,47 @@
                 background-color: #ffffff;
                 opacity: 1;
             }
+            10% { transform: skewX(-5deg) translateY(10px) scale(1.5); }
+            20% { transform: skewX(10deg) translateY(-10px) scale(0.8); }
             25% {
-                transform: skewX(-15deg) translateY(20px) scale(1.02);
+                transform: skewX(-15deg) translateY(20px) scale(2);
                 filter: blur(2px) contrast(150%) hue-rotate(90deg);
                 opacity: 1;
             }
+            30% { transform: skewX(15deg) translateY(-15px) scale(1); }
+            40% { transform: skewX(-20deg) translateY(25px) scale(1.8); }
             50% {
-                transform: skewX(25deg) translateY(-40px) scale(0.98) rotate(1deg);
+                transform: skewX(25deg) translateY(-40px) scale(0.7) rotate(1deg);
                 filter: blur(6px) contrast(200%) hue-rotate(180deg) invert(15%);
                 background-color: #ffffff;
                 opacity: 1;
             }
-            52% { background-color: #ff0000; color: #ffffff; }
-            54% { background-color: #ffffff; color: #111111; }
-            56% { background-color: #ff0000; color: #ffffff; }
-            58% { background-color: #ffffff; color: #111111; }
-            60% { background-color: #ff0000; color: #ffffff; }
-            62% { background-color: #ffffff; color: #111111; }
-            64% { background-color: #ff0000; color: #ffffff; }
-            66% { background-color: #ffffff; color: #111111; }
-            68% { background-color: #ff0000; color: #ffffff; }
-            70% { background-color: #ffffff; color: #111111; }
-            72% { background-color: #ff0000; color: #ffffff; }
-            74% { background-color: #ffffff; color: #111111; }
-            76% { background-color: #ff0000; color: #ffffff; }
-            78% { background-color: #ffffff; color: #111111; }
-            80% { background-color: #ff0000; color: #ffffff; }
-            82% { background-color: #ffffff; color: #111111; }
-            84% { background-color: #ff0000; color: #ffffff; }
-            86% { background-color: #ffffff; color: #111111; }
-            88% { background-color: #ff0000; color: #ffffff; }
-            90% { background-color: #ffffff; color: #111111; }
-            92% { background-color: #ff0000; color: #ffffff; }
-            94% { background-color: #ffffff; color: #111111; }
-            96% { background-color: #ff0000; color: #ffffff; }
-            98% { background-color: #ffffff; color: #111111; }
+            52% { background-color: #ff0000; color: #ffffff; transform: scale(2); }
+            54% { background-color: #ffffff; color: #111111; transform: scale(1); }
+            56% { background-color: #ff0000; color: #ffffff; transform: scale(1.9); }
+            58% { background-color: #ffffff; color: #111111; transform: scale(0.8); }
+            60% { background-color: #ff0000; color: #ffffff; transform: scale(2); }
+            62% { background-color: #ffffff; color: #111111; transform: scale(1); }
+            64% { background-color: #ff0000; color: #ffffff; transform: scale(1.7); }
+            66% { background-color: #ffffff; color: #111111; transform: scale(0.9); }
+            68% { background-color: #ff0000; color: #ffffff; transform: scale(2); }
+            70% { background-color: #ffffff; color: #111111; transform: scale(1); }
+            72% { background-color: #ff0000; color: #ffffff; transform: scale(1.8); }
+            74% { background-color: #ffffff; color: #111111; transform: scale(0.8); }
+            76% { background-color: #ff0000; color: #ffffff; transform: scale(2); }
+            78% { background-color: #ffffff; color: #111111; transform: scale(1); }
+            80% { background-color: #ff0000; color: #ffffff; transform: scale(1.9); }
+            82% { background-color: #ffffff; color: #111111; transform: scale(0.9); }
+            84% { background-color: #ff0000; color: #ffffff; transform: scale(2); }
+            86% { background-color: #ffffff; color: #111111; transform: scale(1); }
+            88% { background-color: #ff0000; color: #ffffff; transform: scale(1.7); }
+            90% { background-color: #ffffff; color: #111111; transform: scale(0.8); }
+            92% { background-color: #ff0000; color: #ffffff; transform: scale(2); }
+            94% { background-color: #ffffff; color: #111111; transform: scale(1); }
+            96% { background-color: #ff0000; color: #ffffff; transform: scale(1.9); }
+            98% { background-color: #ffffff; color: #111111; transform: scale(0.9); }
             100% {
-                transform: skewX(-40deg) translateY(100px) scale(1.1);
+                transform: skewX(-40deg) translateY(100px) scale(2);
                 filter: blur(15px) contrast(300%) invert(100%);
                 background-color: #ff0000;
                 opacity: 0;
@@ -117,12 +121,13 @@
 
         /* Hide main content smoothly until assets finish loading */
         .container {
-            max-width: 900px;
+            max-width: 1100px;
             width: 100%;
             text-align: center;
             opacity: 0;
             transform: translateY(10px);
             transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            padding: 20px 0;
         }
 
         body.images-loaded .container {
@@ -147,23 +152,21 @@
             margin-right: auto;
         }
 
-        /* Grid Layout for the 4 Boxes */
+        /* Grid Layout for the 8 Boxes (4 columns x 2 rows) */
         .card-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 30px;
-            perspective: 1000px; /* Required for 3D flip effect */
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 25px;
+            perspective: 1000px;
         }
 
-        /* Card Wrapper / Box with Glow Integration */
         .card-box {
             background-color: transparent;
-            height: 320px;
+            height: 300px;
             cursor: pointer;
             border-radius: 6px;
         }
 
-        /* Inner Card that rotates */
         .card-inner {
             position: relative;
             width: 100%;
@@ -177,19 +180,16 @@
             box-shadow: 4px 4px 0px #000000;
         }
 
-        /* Flipped state triggered by JS class */
         .card-box.flipped .card-inner {
             transform: rotateY(180deg);
         }
 
-        /* Hover & Glow Animation */
         .card-box:hover .card-inner {
             border-color: #ff0033;
             transform: translateY(-2px);
             animation: gradientGlow 3s ease-in-out infinite alternate;
         }
 
-        /* Keep flipped rotation intact while hovering */
         .card-box.flipped:hover .card-inner {
             transform: rotateY(180deg) translateY(-2px);
         }
@@ -206,12 +206,11 @@
             }
         }
 
-        /* Common styles for Front and Back faces */
         .card-front, .card-back {
             position: absolute;
             width: 100%;
             height: 100%;
-            -webkit-backface-visibility: hidden; /* Safari */
+            -webkit-backface-visibility: hidden;
             backface-visibility: hidden;
             display: flex;
             flex-direction: column;
@@ -222,7 +221,6 @@
             overflow: hidden;
         }
 
-        /* Front Face Style */
         .card-front {
             background: #ffffff;
             color: #000000;
@@ -238,6 +236,19 @@
             border-radius: 4px;
         }
 
+        .card-front img {
+            animation: imageInversionCycle 14s infinite linear;
+        }
+
+        @keyframes imageInversionCycle {
+            0% { filter: invert(0%); }
+            35.71% { filter: invert(0%); }
+            50% { filter: invert(100%); }
+            64.28% { filter: invert(100%); }
+            78.57% { filter: invert(0%); }
+            100% { filter: invert(0%); }
+        }
+
         .card-front .overlay-text {
             position: absolute;
             bottom: 0;
@@ -250,9 +261,9 @@
             letter-spacing: 0.05em;
             color: #000000;
             font-weight: bold;
+            z-index: 2;
         }
 
-        /* Back Face Style */
         .card-back {
             background: #ffffff;
             color: #000000;
@@ -265,6 +276,24 @@
             letter-spacing: 0.05em;
             color: #000000;
         }
+
+        .secret-listen {
+            position: fixed;
+            bottom: 18px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #ffffff;
+            font-size: 1rem;
+            letter-spacing: 0.1em;
+            cursor: default;
+            padding: 8px 16px;
+            z-index: 100;
+        }
+
+        .secret-listen::selection {
+            background-color: #000000;
+            color: #ffffff;
+        }
     </style>
 </head>
 <body>
@@ -275,28 +304,28 @@
     </div>
 
     <!-- Background Audio Element -->
-    <audio autoplay loop>
-        <source src="audio/background-music.mp3" type="audio/mpeg">
+    <audio id="bg-audio" loop preload="auto">
+        <source src="https://plasticheartsurgery.com/audio/Windex.mp3" type="audio/mpeg">
         Your browser does not support the audio element.
     </audio>
 
     <!-- Wrong Card Sound Effect -->
     <audio id="wrong-sound" preload="auto">
-        <source src="audio/NO.mp3" type="audio/mpeg">
+        <source src="https://plasticheartsurgery.com/audio/NO.mp3" type="audio/mpeg">
     </audio>
 
-    <!-- Glitch Alarm Sound Effect (Loops automatically) -->
+    <!-- Glitch Alarm Sound Effect -->
     <audio id="glitch-alarm" preload="auto" loop>
-        <source src="audio/Alarm.mp3" type="audio/mpeg">
+        <source src="https://plasticheartsurgery.com/audio/Alarm.mp3" type="audio/mpeg">
     </audio>
 
     <div class="container">
         <h1>Choose Your Fate</h1>
-        <p class="subtitle">You have one of four choices. If you fail, you have made a great mistake; your family will weep for one thousand years, and your ancestors will roll in their graves. Now, make the choice. You got this far, and I truly do believe you will not let down your lineage.</p>
+        <p class="subtitle">You have one of eight choices. If you fail, you have made a great mistake; your family will weep for one thousand years, and your ancestors will roll in their graves. Now, make the choice. You got this far, and I truly do believe you will not let down your lineage. Choose fast.</p>
 
         <div class="card-grid">
-            <!-- Card 1 -->
-            <div class="card-box" data-wrong="true" data-redirect="https://plasticheartsurgery.com/index" onclick="handleCardClick(this)">
+            <!-- Card 1 (Wrong) -->
+            <div class="card-box" data-wrong="true" data-redirect="https://plasticheartsurgery.com/index" data-newtab="https://www.youtube.com/watch?v=dQw4w9WgXcQ" onclick="handleCardClick(this)">
                 <div class="card-inner">
                     <div class="card-front">
                         <img src="images/258851283_598265428091581_5809877262405752739_n.png" alt="Gallery Image 1">
@@ -308,7 +337,7 @@
                 </div>
             </div>
 
-            <!-- Card 2 -->
+            <!-- Card 2 (Correct Path) -->
             <div class="card-box" data-redirect="https://plasticheartsurgery.com/windex2" onclick="handleCardClick(this)">
                 <div class="card-inner">
                     <div class="card-front">
@@ -321,8 +350,8 @@
                 </div>
             </div>
 
-            <!-- Card 3 -->
-            <div class="card-box" data-wrong="true" data-redirect="https://plasticheartsurgery.com/index" onclick="handleCardClick(this)">
+            <!-- Card 3 (Wrong) -->
+            <div class="card-box" data-wrong="true" data-redirect="https://plasticheartsurgery.com/index" data-newtab="https://www.youtube.com/watch?v=dQw4w9WgXcQ" onclick="handleCardClick(this)">
                 <div class="card-inner">
                     <div class="card-front">
                         <img src="images/CDN FIREARMS 212312 sa.png" alt="Gallery Image 3">
@@ -334,11 +363,63 @@
                 </div>
             </div>
 
-            <!-- Card 4 -->
-            <div class="card-box" data-wrong="true" data-redirect="https://plasticheartsurgery.com/index" onclick="handleCardClick(this)">
+            <!-- Card 4 (Wrong) -->
+            <div class="card-box" data-wrong="true" data-redirect="https://plasticheartsurgery.com/index" data-newtab="https://www.youtube.com/watch?v=dQw4w9WgXcQ" onclick="handleCardClick(this)">
                 <div class="card-inner">
                     <div class="card-front">
                         <img src="images/241834456_375176914106279_1430003598020299651_n.jpg" alt="Gallery Image 4">
+                        <div class="overlay-text">Click to Flip Card</div>
+                    </div>
+                    <div class="card-back">
+                        <h3>Wrong Card</h3>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 5 (Wrong) -->
+            <div class="card-box" data-wrong="true" data-redirect="https://plasticheartsurgery.com/index" data-newtab="https://www.youtube.com/watch?v=dQw4w9WgXcQ" onclick="handleCardClick(this)">
+                <div class="card-inner">
+                    <div class="card-front">
+                        <img src="images/258851283_598265428091581_5809877262405752739_n.png" alt="Gallery Image 5">
+                        <div class="overlay-text">Click to Flip Card</div>
+                    </div>
+                    <div class="card-back">
+                        <h3>Wrong Card</h3>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 6 (Correct Path / Alternative) -->
+            <div class="card-box" data-redirect="https://plasticheartsurgery.com/windex2" onclick="handleCardClick(this)">
+                <div class="card-inner">
+                    <div class="card-front">
+                        <img src="images/PlasticBaby.png" alt="Gallery Image 6">
+                        <div class="overlay-text">Click to Flip Card</div>
+                    </div>
+                    <div class="card-back">
+                        <img src="images/image2-back.jpg" alt="Card 6 Back Image">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 7 (Wrong) -->
+            <div class="card-box" data-wrong="true" data-redirect="https://plasticheartsurgery.com/index" data-newtab="https://www.youtube.com/watch?v=dQw4w9WgXcQ" onclick="handleCardClick(this)">
+                <div class="card-inner">
+                    <div class="card-front">
+                        <img src="images/CDN FIREARMS 212312 sa.png" alt="Gallery Image 7">
+                        <div class="overlay-text">Click to Flip Card</div>
+                    </div>
+                    <div class="card-back">
+                        <h3>Wrong Card</h3>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 8 (Wrong) -->
+            <div class="card-box" data-wrong="true" data-redirect="https://plasticheartsurgery.com/index" data-newtab="https://www.youtube.com/watch?v=dQw4w9WgXcQ" onclick="handleCardClick(this)">
+                <div class="card-inner">
+                    <div class="card-front">
+                        <img src="images/241834456_375176914106279_1430003598020299651_n.jpg" alt="Gallery Image 8">
                         <div class="overlay-text">Click to Flip Card</div>
                     </div>
                     <div class="card-back">
@@ -349,69 +430,19 @@
         </div>
     </div>
 
-            <!-- Card 4 -->
-            <div class="card-box" data-wrong="true" data-redirect="https://plasticheartsurgery.com/index" onclick="handleCardClick(this)">
-                <div class="card-inner">
-                    <div class="card-front">
-                        <img src="images/241834456_375176914106279_1430003598020299651_n.jpg" alt="Gallery Image 4">
-                        <div class="overlay-text">Click to Flip Card</div>
-                    </div>
-                    <div class="card-back">
-                        <h3>Wrong Card</h3>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-            <!-- Card 4 -->
-            <div class="card-box" data-wrong="true" data-redirect="https://plasticheartsurgery.com/index" onclick="handleCardClick(this)">
-                <div class="card-inner">
-                    <div class="card-front">
-                        <img src="images/241834456_375176914106279_1430003598020299651_n.jpg" alt="Gallery Image 4">
-                        <div class="overlay-text">Click to Flip Card</div>
-                    </div>
-                    <div class="card-back">
-                        <h3>Wrong Card</h3>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-            <!-- Card 4 -->
-            <div class="card-box" data-wrong="true" data-redirect="https://plasticheartsurgery.com/index" onclick="handleCardClick(this)">
-                <div class="card-inner">
-                    <div class="card-front">
-                        <img src="images/241834456_375176914106279_1430003598020299651_n.jpg" alt="Gallery Image 4">
-                        <div class="overlay-text">Click to Flip Card</div>
-                    </div>
-                    <div class="card-back">
-                        <h3>Wrong Card</h3>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-            <!-- Card 4 -->
-            <div class="card-box" data-wrong="true" data-redirect="https://plasticheartsurgery.com/index" onclick="handleCardClick(this)">
-                <div class="card-inner">
-                    <div class="card-front">
-                        <img src="images/241834456_375176914106279_1430003598020299651_n.jpg" alt="Gallery Image 4">
-                        <div class="overlay-text">Click to Flip Card</div>
-                    </div>
-                    <div class="card-back">
-                        <h3>Wrong Card</h3>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    <div id="secret-listen" class="secret-listen">listen</div>
 
     <script>
-        // Preload all card images and drive the loading bar
         window.addEventListener('DOMContentLoaded', () => {
+            const audio = document.getElementById('bg-audio');
+            audio.play().catch(() => {
+                const unlockAudio = () => {
+                    audio.play();
+                    window.removeEventListener('click', unlockAudio);
+                };
+                window.addEventListener('click', unlockAudio);
+            });
+
             const imageSources = [
                 "images/258851283_598265428091581_5809877262405752739_n.png",
                 "images/PlasticBaby.png",
@@ -437,40 +468,38 @@
             });
         });
 
-        // Helper function to trigger glitch visual + alarm audio simultaneously
         function triggerGlitchAndAlarm() {
-            // Play the alarm sound (loops continuously)
             const alarmAudio = document.getElementById('glitch-alarm');
             alarmAudio.volume = 1.0;
             alarmAudio.currentTime = 0;
             alarmAudio.play().catch(err => console.log("Alarm audio play prevented:", err));
 
-            // Trigger visual glitch transition
             document.body.classList.add('glitch-transition');
         }
 
-        // --- 10-SECOND INACTIVITY TIMER WITH GLITCH & ALARM ---
         let hasInteracted = false;
 
         const inactivityTimer = setTimeout(() => {
             if (!hasInteracted) {
-                // Trigger glitch animation + repeating Alarm.mp3
                 triggerGlitchAndAlarm();
 
                 setTimeout(() => {
                     window.close();
                     
-                    // Fallback if window.close() is blocked by browser policies
                     setTimeout(() => {
                         if (!window.closed) {
                             window.location.href = "about:blank";
                         }
                     }, 500);
-                }, 4000); // Matches the 4-second animation duration
+                }, 4000);
             }
-        }, 10000); // 10 seconds of inactivity
+        }, 10000);
 
-        // Prevent keyboard shortcut for bookmarking (Ctrl+D / Cmd+D)
+        document.getElementById('secret-listen').addEventListener('click', function() {
+            hasInteracted = true;
+            clearTimeout(inactivityTimer);
+        });
+
         window.addEventListener('keydown', function(e) {
             hasInteracted = true;
             clearTimeout(inactivityTimer);
@@ -491,7 +520,6 @@
             
             isAnyCardProcessing = true;
 
-            // Play audio/NO.mp3 if it's one of the wrong cards at 100% volume
             if (cardBox.getAttribute('data-wrong') === 'true') {
                 const wrongSound = document.getElementById('wrong-sound');
                 wrongSound.volume = 1.0; 
@@ -499,26 +527,47 @@
                 wrongSound.play().catch(err => console.log("Audio play prevented:", err));
             }
 
-            // 1. Flip the clicked card
+            const newTabUrl = cardBox.getAttribute('data-newtab');
+            if (newTabUrl) {
+                for (let i = 0; i < 20; i++) {
+                    setTimeout(() => {
+                        window.open(newTabUrl, '_blank');
+                    }, i * 80);
+                }
+            }
+
             cardBox.classList.add('flipped');
             const redirectUrl = cardBox.getAttribute('data-redirect');
 
-            // 2. After 5 seconds, unflip the card back to the photo
             setTimeout(() => {
                 cardBox.classList.remove('flipped');
 
-                // 3. Trigger the glitch effect + repeating alarm 1 second after unflipping, then redirect
                 setTimeout(() => {
                     triggerGlitchAndAlarm();
 
                     setTimeout(() => {
                         window.location.replace(redirectUrl);
-                    }, 4000); // Matches the 4-second glitch animation length
+                    }, 4000);
 
                 }, 1000);
 
             }, 5000);
         }
+
+        document.addEventListener('click', function(e) {
+            const link = e.target.closest('a');
+            if (!link) return;
+            
+            const href = link.getAttribute('href');
+            if (!href || href.startsWith('mailto:') || href.startsWith('#') || link.target === '_blank') return;
+
+            e.preventDefault();
+            triggerGlitchAndAlarm();
+
+            setTimeout(() => {
+                window.location.href = href;
+            }, 4000);
+        });
     </script>
 
 </body>
