@@ -27,6 +27,8 @@
             line-height: 1.6;
             overflow-x: hidden;
             touch-action: pan-y;
+            -webkit-text-size-adjust: 100%;
+            text-size-adjust: 100%;
         }
 
         /* --- CENTERED GRADIENT LOADING BAR --- */
@@ -217,20 +219,15 @@
             object-fit: cover;
             will-change: transform;
             transform-origin: center center;
-            /* Zoom in takes 1.8s (10% slower), Zoom out takes 3.6s (2x as slow) */
-            transition: transform 1.8s cubic-bezier(0.25, 1, 0.5, 1);
+            /* Default zoom-out transition (3.6s, 2x slower) */
+            transition: transform 3.6s cubic-bezier(0.25, 1, 0.5, 1);
         }
 
-        /* 400% magnification on hover */
+        /* Zoom-in on hover (1.8s) */
         .art-card:hover .art-image-frame img,
         .art-card.mobile-zoomed .art-image-frame img {
             transform: scale(4);
             transition: transform 1.8s cubic-bezier(0.25, 1, 0.5, 1);
-        }
-
-        /* Slower zoom-out transition when unhovering */
-        .art-image-frame img {
-            transition: transform 3.6s cubic-bezier(0.25, 1, 0.5, 1);
         }
 
         .art-info {
@@ -455,7 +452,7 @@
                 return bestCard;
             }
 
-            // Smooth GPU-accelerated CSS transform-origin cursor tracking
+            // Lock transform-origin on mouseleave so it unmagnifies from where the cursor left it
             document.querySelectorAll('.art-card').forEach(card => {
                 const frame = card.querySelector('.art-image-frame');
                 const img = frame.querySelector('img');
@@ -467,8 +464,12 @@
                     img.style.transformOrigin = `${x}% ${y}%`;
                 });
 
-                frame.addEventListener('mouseleave', () => {
-                    img.style.transformOrigin = 'center center';
+                frame.addEventListener('mouseleave', (e) => {
+                    const rect = frame.getBoundingClientRect();
+                    const x = Math.max(0, Math.min(100, ((e.clientX - rect.left) / rect.width) * 100));
+                    const y = Math.max(0, Math.min(100, ((e.clientY - rect.top) / rect.height) * 100));
+                    // Freeze origin at the exact leave point during the slow zoom-out transition
+                    img.style.transformOrigin = `${x}% ${y}%`;
                 });
 
                 // Mobile Touch Gesture & Pinch Handling
