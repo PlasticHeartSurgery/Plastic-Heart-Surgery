@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Plastic Heart Surgery — Visual Arts</title>
     <style>
         @font-face {
@@ -26,6 +26,7 @@
             min-height: 100vh;
             line-height: 1.6;
             overflow-x: hidden;
+            touch-action: pan-y;
         }
 
         /* --- CENTERED GRADIENT LOADING BAR --- */
@@ -140,29 +141,6 @@
             font-size: 1rem;
         }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Art cards hidden initially */
-        .art-card {
-            opacity: 0;
-            transform: translateY(10px);
-        }
-
-        /* Triggered immediately when preloading finishes with clean staggered loop */
-        body.images-loaded .art-card {
-            animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-            animation-delay: calc(0.1s + (var(--i, 0) * 0.08s));
-        }
-
         .art-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -170,6 +148,7 @@
             margin-top: 30px;
         }
 
+        /* Art cards hidden initially; border-color and box-shadow fade over 1.5s */
         .art-card {
             background: #ffffff;
             border: 2px solid #000000;
@@ -178,6 +157,41 @@
             box-shadow: 4px 4px 0px #000000;
             display: flex;
             flex-direction: column;
+            position: relative;
+            z-index: 1;
+            opacity: 0;
+            transform: translateY(15px) scale(1);
+            transition: 
+                opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                box-shadow 1.5s ease,
+                border-color 1.5s ease;
+            transition-delay: calc(var(--i, 0) * 0.08s), 0s, 0s, 0s;
+        }
+
+        /* Revealed state once images finish loading */
+        body.images-loaded .art-card {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            transition-delay: 0s;
+        }
+
+        /* Desktop hover lift and 1.5s fade-in to red border + shadow */
+        @media (hover: hover) {
+            body.images-loaded .art-card:hover {
+                transform: translateY(-4px) scale(1.06) !important;
+                border-color: #ff0033;
+                box-shadow: 10px 10px 0px #ff0033;
+                z-index: 20;
+                transition-delay: 0s !important;
+            }
+        }
+
+        /* Active mobile zoomed state */
+        .art-card.mobile-zoomed {
+            border-color: #ff0033 !important;
+            box-shadow: 10px 10px 0px #ff0033 !important;
+            z-index: 50 !important;
         }
 
         .art-image-frame {
@@ -185,6 +199,15 @@
             background: #f0f0f0;
             overflow: hidden;
             border-bottom: 2px solid #000000;
+            cursor: zoom-in;
+            touch-action: none;
+            position: relative;
+            transition: border-bottom-color 1.5s ease;
+        }
+
+        body.images-loaded .art-card:hover .art-image-frame,
+        .art-card.mobile-zoomed .art-image-frame {
+            border-bottom-color: #ff0033;
         }
 
         .art-image-frame img {
@@ -192,15 +215,21 @@
             height: auto;
             display: block;
             object-fit: cover;
-            transition: opacity 0.2s ease;
+            will-change: transform;
+            transform-origin: center center;
+            /* 25% faster transition duration (1.6s) with buttery smooth easing */
+            transition: transform 1.6s cubic-bezier(0.25, 1, 0.5, 1);
         }
 
-        .art-image-frame a:hover img {
-            opacity: 0.85;
+        /* 400% magnification on hover */
+        .art-card:hover .art-image-frame img,
+        .art-card.mobile-zoomed .art-image-frame img {
+            transform: scale(4);
         }
 
         .art-info {
             padding: 18px;
+            background: #ffffff;
         }
 
         .art-title {
@@ -314,7 +343,7 @@
                 <div class="art-card" style="--i: 4;">
                     <div class="art-image-frame">
                         <a href="self;-a-black-tarred,-scarred,-burnt-crisped-lung--trotted-down-‘round-‘n’-intestine.html">
-                            <img src="images/Self Portrait (Name in JPG Info), Plastic, Oil on Canvas, 38 x 46, 2026.jpg" alt="Demon">
+                            <img src="images/Self Portrait (Name in JPG Info), Plastic, Oil on Canvas, 38 x 46, 2026.jpg" alt="Self Portrait">
                         </a>
                     </div>
                     <div class="art-info">
@@ -327,7 +356,7 @@
                 <div class="art-card" style="--i: 5;">
                     <div class="art-image-frame">
                         <a href="I-Brushed-My-Teeth-and-Had-My-First-Bout-of-Psychosis-and-100th-Bout-of-Dysphoria,-but-I-Think-I-Scared-Myself-Less-Than-Prior.html">
-                            <img src="images/I Brushed My Teeth--100th Bout of Dysphoria, but I Think I Scared Myself Less Than Prior., Plastic, Oil, Lacquer, Urethane, Pastel, Pencil, Crayon on Canvas, 35 x 50, 2025.jpg" alt="Demon">
+                            <img src="images/I Brushed My Teeth--100th Bout of Dysphoria, but I Think I Scared Myself Less Than Prior., Plastic, Oil, Lacquer, Urethane, Pastel, Pencil, Crayon on Canvas, 35 x 50, 2025.jpg" alt="I Brushed My Teeth">
                         </a>
                     </div>
                     <div class="art-info">
@@ -340,7 +369,7 @@
                 <div class="art-card" style="--i: 6;">
                     <div class="art-image-frame">
                         <a href="The-Swan-Song--Dousing-My-Naked-Body-in-a-Sea-of-Vomit;-I-Am-Going-Deaf,-a-New-Obsolescence.html">
-                            <img src="images/Swan done 2 (1).png" alt="Demon">
+                            <img src="images/Swan.png" alt="The Swan Song">
                         </a>
                     </div>
                     <div class="art-info">
@@ -350,10 +379,10 @@
                 </div>
                       
                 <!-- Painting Item 7 -->
-                <div class="art-card" style="--i: 6;">
+                <div class="art-card" style="--i: 7;">
                     <div class="art-image-frame">
                         <a href="Jesse.html">
-                            <img src="images/JesseSM.png" alt="Demon">
+                            <img src="images/Jesse.png" alt="Jesse">
                         </a>
                     </div>
                     <div class="art-info">
@@ -374,7 +403,8 @@
                 "images/Sapphic-Sex;--Established Eroticism, Joy, Excitement & Frivolous Love (Name in JPG Info), Plastic, Oil on Pallet, 40 x 82, 2026.jpg",
                 "images/Self Portrait (Name in JPG Info), Plastic, Oil on Canvas, 38 x 46, 2026.jpg",
                 "images/I Brushed My Teeth--100th Bout of Dysphoria, but I Think I Scared Myself Less Than Prior., Plastic, Oil, Lacquer, Urethane, Pastel, Pencil, Crayon on Canvas, 35 x 50, 2025.jpg",
-                "images/Swan done 2 (1).png"
+                "images/Swan.png",
+                "images/Jesse.png"
             ];
 
             let loadedCount = 0;
@@ -391,6 +421,120 @@
                         document.body.classList.add('images-loaded');
                     }
                 };
+            });
+
+            // Find the card most prominent in the current phone viewport quadrant
+            function getMostVisibleCard() {
+                const cards = document.querySelectorAll('.art-card');
+                let bestCard = null;
+                let maxVisibleArea = 0;
+                const viewHeight = window.innerHeight;
+                const viewWidth = window.innerWidth;
+
+                cards.forEach(card => {
+                    const rect = card.getBoundingClientRect();
+                    const visibleTop = Math.max(0, rect.top);
+                    const visibleBottom = Math.min(viewHeight, rect.bottom);
+                    const visibleHeight = Math.max(0, visibleBottom - visibleTop);
+                    const visibleLeft = Math.max(0, rect.left);
+                    const visibleRight = Math.min(viewWidth, rect.right);
+                    const visibleWidth = Math.max(0, visibleRight - visibleLeft);
+                    const area = visibleHeight * visibleWidth;
+
+                    if (area > maxVisibleArea) {
+                        maxVisibleArea = area;
+                        bestCard = card;
+                    }
+                });
+                return bestCard;
+            }
+
+            // Smooth GPU-accelerated CSS transform-origin cursor tracking
+            document.querySelectorAll('.art-card').forEach(card => {
+                const frame = card.querySelector('.art-image-frame');
+                const img = frame.querySelector('img');
+
+                frame.addEventListener('mousemove', (e) => {
+                    const rect = frame.getBoundingClientRect();
+                    const x = ((e.clientX - rect.left) / rect.width) * 100;
+                    const y = ((e.clientY - rect.top) / rect.height) * 100;
+                    img.style.transformOrigin = `${x}% ${y}%`;
+                });
+
+                frame.addEventListener('mouseleave', () => {
+                    img.style.transformOrigin = 'center center';
+                });
+
+                // Mobile Touch Gesture & Pinch Handling
+                let initialPinchDist = null;
+
+                frame.addEventListener('touchstart', (e) => {
+                    const activeCard = getMostVisibleCard();
+                    if (activeCard !== card) return;
+
+                    if (e.touches.length === 2) {
+                        e.preventDefault();
+                        initialPinchDist = Math.hypot(
+                            e.touches[0].clientX - e.touches[1].clientX,
+                            e.touches[0].clientY - e.touches[1].clientY
+                        );
+                    }
+                }, { passive: false });
+
+                frame.addEventListener('touchmove', (e) => {
+                    const activeCard = getMostVisibleCard();
+                    if (activeCard !== card) return;
+
+                    if (e.touches.length === 2) {
+                        e.preventDefault();
+                        const dist = Math.hypot(
+                            e.touches[0].clientX - e.touches[1].clientX,
+                            e.touches[0].clientY - e.touches[1].clientY
+                        );
+                        if (initialPinchDist && dist > initialPinchDist * 1.1) {
+                            card.classList.add('mobile-zoomed');
+                            const rect = frame.getBoundingClientRect();
+                            const midX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+                            const midY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+                            const x = ((midX - rect.left) / rect.width) * 100;
+                            const y = ((midY - rect.top) / rect.height) * 100;
+                            img.style.transformOrigin = `${x}% ${y}%`;
+                        }
+                    } else if (e.touches.length === 1 && card.classList.contains('mobile-zoomed')) {
+                        e.preventDefault();
+                        const rect = frame.getBoundingClientRect();
+                        const x = ((e.touches[0].clientX - rect.left) / rect.width) * 100;
+                        const y = ((e.touches[0].clientY - rect.top) / rect.height) * 100;
+                        img.style.transformOrigin = `${x}% ${y}%`;
+                    }
+                }, { passive: false });
+
+                frame.addEventListener('touchend', (e) => {
+                    if (e.touches.length === 0) {
+                        initialPinchDist = null;
+                    }
+                });
+            });
+
+            // Mobile Double-Tap to Toggle Zoom View on the most prominent viewport card
+            document.querySelectorAll('.art-card').forEach(card => {
+                let lastTap = 0;
+                card.addEventListener('touchend', (e) => {
+                    const currentTime = new Date().getTime();
+                    const tapLength = currentTime - lastTap;
+                    if (tapLength < 300 && tapLength > 0) {
+                        const activeCard = getMostVisibleCard();
+                        if (activeCard === card) {
+                            e.preventDefault();
+                            card.classList.toggle('mobile-zoomed');
+                            if (!card.classList.contains('mobile-zoomed')) {
+                                const img = card.querySelector('.art-image-frame img');
+                                img.style.transformOrigin = 'center center';
+                            }
+                        }
+                    }
+                    lastTap = currentTime;
+                });
             });
         });
     </script>
