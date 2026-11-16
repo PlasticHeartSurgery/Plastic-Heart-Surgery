@@ -141,8 +141,8 @@ margin-bottom: 24px;
 font-size: 1rem;
 }
 
-/* Keyframes for Internal Background Red Glow (Only active on hover) */
-@keyframes internalRedGlow {
+/* Keyframes for Gradient Glow Animation */
+@keyframes gradientGlow {
   0% {
     background-color: #ffffff;
   }
@@ -218,7 +218,29 @@ transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 border-color: #ff0033;
 transform: translateY(-2px);
 box-shadow: 4px 4px 0px #ff0033;
-animation: internalRedGlow 3s ease-in-out infinite alternate;
+animation: gradientGlow 3s ease-in-out infinite alternate;
+}
+
+/* Hyperlink Box with Animated Gradient Glow */
+.link-card {
+display: block;
+background: #ffffff;
+border: 2px solid #000000;
+border-radius: 6px;
+padding: 24px;
+text-decoration: none;
+box-shadow: 4px 4px 0px #000000;
+position: relative;
+z-index: 1;
+transition: transform 0.2s ease, border-color 0.4s ease, background-color 0.4s ease;
+}
+
+.link-card:hover,
+.tour-card:hover {
+border-color: #ff0033;
+transform: translateY(-2px);
+box-shadow: 4px 4px 0px #ff0033;
+animation: gradientGlow 3s ease-in-out infinite alternate;
 }
 
 .ra-avatar {
@@ -298,13 +320,6 @@ padding: 20px;
 text-decoration: none;
 box-shadow: 4px 4px 0px #000000;
 transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.tour-card:hover {
-border-color: #ff0033;
-transform: translateY(-2px);
-box-shadow: 4px 4px 0px #ff0033;
-animation: internalRedGlow 3s ease-in-out infinite alternate;
 }
 
 .tour-thumb {
