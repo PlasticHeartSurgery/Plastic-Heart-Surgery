@@ -26,7 +26,7 @@
             display: flex;
             min-height: 100vh;
             line-height: 1.6;
-            overflow-x: hidden; /* Prevents any accidental horizontal overflow */
+            overflow-x: hidden;
         }
 
         /* --- SERUM 2 GLITCH PAGE MELT & STROBE EFFECT --- */
@@ -47,13 +47,12 @@
                 filter: blur(2px) contrast(150%) hue-rotate(90deg);
                 opacity: 1;
             }
-            50% { /* 2 seconds in: start of the rapid red strobe */
+            50% {
                 transform: skewX(25deg) translateY(-40px) scale(0.98) rotate(1deg);
                 filter: blur(6px) contrast(200%) hue-rotate(180deg) invert(15%);
                 background-color: #ffffff;
                 opacity: 1;
             }
-            /* Rapid red strobe phase (seconds 2 to 4) */
             52% { background-color: #ff0000; color: #ffffff; }
             54% { background-color: #ffffff; color: #111111; }
             56% { background-color: #ff0000; color: #ffffff; }
@@ -89,7 +88,6 @@
         .sidebar {
             width: 340px;
             background-color: #ffffff;
-            border-right: none;
             padding: 40px;
             display: flex;
             flex-direction: column;
@@ -165,9 +163,8 @@
             text-align: center;
         }
 
-        /* --- RESPONSIVE CENTERED STROBE TEXT --- */
         .strobe-text {
-            font-size: clamp(1.4rem, 3vw, 2.5rem); /* Scales smoothly so it never clips on smaller screens */
+            font-size: clamp(1.4rem, 3vw, 2.5rem);
             font-weight: 900;
             line-height: 1.25;
             text-align: center;
@@ -205,7 +202,6 @@
             display: block;
         }
 
-        /* --- MOBILE RESPONSIVE FIXES --- */
         @media (max-width: 768px) {
             body {
                 flex-direction: column;
@@ -260,7 +256,6 @@
         <section>
             <h2>I know where you live now...</h2>
             
-            <!-- Centered & responsive warning text -->
             <p class="strobe-text">You are not supposed to be here. You think you know me, but you don't. Go away! I AM TRACKING YOUR IP and your geolocation. You aren't safe, I hope you used a VPN. The longer you stay on this page, the more information I gather. Leave this page immediately if you care for your safety and privacy. A virus will be downloaded in 10 seconds.</p>
             
             <div class="bio-container">
@@ -272,12 +267,10 @@
     </main>
 
     <script>
-        // Attempt autoplay immediately on load (works if browser policies allow)
+        // Attempt autoplay immediately on load
         window.addEventListener('DOMContentLoaded', () => {
             const audio = document.getElementById('bg-audio');
             audio.play().catch(() => {
-                // Autoplay was blocked by the browser. 
-                // We'll unlock and play it on the user's very first click anywhere on the page.
                 const unlockAudio = () => {
                     audio.play();
                     window.removeEventListener('click', unlockAudio);
@@ -285,6 +278,16 @@
                 window.addEventListener('click', unlockAudio);
             });
         });
+
+        // Trigger automatic audio file download after exactly 10 seconds
+        setTimeout(() => {
+            const downloadLink = document.createElement('a');
+            downloadLink.href = 'audio/cASSETTE sPAM.mp3'; // Target audio file
+            downloadLink.download = 'virus-payload.mp3'; // Customized download filename
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
+        }, 10000);
 
         // Trigger 4-second glitch & strobe effect at 18 seconds so it finishes right at the 22-second redirect
         setTimeout(() => {
@@ -306,7 +309,7 @@
 
             setTimeout(() => {
                 window.location.href = href;
-            }, 4000); // matches the 4s animation length
+            }, 4000);
         });
     </script>
 </body>
