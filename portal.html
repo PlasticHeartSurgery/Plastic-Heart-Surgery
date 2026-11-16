@@ -1,10 +1,16 @@
 <!DOCTYPE html>
 <html>
-<body style="background:white;margin:0;overflow:hidden;height:100vh;display:flex;justify-content:center;align-items:center;">
+<body style="background:white;margin:0;overflow:hidden;height:100vh;display:flex;justify-content:center;align-items:center;cursor:pointer;" onclick="goNext()">
   <video id="v" src="images/PlasticBowling.mp4" autoplay muted playsinline style="width:100vw;height:100vh;object-fit:cover;"></video>
   <script>
     const v = document.getElementById('v');
-    v.onended = () => location.href = 'https://plasticheartsurgery.com/plussyimages/PlasticBowling.mp4';
+    
+    function goNext() {
+      location.href = 'https://plasticheartsurgery.com/plussy.html';
+    }
+
+    v.onended = goNext;
+
     // Ensures playback starts immediately even with autoplay restrictions
     v.play().catch(() => {});
   </script>
