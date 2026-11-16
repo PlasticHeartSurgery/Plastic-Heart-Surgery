@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Landlord</title>
     <style>
         @font-face {
@@ -21,6 +21,8 @@
             margin: 0;
             background-color: #f4f4f4;
             font-family: Arial, sans-serif;
+            overflow-x: hidden;
+            touch-action: pan-y;
         }
 
         /* --- TOP LEFT SITE TITLE LINK --- */
@@ -84,7 +86,7 @@
 
         /* --- IMAGE CONTAINER & SECRET DOUBLE-CLICK MAGNIFICATION --- */
         .photo-frame {
-            width: 80%; /* 80% on mobile */
+            width: 85%; /* Slightly wider on mobile */
             max-width: 800px;
             border-radius: 4px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -116,7 +118,7 @@
 
         .text-box {
             margin-top: 20px;
-            width: 80%;
+            width: 85%;
             max-width: 800px;
             padding: 15px;
             box-sizing: border-box;
@@ -128,7 +130,7 @@
             color: #333;
         }
 
-        /* Desktop style: original 50% width */
+        /* Desktop style */
         @media (min-width: 768px) {
             .photo-frame,
             .text-box {
@@ -136,104 +138,20 @@
             }
         }
 
-        /* Mobile adjustment for top-left title */
+        /* Mobile layout adjustments */
         @media (max-width: 768px) {
+            body {
+                justify-content: flex-start;
+                padding: 25px 0 40px 0;
+                box-sizing: border-box;
+            }
             .site-title {
-                top: 25px;
-                left: 20px;
+                position: static;
+                align-self: flex-start;
+                margin: 0 0 30px 7.5%; /* Aligns with the 85% width image edge */
                 font-size: 1.2rem;
                 letter-spacing: 0.15em;
             }
         }
     </style>
 </head>
-<body>
-
-    <a href="index.html" class="site-title">Plastic Heart Surgery</a>
-
-    <!-- Centered White-to-Red Gradient Loading Bar -->
-    <div class="loader-container">
-        <div class="loader-bar" id="loader-bar"></div>
-    </div>
-
-    <div class="photo-frame" id="photo-frame">
-        <img src="images/Landlord, Plastic, Oil on Canvas, 42 x 55, 2023.jpg" alt="Landlord by Artist" class="photo" id="photo">
-    </div>
-
-    <div class="text-box">
-        <p>Landlord</p>
-    </div>
-
-    <script>
-        window.addEventListener('DOMContentLoaded', () => {
-            const imageSrc = "images/Landlord, Plastic, Oil on Canvas, 42 x 55, 2023.jpg";
-            const loaderBar = document.getElementById('loader-bar');
-            const frame = document.getElementById('photo-frame');
-            const img = document.getElementById('photo');
-
-            // 1. Preload Image & Trigger Fade-In
-            const preloadImg = new Image();
-            preloadImg.src = imageSrc;
-            preloadImg.onload = preloadImg.onerror = () => {
-                loaderBar.style.width = '100%';
-                requestAnimationFrame(() => {
-                    document.body.classList.add('images-loaded');
-                });
-            };
-
-            // Helper to update transform origin from client coordinates
-            function setOrigin(clientX, clientY) {
-                const rect = frame.getBoundingClientRect();
-                const x = Math.max(0, Math.min(100, ((clientX - rect.left) / rect.width) * 100));
-                const y = Math.max(0, Math.min(100, ((clientY - rect.top) / rect.height) * 100));
-                img.style.transformOrigin = `${x}% ${y}%`;
-            }
-
-            // 2. Desktop: Secret Toggle 4x Zoom ONLY on Double-Click
-            frame.addEventListener('dblclick', (e) => {
-                e.preventDefault();
-                const willZoom = !frame.classList.contains('is-zoomed');
-                setOrigin(e.clientX, e.clientY);
-                frame.classList.toggle('is-zoomed', willZoom);
-            });
-
-            // Desktop: Pan around while zoomed in
-            frame.addEventListener('mousemove', (e) => {
-                if (!frame.classList.contains('is-zoomed')) return;
-                setOrigin(e.clientX, e.clientY);
-            });
-
-            // Desktop: Freeze origin at cursor exit point so it unmagnifies cleanly from there
-            frame.addEventListener('mouseleave', (e) => {
-                if (!frame.classList.contains('is-zoomed')) return;
-                setOrigin(e.clientX, e.clientY);
-            });
-
-            // 3. Mobile: Secret Toggle 4x Zoom ONLY on Double-Tap
-            let lastTap = 0;
-            frame.addEventListener('touchend', (e) => {
-                if (e.touches.length > 0) return;
-                const currentTime = Date.now();
-                const tapLength = currentTime - lastTap;
-                if (tapLength < 300 && tapLength > 0) {
-                    e.preventDefault();
-                    const touch = e.changedTouches[0];
-                    const willZoom = !frame.classList.contains('is-zoomed');
-                    setOrigin(touch.clientX, touch.clientY);
-                    frame.classList.toggle('is-zoomed', willZoom);
-                }
-                lastTap = currentTime;
-            });
-
-            // Mobile: Single-finger pan while zoomed in
-            frame.addEventListener('touchmove', (e) => {
-                if (e.touches.length === 1 && frame.classList.contains('is-zoomed')) {
-                    e.preventDefault();
-                    setOrigin(e.touches[0].clientX, e.touches[0].clientY);
-                }
-            }, { passive: false });
-        });
-    </script>
-
-</body>
-</html>
