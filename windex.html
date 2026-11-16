@@ -29,10 +29,49 @@
             padding: 40px 20px;
         }
 
+        /* --- CENTERED GRADIENT LOADING BAR --- */
+        .loader-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: min(300px, 80vw);
+            height: 10px;
+            background-color: #f0f0f0;
+            border: 2px solid #000000;
+            border-radius: 999px;
+            overflow: hidden;
+            box-shadow: 3px 3px 0px #000000;
+            z-index: 9999;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .loader-bar {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(to right, #ffffff, #ff0033);
+            border-radius: 999px;
+            transition: width 0.1s ease-out;
+        }
+
+        body.images-loaded .loader-container {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        /* Hide main content smoothly until assets finish loading */
         .container {
             max-width: 900px;
             width: 100%;
             text-align: center;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        body.images-loaded .container {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         h1 {
@@ -92,6 +131,11 @@
             border-color: #ff0033;
             transform: translateY(-2px);
             animation: gradientGlow 3s ease-in-out infinite alternate;
+        }
+
+        /* Keep flipped rotation intact while hovering */
+        .card-box.flipped:hover .card-inner {
+            transform: rotateY(180deg) translateY(-2px);
         }
 
         @keyframes gradientGlow {
@@ -169,10 +213,20 @@
 </head>
 <body>
 
+    <!-- Centered White-to-Red Gradient Loading Bar -->
+    <div class="loader-container">
+        <div class="loader-bar" id="loader-bar"></div>
+    </div>
+
     <!-- Background Audio Element -->
     <audio autoplay loop>
         <source src="audio/background-music.mp3" type="audio/mpeg">
         Your browser does not support the audio element.
+    </audio>
+
+    <!-- Wrong Card Sound Effect -->
+    <audio id="wrong-sound" preload="auto">
+        <source src="audio/NO.mp3" type="audio/mpeg">
     </audio>
 
     <div class="container">
@@ -181,7 +235,7 @@
 
         <div class="card-grid">
             <!-- Card 1 -->
-            <div class="card-box" data-redirect="https://plasticheartsurgery.com/index" onclick="handleCardClick(this)">
+            <div class="card-box" data-wrong="true" data-redirect="https://plasticheartsurgery.com/index" onclick="handleCardClick(this)">
                 <div class="card-inner">
                     <div class="card-front">
                         <img src="images/258851283_598265428091581_5809877262405752739_n.png" alt="Gallery Image 1">
@@ -207,7 +261,7 @@
             </div>
 
             <!-- Card 3 -->
-            <div class="card-box" data-redirect="https://plasticheartsurgery.com/index" onclick="handleCardClick(this)">
+            <div class="card-box" data-wrong="true" data-redirect="https://plasticheartsurgery.com/index" onclick="handleCardClick(this)">
                 <div class="card-inner">
                     <div class="card-front">
                         <img src="images/CDN FIREARMS 212312 sa.png" alt="Gallery Image 3">
@@ -220,7 +274,7 @@
             </div>
 
             <!-- Card 4 -->
-            <div class="card-box" data-redirect="https://plasticheartsurgery.com/index" onclick="handleCardClick(this)">
+            <div class="card-box" data-wrong="true" data-redirect="https://plasticheartsurgery.com/index" onclick="handleCardClick(this)">
                 <div class="card-inner">
                     <div class="card-front">
                         <img src="images/241834456_375176914106279_1430003598020299651_n.jpg" alt="Gallery Image 4">
@@ -235,6 +289,33 @@
     </div>
 
     <script>
+        // Preload all card images and drive the loading bar
+        window.addEventListener('DOMContentLoaded', () => {
+            const imageSources = [
+                "images/258851283_598265428091581_5809877262405752739_n.png",
+                "images/PlasticBaby.png",
+                "images/image2-back.jpg",
+                "images/CDN FIREARMS 212312 sa.png",
+                "images/241834456_375176914106279_1430003598020299651_n.jpg"
+            ];
+
+            let loadedCount = 0;
+            const totalImages = imageSources.length;
+            const loaderBar = document.getElementById('loader-bar');
+
+            imageSources.forEach(src => {
+                const img = new Image();
+                img.src = src;
+                img.onload = img.onerror = () => {
+                    loadedCount++;
+                    loaderBar.style.width = (loadedCount / totalImages) * 100 + '%';
+                    if (loadedCount >= totalImages) {
+                        document.body.classList.add('images-loaded');
+                    }
+                };
+            });
+        });
+
         // Prevent keyboard shortcut for bookmarking (Ctrl+D / Cmd+D)
         window.addEventListener('keydown', function(e) {
             if ((e.ctrlKey || e.metaKey) && (e.key === 'd' || e.key === 'D')) {
@@ -249,6 +330,13 @@
             if (isAnyCardProcessing || cardBox.classList.contains('flipped')) return;
             
             isAnyCardProcessing = true;
+
+            // Play audio/NO.mp3 if it's one of the wrong cards
+            if (cardBox.getAttribute('data-wrong') === 'true') {
+                const wrongSound = document.getElementById('wrong-sound');
+                wrongSound.currentTime = 0;
+                wrongSound.play().catch(err => console.log("Audio play prevented:", err));
+            }
 
             // 1. Flip the clicked card
             cardBox.classList.add('flipped');
