@@ -4,6 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stage 1</title>
+    <!-- Immediate Audio Force-Start Script -->
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            const audio = document.getElementById('bg-audio');
+            if (audio) {
+                audio.play().catch(() => {
+                    // Fallback listeners if browser policy requires first interaction
+                    const unlock = () => {
+                        audio.play().catch(() => {});
+                        ['click', 'pointerdown', 'keydown', 'touchstart', 'mousemove', 'scroll'].forEach(e => {
+                            window.removeEventListener(e, unlock);
+                        });
+                    };
+                    ['click', 'pointerdown', 'keydown', 'touchstart', 'mousemove', 'scroll'].forEach(e => {
+                        window.addEventListener(e, unlock, { once: true });
+                    });
+                });
+            }
+        });
+    </script>
     <style>
         @font-face {
             font-family: 'Black Witcher';
@@ -403,27 +423,6 @@
     <div id="secret-listen" class="secret-listen">listen</div>
 
     <script>
-        const bgAudio = document.getElementById('bg-audio');
-        const unlockEvents = ['pointerdown', 'keydown', 'touchstart', 'click', 'mousemove', 'scroll'];
-
-        function tryPlayBgAudio() {
-            if (!bgAudio) return;
-            bgAudio.volume = 1.0;
-            const playPromise = bgAudio.play();
-            if (playPromise !== undefined) {
-                playPromise.then(() => {
-                    unlockEvents.forEach(evt => document.removeEventListener(evt, tryPlayBgAudio));
-                }).catch(() => {
-                    // Browser policy blocked unmuted autoplay until first interaction
-                });
-            }
-        }
-
-        // Fire audio trigger attempts on multiple lifecycle events
-        window.addEventListener('DOMContentLoaded', tryPlayBgAudio);
-        window.addEventListener('load', tryPlayBgAudio);
-        unlockEvents.forEach(evt => document.addEventListener(evt, tryPlayBgAudio, { once: true }));
-
         // Preload all card images and drive the loading bar
         window.addEventListener('DOMContentLoaded', () => {
             const imageSources = [
