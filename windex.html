@@ -128,7 +128,7 @@
             color: #000000;
         }
 
-        .card-front img {
+        .card-front img, .card-back img {
             width: 100%;
             height: 100%;
             object-fit: cover;
@@ -193,7 +193,7 @@
                 </div>
             </div>
 
-            <!-- Card 2 -->
+            <!-- Card 2 (Flips to an image instead of text) -->
             <div class="card-box" data-redirect="https://plasticheartsurgery.com/windex2" onclick="handleCardClick(this)">
                 <div class="card-inner">
                     <div class="card-front">
@@ -201,7 +201,7 @@
                         <div class="overlay-text">Card 2</div>
                     </div>
                     <div class="card-back">
-                        <h3>Wrong Card</h3>
+                        <img src="images/image2-back.jpg" alt="Card 2 Back Image">
                     </div>
                 </div>
             </div>
@@ -235,11 +235,15 @@
     </div>
 
     <script>
-        function handleCardClick(cardBox) {
-            if (cardBox.classList.contains('flipped') || cardBox.dataset.processing) return;
-            cardBox.dataset.processing = "true";
+        let isAnyCardProcessing = false;
 
-            // 1. Flip the card
+        function handleCardClick(cardBox) {
+            // Prevent clicking if any card is currently processing/flipped
+            if (isAnyCardProcessing || cardBox.classList.contains('flipped')) return;
+            
+            isAnyCardProcessing = true;
+
+            // 1. Flip the clicked card
             cardBox.classList.add('flipped');
             const redirectUrl = cardBox.getAttribute('data-redirect');
 
@@ -247,8 +251,7 @@
             setTimeout(() => {
                 cardBox.classList.remove('flipped');
 
-                // 3. 1 second after unflipping, use .replace() so it overwrites history 
-                // and prevents the back button from returning to this page
+                // 3. 1 second after unflipping, use .replace() to redirect and prevent going back
                 setTimeout(() => {
                     window.location.replace(redirectUrl);
                 }, 1000);
