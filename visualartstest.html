@@ -416,7 +416,7 @@
                 };
             });
 
-            // Helper to find the card with the highest percentage visible in the current phone viewport
+            // Find the card most prominent in the current phone viewport viewport quadrant
             function getMostVisibleCard() {
                 const cards = document.querySelectorAll('.art-card');
                 let bestCard = null;
@@ -442,7 +442,7 @@
                 return bestCard;
             }
 
-            // Desktop & Mobile unified magnification loop
+            // Unified magnification engine for both Desktop & Mobile Touch
             document.querySelectorAll('.art-card').forEach(card => {
                 const frame = card.querySelector('.art-image-frame');
                 const img = frame.querySelector('img');
@@ -515,7 +515,7 @@
                     }
                 }
 
-                // Desktop Mouse Events
+                // Desktop Mouse Handlers
                 card.addEventListener('mouseenter', (e) => {
                     const rect = frame.getBoundingClientRect();
                     targetNormX = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
@@ -539,27 +539,23 @@
                     startLoop();
                 });
 
-                // Mobile Touch & Pinch Gestures (Targeting most prominent card in viewport)
+                // Mobile Touch Gesture & Pinch Handling
                 let initialPinchDist = null;
 
                 frame.addEventListener('touchstart', (e) => {
+                    const activeCard = getMostVisibleCard();
+                    if (activeCard !== card) return;
+
                     if (e.touches.length === 2) {
                         e.preventDefault();
-                        const activeCard = getMostVisibleCard();
-                        if (activeCard !== card) return; // Only trigger on primary card in view
-
                         initialPinchDist = Math.hypot(
                             e.touches[0].clientX - e.touches[1].clientX,
                             e.touches[0].clientY - e.touches[1].clientY
                         );
-                    } else if (e.touches.length === 1) {
-                        const activeCard = getMostVisibleCard();
-                        if (activeCard === card && targetProgress > 0) {
-                            // If already zoomed, allow dragging/panning around the artwork
-                            const rect = frame.getBoundingClientRect();
-                            targetNormX = Math.max(0, Math.min(1, (e.touches[0].clientX - rect.left) / rect.width));
-                            targetNormY = Math.max(0, Math.min(1, (e.touches[0].clientY - rect.top) / rect.height));
-                        }
+                    } else if (e.touches.length === 1 && targetProgress > 0) {
+                        const rect = frame.getBoundingClientRect();
+                        targetNormX = Math.max(0, Math.min(1, (e.touches[0].clientX - rect.left) / rect.width));
+                        targetNormY = Math.max(0, Math.min(1, (e.touches[0].clientY - rect.top) / rect.height));
                     }
                 }, { passive: false });
 
@@ -573,7 +569,7 @@
                             e.touches[0].clientX - e.touches[1].clientX,
                             e.touches[0].clientY - e.touches[1].clientY
                         );
-                        if (initialPinchDist && dist > initialPinchDist * 1.15) {
+                        if (initialPinchDist && dist > initialPinchDist * 1.1) {
                             card.classList.add('mobile-zoomed');
                             targetProgress = 1;
                             const rect = frame.getBoundingClientRect();
@@ -595,26 +591,25 @@
                 frame.addEventListener('touchend', (e) => {
                     if (e.touches.length === 0) {
                         initialPinchDist = null;
-                        // Tap outside or pinch out to dismiss zoom can be handled or left for scroll
                     }
                 });
             });
 
-            // Double tap anywhere on a card thumbnail to toggle mobile zoom view
+            // Mobile Double-Tap to Toggle Zoom View on the most prominent viewport card
             document.querySelectorAll('.art-card').forEach(card => {
                 let lastTap = 0;
                 card.addEventListener('touchend', (e) => {
                     const currentTime = new Date().getTime();
                     const tapLength = currentTime - lastTap;
                     if (tapLength < 300 && tapLength > 0) {
-                        e.preventDefault();
                         const activeCard = getMostVisibleCard();
                         if (activeCard === card) {
-                            const frame = card.querySelector('.art-image-frame');
-                            const rect = frame.getBoundingClientRect();
-                            // Toggle zoom state
+                            e.preventDefault();
                             card.classList.toggle('mobile-zoomed');
-                            // We can trigger or reverse via a custom event or check
+                            const frame = card.querySelector('.art-image-frame');
+                            const img = frame.querySelector('img');
+                            // Toggle progress state on double-tap
+                            // (Handled via script checks)
                         }
                     }
                     lastTap = currentTime;
