@@ -311,6 +311,11 @@
         <source src="https://plasticheartsurgery.com/audio/NO.mp3" type="audio/mpeg">
     </audio>
 
+    <!-- Correct Card Sound Effect (Sound 3) -->
+    <audio id="correct-sound" preload="auto">
+        <source src="audio/Sound 3.mp3" type="audio/mpeg">
+    </audio>
+
     <!-- Glitch Alarm Sound Effect -->
     <audio id="glitch-alarm" preload="auto" loop>
         <source src="https://plasticheartsurgery.com/audio/Alarm.mp3" type="audio/mpeg">
@@ -473,6 +478,11 @@
                 
                 speak("You picked the wrong card. Your family will weep.");
             } else {
+                const correctSound = document.getElementById('correct-sound');
+                correctSound.volume = 1.0;
+                correctSound.currentTime = 0;
+                correctSound.play().catch(err => console.log("Audio play prevented:", err));
+
                 speak("Correct choice. Advancing.");
             }
 
