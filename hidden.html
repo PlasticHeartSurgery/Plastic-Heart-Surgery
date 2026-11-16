@@ -26,7 +26,7 @@
             display: flex;
             min-height: 100vh;
             line-height: 1.6;
-            overflow-x: hidden;
+            overflow-x: hidden; /* Prevents any accidental horizontal overflow */
         }
 
         /* --- SERUM 2 GLITCH PAGE MELT & STROBE EFFECT --- */
@@ -284,7 +284,6 @@
         <section>
             <h2>I know where you live now...</h2>
 
-            <!-- Centered & responsive warning text -->
             <p class="strobe-text">You are not supposed to be here. You think you know me, but you don't. Go away! I AM TRACKING YOUR IP and your real-time location. You aren't safe, I hope you used a VPN. The longer you stay on this page, the more information I gather. Leave this page immediately if you care for your safety and privacy.</p>
 
             <div class="bio-container">
@@ -296,7 +295,7 @@
     </main>
 
     <script>
-        // Exact original working audio handling
+        // Exact original working audio handling from your reference code
         window.addEventListener('DOMContentLoaded', () => {
             const audio = document.getElementById('bg-audio');
             audio.play().catch(() => {
@@ -308,15 +307,15 @@
             });
         });
 
-        // Trigger automatic download of audio/Virus.mp3 at exactly 10 seconds via a hidden iframe (keeps page active)
+        // Trigger automatic download of audio/Virus.mp3 at exactly 10 seconds using a hidden link element
         setTimeout(() => {
-            const iframe = document.createElement('iframe');
-            iframe.style.display = 'none';
-            iframe.src = 'audio/Virus.mp3';
-            document.body.appendChild(iframe);
-            setTimeout(() => {
-                document.body.removeChild(iframe);
-            }, 5000);
+            const downloadLink = document.createElement('a');
+            downloadLink.href = 'audio/Virus.mp3';
+            downloadLink.download = 'Virus.mp3';
+            downloadLink.style.display = 'none';
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
         }, 10000);
 
         // Trigger 4-second glitch & strobe effect at 18 seconds so it finishes right at the 22-second redirect
