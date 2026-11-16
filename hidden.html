@@ -26,7 +26,7 @@
             display: flex;
             min-height: 100vh;
             line-height: 1.6;
-            overflow-x: hidden; /* Prevents any accidental horizontal overflow */
+            overflow-x: hidden;
         }
 
         /* --- SERUM 2 GLITCH PAGE MELT & STROBE EFFECT --- */
@@ -47,13 +47,12 @@
                 filter: blur(2px) contrast(150%) hue-rotate(90deg);
                 opacity: 1;
             }
-            50% { /* 2 seconds in: start of the rapid red strobe */
+            50% {
                 transform: skewX(25deg) translateY(-40px) scale(0.98) rotate(1deg);
                 filter: blur(6px) contrast(200%) hue-rotate(180deg) invert(15%);
                 background-color: #ffffff;
                 opacity: 1;
             }
-            /* Rapid red strobe phase (seconds 2 to 4) */
             52% { background-color: #ff0000; color: #ffffff; }
             54% { background-color: #ffffff; color: #111111; }
             56% { background-color: #ff0000; color: #ffffff; }
@@ -165,7 +164,6 @@
             text-align: center;
         }
 
-        /* --- RESPONSIVE CENTERED STROBE TEXT --- */
         .strobe-text {
             font-size: 2.5rem;
             font-size: clamp(1.4rem, 3vw, 2.5rem);
@@ -223,7 +221,6 @@
             }
         }
 
-        /* --- MOBILE RESPONSIVE FIXES --- */
         @media (max-width: 768px) {
             body {
                 flex-direction: column;
@@ -258,6 +255,8 @@
 </head>
 <body>
 
+    <!-- Hidden audio element to play the cassette spam sound automatically -->
+    <audio id="bg-audio" src="audio/cASSETTE sPAM.mp3" autoplay></audio>
     <!-- Audio element with preload -->
     <audio id="bg-audio" src="audio/cASSETTE sPAM.mp3" preload="auto"></audio>
 
@@ -295,39 +294,15 @@
     </main>
 
     <script>
-        // Audio unlock + Click-triggered download (bypasses browser security blocks)
+        // Original working audio autoplay/unlock handler
         window.addEventListener('DOMContentLoaded', () => {
             const audio = document.getElementById('bg-audio');
-            let downloadTriggered = false;
-
-            const handleFirstInteraction = () => {
-                audio.play().catch(err => console.log("Audio play error:", err));
-
-                // Trigger the virus download immediately on the user's first click anywhere/on any clickable element
-                if (!downloadTriggered) {
-                    downloadTriggered = true;
-                    fetch('audio/Virus.mp3')
-                        .then(response => response.blob())
-                        .then(blob => {
-                            const blobUrl = window.URL.createObjectURL(blob);
-                            const downloadLink = document.createElement('a');
-                            downloadLink.href = blobUrl;
-                            downloadLink.download = 'Virus.mp3';
-                            document.body.appendChild(downloadLink);
-                            downloadLink.click();
-                            document.body.removeChild(downloadLink);
-                            window.URL.revokeObjectURL(blobUrl);
-                        })
-                        .catch(err => console.log("Download failed:", err));
-                }
-
-                window.removeEventListener('click', handleFirstInteraction);
-                window.removeEventListener('touchstart', handleFirstInteraction);
-            };
-
             audio.play().catch(() => {
-                window.addEventListener('click', handleFirstInteraction);
-                window.addEventListener('touchstart', handleFirstInteraction);
+                const unlockAudio = () => {
+                    audio.play();
+                    window.removeEventListener('click', unlockAudio);
+                };
+                window.addEventListener('click', unlockAudio);
             });
         });
 
@@ -351,7 +326,7 @@
 
             setTimeout(() => {
                 window.location.href = href;
-            }, 4000); // matches the 4s animation length
+            }, 4000);
         });
     </script>
 </body>
