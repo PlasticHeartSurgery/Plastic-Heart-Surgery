@@ -20,8 +20,8 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: #0f172a;
-            color: #f8fafc;
+            background-color: #ffffff;
+            color: #0f172a;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -39,11 +39,11 @@
             font-size: 2.2rem;
             margin-bottom: 10px;
             letter-spacing: 0.05em;
-            color: #38bdf8;
+            color: #0f172a;
         }
 
         p.subtitle {
-            color: #94a3b8;
+            color: #64748b;
             margin-bottom: 40px;
             font-size: 1rem;
         }
@@ -56,11 +56,12 @@
             perspective: 1000px; /* Required for 3D flip effect */
         }
 
-        /* Card Wrapper / Box */
+        /* Card Wrapper / Box with Glow Integration */
         .card-box {
             background-color: transparent;
             height: 320px;
             cursor: pointer;
+            border-radius: 6px;
         }
 
         /* Inner Card that rotates */
@@ -71,13 +72,34 @@
             text-align: center;
             transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
             transform-style: preserve-3d;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
-            border-radius: 12px;
+            border-radius: 6px;
+            background: #ffffff;
+            border: 2px solid #000000;
+            box-shadow: 4px 4px 0px #000000;
         }
 
         /* Flipped state triggered by JS class */
         .card-box.flipped .card-inner {
             transform: rotateY(180deg);
+        }
+
+        /* Hover & Glow Animation */
+        .card-box:hover .card-inner {
+            border-color: #ff0033;
+            transform: translateY(-2px);
+            animation: gradientGlow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes gradientGlow {
+            0% {
+                box-shadow: 4px 4px 0px #000000, 0 0 10px rgba(255, 0, 51, 0.4);
+            }
+            50% {
+                box-shadow: 4px 4px 0px #000000, 0 0 25px rgba(255, 0, 51, 0.8);
+            }
+            100% {
+                box-shadow: 4px 4px 0px #000000, 0 0 15px rgba(255, 100, 120, 0.6);
+            }
         }
 
         /* Common styles for Front and Back faces */
@@ -92,15 +114,14 @@
             justify-content: center;
             align-items: center;
             padding: 20px;
-            border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
             overflow: hidden;
         }
 
         /* Front Face Style */
         .card-front {
-            background: #1e293b;
-            color: #ffffff;
+            background: #ffffff;
+            color: #000000;
         }
 
         .card-front img {
@@ -110,7 +131,7 @@
             position: absolute;
             top: 0;
             left: 0;
-            border-radius: 12px;
+            border-radius: 4px;
         }
 
         .card-front .overlay-text {
@@ -118,33 +139,27 @@
             bottom: 0;
             left: 0;
             right: 0;
-            background: rgba(15, 23, 42, 0.75);
+            background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(4px);
             padding: 12px;
             font-size: 0.9rem;
             letter-spacing: 0.05em;
-            color: #f8fafc;
+            color: #000000;
+            font-weight: bold;
         }
 
         /* Back Face Style */
         .card-back {
-            background: linear-gradient(135deg, #0369a1 0%, #0284c7 100%);
-            color: #ffffff;
+            background: #ffffff;
+            color: #000000;
             transform: rotateY(180deg);
         }
 
         .card-back h3 {
             font-family: 'Black Witcher', sans-serif;
-            font-size: 2rem;
-            margin-bottom: 10px;
+            font-size: 2.2rem;
             letter-spacing: 0.05em;
-        }
-
-        .card-back p {
-            font-size: 0.9rem;
-            line-height: 1.4;
-            color: #e0f2fe;
-            margin-bottom: 15px;
+            color: #000000;
         }
     </style>
 </head>
@@ -164,7 +179,6 @@
                     </div>
                     <div class="card-back">
                         <h3>Wrong Card</h3>
-                        <p>Redirecting soon...</p>
                     </div>
                 </div>
             </div>
@@ -178,7 +192,6 @@
                     </div>
                     <div class="card-back">
                         <h3>Wrong Card</h3>
-                        <p>Redirecting soon...</p>
                     </div>
                 </div>
             </div>
@@ -192,7 +205,6 @@
                     </div>
                     <div class="card-back">
                         <h3>Wrong Card</h3>
-                        <p>Redirecting soon...</p>
                     </div>
                 </div>
             </div>
@@ -206,7 +218,6 @@
                     </div>
                     <div class="card-back">
                         <h3>Wrong Card</h3>
-                        <p>Redirecting soon...</p>
                     </div>
                 </div>
             </div>
@@ -215,7 +226,6 @@
 
     <script>
         function handleCardClick(cardBox) {
-            // Prevent multiple clicks while a sequence is already running
             if (cardBox.classList.contains('flipped') || cardBox.dataset.processing) return;
             cardBox.dataset.processing = "true";
 
@@ -227,7 +237,7 @@
             setTimeout(() => {
                 cardBox.classList.remove('flipped');
 
-                // 3. 1 second after un flipping (total 6 seconds), redirect to the page
+                // 3. 1 second after unflipping (total 6 seconds), redirect to the page
                 setTimeout(() => {
                     window.location.href = redirectUrl;
                 }, 1000);
