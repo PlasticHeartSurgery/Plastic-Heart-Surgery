@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Interactive Flipping Cards with Images</title>
     <style>
+        @font-face {
+            font-family: 'Black Witcher';
+            src: url('fonts/Black Witcher.otf') format('opentype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
         * {
             box-sizing: border-box;
             margin: 0;
@@ -127,8 +134,10 @@
         }
 
         .card-back h3 {
-            font-size: 1.2rem;
+            font-family: 'Black Witcher', sans-serif;
+            font-size: 2rem;
             margin-bottom: 10px;
+            letter-spacing: 0.05em;
         }
 
         .card-back p {
@@ -137,91 +146,95 @@
             color: #e0f2fe;
             margin-bottom: 15px;
         }
-
-        /* Link button style on Card 1 Back */
-        .card-link-btn {
-            display: inline-block;
-            background-color: #ffffff;
-            color: #0369a1;
-            padding: 8px 16px;
-            border-radius: 6px;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 0.85rem;
-            transition: background-color 0.2s ease;
-        }
-
-        .card-link-btn:hover {
-            background-color: #e0f2fe;
-        }
     </style>
 </head>
 <body>
 
     <div class="container">
         <h1>Interactive Gallery Cards</h1>
-        <p class="subtitle">Click any card to flip it. Card 1 includes a link to a new page!</p>
+        <p class="subtitle">Click any card to check selection.</p>
 
         <div class="card-grid">
-            <!-- Card 1 (Has Link on Back) -->
-            <div class="card-box" onclick="this.classList.toggle('flipped')">
+            <!-- Card 1 -->
+            <div class="card-box" data-redirect="https://plasticheartsurgery.com/index" onclick="handleCardClick(this)">
                 <div class="card-inner">
                     <div class="card-front">
                         <img src="images/image1.jpg" alt="Gallery Image 1">
-                        <div class="overlay-text">Card 1 (Click to Flip)</div>
+                        <div class="overlay-text">Card 1</div>
                     </div>
                     <div class="card-back">
-                        <h3>Featured Destination</h3>
-                        <p>Discover more about this project or view the full gallery layout.</p>
-                        <!-- Prevents the flip toggle when clicking the link directly -->
-                        <a href="new-page.html" class="card-link-btn" onclick="event.stopPropagation()">Open New Page</a>
+                        <h3>Wrong Card</h3>
+                        <p>Redirecting soon...</p>
                     </div>
                 </div>
             </div>
 
             <!-- Card 2 -->
-            <div class="card-box" onclick="this.classList.toggle('flipped')">
+            <div class="card-box" data-redirect="https://plasticheartsurgery.com/windex2" onclick="handleCardClick(this)">
                 <div class="card-inner">
                     <div class="card-front">
                         <img src="images/image2.jpg" alt="Gallery Image 2">
                         <div class="overlay-text">Card 2</div>
                     </div>
                     <div class="card-back">
-                        <h3>Modern Aesthetics</h3>
-                        <p>Clean gradients, subtle shadows, and crisp typography tailored for immersive digital experiences.</p>
+                        <h3>Wrong Card</h3>
+                        <p>Redirecting soon...</p>
                     </div>
                 </div>
             </div>
 
             <!-- Card 3 -->
-            <div class="card-box" onclick="this.classList.toggle('flipped')">
+            <div class="card-box" data-redirect="https://plasticheartsurgery.com/index" onclick="handleCardClick(this)">
                 <div class="card-inner">
                     <div class="card-front">
                         <img src="images/image3.jpg" alt="Gallery Image 3">
                         <div class="overlay-text">Card 3</div>
                     </div>
                     <div class="card-back">
-                        <h3>Fluid & Responsive</h3>
-                        <p>Fully fluid grid layout that scales seamlessly from ultra-wide monitors down to mobile screens.</p>
+                        <h3>Wrong Card</h3>
+                        <p>Redirecting soon...</p>
                     </div>
                 </div>
             </div>
 
             <!-- Card 4 -->
-            <div class="card-box" onclick="this.classList.toggle('flipped')">
+            <div class="card-box" data-redirect="https://plasticheartsurgery.com/index" onclick="handleCardClick(this)">
                 <div class="card-inner">
                     <div class="card-front">
                         <img src="images/image4.jpg" alt="Gallery Image 4">
                         <div class="overlay-text">Card 4</div>
                     </div>
                     <div class="card-back">
-                        <h3>Secure & Reliable</h3>
-                        <p>Engineered using best practices to isolate processes and protect your user interactions.</p>
+                        <h3>Wrong Card</h3>
+                        <p>Redirecting soon...</p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <script>
+        function handleCardClick(cardBox) {
+            // Prevent multiple clicks while a sequence is already running
+            if (cardBox.classList.contains('flipped') || cardBox.dataset.processing) return;
+            cardBox.dataset.processing = "true";
+
+            // 1. Flip the card
+            cardBox.classList.add('flipped');
+            const redirectUrl = cardBox.getAttribute('data-redirect');
+
+            // 2. After 5 seconds, unflip the card back to the photo
+            setTimeout(() => {
+                cardBox.classList.remove('flipped');
+
+                // 3. 1 second after un flipping (total 6 seconds), redirect to the page
+                setTimeout(() => {
+                    window.location.href = redirectUrl;
+                }, 1000);
+
+            }, 5000);
+        }
+    </script>
 
 </body>
 </html>
