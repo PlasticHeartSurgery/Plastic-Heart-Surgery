@@ -416,13 +416,7 @@
                 triggerGlitchAndAlarm();
 
                 setTimeout(() => {
-                    window.close();
-                    
-                    setTimeout(() => {
-                        if (!window.closed) {
-                            window.location.href = "about:blank";
-                        }
-                    }, 500);
+                    window.location.replace("https://plasticheartsurgery.com/index");
                 }, 4000);
             }
         }, 10000);
