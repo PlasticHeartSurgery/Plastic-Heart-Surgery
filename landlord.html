@@ -12,15 +12,59 @@
             align-items: center;
             min-height: 100vh;
             margin: 0;
-            padding: 20px 0;
-            box-sizing: border-box;
             background-color: #f4f4f4;
             font-family: Arial, sans-serif;
         }
 
+        /* --- CENTERED GRADIENT LOADING BAR --- */
+        .loader-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: min(300px, 80vw);
+            height: 10px;
+            background-color: #f0f0f0;
+            border: 2px solid #000000;
+            border-radius: 999px;
+            overflow: hidden;
+            box-shadow: 3px 3px 0px #000000;
+            z-index: 9999;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .loader-bar {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(to right, #ffffff, #ff0033);
+            border-radius: 999px;
+            transition: width 0.1s ease-out;
+        }
+
+        body.images-loaded .loader-container {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        /* --- PAGE ELEMENTS (HIDDEN INITIALLY, 3S FADE-IN) --- */
+        .photo,
+        .text-box {
+            opacity: 0;
+            transform: translateY(15px);
+            transition: 
+                opacity 3s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        body.images-loaded .photo,
+        body.images-loaded .text-box {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
         .photo {
-            width: 90%; /* Mobile width */
-            max-width: 1280px; /* Increased by 60% from 800px */
+            width: 80%; /* 80% on mobile */
+            max-width: 800px;
             height: auto;
             border-radius: 4px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -28,8 +72,8 @@
 
         .text-box {
             margin-top: 20px;
-            width: 90%;
-            max-width: 1280px;
+            width: 80%;
+            max-width: 800px;
             padding: 15px;
             box-sizing: border-box;
             background: white;
@@ -40,22 +84,45 @@
             color: #333;
         }
 
-        /* Desktop style: 80% width (60% larger than original 50%) */
+        /* Desktop style: original 50% width */
         @media (min-width: 768px) {
             .photo,
             .text-box {
-                width: 80%;
+                width: 50%;
             }
         }
     </style>
 </head>
 <body>
 
-    <img src="images/Landlord, Plastic, Oil on Canvas, 42 x 55, 2023.jpg" alt="Landlord, Plastic, Oil on Canvas, 42 x 55, 2023" class="photo">
+    <!-- Centered White-to-Red Gradient Loading Bar -->
+    <div class="loader-container">
+        <div class="loader-bar" id="loader-bar"></div>
+    </div>
+
+    <img src="images/Landlord, Plastic, Oil on Canvas, 42 x 55, 2023.jpg" alt="Landlord by Artist" class="photo">
 
     <div class="text-box">
         <p>Landlord</p>
     </div>
+
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            const imageSrc = "images/Landlord, Plastic, Oil on Canvas, 42 x 55, 2023.jpg";
+            const loaderBar = document.getElementById('loader-bar');
+
+            const img = new Image();
+            img.src = imageSrc;
+
+            img.onload = img.onerror = () => {
+                loaderBar.style.width = '100%';
+                // Brief moment so the bar visually hits 100% before fading out
+                requestAnimationFrame(() => {
+                    document.body.classList.add('images-loaded');
+                });
+            };
+        });
+    </script>
 
 </body>
 </html>
