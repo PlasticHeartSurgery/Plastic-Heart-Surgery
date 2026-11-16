@@ -1,1 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Landlord</title>
+    <style>
+        @font-face {
+            font-family: 'Lyno Ulyscyr';
+            src: local('Lyno Ulyscyr'), url('fonts/lynoulyscyr.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
 
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #ffffff; /* Changed from #f4f4f4 to pure white */
+            font-family: Arial, sans-serif;
+            overflow-x: hidden;
+            touch-action: pan-y;
+        }
+
+        /* --- TOP LEFT SITE TITLE LINK --- */
+        .site-title {
+            position: fixed;
+            top: 40px;
+            left: 40px;
+            font-family: 'Lyno Ulyscyr', sans-serif;
+            font-size: 1.5rem;
+            letter-spacing: 0.3em;
+            color: #ff0033;
+            text-decoration: none;
+            z-index: 100;
+        }
+
+        /* --- CENTERED GRADIENT LOADING BAR --- */
+        .loader-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: min(300px, 80vw);
+            height: 10px;
+            background-color: #f0f0f0;
+            border: 2px solid #000000;
+            border-radius: 999px;
+            overflow: hidden;
+            box-shadow: 3px 3px 0px #000000;
+            z-index: 9999;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .loader-bar {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(to right, #ffffff, #ff0033);
+            border-radius: 999px;
+            transition: width 0.2s ease-out;
+        }
+
+        body.images-loaded .loader-container {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        /* --- PAGE ELEMENTS (HIDDEN INITIALLY, 6S FADE-IN) --- */
+        .photo-frame,
+        .text-box {
+            opacity: 0;
+            transform: translateY(15px);
+            transition: 
+                opacity 6s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        body.images-loaded .photo-frame,
+        body.images-loaded .text-box {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- IMAGE CONTAINER & SECRET DOUBLE-CLICK MAGNIFICATION --- */
+        .photo-frame {
+            width: 85%;
+            max-width: 800px;
+            border-radius: 4px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            cursor: default;
+            position: relative;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .photo-frame.is-zoomed {
+            cursor: default;
+            touch-action: none;
+        }
+
+        .photo {
+            width: 100%;
+            height: auto;
+            display: block;
+            will-change: transform;
+            transform-origin: center center;
+            transition: transform 3.6s cubic-bezier(0.05, 0.9, 0.1, 1);
+        }
+
+        .photo-frame.is-zoomed .photo {
+            transform: scale(4);
+            transition: transform 1.8s cubic-bezier(0.05, 0.9, 0.1, 1);
+        }
+
+        .text-box {
+            margin-top: 20px;
+            width: 85%;
+            max-width: 800px;
+            padding: 15px;
+            box-sizing: border-box;
+            background: white;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            font-size: 1.1rem;
+            color: #333;
+        }
+
+        /* Desktop style */
+        @media (min-width: 768px) {
+            .photo-frame,
+            .text-box {
+                width: 50%;
+            }
+        }
+
+        /* Mobile layout adjustments */
+        @media (max-width: 768px) {
+            body {
+                justify-content: flex-start;
+                padding: 25px 0 40px 0;
+                box-sizing: border-box;
+            }
+            .site-title {
+                position: static;
+                align-self: flex-start;
+                margin: 0 0 30px 7.5%;
+                font-size: 1.2rem;
+                letter-spacing: 0.15em;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <a href="index.html" class="site-title">Plastic Heart Surgery</a>
+
+    <!-- Centered White-to-Red Gradient Loading Bar -->
+    <div class="loader-container">
+        <div class="loader-bar" id="loader-bar"></div>
+    </div>
+
+    <div class="photo-frame" id="photo-frame">
+        <img src="images/I Brushed My Teeth--100th Bout of Dysphoria, but I Think I Scared Myself Less Than Prior., Plastic, Oil, Lacquer, Urethane, Pastel, Pencil, Crayon on Canvas, 35 x 50, 2025.jpg" alt="I Brushed My Teeth and Had My First Bout of Psychosis and 100th Bout of Dysphoria, but I Think I Scared Myself Less Than Prior." class="photo" id="photo">
+    </div>
+
+    <div class="text-box">
+        <p>I Brushed My Teeth and Had My First Bout of Psychosis and 100th Bout of Dysphoria, but I Think I Scared Myself Less Than Prior.</p>
+    </div>
+
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            const loaderBar = document.getElementById('loader-bar');
+            const frame = document.getElementById('photo-frame');
+            const img = document.getElementById('photo');
+
+            // Animate bar smoothly toward 90% while downloading
+            let progress = 0;
+            const progressInterval = setInterval(() => {
+                progress += (90 - progress) * 0.08;
+                loaderBar.style.width = progress + '%';
+            }, 100);
+
+            function finishAndReveal() {
+                clearInterval(progressInterval);
+                loaderBar.style.width = '100%';
+                // Wait 250ms so the bar visibly reaches 100%, then fade bar out & fade image in
+                setTimeout(() => {
+                    document.body.classList.add('images-loaded');
+                }, 250);
+            }
+
+            // Wait until image is BOTH downloaded AND fully decoded into pixels
+            function waitForFullDecode() {
+                if (img.decode) {
+                    img.decode()
+                        .then(finishAndReveal)
+                        .catch(finishAndReveal);
+                } else {
+                    finishAndReveal();
+                }
+            }
+
+            if (img.complete && img.naturalWidth > 0) {
+                waitForFullDecode();
+            } else {
+                img.addEventListener('load', waitForFullDecode);
+                img.addEventListener('error', finishAndReveal);
+            }
+
+            // Helper to update transform origin from client coordinates
+            function setOrigin(clientX, clientY) {
+                const rect = frame.getBoundingClientRect();
+                const x = Math.max(0, Math.min(100, ((clientX - rect.left) / rect.width) * 100));
+                const y = Math.max(0, Math.min(100, ((clientY - rect.top) / rect.height) * 100));
+                img.style.transformOrigin = `${x}% ${y}%`;
+            }
+
+            // Desktop: Secret Toggle 4x Zoom ONLY on Double-Click
+            frame.addEventListener('dblclick', (e) => {
+                e.preventDefault();
+                const willZoom = !frame.classList.contains('is-zoomed');
+                setOrigin(e.clientX, e.clientY);
+                frame.classList.toggle('is-zoomed', willZoom);
+            });
+
+            // Desktop: Pan around while zoomed in
+            frame.addEventListener('mousemove', (e) => {
+                if (!frame.classList.contains('is-zoomed')) return;
+                setOrigin(e.clientX, e.clientY);
+            });
+
+            // Desktop: Freeze origin at cursor exit point so it unmagnifies cleanly from there
+            frame.addEventListener('mouseleave', (e) => {
+                if (!frame.classList.contains('is-zoomed')) return;
+                setOrigin(e.clientX, e.clientY);
+            });
+
+            // Mobile: Secret Toggle 4x Zoom ONLY on Double-Tap
+            let lastTap = 0;
+            frame.addEventListener('touchend', (e) => {
+                if (e.touches.length > 0) return;
+                const currentTime = Date.now();
+                const tapLength = currentTime - lastTap;
+                if (tapLength < 300 && tapLength > 0) {
+                    e.preventDefault();
+                    const touch = e.changedTouches[0];
+                    const willZoom = !frame.classList.contains('is-zoomed');
+                    setOrigin(touch.clientX, touch.clientY);
+                    frame.classList.toggle('is-zoomed', willZoom);
+                }
+                lastTap = currentTime;
+            });
+
+            // Mobile: Single-finger pan while zoomed in
+            frame.addEventListener('touchmove', (e) => {
+                if (e.touches.length === 1 && frame.classList.contains('is-zoomed')) {
+                    e.preventDefault();
+                    setOrigin(e.touches[0].clientX, e.touches[0].clientY);
+                }
+            }, { passive: false });
+        });
+    </script>
+
+</body>
+</html>
