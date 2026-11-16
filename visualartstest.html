@@ -206,6 +206,7 @@
             will-change: transform;
             transform-origin: 0 0;
             transform: translate3d(0px, 0px, 0px) scale(1);
+            backface-visibility: hidden;
         }
 
         .art-info {
@@ -404,7 +405,7 @@
                 };
             });
 
-            // Butter-smooth 60/120fps interpolated 400% zoom & pan
+            // Delta-time normalized, ultra-smooth 400% magnification & fluid cursor glide
             document.querySelectorAll('.art-card').forEach(card => {
                 const frame = card.querySelector('.art-image-frame');
                 const img = frame.querySelector('img');
@@ -416,45 +417,55 @@
                 let currentNormX = 0.5;
                 let currentNormY = 0.5;
                 let isAnimating = false;
+                let lastTime = 0;
 
-                function updateTransform() {
-                    // Slow zoom interpolation (~2.4s to reach 400%), silky cursor pan
-                    const zoomEase = 0.032;
-                    const panEase = 0.08;
+                function updateTransform(now) {
+                    if (!lastTime) lastTime = now;
+                    // Clamp delta time so tab switches never cause jumps; normalize to 60fps
+                    const dt = Math.min((now - lastTime) / 16.6667, 3);
+                    lastTime = now;
 
-                    currentScale += (targetScale - currentScale) * zoomEase;
-                    currentNormX += (targetNormX - currentNormX) * panEase;
-                    currentNormY += (targetNormY - currentNormY) * panEase;
+                    // 2x slower magnification speed & silky damped mouse tracking
+                    const zoomFactor = 1 - Math.pow(1 - 0.015, dt);
+                    const panFactor = 1 - Math.pow(1 - 0.045, dt);
+
+                    currentScale += (targetScale - currentScale) * zoomFactor;
+                    currentNormX += (targetNormX - currentNormX) * panFactor;
+                    currentNormY += (targetNormY - currentNormY) * panFactor;
 
                     const width = frame.offsetWidth;
                     const height = frame.offsetHeight;
                     const translateX = -(currentNormX * width) * (currentScale - 1);
                     const translateY = -(currentNormY * height) * (currentScale - 1);
 
-                    img.style.transform = `translate3d(${translateX}px, ${translateY}px, 0px) scale(${currentScale})`;
+                    img.style.transform = `translate3d(${translateX.toFixed(3)}px, ${translateY.toFixed(3)}px, 0px) scale(${currentScale.toFixed(5)})`;
 
-                    // Stop loop once settled at resting state
                     const settled =
-                        Math.abs(targetScale - currentScale) < 0.001 &&
-                        Math.abs(targetNormX - currentNormX) < 0.0005 &&
-                        Math.abs(targetNormY - currentNormY) < 0.0005;
+                        Math.abs(targetScale - currentScale) < 0.0008 &&
+                        Math.abs(targetNormX - currentNormX) < 0.0003 &&
+                        Math.abs(targetNormY - currentNormY) < 0.0003;
 
                     if (!settled || targetScale > 1) {
                         requestAnimationFrame(updateTransform);
                     } else {
                         img.style.transform = 'translate3d(0px, 0px, 0px) scale(1)';
                         isAnimating = false;
+                        lastTime = 0;
                     }
                 }
 
                 function startLoop() {
                     if (!isAnimating) {
                         isAnimating = true;
+                        lastTime = 0;
                         requestAnimationFrame(updateTransform);
                     }
                 }
 
-                card.addEventListener('mouseenter', () => {
+                card.addEventListener('mouseenter', (e) => {
+                    const rect = frame.getBoundingClientRect();
+                    targetNormX = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+                    targetNormY = Math.max(0, Math.min(1, (e.clientY - rect.top) / rect.height));
                     targetScale = 4;
                     startLoop();
                 });
