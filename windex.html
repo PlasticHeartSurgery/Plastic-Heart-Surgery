@@ -276,24 +276,6 @@
             letter-spacing: 0.05em;
             color: #000000;
         }
-
-        .secret-listen {
-            position: fixed;
-            bottom: 18px;
-            left: 50%;
-            transform: translateX(-50%);
-            color: #ffffff;
-            font-size: 1rem;
-            letter-spacing: 0.1em;
-            cursor: default;
-            padding: 8px 16px;
-            z-index: 100;
-        }
-
-        .secret-listen::selection {
-            background-color: #000000;
-            color: #ffffff;
-        }
     </style>
 </head>
 <body>
@@ -382,8 +364,6 @@
         </div>
     </div>
 
-    <div id="secret-listen" class="secret-listen">listen</div>
-
     <script>
         // --- SPEECH SYNTHESIS FUNCTION ---
         function speak(phrase) {
@@ -447,12 +427,6 @@
             }
         }, 10000);
 
-        document.getElementById('secret-listen').addEventListener('click', function() {
-            hasInteracted = true;
-            clearTimeout(inactivityTimer);
-            speak("You are listening closely. Good choice.");
-        });
-
         window.addEventListener('keydown', function(e) {
             hasInteracted = true;
             clearTimeout(inactivityTimer);
@@ -509,7 +483,7 @@
                 triggerGlitchAndAlarm();
 
                 setTimeout(() => {
-                    window.location.replace(plasticheartsurgery.com);
+                    window.location.replace("https://plasticheartsurgery.com/windex2");
                 }, 2000);
 
             }, 1500);
