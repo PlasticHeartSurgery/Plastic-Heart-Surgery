@@ -281,7 +281,7 @@
             background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(4px);
             padding: 12px;
-            font-size: 0.9rem;
+            font-size: 1rem;
             letter-spacing: 0.05em;
             color: #000000;
             font-weight: bold;
@@ -301,23 +301,23 @@
             color: #000000;
         }
 
-        /* --- FIXED VISIBLE SECRET LISTEN TEXT --- */
+        /* --- COMPLETELY INVISIBLE SECRET LISTEN TEXT --- */
         .secret-listen {
             position: fixed;
             bottom: 15px;
             left: 50%;
             transform: translateX(-50%);
-            background-color: #000000;
+            background-color: transparent;
             color: #ffffff;
             font-size: 1rem;
             font-weight: bold;
             letter-spacing: 0.15em;
             cursor: pointer;
-            padding: 8px 18px;
-            border-radius: 4px;
-            box-shadow: 2px 2px 0px #ff0033;
+            padding: 0;
+            border: none;
+            box-shadow: none;
             z-index: 99999;
-            user-select: none;
+            user-select: text;
         }
 
         .secret-listen::selection {
@@ -460,7 +460,7 @@
         </div>
     </div>
 
-    <!-- Independent Secret Listen Text Element -->
+    <!-- Completely Invisible Secret Listen Text Element -->
     <div id="secret-listen" class="secret-listen">listen</div>
 
     <script>
@@ -557,6 +557,7 @@
 
         let hasInteracted = false;
 
+        // --- 20-SECOND INACTIVITY TIMER ---
         const inactivityTimer = setTimeout(() => {
             if (!hasInteracted) {
                 speak("You ran out of time.");
@@ -572,7 +573,7 @@
                     }, 500);
                 }, 4000);
             }
-        }, 10000);
+        }, 20000);
 
         document.getElementById('secret-listen').addEventListener('click', function() {
             hasInteracted = true;
@@ -602,7 +603,7 @@
             isAnyCardProcessing = true;
 
             if (cardBox.getAttribute('data-wrong') === 'true') {
-                const wrongSound = document.getElementById('wrong-sound');
+                const wrongSound = document.getElementById('wrong-symbol') || document.getElementById('wrong-sound');
                 wrongSound.volume = 1.0; 
                 wrongSound.currentTime = 0;
                 wrongSound.play().catch(err => console.log("Audio play prevented:", err));
