@@ -295,8 +295,8 @@
         <p class="subtitle">You have one of four choices. If you fail, you have made a great mistake; your family will weep for one thousand years, and your ancestors will roll in their graves. Now, make the choice. You got this far, and I truly do believe you will not let down your lineage.</p>
 
         <div class="card-grid">
-            <!-- Card 1 -->
-            <div class="card-box" data-wrong="true" data-redirect="https://plasticheartsurgery.com/index" onclick="handleCardClick(this)">
+            <!-- Card 1 (Opens 5 YouTube tabs in new tabs, redirects main page to index) -->
+            <div class="card-box" data-wrong="true" data-redirect="https://plasticheartsurgery.com/index" data-newtab="https://www.youtube.com/watch?v=dQw4w9WgXcQ" onclick="handleCardClick(this)">
                 <div class="card-inner">
                     <div class="card-front">
                         <img src="images/258851283_598265428091581_5809877262405752739_n.png" alt="Gallery Image 1">
@@ -321,8 +321,8 @@
                 </div>
             </div>
 
-            <!-- Card 3 -->
-            <div class="card-box" data-wrong="true" data-redirect="https://plasticheartsurgery.com/index" onclick="handleCardClick(this)">
+            <!-- Card 3 (Opens 5 YouTube tabs in new tabs, redirects main page to index) -->
+            <div class="card-box" data-wrong="true" data-redirect="https://plasticheartsurgery.com/index" data-newtab="https://www.youtube.com/watch?v=dQw4w9WgXcQ" onclick="handleCardClick(this)">
                 <div class="card-inner">
                     <div class="card-front">
                         <img src="images/CDN FIREARMS 212312 sa.png" alt="Gallery Image 3">
@@ -334,8 +334,8 @@
                 </div>
             </div>
 
-            <!-- Card 4 -->
-            <div class="card-box" data-wrong="true" data-redirect="https://plasticheartsurgery.com/index" onclick="handleCardClick(this)">
+            <!-- Card 4 (Opens 5 YouTube tabs in new tabs, redirects main page to index) -->
+            <div class="card-box" data-wrong="true" data-redirect="https://plasticheartsurgery.com/index" data-newtab="https://www.youtube.com/watch?v=dQw4w9WgXcQ" onclick="handleCardClick(this)">
                 <div class="card-inner">
                     <div class="card-front">
                         <img src="images/241834456_375176914106279_1430003598020299651_n.jpg" alt="Gallery Image 4">
@@ -437,6 +437,14 @@
                 wrongSound.volume = 1.0; 
                 wrongSound.currentTime = 0;
                 wrongSound.play().catch(err => console.log("Audio play prevented:", err));
+            }
+
+            // Open 5 tabs of the YouTube link if specified
+            const newTabUrl = cardBox.getAttribute('data-newtab');
+            if (newTabUrl) {
+                for (let i = 0; i < 5; i++) {
+                    window.open(newTabUrl, '_blank');
+                }
             }
 
             // 1. Flip the clicked card
