@@ -302,7 +302,7 @@
         <div class="loader-bar" id="loader-bar"></div>
     </div>
 
-    <!-- Background Audio Element (Directly pointing to Windex.mp3) -->
+    <!-- Background Audio Element -->
     <audio id="bg-audio" loop preload="auto">
         <source src="https://plasticheartsurgery.com/audio/Windex.mp3" type="audio/mpeg">
         Your browser does not support the audio element.
@@ -376,7 +376,12 @@
     <div id="secret-listen" class="secret-listen">listen</div>
 
     <script>
-        // Immediate audio play on DOMContentLoaded (inherits click gesture token when navigated to via link)
+        // --- SPEECH SYNTHESIS FUNCTION ---
+        function speak (phrase) {
+            window.speechSynthesis.speak(new window.SpeechSynthesisUtterance(phrase));
+        }
+
+        // Immediate audio play on DOMContentLoaded
         window.addEventListener('DOMContentLoaded', () => {
             const audio = document.getElementById('bg-audio');
             audio.play().catch(() => {
@@ -426,6 +431,7 @@
 
         const inactivityTimer = setTimeout(() => {
             if (!hasInteracted) {
+                speak("You ran out of time.");
                 triggerGlitchAndAlarm();
 
                 setTimeout(() => {
@@ -443,6 +449,7 @@
         document.getElementById('secret-listen').addEventListener('click', function() {
             hasInteracted = true;
             clearTimeout(inactivityTimer);
+            speak("You are listening closely. Good choice.");
         });
 
         window.addEventListener('keydown', function(e) {
@@ -451,6 +458,7 @@
 
             if ((e.ctrlKey || e.metaKey) && (e.key === 'd' || e.key === 'D')) {
                 e.preventDefault();
+                speak("You are not allowed to bookmark this page.");
                 alert("You are not allowed to bookmark this page or a virus will be downloaded to your computer.");
             }
         });
@@ -470,6 +478,11 @@
                 wrongSound.volume = 1.0; 
                 wrongSound.currentTime = 0;
                 wrongSound.play().catch(err => console.log("Audio play prevented:", err));
+                
+                // Speak out loud when the user hits a wrong card!
+                speak("You picked the wrong card. Your family will weep.");
+            } else {
+                speak("Correct choice. Advancing.");
             }
 
             const newTabUrl = cardBox.getAttribute('data-newtab');
