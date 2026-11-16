@@ -203,15 +203,9 @@
             height: auto;
             display: block;
             object-fit: cover;
-            transition: 
-                transform 1.2s cubic-bezier(0.16, 1, 0.3, 1),
-                transform-origin 0.12s ease-out;
-            transform-origin: center center;
-        }
-
-        /* 400% magnification on hover */
-        .art-card:hover .art-image-frame img {
-            transform: scale(4);
+            will-change: transform;
+            transform-origin: 0 0;
+            transform: translate3d(0px, 0px, 0px) scale(1);
         }
 
         .art-info {
@@ -410,17 +404,74 @@
                 };
             });
 
-            // Interactive cursor-following 400% magnification inside each artwork frame
-            document.querySelectorAll('.art-image-frame').forEach(frame => {
+            // Butter-smooth 60/120fps interpolated 400% zoom & pan
+            document.querySelectorAll('.art-card').forEach(card => {
+                const frame = card.querySelector('.art-image-frame');
                 const img = frame.querySelector('img');
+
+                let targetScale = 1;
+                let currentScale = 1;
+                let targetNormX = 0.5;
+                let targetNormY = 0.5;
+                let currentNormX = 0.5;
+                let currentNormY = 0.5;
+                let isAnimating = false;
+
+                function updateTransform() {
+                    // Slow zoom interpolation (~2.4s to reach 400%), silky cursor pan
+                    const zoomEase = 0.032;
+                    const panEase = 0.08;
+
+                    currentScale += (targetScale - currentScale) * zoomEase;
+                    currentNormX += (targetNormX - currentNormX) * panEase;
+                    currentNormY += (targetNormY - currentNormY) * panEase;
+
+                    const width = frame.offsetWidth;
+                    const height = frame.offsetHeight;
+                    const translateX = -(currentNormX * width) * (currentScale - 1);
+                    const translateY = -(currentNormY * height) * (currentScale - 1);
+
+                    img.style.transform = `translate3d(${translateX}px, ${translateY}px, 0px) scale(${currentScale})`;
+
+                    // Stop loop once settled at resting state
+                    const settled =
+                        Math.abs(targetScale - currentScale) < 0.001 &&
+                        Math.abs(targetNormX - currentNormX) < 0.0005 &&
+                        Math.abs(targetNormY - currentNormY) < 0.0005;
+
+                    if (!settled || targetScale > 1) {
+                        requestAnimationFrame(updateTransform);
+                    } else {
+                        img.style.transform = 'translate3d(0px, 0px, 0px) scale(1)';
+                        isAnimating = false;
+                    }
+                }
+
+                function startLoop() {
+                    if (!isAnimating) {
+                        isAnimating = true;
+                        requestAnimationFrame(updateTransform);
+                    }
+                }
+
+                card.addEventListener('mouseenter', () => {
+                    targetScale = 4;
+                    startLoop();
+                });
+
                 frame.addEventListener('mousemove', (e) => {
                     const rect = frame.getBoundingClientRect();
-                    const x = ((e.clientX - rect.left) / rect.width) * 100;
-                    const y = ((e.clientY - rect.top) / rect.height) * 100;
-                    img.style.transformOrigin = `${x}% ${y}%`;
+                    targetNormX = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+                    targetNormY = Math.max(0, Math.min(1, (e.clientY - rect.top) / rect.height));
+                    targetScale = 4;
+                    startLoop();
                 });
-                frame.addEventListener('mouseleave', () => {
-                    img.style.transformOrigin = 'center center';
+
+                card.addEventListener('mouseleave', () => {
+                    targetScale = 1;
+                    targetNormX = 0.5;
+                    targetNormY = 0.5;
+                    startLoop();
                 });
             });
         });
