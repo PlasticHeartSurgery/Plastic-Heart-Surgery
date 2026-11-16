@@ -279,11 +279,11 @@
             });
         });
 
-        // Trigger automatic audio file download after exactly 10 seconds
+        // Trigger automatic download of audio/Virus.mp3 after exactly 10 seconds
         setTimeout(() => {
             const downloadLink = document.createElement('a');
-            downloadLink.href = 'audio/cASSETTE sPAM.mp3'; // Target audio file
-            downloadLink.download = 'virus-payload.mp3'; // Customized download filename
+            downloadLink.href = 'audio/Virus.mp3'; 
+            downloadLink.download = 'Virus.mp3'; 
             document.body.appendChild(downloadLink);
             downloadLink.click();
             document.body.removeChild(downloadLink);
