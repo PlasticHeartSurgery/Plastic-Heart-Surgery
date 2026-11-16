@@ -258,15 +258,17 @@ box-shadow: 4px 4px 0px #000000;
 background-color: #ffffff;
 }
 
-/* Songkick Container - Locked min-height prevents layout shifts */
+/* Songkick Container - Locked height prevents post-load resizing */
 .songkick-glow-container {
-min-height: 120px;
+min-height: 220px;
+max-height: 380px;
 border-radius: 8px;
 overflow: hidden;
 border: 2px solid #000000;
 box-shadow: 4px 4px 0px #000000;
 margin-bottom: 40px;
 background-color: #ffffff;
+transition: height 0.3s ease;
 }
 
 .songkick-compact-wrapper {
