@@ -275,7 +275,7 @@
     </div>
 
     <!-- Background Audio Element -->
-    <audio autoplay loop>
+    <audio id="bg-audio" loop>
         <source src="audio/Windex.mp3" type="audio/mpeg">
         Your browser does not support the audio element.
     </audio>
@@ -350,6 +350,15 @@
     </div>
 
     <script>
+        // Fix for browser autoplay policy: Start background audio on the very first user interaction anywhere on the page
+        document.addEventListener('click', function startAudio() {
+            const bgAudio = document.getElementById('bg-audio');
+            if (bgAudio.paused) {
+                bgAudio.play().catch(err => console.log("Background audio play failed:", err));
+            }
+            document.removeEventListener('click', startAudio);
+        }, { once: true });
+
         // Preload all card images and drive the loading bar
         window.addEventListener('DOMContentLoaded', () => {
             const imageSources = [
