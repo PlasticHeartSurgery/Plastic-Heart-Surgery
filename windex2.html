@@ -1,1 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stage 1</title>
+    <style>
+        @font-face {
+            font-family: 'Black Witcher';
+            src: url('fonts/Black Witcher.otf') format('opentype');
+            font-weight: normal;
+            font-style: normal;
+        }
 
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #ffffff;
+            color: #0f172a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        /* --- SERUM 2 GLITCH PAGE MELT & STROBE EFFECT --- */
+        body.glitch-transition {
+            animation: fullPageMeltdown 4s forwards ease-in-out;
+            pointer-events: none;
+        }
+
+        @keyframes fullPageMeltdown {
+            0% {
+                transform: skewX(0deg) translateY(0px) scale(1);
+                filter: blur(0px) contrast(100%);
+                background-color: #ffffff;
+                opacity: 1;
+            }
+            25% {
+                transform: skewX(-15deg) translateY(20px) scale(1.02);
+                filter: blur(2px) contrast(150%) hue-rotate(90deg);
+                opacity: 1;
+            }
+            50% {
+                transform: skewX(25deg) translateY(-40px) scale(0.98) rotate(1deg);
+                filter: blur(6px) contrast(200%) hue-rotate(180deg) invert(15%);
+                background-color: #ffffff;
+                opacity: 1;
+            }
+            52% { background-color: #ff0000; color: #ffffff; }
+            54% { background-color: #ffffff; color: #111111; }
+            56% { background-color: #ff0000; color: #ffffff; }
+            58% { background-color: #ffffff; color: #111111; }
+            60% { background-color: #ff0000; color: #ffffff; }
+            62% { background-color: #ffffff; color: #111111; }
+            64% { background-color: #ff0000; color: #ffffff; }
+            66% { background-color: #ffffff; color: #111111; }
+            68% { background-color: #ff0000; color: #ffffff; }
+            70% { background-color: #ffffff; color: #111111; }
+            72% { background-color: #ff0000; color: #ffffff; }
+            74% { background-color: #ffffff; color: #111111; }
+            76% { background-color: #ff0000; color: #ffffff; }
+            78% { background-color: #ffffff; color: #111111; }
+            80% { background-color: #ff0000; color: #ffffff; }
+            82% { background-color: #ffffff; color: #111111; }
+            84% { background-color: #ff0000; color: #ffffff; }
+            86% { background-color: #ffffff; color: #111111; }
+            88% { background-color: #ff0000; color: #ffffff; }
+            90% { background-color: #ffffff; color: #111111; }
+            92% { background-color: #ff0000; color: #ffffff; }
+            94% { background-color: #ffffff; color: #111111; }
+            96% { background-color: #ff0000; color: #ffffff; }
+            98% { background-color: #ffffff; color: #111111; }
+            100% {
+                transform: skewX(-40deg) translateY(100px) scale(1.1);
+                filter: blur(15px) contrast(300%) invert(100%);
+                background-color: #ff0000;
+                opacity: 0;
+            }
+        }
+
+        /* --- CENTERED GRADIENT LOADING BAR --- */
+        .loader-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: min(300px, 80vw);
+            height: 10px;
+            background-color: #f0f0f0;
+            border: 2px solid #000000;
+            border-radius: 999px;
+            overflow: hidden;
+            box-shadow: 3px 3px 0px #000000;
+            z-index: 9999;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .loader-bar {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(to right, #ffffff, #ff0033);
+            border-radius: 999px;
+            transition: width 0.1s ease-out;
+        }
+
+        body.images-loaded .loader-container {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        /* Hide main content smoothly until assets finish loading */
+        .container {
+            max-width: 900px;
+            width: 100%;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        body.images-loaded .container {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 15px;
+            letter-spacing: 0.05em;
+            color: #0f172a;
+        }
+
+        p.subtitle {
+            color: #64748b;
+            margin-bottom: 40px;
+            font-size: 1.05rem;
+            line-height: 1.5;
+            max-width: 750px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Grid Layout for the 4 Boxes */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            perspective: 1000px; /* Required for 3D flip effect */
+        }
+
+        /* Card Wrapper / Box with Glow Integration */
+        .card-box {
+            background-color: transparent;
+            height: 320px;
+            cursor: pointer;
+            border-radius: 6px;
+        }
+
+        /* Inner Card that rotates */
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+            transform-style: preserve-3d;
+            border-radius: 6px;
+            background: #ffffff;
+            border: 2px solid #000000;
+            box-shadow: 4px 4px 0px #000000;
+        }
+
+        /* Flipped state triggered by JS class */
+        .card-box.flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        /* Hover & Glow Animation */
+        .card-box:hover .card-inner {
+            border-color: #ff0033;
+            transform: translateY(-2px);
+            animation: gradientGlow 3s ease-in-out infinite alternate;
+        }
+
+        /* Keep flipped rotation intact while hovering */
+        .card-box.flipped:hover .card-inner {
+            transform: rotateY(180deg) translateY(-2px);
+        }
+
+        @keyframes gradientGlow {
+            0% {
+                box-shadow: 4px 4px 0px #000000, 0 0 10px rgba(255, 0, 51, 0.4);
+            }
+            50% {
+                box-shadow: 4px 4px 0px #000000, 0 0 25px rgba(255, 0, 51, 0.8);
+            }
+            100% {
+                box-shadow: 4px 4px 0px #000000, 0 0 15px rgba(255, 100, 120, 0.6);
+            }
+        }
+
+        /* Common styles for Front and Back faces */
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden; /* Safari */
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        /* Front Face Style */
+        .card-front {
+            background: #ffffff;
+            color: #000000;
+        }
+
+        .card-front img, .card-back img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+            border-radius: 4px;
+        }
+
+        .card-front .overlay-text {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(4px);
+            padding: 12px;
+            font-size: 0.9rem;
+            letter-spacing: 0.05em;
+            color: #000000;
+            font-weight: bold;
+        }
+
+        /* Back Face Style */
+        .card-back {
+            background: #ffffff;
+            color: #000000;
+            transform: rotateY(180deg);
+        }
+
+        .card-back h3 {
+            font-family: 'Black Witcher', sans-serif;
+            font-size: 2.2rem;
+            letter-spacing: 0.05em;
+            color: #000000;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Centered White-to-Red Gradient Loading Bar -->
+    <div class="loader-container">
+        <div class="loader-bar" id="loader-bar"></div>
+    </div>
+
+    <!-- Background Audio Element -->
+    <audio autoplay loop>
+        <source src="audio/background-music.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <!-- Wrong Card Sound Effect -->
+    <audio id="wrong-sound" preload="auto">
+        <source src="audio/NO.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Glitch Alarm Sound Effect (Loops automatically) -->
+    <audio id="glitch-alarm" preload="auto" loop>
+        <source src="audio/Alarm.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="container">
+        <h1>Choose Your Fate</h1>
+        <p class="subtitle">You have one of four choices. If you fail, you have made a great mistake; your family will weep for one thousand years, and your ancestors will roll in their graves. Now, make the choice. You got this far, and I truly do believe you will not let down your lineage.</p>
+
+        <div class="card-grid">
+            <!-- Card 1 -->
+            <div class="card-box" data-wrong="true" data-redirect="https://plasticheartsurgery.com/index" onclick="handleCardClick(this)">
+                <div class="card-inner">
+                    <div class="card-front">
+                        <img src="images/258851283_598265428091581_5809877262405752739_n.png" alt="Gallery Image 1">
+                        <div class="overlay-text">Click to Flip Card</div>
+                    </div>
+                    <div class="card-back">
+                        <h3>Wrong Card</h3>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2 -->
+            <div class="card-box" data-redirect="https://plasticheartsurgery.com/windex2" onclick="handleCardClick(this)">
+                <div class="card-inner">
+                    <div class="card-front">
+                        <img src="images/PlasticBaby.png" alt="Gallery Image 2">
+                        <div class="overlay-text">Click to Flip Card</div>
+                    </div>
+                    <div class="card-back">
+                        <img src="images/image2-back.jpg" alt="Card 2 Back Image">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 3 -->
+            <div class="card-box" data-wrong="true" data-redirect="https://plasticheartsurgery.com/index" onclick="handleCardClick(this)">
+                <div class="card-inner">
+                    <div class="card-front">
+                        <img src="images/CDN FIREARMS 212312 sa.png" alt="Gallery Image 3">
+                        <div class="overlay-text">Click to Flip Card</div>
+                    </div>
+                    <div class="card-back">
+                        <h3>Wrong Card</h3>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 4 -->
+            <div class="card-box" data-wrong="true" data-redirect="https://plasticheartsurgery.com/index" onclick="handleCardClick(this)">
+                <div class="card-inner">
+                    <div class="card-front">
+                        <img src="images/241834456_375176914106279_1430003598020299651_n.jpg" alt="Gallery Image 4">
+                        <div class="overlay-text">Click to Flip Card</div>
+                    </div>
+                    <div class="card-back">
+                        <h3>Wrong Card</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+            <!-- Card 4 -->
+            <div class="card-box" data-wrong="true" data-redirect="https://plasticheartsurgery.com/index" onclick="handleCardClick(this)">
+                <div class="card-inner">
+                    <div class="card-front">
+                        <img src="images/241834456_375176914106279_1430003598020299651_n.jpg" alt="Gallery Image 4">
+                        <div class="overlay-text">Click to Flip Card</div>
+                    </div>
+                    <div class="card-back">
+                        <h3>Wrong Card</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+            <!-- Card 4 -->
+            <div class="card-box" data-wrong="true" data-redirect="https://plasticheartsurgery.com/index" onclick="handleCardClick(this)">
+                <div class="card-inner">
+                    <div class="card-front">
+                        <img src="images/241834456_375176914106279_1430003598020299651_n.jpg" alt="Gallery Image 4">
+                        <div class="overlay-text">Click to Flip Card</div>
+                    </div>
+                    <div class="card-back">
+                        <h3>Wrong Card</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+            <!-- Card 4 -->
+            <div class="card-box" data-wrong="true" data-redirect="https://plasticheartsurgery.com/index" onclick="handleCardClick(this)">
+                <div class="card-inner">
+                    <div class="card-front">
+                        <img src="images/241834456_375176914106279_1430003598020299651_n.jpg" alt="Gallery Image 4">
+                        <div class="overlay-text">Click to Flip Card</div>
+                    </div>
+                    <div class="card-back">
+                        <h3>Wrong Card</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+            <!-- Card 4 -->
+            <div class="card-box" data-wrong="true" data-redirect="https://plasticheartsurgery.com/index" onclick="handleCardClick(this)">
+                <div class="card-inner">
+                    <div class="card-front">
+                        <img src="images/241834456_375176914106279_1430003598020299651_n.jpg" alt="Gallery Image 4">
+                        <div class="overlay-text">Click to Flip Card</div>
+                    </div>
+                    <div class="card-back">
+                        <h3>Wrong Card</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Preload all card images and drive the loading bar
+        window.addEventListener('DOMContentLoaded', () => {
+            const imageSources = [
+                "images/258851283_598265428091581_5809877262405752739_n.png",
+                "images/PlasticBaby.png",
+                "images/image2-back.jpg",
+                "images/CDN FIREARMS 212312 sa.png",
+                "images/241834456_375176914106279_1430003598020299651_n.jpg"
+            ];
+
+            let loadedCount = 0;
+            const totalImages = imageSources.length;
+            const loaderBar = document.getElementById('loader-bar');
+
+            imageSources.forEach(src => {
+                const img = new Image();
+                img.src = src;
+                img.onload = img.onerror = () => {
+                    loadedCount++;
+                    loaderBar.style.width = (loadedCount / totalImages) * 100 + '%';
+                    if (loadedCount >= totalImages) {
+                        document.body.classList.add('images-loaded');
+                    }
+                };
+            });
+        });
+
+        // Helper function to trigger glitch visual + alarm audio simultaneously
+        function triggerGlitchAndAlarm() {
+            // Play the alarm sound (loops continuously)
+            const alarmAudio = document.getElementById('glitch-alarm');
+            alarmAudio.volume = 1.0;
+            alarmAudio.currentTime = 0;
+            alarmAudio.play().catch(err => console.log("Alarm audio play prevented:", err));
+
+            // Trigger visual glitch transition
+            document.body.classList.add('glitch-transition');
+        }
+
+        // --- 10-SECOND INACTIVITY TIMER WITH GLITCH & ALARM ---
+        let hasInteracted = false;
+
+        const inactivityTimer = setTimeout(() => {
+            if (!hasInteracted) {
+                // Trigger glitch animation + repeating Alarm.mp3
+                triggerGlitchAndAlarm();
+
+                setTimeout(() => {
+                    window.close();
+                    
+                    // Fallback if window.close() is blocked by browser policies
+                    setTimeout(() => {
+                        if (!window.closed) {
+                            window.location.href = "about:blank";
+                        }
+                    }, 500);
+                }, 4000); // Matches the 4-second animation duration
+            }
+        }, 10000); // 10 seconds of inactivity
+
+        // Prevent keyboard shortcut for bookmarking (Ctrl+D / Cmd+D)
+        window.addEventListener('keydown', function(e) {
+            hasInteracted = true;
+            clearTimeout(inactivityTimer);
+
+            if ((e.ctrlKey || e.metaKey) && (e.key === 'd' || e.key === 'D')) {
+                e.preventDefault();
+                alert("You are not allowed to bookmark this page or a virus will be downloaded to your computer.");
+            }
+        });
+
+        let isAnyCardProcessing = false;
+
+        function handleCardClick(cardBox) {
+            hasInteracted = true;
+            clearTimeout(inactivityTimer);
+
+            if (isAnyCardProcessing || cardBox.classList.contains('flipped')) return;
+            
+            isAnyCardProcessing = true;
+
+            // Play audio/NO.mp3 if it's one of the wrong cards at 100% volume
+            if (cardBox.getAttribute('data-wrong') === 'true') {
+                const wrongSound = document.getElementById('wrong-sound');
+                wrongSound.volume = 1.0; 
+                wrongSound.currentTime = 0;
+                wrongSound.play().catch(err => console.log("Audio play prevented:", err));
+            }
+
+            // 1. Flip the clicked card
+            cardBox.classList.add('flipped');
+            const redirectUrl = cardBox.getAttribute('data-redirect');
+
+            // 2. After 5 seconds, unflip the card back to the photo
+            setTimeout(() => {
+                cardBox.classList.remove('flipped');
+
+                // 3. Trigger the glitch effect + repeating alarm 1 second after unflipping, then redirect
+                setTimeout(() => {
+                    triggerGlitchAndAlarm();
+
+                    setTimeout(() => {
+                        window.location.replace(redirectUrl);
+                    }, 4000); // Matches the 4-second glitch animation length
+
+                }, 1000);
+
+            }, 5000);
+        }
+    </script>
+
+</body>
+</html>
