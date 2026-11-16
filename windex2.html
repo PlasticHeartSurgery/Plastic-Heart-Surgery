@@ -28,6 +28,7 @@
             min-height: 100vh;
             padding: 40px 20px;
             transition: background-color 0.1s ease;
+            position: relative;
         }
 
         /* --- SERUM 2 GLITCH PAGE MELT, STROBE & RAPID ZOOM EFFECT --- */
@@ -167,7 +168,7 @@
                 gap: 25px;
             }
             50% {
-                gap: 75px; /* Cards separate further apart like an inhale */
+                gap: 75px;
             }
         }
 
@@ -176,36 +177,19 @@
             height: 300px;
             cursor: pointer;
             border-radius: 6px;
-            /* Applies chaotic fidget wiggle & zoom */
             animation: cardFidget var(--fidget-dur, 1.8s) infinite ease-in-out;
             animation-delay: var(--fidget-delay, 0s);
         }
 
         @keyframes cardFidget {
-            0% {
-                transform: translate(0px, 0px) rotate(0deg) scale(1);
-            }
-            15% {
-                transform: translate(-4px, 3px) rotate(-1.5deg) scale(1.12);
-            }
-            30% {
-                transform: translate(5px, -2px) rotate(2deg) scale(0.9);
-            }
-            45% {
-                transform: translate(-3px, -4px) rotate(-1deg) scale(1.15);
-            }
-            60% {
-                transform: translate(2px, 5px) rotate(1.5deg) scale(0.88);
-            }
-            75% {
-                transform: translate(-2px, -3px) rotate(-0.5deg) scale(1.05);
-            }
-            90% {
-                transform: translate(3px, 2px) rotate(1deg) scale(0.92);
-            }
-            100% {
-                transform: translate(0px, 0px) rotate(0deg) scale(1);
-            }
+            0% { transform: translate(0px, 0px) rotate(0deg) scale(1); }
+            15% { transform: translate(-4px, 3px) rotate(-1.5deg) scale(1.12); }
+            30% { transform: translate(5px, -2px) rotate(2deg) scale(0.9); }
+            45% { transform: translate(-3px, -4px) rotate(-1deg) scale(1.15); }
+            60% { transform: translate(2px, 5px) rotate(1.5deg) scale(0.88); }
+            75% { transform: translate(-2px, -3px) rotate(-0.5deg) scale(1.05); }
+            90% { transform: translate(3px, 2px) rotate(1deg) scale(0.92); }
+            100% { transform: translate(0px, 0px) rotate(0deg) scale(1); }
         }
 
         .card-inner {
@@ -218,7 +202,6 @@
             border-radius: 6px;
             background: #ffffff;
             border: 2px solid #000000;
-            /* Randomized chaotic glowing box-shadow */
             animation: erraticGlow var(--glow-dur, 1.2s) infinite alternate ease-in-out;
             animation-delay: var(--glow-delay, 0s);
         }
@@ -278,7 +261,6 @@
             top: 0;
             left: 0;
             border-radius: 4px;
-            /* Randomized chaotic image negative strobe effect */
             animation: erraticNegative var(--neg-dur, 0.3s) infinite steps(1);
             animation-delay: var(--neg-delay, 0s);
         }
@@ -319,21 +301,27 @@
             color: #000000;
         }
 
+        /* --- FIXED VISIBLE SECRET LISTEN TEXT --- */
         .secret-listen {
             position: fixed;
-            bottom: 18px;
+            bottom: 15px;
             left: 50%;
             transform: translateX(-50%);
+            background-color: #000000;
             color: #ffffff;
             font-size: 1rem;
-            letter-spacing: 0.1em;
-            cursor: default;
-            padding: 8px 16px;
-            z-index: 100;
+            font-weight: bold;
+            letter-spacing: 0.15em;
+            cursor: pointer;
+            padding: 8px 18px;
+            border-radius: 4px;
+            box-shadow: 2px 2px 0px #ff0033;
+            z-index: 99999;
+            user-select: none;
         }
 
         .secret-listen::selection {
-            background-color: #000000;
+            background-color: #ff0033;
             color: #ffffff;
         }
     </style>
@@ -472,6 +460,7 @@
         </div>
     </div>
 
+    <!-- Independent Secret Listen Text Element -->
     <div id="secret-listen" class="secret-listen">listen</div>
 
     <script>
