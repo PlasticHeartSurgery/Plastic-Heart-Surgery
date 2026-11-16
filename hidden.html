@@ -231,7 +231,7 @@
 <body>
 
     <!-- Audio element with preload -->
-    <audio id="bg-audio" src="audio/cASSETTE sPAM.mp3" preload="auto"></audio>
+    <audio id="bg-audio" src="audio/cASSETTE sPAM.mp3" preload="auto" loop></audio>
 
     <div class="sidebar">
         <div>
@@ -267,15 +267,22 @@
     </main>
 
     <script>
-        // Attempt autoplay immediately on load
+        // Robust Autoplay Handling for Modern Browsers
         window.addEventListener('DOMContentLoaded', () => {
             const audio = document.getElementById('bg-audio');
+            
             audio.play().catch(() => {
                 const unlockAudio = () => {
-                    audio.play();
-                    window.removeEventListener('click', unlockAudio);
+                    audio.play().then(() => {
+                        window.removeEventListener('click', unlockAudio);
+                        window.removeEventListener('touchstart', unlockAudio);
+                        window.removeEventListener('keydown', unlockAudio);
+                    }).catch(err => console.log("Unlock play blocked:", err));
                 };
-                window.addEventListener('click', unlockAudio);
+
+                window.addEventListener('click', unlockAudio, { once: true });
+                window.addEventListener('touchstart', unlockAudio, { once: true });
+                window.addEventListener('keydown', unlockAudio, { once: true });
             });
         });
 
