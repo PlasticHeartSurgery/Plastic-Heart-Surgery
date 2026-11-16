@@ -30,14 +30,14 @@
         }
 
         .container {
-            max-width: 1000px;
+            max-width: 900px;
             width: 100%;
             text-align: center;
         }
 
         h1 {
             font-size: 2.2rem;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             letter-spacing: 0.05em;
             color: #0f172a;
         }
@@ -45,13 +45,17 @@
         p.subtitle {
             color: #64748b;
             margin-bottom: 40px;
-            font-size: 1rem;
+            font-size: 1.05rem;
+            line-height: 1.5;
+            max-width: 750px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         /* Grid Layout for the 4 Boxes */
         .card-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 30px;
             perspective: 1000px; /* Required for 3D flip effect */
         }
@@ -166,8 +170,8 @@
 <body>
 
     <div class="container">
-        <h1>Interactive Gallery Cards</h1>
-        <p class="subtitle">Click any card to check selection.</p>
+        <h1>Choose Your Fate</h1>
+        <p class="subtitle">You have one of four choices. If you fail, you have made a great mistake; your family will weep for one thousand years, and your ancestors will roll in their graves. Now, make the choice. You got this far, and I truly do believe you will not let down your lineage.</p>
 
         <div class="card-grid">
             <!-- Card 1 -->
