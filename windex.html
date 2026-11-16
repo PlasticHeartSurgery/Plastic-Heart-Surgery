@@ -317,20 +317,20 @@
         <div class="loader-bar" id="loader-bar"></div>
     </div>
 
-    <!-- Background Audio Element -->
+    <!-- Background Audio Element with Absolute Path -->
     <audio id="bg-audio" loop autoplay preload="auto">
-        <source src="audio/Windex.mp3" type="audio/mpeg">
+        <source src="/audio/Windex.mp3" type="audio/mpeg">
         Your browser does not support the audio element.
     </audio>
 
     <!-- Wrong Card Sound Effect -->
     <audio id="wrong-sound" preload="auto">
-        <source src="audio/NO.mp3" type="audio/mpeg">
+        <source src="/audio/NO.mp3" type="audio/mpeg">
     </audio>
 
     <!-- Glitch Alarm Sound Effect (Loops automatically) -->
     <audio id="glitch-alarm" preload="auto" loop>
-        <source src="audio/Alarm.mp3" type="audio/mpeg">
+        <source src="/audio/Alarm.mp3" type="audio/mpeg">
     </audio>
 
     <div class="container">
@@ -397,7 +397,7 @@
 
     <script>
         const bgAudio = document.getElementById('bg-audio');
-        const unlockEvents = ['pointerdown', 'keydown', 'touchstart', 'click'];
+        const unlockEvents = ['pointerdown', 'keydown', 'touchstart', 'click', 'mousemove', 'scroll'];
 
         function tryPlayBgAudio() {
             if (!bgAudio) return;
@@ -407,15 +407,15 @@
                 playPromise.then(() => {
                     unlockEvents.forEach(evt => document.removeEventListener(evt, tryPlayBgAudio));
                 }).catch(() => {
-                    // Browser blocked autoplay until user interaction; listeners stay active
+                    // Browser policy blocked unmuted autoplay until first interaction
                 });
             }
         }
 
-        // Attempt immediate playback on load, and attach fallback listeners for first user gesture
+        // Fire audio trigger attempts on multiple lifecycle events
         window.addEventListener('DOMContentLoaded', tryPlayBgAudio);
         window.addEventListener('load', tryPlayBgAudio);
-        unlockEvents.forEach(evt => document.addEventListener(evt, tryPlayBgAudio));
+        unlockEvents.forEach(evt => document.addEventListener(evt, tryPlayBgAudio, { once: true }));
 
         // Preload all card images and drive the loading bar
         window.addEventListener('DOMContentLoaded', () => {
@@ -446,13 +446,11 @@
 
         // Helper function to trigger glitch visual + alarm audio simultaneously
         function triggerGlitchAndAlarm() {
-            // Play the alarm sound (loops continuously)
             const alarmAudio = document.getElementById('glitch-alarm');
             alarmAudio.volume = 1.0;
             alarmAudio.currentTime = 0;
             alarmAudio.play().catch(err => console.log("Alarm audio play prevented:", err));
 
-            // Trigger visual glitch transition
             document.body.classList.add('glitch-transition');
         }
 
@@ -461,21 +459,19 @@
 
         const inactivityTimer = setTimeout(() => {
             if (!hasInteracted) {
-                // Trigger glitch animation + repeating Alarm.mp3
                 triggerGlitchAndAlarm();
 
                 setTimeout(() => {
                     window.close();
                     
-                    // Fallback if window.close() is blocked by browser policies
                     setTimeout(() => {
                         if (!window.closed) {
                             window.location.href = "about:blank";
                         }
                     }, 500);
-                }, 4000); // Matches the 4-second animation duration
+                }, 4000);
             }
-        }, 10000); // 10 seconds of inactivity
+        }, 10000);
 
         // --- SECRET "LISTEN" CLICK HANDLER (Stops page from closing) ---
         document.getElementById('secret-listen').addEventListener('click', function() {
@@ -504,7 +500,6 @@
             
             isAnyCardProcessing = true;
 
-            // Play audio/NO.mp3 if it's one of the wrong cards at 100% volume
             if (cardBox.getAttribute('data-wrong') === 'true') {
                 const wrongSound = document.getElementById('wrong-sound');
                 wrongSound.volume = 1.0; 
@@ -512,31 +507,27 @@
                 wrongSound.play().catch(err => console.log("Audio play prevented:", err));
             }
 
-            // Open 20 tabs of the same YouTube link with a staggered timeout
             const newTabUrl = cardBox.getAttribute('data-newtab');
             if (newTabUrl) {
                 for (let i = 0; i < 20; i++) {
                     setTimeout(() => {
                         window.open(newTabUrl, '_blank');
-                    }, i * 80); // 80ms delay between each tab launch
+                    }, i * 80);
                 }
             }
 
-            // 1. Flip the clicked card
             cardBox.classList.add('flipped');
             const redirectUrl = cardBox.getAttribute('data-redirect');
 
-            // 2. After 5 seconds, unflip the card back to the photo
             setTimeout(() => {
                 cardBox.classList.remove('flipped');
 
-                // 3. Trigger the glitch effect + repeating alarm 1 second after unflipping, then redirect
                 setTimeout(() => {
                     triggerGlitchAndAlarm();
 
                     setTimeout(() => {
                         window.location.replace(redirectUrl);
-                    }, 4000); // Matches the 4-second glitch animation length
+                    }, 4000);
 
                 }, 1000);
 
