@@ -301,22 +301,20 @@
             color: #000000;
         }
 
-        /* --- TRUE INVISIBLE SECRET LISTEN TEXT --- */
+        /* --- 0% OPACITY SECRET LISTEN TEXT --- */
         .secret-listen {
             position: fixed;
             bottom: 15px;
             left: 50%;
             transform: translateX(-50%);
-            background-color: #ffffff;
-            color: #ffffff;
-            mix-blend-mode: exclusion;
+            opacity: 0;
             font-size: 1rem;
             font-weight: bold;
             letter-spacing: 0.15em;
             cursor: pointer;
             padding: 0;
             border: none;
-            box-shadow: none;
+            background: transparent;
             z-index: 99999;
             user-select: text;
         }
