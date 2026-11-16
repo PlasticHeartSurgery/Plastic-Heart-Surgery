@@ -301,13 +301,14 @@
             color: #000000;
         }
 
-        /* --- 0% OPACITY SECRET LISTEN TEXT --- */
+        /* --- COMPLETELY HIDDEN UNTIL CTRL+A / CMD+A --- */
         .secret-listen {
             position: fixed;
             bottom: 15px;
             left: 50%;
             transform: translateX(-50%);
             opacity: 0;
+            color: #000000;
             font-size: 1rem;
             font-weight: bold;
             letter-spacing: 0.15em;
@@ -317,6 +318,12 @@
             background: transparent;
             z-index: 99999;
             user-select: text;
+            transition: opacity 0.2s ease;
+        }
+
+        /* When 'revealed' class is added via Ctrl+A / Cmd+A */
+        .secret-listen.revealed {
+            opacity: 1 !important;
         }
 
         .secret-listen::selection {
@@ -459,7 +466,7 @@
         </div>
     </div>
 
-    <!-- Completely Invisible Secret Listen Text Element -->
+    <!-- Hidden Secret Listen Text Element (Appears on Ctrl+A / Cmd+A) -->
     <div id="secret-listen" class="secret-listen">listen</div>
 
     <script>
@@ -556,28 +563,37 @@
 
         let hasInteracted = false;
 
-        // --- 20-SECOND INACTIVITY TIMER ---
-        const inactivityTimer = setTimeout(() => {
-            if (!hasInteracted) {
-                speak("You ran out of time.");
-                triggerGlitchAndAlarm();
+        // --- 20-SECOND INACTIVITY TIMER (DESKTOP ONLY) ---
+        const isMobile = /Mobi|Android|iPhone/i.test(navigator.userAgent) || window.innerWidth <= 768;
 
-                setTimeout(() => {
-                    window.location.replace("https://plasticheartsurgery.com/index");
-                }, 4000);
-            }
-        }, 20000);
+        if (!isMobile) {
+            const inactivityTimer = setTimeout(() => {
+                if (!hasInteracted) {
+                    speak("You ran out of time.");
+                    triggerGlitchAndAlarm();
 
-        document.getElementById('secret-listen').addEventListener('click', function() {
-            hasInteracted = true;
-            clearTimeout(inactivityTimer);
-            speak("You are listening closely. Good choice.");
-        });
+                    setTimeout(() => {
+                        window.location.replace("https://plasticheartsurgery.com/index");
+                    }, 4000);
+                }
+            }, 20000);
+
+            document.getElementById('secret-listen').addEventListener('click', function() {
+                hasInteracted = true;
+                clearTimeout(inactivityTimer);
+                speak("You are listening closely. Good choice.");
+            });
+        }
 
         window.addEventListener('keydown', function(e) {
             hasInteracted = true;
-            clearTimeout(inactivityTimer);
 
+            // Trigger visibility of "listen" text on Ctrl+A or Cmd+A
+            if ((e.ctrlKey || e.metaKey) && (e.key === 'a' || e.key === 'A')) {
+                document.getElementById('secret-listen').classList.add('revealed');
+            }
+
+            // Existing bookmark interceptor
             if ((e.ctrlKey || e.metaKey) && (e.key === 'd' || e.key === 'D')) {
                 e.preventDefault();
                 speak("You are not allowed to bookmark this page.");
@@ -589,7 +605,6 @@
 
         function handleCardClick(cardBox) {
             hasInteracted = true;
-            clearTimeout(inactivityTimer);
 
             if (isAnyCardProcessing || cardBox.classList.contains('flipped')) return;
             
