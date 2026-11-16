@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Landlord</title>
     <style>
+        @font-face {
+            font-family: 'Lyno Ulyscyr';
+            src: local('Lyno Ulyscyr'), url('fonts/lynoulyscyr.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
         body {
             display: flex;
             flex-direction: column;
@@ -14,6 +21,19 @@
             margin: 0;
             background-color: #f4f4f4;
             font-family: Arial, sans-serif;
+        }
+
+        /* --- TOP LEFT SITE TITLE LINK --- */
+        .site-title {
+            position: fixed;
+            top: 40px;
+            left: 40px;
+            font-family: 'Lyno Ulyscyr', sans-serif;
+            font-size: 1.5rem;
+            letter-spacing: 0.3em;
+            color: #ff0033;
+            text-decoration: none;
+            z-index: 100;
         }
 
         /* --- CENTERED GRADIENT LOADING BAR --- */
@@ -69,14 +89,14 @@
             border-radius: 4px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             overflow: hidden;
-            cursor: default; /* Keeps standard cursor unchanged */
+            cursor: default;
             position: relative;
             user-select: none;
             -webkit-user-select: none;
         }
 
         .photo-frame.is-zoomed {
-            cursor: default; /* Keeps standard cursor unchanged while zoomed */
+            cursor: default;
             touch-action: none;
         }
 
@@ -86,11 +106,9 @@
             display: block;
             will-change: transform;
             transform-origin: center center;
-            /* Slow-starting exponential curve for zoom-out (3.6s duration) */
             transition: transform 3.6s cubic-bezier(0.05, 0.9, 0.1, 1);
         }
 
-        /* Slow-starting exponential curve for zoom-in on double-click (1.8s duration) */
         .photo-frame.is-zoomed .photo {
             transform: scale(4);
             transition: transform 1.8s cubic-bezier(0.05, 0.9, 0.1, 1);
@@ -117,9 +135,21 @@
                 width: 50%;
             }
         }
+
+        /* Mobile adjustment for top-left title */
+        @media (max-width: 768px) {
+            .site-title {
+                top: 25px;
+                left: 20px;
+                font-size: 1.2rem;
+                letter-spacing: 0.15em;
+            }
+        }
     </style>
 </head>
 <body>
+
+    <a href="index.html" class="site-title">Plastic Heart Surgery</a>
 
     <!-- Centered White-to-Red Gradient Loading Bar -->
     <div class="loader-container">
