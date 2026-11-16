@@ -12,13 +12,15 @@
             align-items: center;
             min-height: 100vh;
             margin: 0;
+            padding: 20px 0;
+            box-sizing: border-box;
             background-color: #f4f4f4;
             font-family: Arial, sans-serif;
         }
 
         .photo {
-            width: 80%; /* 80% on mobile */
-            max-width: 800px;
+            width: 90%; /* Mobile width */
+            max-width: 1280px; /* Increased by 60% from 800px */
             height: auto;
             border-radius: 4px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -26,8 +28,8 @@
 
         .text-box {
             margin-top: 20px;
-            width: 80%;
-            max-width: 800px;
+            width: 90%;
+            max-width: 1280px;
             padding: 15px;
             box-sizing: border-box;
             background: white;
@@ -38,18 +40,18 @@
             color: #333;
         }
 
-        /* Desktop style: 50% width */
+        /* Desktop style: 80% width (60% larger than original 50%) */
         @media (min-width: 768px) {
             .photo,
             .text-box {
-                width: 50%;
+                width: 80%;
             }
         }
     </style>
 </head>
 <body>
 
-    <img src="images/Landlord%2C%20Plastic%2C%20Oil%20on%20Canvas%2C%2042%20x%2055%2C%202023.jpg" alt="Landlord by Artist" class="photo">
+    <img src="images/Landlord, Plastic, Oil on Canvas, 42 x 55, 2023.jpg" alt="Landlord, Plastic, Oil on Canvas, 42 x 55, 2023" class="photo">
 
     <div class="text-box">
         <p>Landlord</p>
