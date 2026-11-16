@@ -193,7 +193,7 @@
                 </div>
             </div>
 
-            <!-- Card 2 (Flips to an image instead of text) -->
+            <!-- Card 2 -->
             <div class="card-box" data-redirect="https://plasticheartsurgery.com/windex2" onclick="handleCardClick(this)">
                 <div class="card-inner">
                     <div class="card-front">
@@ -235,10 +235,17 @@
     </div>
 
     <script>
+        // Prevent keyboard shortcut for bookmarking (Ctrl+D / Cmd+D)
+        window.addEventListener('keydown', function(e) {
+            if ((e.ctrlKey || e.metaKey) && (e.key === 'd' || e.key === 'D')) {
+                e.preventDefault();
+                alert("Your lineage forbids bookmarking your fate!");
+            }
+        });
+
         let isAnyCardProcessing = false;
 
         function handleCardClick(cardBox) {
-            // Prevent clicking if any card is currently processing/flipped
             if (isAnyCardProcessing || cardBox.classList.contains('flipped')) return;
             
             isAnyCardProcessing = true;
@@ -251,7 +258,7 @@
             setTimeout(() => {
                 cardBox.classList.remove('flipped');
 
-                // 3. 1 second after unflipping, use .replace() to redirect and prevent going back
+                // 3. 1 second after unflipping, redirect and clear history state
                 setTimeout(() => {
                     window.location.replace(redirectUrl);
                 }, 1000);
