@@ -293,7 +293,7 @@
             color: #000000;
         }
 
-        /* --- INVISIBLE WHITE SECRET TEXT AT BOTTOM CENTER --- */
+        /* --- INVISIBLE WHITE SECRET TEXT AT BOTTOM CENTER (Highlightable with Ctrl+A) --- */
         .secret-listen {
             position: fixed;
             bottom: 18px;
@@ -302,11 +302,14 @@
             color: #ffffff;
             font-size: 1rem;
             letter-spacing: 0.1em;
-            user-select: none;
-            -webkit-user-select: none;
             cursor: default;
             padding: 8px 16px;
             z-index: 100;
+        }
+
+        .secret-listen::selection {
+            background-color: #000000;
+            color: #ffffff;
         }
     </style>
 </head>
