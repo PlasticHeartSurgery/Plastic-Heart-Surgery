@@ -323,12 +323,12 @@
             <!-- Clickable Track Cards Grid -->
             <div class="links-grid">
 
-                <!-- Singular Blank Card with False Path -->
-                <div class="track-card" data-src="audio/unreleased-track-01.mp3" data-title="Untitled Track 01" onclick="toggleTrack(this)">
+                <!-- Eel (Instrumental) Track Card -->
+                <div class="track-card" data-src="audio/Eel (Instrumental).mp3" data-title="Eel (Instrumental)" onclick="toggleTrack(this)">
                     <div>
                         <div class="link-tag">Track 01</div>
-                        <div class="link-title"></div>
-                        <div class="link-desc"></div>
+                        <div class="link-title">Eel (Instrumental)</div>
+                        <div class="link-desc">Instrumental Mix</div>
                     </div>
                     <div class="play-indicator">PLAY</div>
                 </div>
@@ -395,7 +395,7 @@
             isDemoPlaying = false;
         }
 
-        // Fallback synth pulse when false path fails to load
+        // Fallback synth pulse when file fails to load
         function startDemoSynth(title) {
             stopDemoSynth();
             isDemoPlaying = true;
@@ -420,7 +420,7 @@
                 }
             }, 220);
 
-            vizStatus.textContent = `Visualizing Preview (File Not Uploaded Yet): ${title}`;
+            vizStatus.textContent = `Visualizing Preview (File Not Found): ${title}`;
         }
 
         function toggleTrack(card) {
@@ -456,7 +456,7 @@
             audio.play().then(() => {
                 vizStatus.textContent = `Now Playing: ${title}`;
             }).catch(() => {
-                // False path fallback so the visualizer still works until files are uploaded
+                // Fallback synth so the visualizer still works if the file path is incorrect
                 startDemoSynth(title);
             });
         }
