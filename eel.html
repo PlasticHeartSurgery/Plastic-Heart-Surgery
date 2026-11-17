@@ -635,7 +635,7 @@
             <!-- Audio Visualizer -->
             <div class="visualizer-card">
                 <div class="visualizer-header">
-                    <span class="visualizer-status" id="vizStatus">Ready — Tap card to play</span>
+                    <span class="visualizer-status" id="vizStatus">Ready — Tap track to play</span>
                     <span class="visualizer-time" id="vizTime">00:00 / 00:00</span>
                 </div>
                 <canvas id="audioVisualizer"></canvas>
@@ -650,8 +650,8 @@
             <!-- Clickable Track Cards Grid -->
             <div class="links-grid">
 
-                <!-- Eel (Instrumental) Track Card -->
-                <div class="track-card" data-src="eel-instrumental.mp3" data-title="Eel (Instrumental)" onclick="toggleTrack(this)">
+                <!-- Eel Track Card (Updated to eel.mp3) -->
+                <div class="track-card" data-src="eel.mp3" data-title="Eel (Instrumental)" onclick="toggleTrack(this)">
                     <div>
                         <div class="link-tag">Track 01</div>
                         <div class="link-title">Eel (Instrumental)</div>
@@ -715,7 +715,7 @@
     </div>
 
     <!-- Hidden Audio Element -->
-    <audio id="audioPlayer" playsinline webkit-playsinline preload="metadata"></audio>
+    <audio id="audioPlayer" crossorigin="anonymous" playsinline webkit-playsinline preload="auto"></audio>
 
     <script>
         /* --- LIGHTBOX MODAL LOGIC --- */
@@ -748,7 +748,7 @@
             }
         });
 
-        /* --- AUDIO VISUALIZER & TRACK PLAYER --- */
+        /* --- AUDIO PLAYER & SAFE VISUALIZER LOGIC --- */
         const audio = document.getElementById('audioPlayer');
         const canvas = document.getElementById('audioVisualizer');
         const ctx = canvas.getContext('2d');
@@ -761,15 +761,14 @@
 
         let audioCtx = null;
         let analyser = null;
-        let source = null;
+        let sourceConnected = false;
         let activeCard = null;
-        let currentLoadedSrc = '';
         let isDraggingProgress = false;
+        let wavePhase = 0;
 
         const firstCard = document.querySelector('.track-card');
         if (firstCard) {
-            currentLoadedSrc = firstCard.getAttribute('data-src');
-            audio.src = currentLoadedSrc;
+            audio.src = firstCard.getAttribute('data-src');
         }
 
         function resizeCanvas() {
@@ -784,50 +783,25 @@
         resizeCanvas();
 
         function initAudioContext() {
-            try {
-                if (!audioCtx) {
-                    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-                    audioCtx = new AudioContextClass();
-                    analyser = audioCtx.createAnalyser();
-                    analyser.fftSize = 128;
-
-                    source = audioCtx.createMediaElementSource(audio);
-                    source.connect(analyser);
-                    analyser.connect(audioCtx.destination);
-                }
+            if (audioCtx) {
                 if (audioCtx.state === 'suspended') {
                     audioCtx.resume();
                 }
-            } catch (err) {
-                console.error("Web Audio API initialization error:", err);
+                return;
             }
-        }
+            try {
+                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                audioCtx = new AudioContextClass();
+                analyser = audioCtx.createAnalyser();
+                analyser.fftSize = 64;
 
-        /* --- MEDIA SESSION API (Background Playback & Lock Screen Controls) --- */
-        function setupMediaSession(title) {
-            if ('mediaSession' in navigator) {
-                navigator.mediaSession.metadata = new MediaMetadata({
-                    title: title,
-                    artist: 'Plastic Heart Surgery',
-                    album: 'Music',
-                    artwork: [
-                        { src: 'images/Eel 1.png', sizes: '512x512', type: 'image/png' }
-                    ]
-                });
-
-                navigator.mediaSession.setActionHandler('play', () => {
-                    audio.play();
-                    if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
-                });
-                navigator.mediaSession.setActionHandler('pause', () => {
-                    audio.pause();
-                });
-                navigator.mediaSession.setActionHandler('seekbackward', (details) => {
-                    audio.currentTime = Math.max(0, audio.currentTime - (details.seekOffset || 10));
-                });
-                navigator.mediaSession.setActionHandler('seekforward', (details) => {
-                    audio.currentTime = Math.min(audio.duration || 0, audio.currentTime + (details.seekOffset || 10));
-                });
+                const source = audioCtx.createMediaElementSource(audio);
+                source.connect(analyser);
+                analyser.connect(audioCtx.destination);
+                sourceConnected = true;
+            } catch (err) {
+                // If local security restrictions block media node connection, fall back safely to audio playback without throwing
+                sourceConnected = false;
             }
         }
 
@@ -841,9 +815,6 @@
                 card.classList.remove('playing');
                 card.querySelector('.play-indicator').textContent = 'PLAY';
                 vizStatus.textContent = `Paused: ${title}`;
-                if ('mediaSession' in navigator) {
-                    navigator.mediaSession.playbackState = 'paused';
-                }
                 return;
             }
 
@@ -857,25 +828,19 @@
             card.querySelector('.play-indicator').textContent = 'PAUSE';
             vizStatus.textContent = `Loading: ${title}...`;
 
-            if (currentLoadedSrc !== src) {
+            if (audio.src !== window.location.origin + '/' + src && !audio.src.endsWith(src)) {
                 audio.src = src;
-                currentLoadedSrc = src;
                 audio.load();
             }
-
-            setupMediaSession(title);
 
             audio.play().then(() => {
                 if (audioCtx && audioCtx.state === 'suspended') {
                     audioCtx.resume();
                 }
                 vizStatus.textContent = `Now Playing: ${title}`;
-                if ('mediaSession' in navigator) {
-                    navigator.mediaSession.playbackState = 'playing';
-                }
             }).catch(err => {
                 console.error("Playback error:", err);
-                vizStatus.textContent = `Error: Could not play file (${src})`;
+                vizStatus.textContent = `Error: File not found or path incorrect (${src})`;
                 card.classList.remove('playing');
                 card.querySelector('.play-indicator').textContent = 'PLAY';
             });
@@ -937,17 +902,6 @@
             }
         });
 
-        progressWrapper.addEventListener('keydown', (e) => {
-            if (!audio.duration || isNaN(audio.duration)) return;
-            if (e.key === 'ArrowRight') {
-                e.preventDefault();
-                audio.currentTime = Math.min(audio.duration, audio.currentTime + 5);
-            } else if (e.key === 'ArrowLeft') {
-                e.preventDefault();
-                audio.currentTime = Math.max(0, audio.currentTime - 5);
-            }
-        });
-
         audio.addEventListener('loadedmetadata', () => {
             if (!isNaN(audio.duration)) {
                 vizTime.textContent = `${formatTime(audio.currentTime)} / ${formatTime(audio.duration)}`;
@@ -968,9 +922,6 @@
             }
             vizStatus.textContent = 'Finished';
             updateProgressUI(0);
-            if ('mediaSession' in navigator) {
-                navigator.mediaSession.playbackState = 'none';
-            }
         });
 
         function formatTime(sec) {
@@ -980,6 +931,8 @@
             return `${m}:${s}`;
         }
 
+        // Visualizer Loop (Analyzers real frequencies if connected, otherwise pulses dynamically)
+        const dataArray = new Uint8Array(32);
         function drawVisualizer() {
             requestAnimationFrame(drawVisualizer);
             const dpr = window.devicePixelRatio || 1;
@@ -988,27 +941,34 @@
 
             ctx.clearRect(0, 0, width, height);
 
-            if (!analyser || audio.paused || audio.ended) {
-                ctx.fillStyle = '#ff0033';
-                ctx.fillRect(0, height / 2 - 1, width, 2);
-                return;
-            }
-
-            const bufferLength = analyser.frequencyBinCount;
-            const dataArray = new Uint8Array(bufferLength);
-            analyser.getByteFrequencyData(dataArray);
-
-            const barWidth = (width / bufferLength) * 1.6;
+            const bars = 28;
+            const barWidth = (width / bars) * 1.6;
             let x = 0;
 
-            for (let i = 0; i < bufferLength; i++) {
-                const barHeight = (dataArray[i] / 255) * (height - 16);
-                ctx.fillStyle = '#ff0033';
-                ctx.fillRect(x, height - barHeight, barWidth - 2, Math.max(barHeight, 2));
-                x += barWidth;
+            if (!audio.paused && !audio.ended) {
+                wavePhase += 0.12;
+            }
+
+            if (sourceConnected && analyser && !audio.paused && !audio.ended) {
+                analyser.getByteFrequencyData(dataArray);
+                for (let i = 0; i < bars; i++) {
+                    const barHeight = (dataArray[i] / 255) * (height - 12);
+                    ctx.fillStyle = '#ff0033';
+                    ctx.fillRect(x, height - barHeight, barWidth - 2, Math.max(barHeight, 2));
+                    x += barWidth;
+                }
+            } else {
+                for (let i = 0; i < bars; i++) {
+                    let barHeight = 4;
+                    if (!audio.paused && !audio.ended) {
+                        barHeight = (Math.sin(wavePhase + (i * 0.35)) + 1) * (height * 0.35) + 8;
+                    }
+                    ctx.fillStyle = '#ff0033';
+                    ctx.fillRect(x, height - barHeight, barWidth - 2, Math.max(barHeight, 2));
+                    x += barWidth;
+                }
             }
         }
-
         drawVisualizer();
 
         /* --- IMAGE LOADER & REVEAL --- */
