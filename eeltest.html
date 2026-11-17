@@ -1,1 +1,851 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <title>Eel | Instrumental</title>
+
+    <style>
+        :root {
+            color-scheme: dark;
+            --background: #000;
+            --surface: #111;
+            --accent: #ff0033;
+            --text: #fff;
+            --muted: #aaa;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            min-height: 100svh;
+            margin: 0;
+            padding: 32px 20px;
+            background: var(--background);
+            color: var(--text);
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        main {
+            display: grid;
+            gap: 24px;
+            width: 100%;
+            max-width: 800px;
+            min-width: 0;
+            margin-inline: auto;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: clamp(40px, 8vw, 72px);
+            letter-spacing: -0.05em;
+        }
+
+        .subtitle {
+            margin: 8px 0 0;
+            color: var(--muted);
+        }
+
+        #loader {
+            width: 100%;
+            height: 4px;
+            overflow: hidden;
+            background: #222;
+        }
+
+        #loader-bar {
+            width: 0;
+            height: 100%;
+            background: var(--accent);
+            transition: width 0.3s ease;
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+            min-width: 0;
+        }
+
+        .gallery img {
+            display: block;
+            width: 100%;
+            height: auto;
+            opacity: 0;
+            transition: opacity 0.8s ease;
+        }
+
+        body.images-loaded .gallery img {
+            opacity: 1;
+        }
+
+        .player {
+            display: grid;
+            gap: 16px;
+            width: 100%;
+            min-width: 0;
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 16px;
+            min-width: 0;
+        }
+
+        #play-btn {
+            flex: 0 0 auto;
+            min-width: 120px;
+            min-height: 48px;
+            border: 0;
+            padding: 12px 28px;
+            background: var(--accent);
+            color: var(--text);
+            font: inherit;
+            font-weight: 700;
+            cursor: pointer;
+            touch-action: manipulation;
+        }
+
+        #play-btn:hover {
+            background: #d9002b;
+        }
+
+        #play-btn:focus-visible,
+        #seek:focus-visible,
+        #download-link:focus-visible {
+            outline: 2px solid #fff;
+            outline-offset: 4px;
+        }
+
+        #play-btn:disabled {
+            opacity: 0.6;
+            cursor: wait;
+        }
+
+        .timeline {
+            display: flex;
+            flex: 1 1 240px;
+            align-items: center;
+            gap: 12px;
+            min-width: 0;
+        }
+
+        .time {
+            flex: 0 0 auto;
+            min-width: 3ch;
+            color: var(--muted);
+            font-size: 13px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        #seek {
+            flex: 1 1 auto;
+            width: 100%;
+            min-width: 0;
+            min-height: 44px;
+            margin: 0;
+            accent-color: var(--accent);
+            cursor: pointer;
+            touch-action: pan-y;
+        }
+
+        #visualizer {
+            display: block;
+            width: 100%;
+            height: 200px;
+            min-width: 0;
+            background: var(--surface);
+        }
+
+        #status,
+        .fallback {
+            margin: 0;
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.5;
+            overflow-wrap: anywhere;
+        }
+
+        #status {
+            min-height: 1.5em;
+        }
+
+        #status.error {
+            color: #ff8099;
+        }
+
+        #download-link {
+            color: inherit;
+            text-underline-offset: 3px;
+        }
+
+        noscript audio {
+            width: 100%;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 24px 16px;
+            }
+
+            main {
+                gap: 20px;
+            }
+
+            .gallery {
+                gap: 6px;
+            }
+
+            #visualizer {
+                height: 150px;
+            }
+
+            #play-btn {
+                width: 100%;
+            }
+
+            .timeline {
+                flex-basis: 100%;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            #loader-bar,
+            .gallery img {
+                transition: none;
+            }
+        }
+    </style>
+
+    <noscript>
+        <style>
+            .gallery img {
+                opacity: 1;
+            }
+
+            #loader,
+            #play-btn,
+            .timeline,
+            #visualizer,
+            #status {
+                display: none;
+            }
+        </style>
+    </noscript>
+</head>
+
+<body>
+    <!--
+        Folder structure:
+
+        index.html
+
+        audio/
+            Eel (Instrumental).mp3
+
+        images/
+            Eel 1.png
+            Eel 2.png
+            Eel 3.png
+
+        Use a local web server or website hosting for the visualizer.
+        When opened directly as a file, ordinary audio playback is used.
+    -->
+
+    <main>
+        <header>
+            <h1>Eel</h1>
+            <p class="subtitle">Instrumental</p>
+        </header>
+
+        <div id="loader" aria-hidden="true">
+            <div id="loader-bar"></div>
+        </div>
+
+        <section class="gallery" aria-label="Eel artwork">
+            <img src="./images/Eel%201.png" alt="Eel artwork 1">
+            <img src="./images/Eel%202.png" alt="Eel artwork 2">
+            <img src="./images/Eel%203.png" alt="Eel artwork 3">
+        </section>
+
+        <section class="player" aria-label="Music player">
+            <audio
+                id="song"
+                src="./audio/Eel%20(Instrumental).mp3"
+                preload="metadata"
+                playsinline
+            ></audio>
+
+            <div class="controls">
+                <button
+                    id="play-btn"
+                    type="button"
+                    aria-controls="song"
+                    aria-pressed="false"
+                >
+                    Play
+                </button>
+
+                <div class="timeline">
+                    <span id="current-time" class="time">0:00</span>
+
+                    <input
+                        id="seek"
+                        type="range"
+                        min="0"
+                        max="100"
+                        step="0.1"
+                        value="0"
+                        aria-label="Seek through song"
+                        disabled
+                    >
+
+                    <span id="duration" class="time">0:00</span>
+                </div>
+            </div>
+
+            <canvas
+                id="visualizer"
+                width="800"
+                height="200"
+                role="img"
+                aria-label="Audio frequency visualizer"
+            ></canvas>
+
+            <p id="status" role="status" aria-live="polite">
+                Press Play to start the song.
+            </p>
+
+            <p class="fallback">
+                Playback trouble?
+                <a
+                    id="download-link"
+                    href="./audio/Eel%20(Instrumental).mp3"
+                >Open the audio file directly</a>.
+            </p>
+
+            <noscript>
+                <audio
+                    controls
+                    preload="metadata"
+                    src="./audio/Eel%20(Instrumental).mp3"
+                >
+                    Your browser does not support HTML audio.
+                </audio>
+            </noscript>
+        </section>
+    </main>
+
+    <script>
+        (() => {
+            'use strict';
+
+            const audio = document.getElementById('song');
+            const playBtn = document.getElementById('play-btn');
+            const canvas = document.getElementById('visualizer');
+            const ctx = canvas.getContext('2d');
+            const status = document.getElementById('status');
+            const seek = document.getElementById('seek');
+            const currentTimeLabel =
+                document.getElementById('current-time');
+            const durationLabel =
+                document.getElementById('duration');
+
+            const reducedMotion = window.matchMedia
+                ? window.matchMedia('(prefers-reduced-motion: reduce)')
+                : null;
+
+            let audioCtx = null;
+            let analyser = null;
+            let mediaSource = null;
+            let dataArray = null;
+            let visualizerUnavailable = false;
+            let animationFrame = null;
+            let resizeFrame = null;
+
+            function setStatus(message, isError = false) {
+                status.textContent = message;
+                status.classList.toggle('error', isError);
+            }
+
+            function updatePlayButton() {
+                const playing = !audio.paused && !audio.ended;
+
+                playBtn.textContent = playing ? 'Pause' : 'Play';
+                playBtn.setAttribute(
+                    'aria-pressed',
+                    String(playing)
+                );
+            }
+
+            function formatTime(seconds) {
+                if (!Number.isFinite(seconds) || seconds < 0) {
+                    return '0:00';
+                }
+
+                const minutes = Math.floor(seconds / 60);
+                const remainder = Math.floor(seconds % 60);
+
+                return minutes + ':' +
+                    String(remainder).padStart(2, '0');
+            }
+
+            function updateTimeline() {
+                const validDuration =
+                    Number.isFinite(audio.duration) &&
+                    audio.duration > 0;
+
+                currentTimeLabel.textContent =
+                    formatTime(audio.currentTime);
+
+                durationLabel.textContent =
+                    formatTime(audio.duration);
+
+                seek.disabled = !validDuration;
+
+                seek.value = validDuration
+                    ? String(
+                        (audio.currentTime / audio.duration) * 100
+                    )
+                    : '0';
+
+                seek.setAttribute(
+                    'aria-valuetext',
+                    formatTime(audio.currentTime) +
+                    ' of ' +
+                    formatTime(audio.duration)
+                );
+            }
+
+            seek.addEventListener('input', () => {
+                if (
+                    !Number.isFinite(audio.duration) ||
+                    audio.duration <= 0
+                ) {
+                    return;
+                }
+
+                audio.currentTime =
+                    (Number(seek.value) / 100) * audio.duration;
+
+                updateTimeline();
+            });
+
+            function initializeAudioGraph() {
+                if (mediaSource || visualizerUnavailable) return;
+
+                const AudioContextClass =
+                    window.AudioContext ||
+                    window.webkitAudioContext;
+
+                // Leave ordinary playback intact if Web Audio is
+                // unsupported or the page is opened directly from disk.
+                if (
+                    !AudioContextClass ||
+                    !ctx ||
+                    window.location.protocol === 'file:'
+                ) {
+                    visualizerUnavailable = true;
+                    return;
+                }
+
+                try {
+                    audioCtx = audioCtx || new AudioContextClass();
+
+                    const nextAnalyser =
+                        audioCtx.createAnalyser();
+
+                    nextAnalyser.fftSize = 128;
+                    nextAnalyser.smoothingTimeConstant = 0.85;
+
+                    // Create this source only once per audio element.
+                    mediaSource =
+                        audioCtx.createMediaElementSource(audio);
+
+                    try {
+                        mediaSource.connect(nextAnalyser);
+                        nextAnalyser.connect(audioCtx.destination);
+
+                        analyser = nextAnalyser;
+
+                        dataArray = new Uint8Array(
+                            analyser.frequencyBinCount
+                        );
+                    } catch (connectionError) {
+                        // Keep audio audible if analyser setup fails
+                        // after the media element has been rerouted.
+                        mediaSource.disconnect();
+                        mediaSource.connect(audioCtx.destination);
+
+                        visualizerUnavailable = true;
+                        console.warn(
+                            'Visualizer disabled:',
+                            connectionError
+                        );
+                    }
+                } catch (error) {
+                    visualizerUnavailable = true;
+
+                    console.warn(
+                        'Web Audio initialization failed:',
+                        error
+                    );
+                }
+            }
+
+            playBtn.addEventListener('click', async () => {
+                if (!audio.paused) {
+                    audio.pause();
+                    return;
+                }
+
+                playBtn.disabled = true;
+                setStatus('Starting playback…');
+
+                try {
+                    initializeAudioGraph();
+
+                    // Both requests occur within the user's click/tap.
+                    const resumePromise =
+                        audioCtx && audioCtx.state !== 'running'
+                            ? audioCtx.resume()
+                            : Promise.resolve();
+
+                    const playPromise = audio.play();
+
+                    await Promise.all([
+                        resumePromise,
+                        playPromise
+                    ]);
+                } catch (error) {
+                    console.error('Playback failed:', error);
+
+                    if (error.name === 'NotAllowedError') {
+                        setStatus(
+                            'Audio was blocked. Allow playback for this site and press Play again.',
+                            true
+                        );
+                    } else if (
+                        error.name === 'NotSupportedError'
+                    ) {
+                        setStatus(
+                            'Check that audio/Eel (Instrumental).mp3 exists and is a valid MP3.',
+                            true
+                        );
+                    } else {
+                        setStatus(
+                            'Unable to start audio. Try Play again or open the audio file directly.',
+                            true
+                        );
+                    }
+                } finally {
+                    playBtn.disabled = false;
+                    updatePlayButton();
+                }
+            });
+
+            audio.addEventListener('play', updatePlayButton);
+
+            audio.addEventListener('playing', () => {
+                updatePlayButton();
+
+                setStatus(
+                    visualizerUnavailable
+                        ? 'Now playing: Eel (Instrumental). Visualizer unavailable in this environment.'
+                        : 'Now playing: Eel (Instrumental)'
+                );
+
+                startVisualizer();
+            });
+
+            audio.addEventListener('pause', () => {
+                updatePlayButton();
+                stopVisualizer();
+
+                if (!audio.ended && !audio.error) {
+                    setStatus('Paused.');
+                }
+            });
+
+            audio.addEventListener('ended', () => {
+                updatePlayButton();
+                updateTimeline();
+                stopVisualizer();
+
+                setStatus(
+                    'Song finished. Press Play to listen again.'
+                );
+            });
+
+            audio.addEventListener('waiting', () => {
+                if (!audio.paused) {
+                    setStatus('Buffering audio…');
+                }
+            });
+
+            audio.addEventListener('loadedmetadata', updateTimeline);
+            audio.addEventListener('durationchange', updateTimeline);
+            audio.addEventListener('timeupdate', updateTimeline);
+
+            audio.addEventListener('error', () => {
+                console.error(
+                    'Audio loading error:',
+                    audio.error,
+                    audio.currentSrc
+                );
+
+                setStatus(
+                    'Could not load audio/Eel (Instrumental).mp3. Check the folder, filename, capitalization, and server response.',
+                    true
+                );
+
+                updatePlayButton();
+                stopVisualizer();
+            });
+
+            function drawVisualizer() {
+                if (!ctx) return;
+
+                const width = canvas.width;
+                const height = canvas.height;
+                const pixelRatio = Math.min(
+                    window.devicePixelRatio || 1,
+                    2
+                );
+
+                ctx.clearRect(0, 0, width, height);
+                ctx.fillStyle = '#ff0033';
+
+                const showAnimation =
+                    analyser &&
+                    dataArray &&
+                    !audio.paused &&
+                    !audio.ended &&
+                    !(reducedMotion && reducedMotion.matches);
+
+                if (!showAnimation) {
+                    const lineHeight = 2 * pixelRatio;
+
+                    ctx.fillRect(
+                        0,
+                        height - lineHeight,
+                        width,
+                        lineHeight
+                    );
+
+                    return;
+                }
+
+                analyser.getByteFrequencyData(dataArray);
+
+                const barWidth = width / dataArray.length;
+                const gap = 2 * pixelRatio;
+                const minimumHeight = 2 * pixelRatio;
+                const topPadding = 16 * pixelRatio;
+
+                for (let i = 0; i < dataArray.length; i++) {
+                    const barHeight = Math.max(
+                        (dataArray[i] / 255) *
+                            Math.max(0, height - topPadding),
+                        minimumHeight
+                    );
+
+                    ctx.fillRect(
+                        i * barWidth,
+                        height - barHeight,
+                        Math.max(1, barWidth - gap),
+                        barHeight
+                    );
+                }
+            }
+
+            function animationTick() {
+                animationFrame = null;
+                drawVisualizer();
+
+                if (
+                    !audio.paused &&
+                    !audio.ended &&
+                    !document.hidden &&
+                    analyser &&
+                    !(reducedMotion && reducedMotion.matches)
+                ) {
+                    animationFrame =
+                        requestAnimationFrame(animationTick);
+                }
+            }
+
+            function startVisualizer() {
+                if (animationFrame === null) {
+                    animationTick();
+                }
+            }
+
+            function stopVisualizer() {
+                if (animationFrame !== null) {
+                    cancelAnimationFrame(animationFrame);
+                    animationFrame = null;
+                }
+
+                drawVisualizer();
+            }
+
+            function resizeCanvas() {
+                resizeFrame = null;
+
+                const width = canvas.clientWidth;
+                const height = canvas.clientHeight;
+
+                if (width <= 0 || height <= 0) return;
+
+                const pixelRatio = Math.min(
+                    window.devicePixelRatio || 1,
+                    2
+                );
+
+                const drawingWidth = Math.round(
+                    width * pixelRatio
+                );
+
+                const drawingHeight = Math.round(
+                    height * pixelRatio
+                );
+
+                if (canvas.width !== drawingWidth) {
+                    canvas.width = drawingWidth;
+                }
+
+                if (canvas.height !== drawingHeight) {
+                    canvas.height = drawingHeight;
+                }
+
+                drawVisualizer();
+            }
+
+            function scheduleResize() {
+                if (resizeFrame !== null) return;
+
+                resizeFrame = requestAnimationFrame(resizeCanvas);
+            }
+
+            if ('ResizeObserver' in window) {
+                const resizeObserver = new ResizeObserver(
+                    scheduleResize
+                );
+
+                resizeObserver.observe(canvas);
+            }
+
+            window.addEventListener('resize', scheduleResize, {
+                passive: true
+            });
+
+            window.addEventListener(
+                'orientationchange',
+                scheduleResize,
+                { passive: true }
+            );
+
+            window.addEventListener('pageshow', scheduleResize);
+
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) {
+                    if (animationFrame !== null) {
+                        cancelAnimationFrame(animationFrame);
+                        animationFrame = null;
+                    }
+                } else {
+                    scheduleResize();
+                    startVisualizer();
+                }
+            });
+
+            if (reducedMotion) {
+                const onMotionChange = () => {
+                    if (animationFrame !== null) {
+                        cancelAnimationFrame(animationFrame);
+                        animationFrame = null;
+                    }
+
+                    startVisualizer();
+                };
+
+                if (reducedMotion.addEventListener) {
+                    reducedMotion.addEventListener(
+                        'change',
+                        onMotionChange
+                    );
+                } else if (reducedMotion.addListener) {
+                    reducedMotion.addListener(onMotionChange);
+                }
+            }
+
+            /* --- IMAGE LOADER & REVEAL --- */
+
+            function initializeImageLoader() {
+                const images = Array.from(
+                    document.querySelectorAll('.gallery img')
+                );
+
+                const loaderBar =
+                    document.getElementById('loader-bar');
+
+                let settledCount = 0;
+
+                if (images.length === 0) {
+                    loaderBar.style.width = '100%';
+                    document.body.classList.add('images-loaded');
+                    return;
+                }
+
+                images.forEach((image) => {
+                    let settled = false;
+
+                    function finish() {
+                        if (settled) return;
+                        settled = true;
+
+                        image.removeEventListener('load', finish);
+                        image.removeEventListener('error', finish);
+
+                        settledCount++;
+
+                        loaderBar.style.width =
+                            (settledCount / images.length) *
+                            100 +
+                            '%';
+
+                        if (settledCount === images.length) {
+                            document.body.classList.add(
+                                'images-loaded'
+                            );
+                        }
+                    }
+
+                    image.addEventListener('load', finish);
+                    image.addEventListener('error', finish);
+
+                    if (image.complete) {
+                        finish();
+                    }
+                });
+
+                // Do not leave artwork hidden if an image request hangs.
+                window.setTimeout(() => {
+                    document.body.classList.add('images-loaded');
+                }, 5000);
+            }
+
+            resizeCanvas();
+            updateTimeline();
+            initializeImageLoader();
+        })();
+    </script>
+</body>
+</html>
