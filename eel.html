@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Plastic Heart Surgery — Music</title>
     <style>
         @font-face {
@@ -19,7 +19,7 @@
             font-style: normal;
         }
 
-        * {
+        *, *::before, *::after {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
@@ -32,6 +32,40 @@
             display: flex;
             min-height: 100vh;
             line-height: 1.6;
+            overflow-x: hidden;
+            touch-action: pan-y;
+            -webkit-text-size-adjust: 100%;
+            text-size-adjust: 100%;
+        }
+
+        /* --- CENTERED GRADIENT LOADING BAR --- */
+        .loader-container {
+            position: fixed;
+            top: 50%;
+            left: calc(340px + ((100vw - 340px) / 2));
+            transform: translate(-50%, -50%);
+            width: min(300px, 80vw);
+            height: 10px;
+            background-color: #f0f0f0;
+            border: 2px solid #000000;
+            border-radius: 999px;
+            overflow: hidden;
+            box-shadow: 3px 3px 0px #000000;
+            z-index: 9999;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .loader-bar {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(to right, #ffffff, #ff0033);
+            border-radius: 999px;
+            transition: width 0.1s ease-out;
+        }
+
+        body.images-loaded .loader-container {
+            opacity: 0;
+            visibility: hidden;
         }
 
         .sidebar {
@@ -47,6 +81,7 @@
             top: 0;
             left: 0;
             overflow-y: auto;
+            z-index: 10;
         }
 
         .site-title {
@@ -247,6 +282,81 @@
             border-color: #ff0033;
         }
 
+        /* --- IMAGE CARDS GRID (Eel 1, Eel 2, Eel 3) --- */
+        .art-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-top: 30px;
+        }
+
+        .art-card {
+            background: #ffffff;
+            border: 2px solid #000000;
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: 4px 4px 0px #000000;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            z-index: 1;
+            opacity: 0;
+            transform: translateY(15px) scale(1);
+            transition: 
+                opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                box-shadow 1.5s ease,
+                border-color 1.5s ease;
+            transition-delay: calc(var(--i, 0) * 0.08s), 0s, 0s, 0s;
+        }
+
+        body.images-loaded .art-card {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            transition-delay: 0s;
+        }
+
+        @media (hover: hover) {
+            body.images-loaded .art-card:hover {
+                transform: translateY(-4px) scale(1.06) !important;
+                border-color: #ff0033;
+                box-shadow: 10px 10px 0px #ff0033;
+                z-index: 20;
+                transition-delay: 0s !important;
+            }
+        }
+
+        .art-card.mobile-zoomed {
+            border-color: #ff0033 !important;
+            box-shadow: 10px 10px 0px #ff0033 !important;
+            z-index: 50 !important;
+        }
+
+        .art-image-frame {
+            width: 100%;
+            background: #f0f0f0;
+            overflow: hidden;
+            cursor: zoom-in;
+            touch-action: none;
+            position: relative;
+        }
+
+        .art-image-frame img {
+            width: 100%;
+            height: auto;
+            display: block;
+            object-fit: cover;
+            will-change: transform;
+            transform-origin: center center;
+            transition: transform 9s cubic-bezier(0.05, 0.9, 0.1, 1);
+        }
+
+        .art-card:hover .art-image-frame img,
+        .art-card.mobile-zoomed .art-image-frame img {
+            transform: scale(4);
+            transition: transform 4.5s cubic-bezier(0.85, 0, 0.95, 0.4);
+        }
+
         @media (max-width: 768px) {
             body {
                 flex-direction: column;
@@ -262,6 +372,9 @@
                 padding: 40px 20px;
                 max-width: 100%;
             }
+            .loader-container {
+                left: 50%;
+            }
             .site-title {
                 font-size: 1.2rem;
                 letter-spacing: 0.15em;
@@ -275,10 +388,19 @@
                 align-items: flex-start;
                 gap: 16px;
             }
+            .art-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
         }
     </style>
 </head>
 <body>
+
+    <!-- Centered White-to-Red Gradient Loading Bar -->
+    <div class="loader-container">
+        <div class="loader-bar" id="loader-bar"></div>
+    </div>
 
     <div class="sidebar">
         <div>
@@ -328,6 +450,32 @@
                 </div>
 
             </div>
+
+            <!-- Image Cards Grid (Ordered lowest number on left) -->
+            <div class="art-grid">
+
+                <!-- Eel 1 -->
+                <div class="art-card" style="--i: 1;">
+                    <div class="art-image-frame">
+                        <img src="images/Eel 1.png" alt="Eel 1">
+                    </div>
+                </div>
+
+                <!-- Eel 2 -->
+                <div class="art-card" style="--i: 2;">
+                    <div class="art-image-frame">
+                        <img src="images/Eel 2.png" alt="Eel 2">
+                    </div>
+                </div>
+
+                <!-- Eel 3 -->
+                <div class="art-card" style="--i: 3;">
+                    <div class="art-image-frame">
+                        <img src="images/Eel 3.png" alt="Eel 3">
+                    </div>
+                </div>
+
+            </div>
         </section>
     </main>
 
@@ -335,6 +483,7 @@
     <audio id="audioPlayer" crossorigin="anonymous"></audio>
 
     <script>
+        /* --- AUDIO VISUALIZER & TRACK PLAYER --- */
         const audio = document.getElementById('audioPlayer');
         const canvas = document.getElementById('audioVisualizer');
         const ctx = canvas.getContext('2d');
@@ -351,7 +500,6 @@
         let demoInterval = null;
         let isDemoPlaying = false;
 
-        // Resize canvas sharply for Retina/high-DPI screens
         function resizeCanvas() {
             const rect = canvas.getBoundingClientRect();
             canvas.width = rect.width * window.devicePixelRatio;
@@ -389,7 +537,6 @@
             isDemoPlaying = false;
         }
 
-        // Fallback synth pulse when file fails to load
         function startDemoSynth(title) {
             stopDemoSynth();
             isDemoPlaying = true;
@@ -422,7 +569,6 @@
             const src = card.getAttribute('data-src');
             const title = card.getAttribute('data-title') || 'Track';
 
-            // If clicking the currently active card
             if (activeCard === card) {
                 if (!audio.paused || isDemoPlaying) {
                     audio.pause();
@@ -434,7 +580,6 @@
                 }
             }
 
-            // Reset any previously active card
             document.querySelectorAll('.track-card').forEach(c => {
                 c.classList.remove('playing');
                 c.querySelector('.play-indicator').textContent = 'PLAY';
@@ -450,12 +595,10 @@
             audio.play().then(() => {
                 vizStatus.textContent = `Now Playing: ${title}`;
             }).catch(() => {
-                // Fallback synth so the visualizer still works if the file path is incorrect
                 startDemoSynth(title);
             });
         }
 
-        // Update time and progress bar for real MP3 files
         audio.addEventListener('timeupdate', () => {
             if (!audio.duration) return;
             const pct = (audio.currentTime / audio.duration) * 100;
@@ -485,7 +628,6 @@
             return `${m}:${s}`;
         }
 
-        // Real-time Frequency Visualizer Loop
         function drawVisualizer() {
             requestAnimationFrame(drawVisualizer);
             const width = canvas.width / window.devicePixelRatio;
@@ -494,7 +636,6 @@
             ctx.clearRect(0, 0, width, height);
 
             if (!analyser) {
-                // Idle baseline
                 ctx.fillStyle = '#ff0033';
                 ctx.fillRect(0, height / 2 - 1, width, 2);
                 return;
@@ -516,6 +657,144 @@
         }
 
         drawVisualizer();
+
+        /* --- IMAGE LOADER & CARD ZOOM LOGIC --- */
+        window.addEventListener('DOMContentLoaded', () => {
+            const imageSources = [
+                "images/Eel 1.png",
+                "images/Eel 2.png",
+                "images/Eel 3.png"
+            ];
+
+            let loadedCount = 0;
+            const totalImages = imageSources.length;
+            const loaderBar = document.getElementById('loader-bar');
+
+            imageSources.forEach(src => {
+                const img = new Image();
+                img.src = src;
+                img.onload = img.onerror = () => {
+                    loadedCount++;
+                    loaderBar.style.width = (loadedCount / totalImages) * 100 + '%';
+                    if (loadedCount >= totalImages) {
+                        document.body.classList.add('images-loaded');
+                    }
+                };
+            });
+
+            function getMostVisibleCard() {
+                const cards = document.querySelectorAll('.art-card');
+                let bestCard = null;
+                let maxVisibleArea = 0;
+                const viewHeight = window.innerHeight;
+                const viewWidth = window.innerWidth;
+
+                cards.forEach(card => {
+                    const rect = card.getBoundingClientRect();
+                    const visibleTop = Math.max(0, rect.top);
+                    const visibleBottom = Math.min(viewHeight, rect.bottom);
+                    const visibleHeight = Math.max(0, visibleBottom - visibleTop);
+                    const visibleLeft = Math.max(0, rect.left);
+                    const visibleRight = Math.min(viewWidth, rect.right);
+                    const visibleWidth = Math.max(0, visibleRight - visibleLeft);
+                    const area = visibleHeight * visibleWidth;
+
+                    if (area > maxVisibleArea) {
+                        maxVisibleArea = area;
+                        bestCard = card;
+                    }
+                });
+                return bestCard;
+            }
+
+            document.querySelectorAll('.art-card').forEach(card => {
+                const frame = card.querySelector('.art-image-frame');
+                const img = frame.querySelector('img');
+
+                frame.addEventListener('mousemove', (e) => {
+                    const rect = frame.getBoundingClientRect();
+                    const x = ((e.clientX - rect.left) / rect.width) * 100;
+                    const y = ((e.clientY - rect.top) / rect.height) * 100;
+                    img.style.transformOrigin = `${x}% ${y}%`;
+                });
+
+                frame.addEventListener('mouseleave', (e) => {
+                    const rect = frame.getBoundingClientRect();
+                    const x = Math.max(0, Math.min(100, ((e.clientX - rect.left) / rect.width) * 100));
+                    const y = Math.max(0, Math.min(100, ((e.clientY - rect.top) / rect.height) * 100));
+                    img.style.transformOrigin = `${x}% ${y}%`;
+                });
+
+                let initialPinchDist = null;
+
+                frame.addEventListener('touchstart', (e) => {
+                    const activeCard = getMostVisibleCard();
+                    if (activeCard !== card) return;
+
+                    if (e.touches.length === 2) {
+                        e.preventDefault();
+                        initialPinchDist = Math.hypot(
+                            e.touches[0].clientX - e.touches[1].clientX,
+                            e.touches[0].clientY - e.touches[1].clientY
+                        );
+                    }
+                }, { passive: false });
+
+                frame.addEventListener('touchmove', (e) => {
+                    const activeCard = getMostVisibleCard();
+                    if (activeCard !== card) return;
+
+                    if (e.touches.length === 2) {
+                        e.preventDefault();
+                        const dist = Math.hypot(
+                            e.touches[0].clientX - e.touches[1].clientX,
+                            e.touches[0].clientY - e.touches[1].clientY
+                        );
+                        if (initialPinchDist && dist > initialPinchDist * 1.1) {
+                            card.classList.add('mobile-zoomed');
+                            const rect = frame.getBoundingClientRect();
+                            const midX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+                            const midY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+                            const x = ((midX - rect.left) / rect.width) * 100;
+                            const y = ((midY - rect.top) / rect.height) * 100;
+                            img.style.transformOrigin = `${x}% ${y}%`;
+                        }
+                    } else if (e.touches.length === 1 && card.classList.contains('mobile-zoomed')) {
+                        e.preventDefault();
+                        const rect = frame.getBoundingClientRect();
+                        const x = ((e.touches[0].clientX - rect.left) / rect.width) * 100;
+                        const y = ((e.touches[0].clientY - rect.top) / rect.height) * 100;
+                        img.style.transformOrigin = `${x}% ${y}%`;
+                    }
+                }, { passive: false });
+
+                frame.addEventListener('touchend', (e) => {
+                    if (e.touches.length === 0) {
+                        initialPinchDist = null;
+                    }
+                });
+            });
+
+            document.querySelectorAll('.art-card').forEach(card => {
+                let lastTap = 0;
+                card.addEventListener('touchend', (e) => {
+                    const currentTime = new Date().getTime();
+                    const tapLength = currentTime - lastTap;
+                    if (tapLength < 300 && tapLength > 0) {
+                        const activeCard = getMostVisibleCard();
+                        if (activeCard === card) {
+                            e.preventDefault();
+                            card.classList.toggle('mobile-zoomed');
+                            if (!card.classList.contains('mobile-zoomed')) {
+                                const img = card.querySelector('.art-image-frame img');
+                                img.style.transformOrigin = 'center center';
+                            }
+                        }
+                    }
+                    lastTap = currentTime;
+                });
+            });
+        });
     </script>
 </body>
 </html>
