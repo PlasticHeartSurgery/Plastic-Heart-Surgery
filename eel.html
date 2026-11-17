@@ -1,1 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plastic Heart Surgery — Music</title>
+    <style>
+        @font-face {
+            font-family: 'Lyno Ulyscyr';
+            src: local('Lyno Ulyscyr'), url('fonts/lynoulyscyr.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
 
+        @font-face {
+            font-family: 'SF Movie Poster Bold';
+            src: local('SF Movie Poster Bold'), url('fonts/SF Movie Poster Bold.ttf') format('truetype');
+            font-weight: bold;
+            font-style: normal;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #ffffff;
+            color: #111111;
+            display: flex;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .sidebar {
+            width: 340px;
+            background-color: #ffffff;
+            border-right: none;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: fixed;
+            height: 100vh;
+            top: 0;
+            left: 0;
+            overflow-y: auto;
+        }
+
+        .site-title {
+            font-family: 'Lyno Ulyscyr', sans-serif;
+            font-size: 1.5rem;
+            letter-spacing: 0.3em;
+            color: #ff0033;
+            margin-bottom: 40px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .nav-columns {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .nav-column-item {
+            font-family: 'Lyno Ulyscyr', sans-serif;
+            font-size: 1.15rem;
+            letter-spacing: 0.2em;
+            color: #333333;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .nav-column-item:hover, .nav-column-item.active {
+            color: #ff0033;
+        }
+
+        .sidebar-footer {
+            font-size: 0.85rem;
+            color: #333333;
+            word-break: break-all;
+            margin-top: 30px;
+        }
+
+        .sidebar-footer a {
+            color: #ff0033;
+            text-decoration: none;
+        }
+
+        .sidebar-footer a:hover {
+            text-decoration: underline;
+        }
+
+        main {
+            margin-left: 340px;
+            flex: 1;
+            padding: 80px 60px;
+            max-width: 950px;
+            background-color: #ffffff;
+        }
+
+        h2 {
+            font-family: 'Lyno Ulyscyr', sans-serif;
+            font-size: 1.8rem;
+            letter-spacing: 0.25em;
+            color: #ff0033;
+            margin-bottom: 24px;
+        }
+
+        /* Visualizer Box */
+        .visualizer-card {
+            background: #ffffff;
+            border: 2px solid #000000;
+            border-radius: 6px;
+            padding: 20px;
+            box-shadow: 4px 4px 0px #000000;
+            margin-bottom: 30px;
+        }
+
+        .visualizer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .visualizer-status {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: #ff0033;
+            font-weight: 700;
+        }
+
+        .visualizer-time {
+            font-family: monospace;
+            font-size: 0.85rem;
+            color: #333333;
+        }
+
+        #audioVisualizer {
+            width: 100%;
+            height: 140px;
+            display: block;
+            background-color: #fff5f7;
+            border: 1px solid #000000;
+            border-radius: 4px;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 8px;
+            background: #eeeeee;
+            border: 1px solid #000000;
+            border-radius: 4px;
+            margin-top: 12px;
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: #ff0033;
+            transition: width 0.1s linear;
+        }
+
+        /* Track Grid */
+        .links-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Clickable Track Card */
+        .track-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #ffffff;
+            border: 2px solid #000000;
+            border-radius: 6px;
+            padding: 24px;
+            box-shadow: 4px 4px 0px #000000;
+            cursor: pointer;
+            user-select: none;
+            transition: transform 0.2s ease, border-color 0.4s ease, background-color 0.4s ease;
+        }
+
+        .track-card:hover, .track-card.playing {
+            border-color: #ff0033;
+            transform: translateY(-2px);
+            animation: gradientGlow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes gradientGlow {
+            0% {
+                background-color: #ffffff;
+                box-shadow: 0px 0px 5px rgba(255, 255, 255, 0.8), 4px 4px 0px #ff0033;
+            }
+            50% {
+                background-color: #fff5f7;
+                box-shadow: 0px 0px 20px rgba(255, 0, 51, 0.35), 4px 4px 0px #ff0033;
+            }
+            100% {
+                background-color: #ffe6eb;
+                box-shadow: 0px 0px 35px rgba(255, 0, 51, 0.7), 4px 4px 0px #ff0033;
+            }
+        }
+
+        .link-tag {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #ff0033;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+
+        .link-title {
+            font-family: 'SF Movie Poster Bold', sans-serif !important;
+            font-size: 1.5rem;
+            letter-spacing: 0.12em;
+            color: #111111;
+            margin-bottom: 4px;
+        }
+
+        .play-indicator {
+            font-family: 'Lyno Ulyscyr', sans-serif;
+            font-size: 1rem;
+            letter-spacing: 0.15em;
+            color: #111111;
+            border: 2px solid #000000;
+            padding: 8px 16px;
+            border-radius: 4px;
+            background: #ffffff;
+            min-width: 100px;
+            text-align: center;
+        }
+
+        .track-card.playing .play-indicator {
+            background: #ff0033;
+            color: #ffffff;
+            border-color: #ff0033;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+                padding: 30px 20px;
+            }
+            main {
+                margin-left: 0;
+                padding: 40px 20px;
+                max-width: 100%;
+            }
+            .site-title {
+                font-size: 1.2rem;
+                letter-spacing: 0.15em;
+            }
+            h2 {
+                font-size: 1.4rem;
+                letter-spacing: 0.15em;
+            }
+            .track-card {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div>
+            <a href="index.html" class="site-title">Plastic Heart Surgery</a>
+            <div class="nav-columns">
+                <a href="hidden.html" class="nav-column-item active">Plastic Heart Surgery</a>
+                <a href="hidden.html" class="nav-column-item">Visual Arts</a>
+                <a href="music.html" class="nav-column-item">Music</a>
+                <a href="tourdates.html" class="nav-column-item">Tour Dates</a>
+                <a href="comingupshows.html" class="nav-column-item">Coming Up Shows</a>
+                <a href="bigfanof....html" class="nav-column-item">Big Fan Of</a>
+                <a href="links.html" class="nav-column-item">Links</a>
+            </div>
+        </div>
+        <div class="sidebar-footer">
+            <p style="margin-bottom: 4px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #000000;">Contact</p>
+            <a href="mailto:plasticheartsurgery@gmail.com">plasticheartsurgery@gmail.com</a>
+        </div>
+    </div>
+
+    <main>
+        <section>
+            <h2>Plastic Heart Surgery</h2>
+
+            <!-- Audio Visualizer -->
+            <div class="visualizer-card">
+                <div class="visualizer-header">
+                    <span class="visualizer-status" id="vizStatus">Ready — Click a card to play</span>
+                    <span class="visualizer-time" id="vizTime">00:00 / 00:00</span>
+                </div>
+                <canvas id="audioVisualizer"></canvas>
+                <div class="progress-bar-container" id="progressContainer">
+                    <div class="progress-bar-fill" id="progressFill"></div>
+                </div>
+            </div>
+
+            <!-- Clickable Track Cards Grid -->
+            <div class="links-grid">
+
+                <!-- Eel (Instrumental) Track Card -->
+                <div class="track-card" data-src="audio/Eel (Instrumental).mp3" data-title="Eel (Instrumental)" onclick="toggleTrack(this)">
+                    <div>
+                        <div class="link-tag">Track 01</div>
+                        <div class="link-title">Eel (Instrumental)</div>
+                    </div>
+                    <div class="play-indicator">PLAY</div>
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+    <!-- Hidden Audio Element (crossOrigin="anonymous" allows GitHub raw audio visualization) -->
+    <audio id="audioPlayer" crossorigin="anonymous"></audio>
+
+    <script>
+        const audio = document.getElementById('audioPlayer');
+        const canvas = document.getElementById('audioVisualizer');
+        const ctx = canvas.getContext('2d');
+        const vizStatus = document.getElementById('vizStatus');
+        const vizTime = document.getElementById('vizTime');
+        const progressFill = document.getElementById('progressFill');
+        const progressContainer = document.getElementById('progressContainer');
+
+        let audioCtx = null;
+        let analyser = null;
+        let source = null;
+        let activeCard = null;
+        let demoOscillator = null;
+        let demoInterval = null;
+        let isDemoPlaying = false;
+
+        // Resize canvas sharply for Retina/high-DPI screens
+        function resizeCanvas() {
+            const rect = canvas.getBoundingClientRect();
+            canvas.width = rect.width * window.devicePixelRatio;
+            canvas.height = rect.height * window.devicePixelRatio;
+            ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        function initAudioContext() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                analyser = audioCtx.createAnalyser();
+                analyser.fftSize = 128;
+
+                source = audioCtx.createMediaElementSource(audio);
+                source.connect(analyser);
+                analyser.connect(audioCtx.destination);
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        function stopDemoSynth() {
+            if (demoOscillator) {
+                try { demoOscillator.stop(); } catch (e) {}
+                demoOscillator.disconnect();
+                demoOscillator = null;
+            }
+            if (demoInterval) {
+                clearInterval(demoInterval);
+                demoInterval = null;
+            }
+            isDemoPlaying = false;
+        }
+
+        // Fallback synth pulse when file fails to load
+        function startDemoSynth(title) {
+            stopDemoSynth();
+            isDemoPlaying = true;
+            const gainNode = audioCtx.createGain();
+            gainNode.gain.value = 0.08;
+
+            demoOscillator = audioCtx.createOscillator();
+            demoOscillator.type = 'sawtooth';
+            demoOscillator.frequency.setValueAtTime(55, audioCtx.currentTime);
+
+            demoOscillator.connect(gainNode);
+            gainNode.connect(analyser);
+            gainNode.connect(audioCtx.destination);
+            demoOscillator.start();
+
+            const notes = [55, 65.41, 73.42, 82.41, 55, 98.00, 73.42, 65.41];
+            let step = 0;
+            demoInterval = setInterval(() => {
+                if (demoOscillator && audioCtx) {
+                    demoOscillator.frequency.setValueAtTime(notes[step % notes.length], audioCtx.currentTime);
+                    step++;
+                }
+            }, 220);
+
+            vizStatus.textContent = `Visualizing Preview (File Not Found): ${title}`;
+        }
+
+        function toggleTrack(card) {
+            initAudioContext();
+            const src = card.getAttribute('data-src');
+            const title = card.getAttribute('data-title') || 'Track';
+
+            // If clicking the currently active card
+            if (activeCard === card) {
+                if (!audio.paused || isDemoPlaying) {
+                    audio.pause();
+                    stopDemoSynth();
+                    card.classList.remove('playing');
+                    card.querySelector('.play-indicator').textContent = 'PLAY';
+                    vizStatus.textContent = `Paused: ${title}`;
+                    return;
+                }
+            }
+
+            // Reset any previously active card
+            document.querySelectorAll('.track-card').forEach(c => {
+                c.classList.remove('playing');
+                c.querySelector('.play-indicator').textContent = 'PLAY';
+            });
+            stopDemoSynth();
+
+            activeCard = card;
+            card.classList.add('playing');
+            card.querySelector('.play-indicator').textContent = 'PAUSE';
+            vizStatus.textContent = `Loading: ${title}...`;
+
+            audio.src = src;
+            audio.play().then(() => {
+                vizStatus.textContent = `Now Playing: ${title}`;
+            }).catch(() => {
+                // Fallback synth so the visualizer still works if the file path is incorrect
+                startDemoSynth(title);
+            });
+        }
+
+        // Update time and progress bar for real MP3 files
+        audio.addEventListener('timeupdate', () => {
+            if (!audio.duration) return;
+            const pct = (audio.currentTime / audio.duration) * 100;
+            progressFill.style.width = `${pct}%`;
+            vizTime.textContent = `${formatTime(audio.currentTime)} / ${formatTime(audio.duration)}`;
+        });
+
+        audio.addEventListener('ended', () => {
+            if (activeCard) {
+                activeCard.classList.remove('playing');
+                activeCard.querySelector('.play-indicator').textContent = 'PLAY';
+            }
+            vizStatus.textContent = 'Finished';
+            progressFill.style.width = '0%';
+        });
+
+        progressContainer.addEventListener('click', (e) => {
+            if (!audio.duration) return;
+            const rect = progressContainer.getBoundingClientRect();
+            const clickPos = (e.clientX - rect.left) / rect.width;
+            audio.currentTime = clickPos * audio.duration;
+        });
+
+        function formatTime(sec) {
+            const m = Math.floor(sec / 60).toString().padStart(2, '0');
+            const s = Math.floor(sec % 60).toString().padStart(2, '0');
+            return `${m}:${s}`;
+        }
+
+        // Real-time Frequency Visualizer Loop
+        function drawVisualizer() {
+            requestAnimationFrame(drawVisualizer);
+            const width = canvas.width / window.devicePixelRatio;
+            const height = canvas.height / window.devicePixelRatio;
+
+            ctx.clearRect(0, 0, width, height);
+
+            if (!analyser) {
+                // Idle baseline
+                ctx.fillStyle = '#ff0033';
+                ctx.fillRect(0, height / 2 - 1, width, 2);
+                return;
+            }
+
+            const bufferLength = analyser.frequencyBinCount;
+            const dataArray = new Uint8Array(bufferLength);
+            analyser.getByteFrequencyData(dataArray);
+
+            const barWidth = (width / bufferLength) * 1.6;
+            let x = 0;
+
+            for (let i = 0; i < bufferLength; i++) {
+                const barHeight = (dataArray[i] / 255) * (height - 16);
+                ctx.fillStyle = '#ff0033';
+                ctx.fillRect(x, height - barHeight, barWidth - 2, Math.max(barHeight, 2));
+                x += barWidth;
+            }
+        }
+
+        drawVisualizer();
+    </script>
+</body>
+</html>
