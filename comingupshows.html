@@ -162,7 +162,8 @@
 
         /* Initially hidden elements for fade-in */
         .show-card,
-        .fade-section-title {
+        .fade-section-title,
+        .fade-in-content {
             opacity: 0;
             transform: translateY(10px);
         }
@@ -171,6 +172,11 @@
         body.images-loaded .fade-section-title {
             animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
             animation-delay: calc(0.1s + (var(--i, 0) * 0.05s));
+        }
+
+        body.images-loaded .fade-in-content {
+            animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            animation-delay: 0.15s;
         }
 
         body.images-loaded .show-card {
@@ -332,7 +338,7 @@
     <main>
         <section>
             <h2>Coming Up Shows</h2>
-            <p>Upcoming art exhibitions, current or future-installations and artist talks. Currently, I am (f)under-employed in the arts, contact me below for bookings/info:</p>
+            <p class="fade-in-content">Upcoming art exhibitions, current or future-installations and artist talks. Currently, I am (f)under-employed in the arts, contact me below for bookings/info:</p>
 
             <!-- Shows Hyperlink Boxes Grid -->
             <div class="shows-grid">
@@ -352,7 +358,7 @@
 
         <section>
             <h2 class="fade-section-title" style="--i: 2;">Past Exhibitions/Shows</h2>
-            <p>Painting Archive:</p>
+            <p class="fade-in-content">Painting Archive:</p>
                  
             <div class="shows-grid">
                 <!-- Archive Show Item 1 -->
