@@ -153,12 +153,18 @@
         }
 
         /* Initially hidden elements for fade-in */
-        .fan-row {
+        .fan-row,
+        .fade-in-content {
             opacity: 0;
             transform: translateY(10px);
         }
 
         /* Triggered immediately when preloading finishes with staggered animation */
+        body.images-loaded .fade-in-content {
+            animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            animation-delay: 0.15s;
+        }
+
         body.images-loaded .fan-row {
             animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
             animation-delay: calc(0.1s + (var(--i, 0) * 0.08s));
@@ -296,7 +302,7 @@
 <main>
     <section>
         <h2>Big Fan Of</h2>
-        <p>A curated collection of websites, media, and references I enjoy, with personal notes and thoughts on each.</p>
+        <p class="fade-in-content">A curated collection of websites, media, and references I enjoy, with personal notes and thoughts on each.</p>
 
         <!-- Side-by-Side Links & Text Boxes -->
         <div class="fan-list">
