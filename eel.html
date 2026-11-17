@@ -185,22 +185,58 @@
             border-radius: 4px;
         }
 
+        /* Scrubbable Progress Bar */
+        .progress-bar-wrapper {
+            padding: 8px 0;
+            margin-top: 6px;
+            cursor: pointer;
+            touch-action: none;
+            user-select: none;
+        }
+
         .progress-bar-container {
+            position: relative;
             width: 100%;
-            height: 8px;
+            height: 10px;
             background: #eeeeee;
             border: 1px solid #000000;
             border-radius: 4px;
-            margin-top: 12px;
-            cursor: pointer;
-            overflow: hidden;
+            transition: height 0.15s ease;
+        }
+
+        .progress-bar-wrapper:hover .progress-bar-container,
+        .progress-bar-wrapper.dragging .progress-bar-container {
+            height: 14px;
         }
 
         .progress-bar-fill {
             height: 100%;
             width: 0%;
             background: #ff0033;
-            transition: width 0.1s linear;
+            border-radius: 3px 0 0 3px;
+            pointer-events: none;
+        }
+
+        .progress-handle {
+            position: absolute;
+            top: 50%;
+            left: 0%;
+            transform: translate(-50%, -50%);
+            width: 16px;
+            height: 16px;
+            background: #ffffff;
+            border: 2px solid #000000;
+            border-radius: 50%;
+            box-shadow: 2px 2px 0px #000000;
+            opacity: 0;
+            transition: opacity 0.15s ease, background-color 0.15s ease;
+            pointer-events: none;
+        }
+
+        .progress-bar-wrapper:hover .progress-handle,
+        .progress-bar-wrapper.dragging .progress-handle {
+            opacity: 1;
+            background: #ff0033;
         }
 
         /* Track Grid */
@@ -432,8 +468,11 @@
                     <span class="visualizer-time" id="vizTime">00:00 / 00:00</span>
                 </div>
                 <canvas id="audioVisualizer"></canvas>
-                <div class="progress-bar-container" id="progressContainer">
-                    <div class="progress-bar-fill" id="progressFill"></div>
+                <div class="progress-bar-wrapper" id="progressWrapper" tabindex="0" role="slider" aria-label="Seek audio position">
+                    <div class="progress-bar-container" id="progressContainer">
+                        <div class="progress-bar-fill" id="progressFill"></div>
+                        <div class="progress-handle" id="progressHandle"></div>
+                    </div>
                 </div>
             </div>
 
@@ -479,8 +518,8 @@
         </section>
     </main>
 
-    <!-- Hidden Audio Element (crossOrigin="anonymous" allows GitHub raw audio visualization) -->
-    <audio id="audioPlayer" crossorigin="anonymous"></audio>
+    <!-- Hidden Audio Element -->
+    <audio id="audioPlayer" crossorigin="anonymous" preload="metadata"></audio>
 
     <script>
         /* --- AUDIO VISUALIZER & TRACK PLAYER --- */
@@ -489,16 +528,27 @@
         const ctx = canvas.getContext('2d');
         const vizStatus = document.getElementById('vizStatus');
         const vizTime = document.getElementById('vizTime');
-        const progressFill = document.getElementById('progressFill');
+        const progressWrapper = document.getElementById('progressWrapper');
         const progressContainer = document.getElementById('progressContainer');
+        const progressFill = document.getElementById('progressFill');
+        const progressHandle = document.getElementById('progressHandle');
 
         let audioCtx = null;
         let analyser = null;
         let source = null;
         let activeCard = null;
+        let currentLoadedSrc = '';
+        let isDraggingProgress = false;
         let demoOscillator = null;
         let demoInterval = null;
         let isDemoPlaying = false;
+
+        // Preload first track metadata so duration is ready for scrubbing immediately
+        const firstCard = document.querySelector('.track-card');
+        if (firstCard) {
+            currentLoadedSrc = firstCard.getAttribute('data-src');
+            audio.src = currentLoadedSrc;
+        }
 
         function resizeCanvas() {
             const rect = canvas.getBoundingClientRect();
@@ -569,17 +619,17 @@
             const src = card.getAttribute('data-src');
             const title = card.getAttribute('data-title') || 'Track';
 
-            if (activeCard === card) {
-                if (!audio.paused || isDemoPlaying) {
-                    audio.pause();
-                    stopDemoSynth();
-                    card.classList.remove('playing');
-                    card.querySelector('.play-indicator').textContent = 'PLAY';
-                    vizStatus.textContent = `Paused: ${title}`;
-                    return;
-                }
+            // Pause if clicking the currently playing card
+            if (activeCard === card && (!audio.paused || isDemoPlaying)) {
+                audio.pause();
+                stopDemoSynth();
+                card.classList.remove('playing');
+                card.querySelector('.play-indicator').textContent = 'PLAY';
+                vizStatus.textContent = `Paused: ${title}`;
+                return;
             }
 
+            // Reset other cards
             document.querySelectorAll('.track-card').forEach(c => {
                 c.classList.remove('playing');
                 c.querySelector('.play-indicator').textContent = 'PLAY';
@@ -591,7 +641,12 @@
             card.querySelector('.play-indicator').textContent = 'PAUSE';
             vizStatus.textContent = `Loading: ${title}...`;
 
-            audio.src = src;
+            // Only reassign audio.src if switching to a different file (preserves scrubbed position when resuming)
+            if (currentLoadedSrc !== src) {
+                audio.src = src;
+                currentLoadedSrc = src;
+            }
+
             audio.play().then(() => {
                 vizStatus.textContent = `Now Playing: ${title}`;
             }).catch(() => {
@@ -599,10 +654,83 @@
             });
         }
 
+        function updateProgressUI(pct) {
+            const clamped = Math.max(0, Math.min(100, pct));
+            progressFill.style.width = `${clamped}%`;
+            progressHandle.style.left = `${clamped}%`;
+        }
+
+        function seekFromClientX(clientX) {
+            if (!audio.duration || isNaN(audio.duration)) return;
+            const rect = progressContainer.getBoundingClientRect();
+            const ratio = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+            const targetTime = ratio * audio.duration;
+            audio.currentTime = targetTime;
+            updateProgressUI(ratio * 100);
+            vizTime.textContent = `${formatTime(targetTime)} / ${formatTime(audio.duration)}`;
+        }
+
+        // Mouse & Touch Drag Scrubbing
+        progressWrapper.addEventListener('mousedown', (e) => {
+            isDraggingProgress = true;
+            progressWrapper.classList.add('dragging');
+            seekFromClientX(e.clientX);
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (!isDraggingProgress) return;
+            seekFromClientX(e.clientX);
+        });
+
+        window.addEventListener('mouseup', () => {
+            if (isDraggingProgress) {
+                isDraggingProgress = false;
+                progressWrapper.classList.remove('dragging');
+            }
+        });
+
+        progressWrapper.addEventListener('touchstart', (e) => {
+            if (e.touches.length === 1) {
+                isDraggingProgress = true;
+                progressWrapper.classList.add('dragging');
+                seekFromClientX(e.touches[0].clientX);
+            }
+        }, { passive: true });
+
+        window.addEventListener('touchmove', (e) => {
+            if (!isDraggingProgress || e.touches.length !== 1) return;
+            seekFromClientX(e.touches[0].clientX);
+        }, { passive: true });
+
+        window.addEventListener('touchend', () => {
+            if (isDraggingProgress) {
+                isDraggingProgress = false;
+                progressWrapper.classList.remove('dragging');
+            }
+        });
+
+        // Keyboard Left/Right Arrow Skipping (±5 seconds)
+        progressWrapper.addEventListener('keydown', (e) => {
+            if (!audio.duration || isNaN(audio.duration)) return;
+            if (e.key === 'ArrowRight') {
+                e.preventDefault();
+                audio.currentTime = Math.min(audio.duration, audio.currentTime + 5);
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                audio.currentTime = Math.max(0, audio.currentTime - 5);
+            }
+        });
+
+        audio.addEventListener('loadedmetadata', () => {
+            if (!isNaN(audio.duration)) {
+                vizTime.textContent = `${formatTime(audio.currentTime)} / ${formatTime(audio.duration)}`;
+            }
+        });
+
         audio.addEventListener('timeupdate', () => {
-            if (!audio.duration) return;
+            if (!audio.duration || isDraggingProgress) return;
             const pct = (audio.currentTime / audio.duration) * 100;
-            progressFill.style.width = `${pct}%`;
+            updateProgressUI(pct);
             vizTime.textContent = `${formatTime(audio.currentTime)} / ${formatTime(audio.duration)}`;
         });
 
@@ -612,17 +740,11 @@
                 activeCard.querySelector('.play-indicator').textContent = 'PLAY';
             }
             vizStatus.textContent = 'Finished';
-            progressFill.style.width = '0%';
-        });
-
-        progressContainer.addEventListener('click', (e) => {
-            if (!audio.duration) return;
-            const rect = progressContainer.getBoundingClientRect();
-            const clickPos = (e.clientX - rect.left) / rect.width;
-            audio.currentTime = clickPos * audio.duration;
+            updateProgressUI(0);
         });
 
         function formatTime(sec) {
+            if (isNaN(sec)) return '00:00';
             const m = Math.floor(sec / 60).toString().padStart(2, '0');
             const s = Math.floor(sec % 60).toString().padStart(2, '0');
             return `${m}:${s}`;
