@@ -765,9 +765,6 @@
         let activeCard = null;
         let currentLoadedSrc = '';
         let isDraggingProgress = false;
-        let demoOscillator = null;
-        let demoInterval = null;
-        let isDemoPlaying = false;
 
         const firstCard = document.querySelector('.track-card');
         if (firstCard) {
@@ -802,49 +799,8 @@
                     audioCtx.resume();
                 }
             } catch (err) {
-                // Keep audio playback working even if Web Audio API is restricted on a device
+                console.error("Web Audio API initialization error:", err);
             }
-        }
-
-        function stopDemoSynth() {
-            if (demoOscillator) {
-                try { demoOscillator.stop(); } catch (e) {}
-                demoOscillator.disconnect();
-                demoOscillator = null;
-            }
-            if (demoInterval) {
-                clearInterval(demoInterval);
-                demoInterval = null;
-            }
-            isDemoPlaying = false;
-        }
-
-        function startDemoSynth(title) {
-            if (!audioCtx || !analyser) return;
-            stopDemoSynth();
-            isDemoPlaying = true;
-            const gainNode = audioCtx.createGain();
-            gainNode.gain.value = 0.08;
-
-            demoOscillator = audioCtx.createOscillator();
-            demoOscillator.type = 'sawtooth';
-            demoOscillator.frequency.setValueAtTime(55, audioCtx.currentTime);
-
-            demoOscillator.connect(gainNode);
-            gainNode.connect(analyser);
-            gainNode.connect(audioCtx.destination);
-            demoOscillator.start();
-
-            const notes = [55, 65.41, 73.42, 82.41, 55, 98.00, 73.42, 65.41];
-            let step = 0;
-            demoInterval = setInterval(() => {
-                if (demoOscillator && audioCtx) {
-                    demoOscillator.frequency.setValueAtTime(notes[step % notes.length], audioCtx.currentTime);
-                    step++;
-                }
-            }, 220);
-
-            vizStatus.textContent = `Visualizing Preview (File Not Found): ${title}`;
         }
 
         /* --- MEDIA SESSION API (Background Playback & Lock Screen Controls) --- */
@@ -880,9 +836,8 @@
             const src = card.getAttribute('data-src');
             const title = card.getAttribute('data-title') || 'Track';
 
-            if (activeCard === card && (!audio.paused || isDemoPlaying)) {
+            if (activeCard === card && !audio.paused) {
                 audio.pause();
-                stopDemoSynth();
                 card.classList.remove('playing');
                 card.querySelector('.play-indicator').textContent = 'PLAY';
                 vizStatus.textContent = `Paused: ${title}`;
@@ -896,7 +851,6 @@
                 c.classList.remove('playing');
                 c.querySelector('.play-indicator').textContent = 'PLAY';
             });
-            stopDemoSynth();
 
             activeCard = card;
             card.classList.add('playing');
@@ -906,24 +860,25 @@
             if (currentLoadedSrc !== src) {
                 audio.src = src;
                 currentLoadedSrc = src;
+                audio.load();
             }
 
             setupMediaSession(title);
 
-            const playPromise = audio.play();
-            if (playPromise !== undefined) {
-                playPromise.then(() => {
-                    if (audioCtx && audioCtx.state === 'suspended') {
-                        audioCtx.resume();
-                    }
-                    vizStatus.textContent = `Now Playing: ${title}`;
-                    if ('mediaSession' in navigator) {
-                        navigator.mediaSession.playbackState = 'playing';
-                    }
-                }).catch(() => {
-                    startDemoSynth(title);
-                });
-            }
+            audio.play().then(() => {
+                if (audioCtx && audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+                vizStatus.textContent = `Now Playing: ${title}`;
+                if ('mediaSession' in navigator) {
+                    navigator.mediaSession.playbackState = 'playing';
+                }
+            }).catch(err => {
+                console.error("Playback error:", err);
+                vizStatus.textContent = `Error: Could not play file (${src})`;
+                card.classList.remove('playing');
+                card.querySelector('.play-indicator').textContent = 'PLAY';
+            });
         }
 
         function updateProgressUI(pct) {
@@ -1033,7 +988,7 @@
 
             ctx.clearRect(0, 0, width, height);
 
-            if (!analyser) {
+            if (!analyser || audio.paused || audio.ended) {
                 ctx.fillStyle = '#ff0033';
                 ctx.fillRect(0, height / 2 - 1, width, 2);
                 return;
@@ -1056,7 +1011,7 @@
 
         drawVisualizer();
 
-        /* --- IMAGE LOADER & REVEAL (WITH SAFETY TIMEOUT) --- */
+        /* --- IMAGE LOADER & REVEAL --- */
         window.addEventListener('DOMContentLoaded', () => {
             const imageSources = [
                 "images/Eel 1.png",
@@ -1078,7 +1033,6 @@
                 }, 150);
             }
 
-            // Safety timeout: force reveal after 2 seconds even if an image fails/hangs
             const safetyTimer = setTimeout(revealPage, 2000);
 
             imageSources.forEach(src => {
