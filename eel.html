@@ -278,6 +278,7 @@
             -webkit-user-select: none;
             -webkit-tap-highlight-color: transparent;
             transition: transform 0.2s ease, border-color 0.4s ease, background-color 0.4s ease;
+            gap: 16px;
         }
 
         .track-card:hover, .track-card.playing {
@@ -318,7 +319,14 @@
             margin-bottom: 4px;
         }
 
-        .play-indicator {
+        .track-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .play-indicator,
+        .download-btn {
             font-family: 'Lyno Ulyscyr', sans-serif;
             font-size: 1rem;
             letter-spacing: 0.15em;
@@ -329,6 +337,15 @@
             background: #ffffff;
             min-width: 100px;
             text-align: center;
+            text-decoration: none;
+            transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+        }
+
+        .download-btn:hover,
+        .download-btn:active {
+            background: #ff0033;
+            color: #ffffff;
+            border-color: #ff0033;
         }
 
         .track-card.playing .play-indicator {
@@ -569,7 +586,12 @@
                 gap: 16px;
                 padding: 20px;
             }
-            .play-indicator {
+            .track-actions {
+                width: 100%;
+                flex-direction: column;
+            }
+            .play-indicator,
+            .download-btn {
                 width: 100%;
                 padding: 12px 16px;
             }
@@ -650,13 +672,16 @@
             <!-- Clickable Track Cards Grid -->
             <div class="links-grid">
 
-                <!-- Eel (Instrumental) Track Card with correct path -->
+                <!-- Eel (Instrumental) Track Card -->
                 <div class="track-card" data-src="audio/Eel (Instrumental).mp3" data-title="Eel (Instrumental)" onclick="toggleTrack(this)">
                     <div>
                         <div class="link-tag">Track 01</div>
                         <div class="link-title">Eel (Instrumental)</div>
                     </div>
-                    <div class="play-indicator">PLAY</div>
+                    <div class="track-actions">
+                        <a href="audio/Eel (Instrumental).mp3" download="Eel (Instrumental).mp3" class="download-btn" onclick="event.stopPropagation()">DOWNLOAD</a>
+                        <div class="play-indicator">PLAY</div>
+                    </div>
                 </div>
 
             </div>
@@ -765,7 +790,7 @@
 
         const firstCard = document.querySelector('.track-card');
         if (firstCard) {
-            audio.src = firstCard.getAttribute('data-src');
+            audio.src = encodeURI(firstCard.getAttribute('data-src'));
         }
 
         function resizeCanvas() {
@@ -780,7 +805,8 @@
         resizeCanvas();
 
         function toggleTrack(card) {
-            const src = card.getAttribute('data-src');
+            const rawSrc = card.getAttribute('data-src');
+            const encodedSrc = encodeURI(rawSrc);
             const title = card.getAttribute('data-title') || 'Track';
 
             if (activeCard === card && !audio.paused) {
@@ -801,8 +827,8 @@
             card.querySelector('.play-indicator').textContent = 'PAUSE';
             vizStatus.textContent = `Loading: ${title}...`;
 
-            if (audio.src !== window.location.origin + '/' + src && !audio.src.endsWith(src)) {
-                audio.src = src;
+            if (!audio.src.endsWith(encodedSrc)) {
+                audio.src = encodedSrc;
                 audio.load();
             }
 
@@ -810,7 +836,7 @@
                 vizStatus.textContent = `Now Playing: ${title}`;
             }).catch(err => {
                 console.error("Playback error:", err);
-                vizStatus.textContent = `Error: File not found or path incorrect (${src})`;
+                vizStatus.textContent = `Error: File not found or path incorrect (${rawSrc})`;
                 card.classList.remove('playing');
                 card.querySelector('.play-indicator').textContent = 'PLAY';
             });
