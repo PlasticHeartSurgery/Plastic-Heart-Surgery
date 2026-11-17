@@ -162,21 +162,19 @@ border-color: rgba(255, 0, 51, 1);
 }
 }
 
-.spotify-container,
-.album-card,
-.webamp-section {
+.fade-in-content {
 opacity: 0;
 transform: translateY(10px);
-}
-
-.webamp-section {
-display: flex;
-justify-content: center;
 }
 
 body.images-loaded .spotify-container {
 animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards, redGlowPulse 3s infinite ease-in-out;
 animation-delay: 0.1s, 0.9s;
+}
+
+body.images-loaded .fade-in-content {
+animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+animation-delay: 0.2s;
 }
 
 body.images-loaded .album-card {
@@ -202,6 +200,8 @@ border: 2px solid #ff0033;
 box-shadow: none;
 background-color: #000000;
 line-height: 0;
+opacity: 0;
+transform: translateY(10px);
 }
 
 .spotify-container iframe {
@@ -210,6 +210,13 @@ width: 100%;
 height: 100%;
 border: none;
 border-radius: 6px;
+}
+
+.webamp-section {
+display: flex;
+justify-content: center;
+opacity: 0;
+transform: translateY(10px);
 }
 
 #webamp-container {
@@ -235,6 +242,8 @@ display: flex;
 flex-direction: column;
 text-decoration: none;
 color: inherit;
+opacity: 0;
+transform: translateY(10px);
 transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease, border-color 0.4s ease;
 }
 
@@ -335,7 +344,7 @@ left: 50%;
 <main>
 <section>
 <h2>Music</h2>
-<p>Experimental electronic music, techno, and noise releases. Stream current tracks below or explore complete releases across platforms.</p>
+<p class="fade-in-content">Experimental electronic music, techno, and noise releases. Stream current tracks below or explore complete releases across platforms.</p>
 
 <!-- Spotify Embed Player with correct expanded height -->
 <div class="spotify-container">
@@ -346,7 +355,7 @@ left: 50%;
 <div id="webamp-container"></div>
 </div>
 
-<h2 style="font-size: 1.4rem; margin-top: 40px;">Selected Releases</h2>
+<h2 class="fade-in-content" style="font-size: 1.4rem; margin-top: 40px;">Selected Releases</h2>
 
 <div class="albums-grid">
     <a href="https://youtu.be/BnBaNjkYk9M" class="album-card" style="--i: 1;" target="_blank" rel="noopener noreferrer">
