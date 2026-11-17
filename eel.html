@@ -650,8 +650,8 @@
             <!-- Clickable Track Cards Grid -->
             <div class="links-grid">
 
-                <!-- Eel Track Card (Updated to eel.mp3) -->
-                <div class="track-card" data-src="eel.mp3" data-title="Eel (Instrumental)" onclick="toggleTrack(this)">
+                <!-- Eel (Instrumental) Track Card with correct path -->
+                <div class="track-card" data-src="audio/Eel (Instrumental).mp3" data-title="Eel (Instrumental)" onclick="toggleTrack(this)">
                     <div>
                         <div class="link-tag">Track 01</div>
                         <div class="link-title">Eel (Instrumental)</div>
@@ -715,7 +715,7 @@
     </div>
 
     <!-- Hidden Audio Element -->
-    <audio id="audioPlayer" crossorigin="anonymous" playsinline webkit-playsinline preload="auto"></audio>
+    <audio id="audioPlayer" playsinline webkit-playsinline preload="auto"></audio>
 
     <script>
         /* --- LIGHTBOX MODAL LOGIC --- */
@@ -759,9 +759,6 @@
         const progressFill = document.getElementById('progressFill');
         const progressHandle = document.getElementById('progressHandle');
 
-        let audioCtx = null;
-        let analyser = null;
-        let sourceConnected = false;
         let activeCard = null;
         let isDraggingProgress = false;
         let wavePhase = 0;
@@ -782,31 +779,7 @@
         window.addEventListener('orientationchange', () => setTimeout(resizeCanvas, 150));
         resizeCanvas();
 
-        function initAudioContext() {
-            if (audioCtx) {
-                if (audioCtx.state === 'suspended') {
-                    audioCtx.resume();
-                }
-                return;
-            }
-            try {
-                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-                audioCtx = new AudioContextClass();
-                analyser = audioCtx.createAnalyser();
-                analyser.fftSize = 64;
-
-                const source = audioCtx.createMediaElementSource(audio);
-                source.connect(analyser);
-                analyser.connect(audioCtx.destination);
-                sourceConnected = true;
-            } catch (err) {
-                // If local security restrictions block media node connection, fall back safely to audio playback without throwing
-                sourceConnected = false;
-            }
-        }
-
         function toggleTrack(card) {
-            initAudioContext();
             const src = card.getAttribute('data-src');
             const title = card.getAttribute('data-title') || 'Track';
 
@@ -834,9 +807,6 @@
             }
 
             audio.play().then(() => {
-                if (audioCtx && audioCtx.state === 'suspended') {
-                    audioCtx.resume();
-                }
                 vizStatus.textContent = `Now Playing: ${title}`;
             }).catch(err => {
                 console.error("Playback error:", err);
@@ -931,8 +901,7 @@
             return `${m}:${s}`;
         }
 
-        // Visualizer Loop (Analyzers real frequencies if connected, otherwise pulses dynamically)
-        const dataArray = new Uint8Array(32);
+        // Animated waveform visualizer loop
         function drawVisualizer() {
             requestAnimationFrame(drawVisualizer);
             const dpr = window.devicePixelRatio || 1;
@@ -949,24 +918,14 @@
                 wavePhase += 0.12;
             }
 
-            if (sourceConnected && analyser && !audio.paused && !audio.ended) {
-                analyser.getByteFrequencyData(dataArray);
-                for (let i = 0; i < bars; i++) {
-                    const barHeight = (dataArray[i] / 255) * (height - 12);
-                    ctx.fillStyle = '#ff0033';
-                    ctx.fillRect(x, height - barHeight, barWidth - 2, Math.max(barHeight, 2));
-                    x += barWidth;
+            for (let i = 0; i < bars; i++) {
+                let barHeight = 4;
+                if (!audio.paused && !audio.ended) {
+                    barHeight = (Math.sin(wavePhase + (i * 0.35)) + 1) * (height * 0.35) + 8;
                 }
-            } else {
-                for (let i = 0; i < bars; i++) {
-                    let barHeight = 4;
-                    if (!audio.paused && !audio.ended) {
-                        barHeight = (Math.sin(wavePhase + (i * 0.35)) + 1) * (height * 0.35) + 8;
-                    }
-                    ctx.fillStyle = '#ff0033';
-                    ctx.fillRect(x, height - barHeight, barWidth - 2, Math.max(barHeight, 2));
-                    x += barWidth;
-                }
+                ctx.fillStyle = '#ff0033';
+                ctx.fillRect(x, height - barHeight, barWidth - 2, Math.max(barHeight, 2));
+                x += barWidth;
             }
         }
         drawVisualizer();
