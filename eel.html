@@ -336,6 +336,7 @@
             flex-direction: column;
             position: relative;
             z-index: 1;
+            cursor: zoom-in;
             opacity: 0;
             transform: translateY(15px) scale(1);
             transition: 
@@ -372,9 +373,16 @@
             width: 100%;
             background: #f0f0f0;
             overflow: hidden;
+            border-bottom: 2px solid #000000;
             cursor: zoom-in;
             touch-action: none;
             position: relative;
+            transition: border-bottom-color 1.5s ease;
+        }
+
+        body.images-loaded .art-card:hover .art-image-frame,
+        .art-card.mobile-zoomed .art-image-frame {
+            border-bottom-color: #ff0033;
         }
 
         .art-image-frame img {
@@ -391,6 +399,113 @@
         .art-card.mobile-zoomed .art-image-frame img {
             transform: scale(4);
             transition: transform 4.5s cubic-bezier(0.85, 0, 0.95, 0.4);
+        }
+
+        .art-info {
+            padding: 14px 16px;
+            background: #ffffff;
+        }
+
+        .art-title {
+            font-family: 'Lyno Ulyscyr', sans-serif;
+            font-size: 1rem;
+            letter-spacing: 0.15em;
+            color: #ff0033;
+            margin-bottom: 0;
+        }
+
+        /* --- ALMOST-FULLSCREEN LIGHTBOX MODAL --- */
+        .lightbox-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(17, 17, 17, 0.88);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            z-index: 10000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.25s ease, visibility 0.25s ease;
+        }
+
+        .lightbox-overlay.open {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .lightbox-window {
+            position: relative;
+            background: #ffffff;
+            border: 3px solid #000000;
+            border-radius: 6px;
+            box-shadow: 10px 10px 0px #ff0033;
+            max-width: 95vw;
+            max-height: 95vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transform: scale(0.96);
+            transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .lightbox-overlay.open .lightbox-window {
+            transform: scale(1);
+        }
+
+        .lightbox-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 18px;
+            background: #ffffff;
+            border-bottom: 2px solid #000000;
+            gap: 20px;
+        }
+
+        .lightbox-title {
+            font-family: 'Lyno Ulyscyr', sans-serif;
+            font-size: 1.15rem;
+            letter-spacing: 0.2em;
+            color: #ff0033;
+        }
+
+        .lightbox-close {
+            font-family: 'Lyno Ulyscyr', sans-serif;
+            font-size: 0.9rem;
+            letter-spacing: 0.15em;
+            color: #111111;
+            background: #ffffff;
+            border: 2px solid #000000;
+            border-radius: 4px;
+            padding: 4px 12px;
+            cursor: pointer;
+            transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+        }
+
+        .lightbox-close:hover {
+            background: #ff0033;
+            color: #ffffff;
+            border-color: #ff0033;
+        }
+
+        .lightbox-body {
+            overflow: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f7f7f7;
+            max-height: calc(95vh - 56px);
+        }
+
+        .lightbox-body img {
+            display: block;
+            max-width: 93vw;
+            max-height: calc(95vh - 60px);
+            width: auto;
+            height: auto;
+            object-fit: contain;
         }
 
         @media (max-width: 768px) {
@@ -427,6 +542,17 @@
             .art-grid {
                 grid-template-columns: 1fr;
                 gap: 30px;
+            }
+            .lightbox-overlay {
+                padding: 10px;
+            }
+            .lightbox-window {
+                max-width: 98vw;
+                max-height: 96vh;
+            }
+            .lightbox-body img {
+                max-width: 96vw;
+                max-height: calc(96vh - 56px);
             }
         }
     </style>
@@ -494,23 +620,32 @@
             <div class="art-grid">
 
                 <!-- Eel 1 -->
-                <div class="art-card" style="--i: 1;">
+                <div class="art-card" style="--i: 1;" onclick="openLightbox('images/Eel 1.png', 'Eel 1')">
                     <div class="art-image-frame">
                         <img src="images/Eel 1.png" alt="Eel 1">
+                    </div>
+                    <div class="art-info">
+                        <div class="art-title">Eel 1</div>
                     </div>
                 </div>
 
                 <!-- Eel 2 -->
-                <div class="art-card" style="--i: 2;">
+                <div class="art-card" style="--i: 2;" onclick="openLightbox('images/Eel 2.png', 'Eel 2')">
                     <div class="art-image-frame">
                         <img src="images/Eel 2.png" alt="Eel 2">
+                    </div>
+                    <div class="art-info">
+                        <div class="art-title">Eel 2</div>
                     </div>
                 </div>
 
                 <!-- Eel 3 -->
-                <div class="art-card" style="--i: 3;">
+                <div class="art-card" style="--i: 3;" onclick="openLightbox('images/Eel 3.png', 'Eel 3')">
                     <div class="art-image-frame">
                         <img src="images/Eel 3.png" alt="Eel 3">
+                    </div>
+                    <div class="art-info">
+                        <div class="art-title">Eel 3</div>
                     </div>
                 </div>
 
@@ -518,10 +653,53 @@
         </section>
     </main>
 
+    <!-- Almost-Fullscreen Image Lightbox Modal -->
+    <div class="lightbox-overlay" id="lightboxOverlay" onclick="handleLightboxBackdrop(event)">
+        <div class="lightbox-window">
+            <div class="lightbox-header">
+                <span class="lightbox-title" id="lightboxTitle">Eel 1</span>
+                <button class="lightbox-close" type="button" onclick="closeLightbox()">CLOSE [ESC]</button>
+            </div>
+            <div class="lightbox-body">
+                <img id="lightboxImg" src="" alt="">
+            </div>
+        </div>
+    </div>
+
     <!-- Hidden Audio Element -->
     <audio id="audioPlayer" crossorigin="anonymous" preload="metadata"></audio>
 
     <script>
+        /* --- LIGHTBOX MODAL LOGIC --- */
+        const lightboxOverlay = document.getElementById('lightboxOverlay');
+        const lightboxImg = document.getElementById('lightboxImg');
+        const lightboxTitle = document.getElementById('lightboxTitle');
+
+        function openLightbox(src, title) {
+            lightboxImg.src = src;
+            lightboxImg.alt = title;
+            lightboxTitle.textContent = title;
+            lightboxOverlay.classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLightbox() {
+            lightboxOverlay.classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        function handleLightboxBackdrop(e) {
+            if (e.target === lightboxOverlay) {
+                closeLightbox();
+            }
+        }
+
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && lightboxOverlay.classList.contains('open')) {
+                closeLightbox();
+            }
+        });
+
         /* --- AUDIO VISUALIZER & TRACK PLAYER --- */
         const audio = document.getElementById('audioPlayer');
         const canvas = document.getElementById('audioVisualizer');
@@ -641,7 +819,7 @@
             card.querySelector('.play-indicator').textContent = 'PAUSE';
             vizStatus.textContent = `Loading: ${title}...`;
 
-            // Only reassign audio.src if switching to a different file (preserves scrubbed position when resuming)
+            // Only reassign audio.src if switching to a different file
             if (currentLoadedSrc !== src) {
                 audio.src = src;
                 currentLoadedSrc = src;
