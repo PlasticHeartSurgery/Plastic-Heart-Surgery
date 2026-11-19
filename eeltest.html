@@ -243,7 +243,7 @@
             background: #ff0033;
         }
 
-        /* Control Rows (Volume, CDJ / SL-1200 Pitch/Speed, Nudge & Loop) */
+        /* Control Rows (Volume, CDJ / SL-1200 Pitch/Speed, Nudge & A/B Loop) */
         .control-row {
             display: flex;
             align-items: center;
@@ -273,6 +273,14 @@
             background: #ff0033;
             color: #ffffff;
             border-color: #ff0033;
+        }
+
+        .loop-btn {
+            font-family: monospace;
+            font-weight: 700;
+            font-size: 0.78rem;
+            letter-spacing: 0.04em;
+            min-width: 78px;
         }
 
         .range-btn {
@@ -932,9 +940,10 @@
                     <span class="deck-readout" id="volumeValue">100%</span>
                 </div>
 
-                <!-- CDJ / SL-1200 Pitch & Speed + Range Selector + Loop Controls -->
+                <!-- CDJ / SL-1200 Pitch & Speed + Range Selector + Loop IN/OUT Controls -->
                 <div class="control-row">
-                    <button type="button" class="deck-btn" id="loopBtn" aria-pressed="false">LOOP</button>
+                    <button type="button" class="deck-btn loop-btn" id="loopInBtn" aria-pressed="false" title="Set loop start point; click again to clear">IN</button>
+                    <button type="button" class="deck-btn loop-btn" id="loopOutBtn" aria-pressed="false" title="Set loop end point and repeat; click again to clear">OUT</button>
                     <button type="button" class="deck-btn range-btn" id="pitchRangeBtn" title="Cycle tempo range: 8%, 16%, 32%, 64%, 128%">±8%</button>
                     <div class="pitch-slider-wrap">
                         <input type="range" class="deck-slider" id="pitchSlider" min="-8" max="8" step="0.1" value="0" aria-label="Pitch and play speed percentage" title="Drag to adjust pitch/speed. Double-click to reset to 0%.">
@@ -1090,7 +1099,7 @@
             }
         });
 
-        /* --- AUDIO PLAYER, VOLUME, PITCH/SPEED, NUDGE, LOOP, 3-BAND EQ & VISUALIZER --- */
+        /* --- AUDIO PLAYER, VOLUME, PITCH/SPEED, NUDGE, LOOP IN/OUT, 3-BAND EQ & VISUALIZER --- */
         const audio = document.getElementById('audioPlayer');
         const canvas = document.getElementById('audioVisualizer');
         const ctx = canvas.getContext('2d');
@@ -1103,7 +1112,8 @@
         const volumeSlider = document.getElementById('volumeSlider');
         const volumeValue = document.getElementById('volumeValue');
         const muteBtn = document.getElementById('muteBtn');
-        const loopBtn = document.getElementById('loopBtn');
+        const loopInBtn = document.getElementById('loopInBtn');
+        const loopOutBtn = document.getElementById('loopOutBtn');
         const pitchRangeBtn = document.getElementById('pitchRangeBtn');
         const pitchSlider = document.getElementById('pitchSlider');
         const pitchNotches = document.getElementById('pitchNotches');
@@ -1121,6 +1131,81 @@
         let currentMainPitchPct = 0;
         let currentNudgePct = 0;
         let stoppedByTempoZero = false;
+
+        // A/B Loop state (IN = start time in seconds, OUT = end time in seconds)
+        let loopStart = null;
+        let loopEnd = null;
+
+        function formatTime(sec) {
+            if (sec === null || sec === undefined || isNaN(sec)) return '00:00';
+            const total = Math.max(0, sec);
+            const m = Math.floor(total / 60).toString().padStart(2, '0');
+            const s = Math.floor(total % 60).toString().padStart(2, '0');
+            return `${m}:${s}`;
+        }
+
+        function updateLoopButtonsUI() {
+            if (loopStart !== null) {
+                loopInBtn.textContent = `IN ${formatTime(loopStart)}`;
+                loopInBtn.classList.add('active');
+                loopInBtn.setAttribute('aria-pressed', 'true');
+            } else {
+                loopInBtn.textContent = 'IN';
+                loopInBtn.classList.remove('active');
+                loopInBtn.setAttribute('aria-pressed', 'false');
+            }
+
+            if (loopEnd !== null) {
+                loopOutBtn.textContent = `OUT ${formatTime(loopEnd)}`;
+                loopOutBtn.classList.add('active');
+                loopOutBtn.setAttribute('aria-pressed', 'true');
+            } else {
+                loopOutBtn.textContent = 'OUT';
+                loopOutBtn.classList.remove('active');
+                loopOutBtn.setAttribute('aria-pressed', 'false');
+            }
+        }
+
+        function clearLoop() {
+            loopStart = null;
+            loopEnd = null;
+            audio.loop = false;
+            updateLoopButtonsUI();
+        }
+
+        loopInBtn.addEventListener('click', () => {
+            if (loopStart !== null) {
+                clearLoop();
+                return;
+            }
+            const now = Number.isFinite(audio.currentTime) ? audio.currentTime : 0;
+            loopStart = now;
+            if (loopEnd !== null && loopEnd <= loopStart) {
+                loopEnd = null;
+                audio.loop = false;
+            }
+            updateLoopButtonsUI();
+        });
+
+        loopOutBtn.addEventListener('click', () => {
+            if (loopEnd !== null) {
+                clearLoop();
+                return;
+            }
+            const now = Number.isFinite(audio.currentTime) ? audio.currentTime : 0;
+            if (loopStart === null) {
+                loopStart = 0;
+            }
+            if (now <= loopStart + 0.05) {
+                loopEnd = loopStart + 2;
+            } else {
+                loopEnd = now;
+            }
+            audio.loop = false;
+            updateLoopButtonsUI();
+        });
+
+        updateLoopButtonsUI();
 
         // EQ state in dB (-24 dB cut to +12 dB boost); false = bypassed (white), true = active (red)
         let eqActive = false;
@@ -1385,13 +1470,6 @@
         });
 
         updateVolumeUI(1, false);
-
-        // Loop toggle
-        loopBtn.addEventListener('click', () => {
-            audio.loop = !audio.loop;
-            loopBtn.classList.toggle('active', audio.loop);
-            loopBtn.setAttribute('aria-pressed', String(audio.loop));
-        });
 
         // CDJ / SL-1200 Pitch & Speed Range Cycle (8% -> 16% -> 32% -> 64% -> 128%)
         const pitchRanges = [8, 16, 32, 64, 128];
@@ -1662,6 +1740,11 @@
         });
 
         audio.addEventListener('timeupdate', () => {
+            if (loopStart !== null && loopEnd !== null && loopEnd > loopStart) {
+                if (audio.currentTime >= loopEnd) {
+                    audio.currentTime = loopStart;
+                }
+            }
             if (!audio.duration || isDraggingProgress) return;
             const pct = (audio.currentTime / audio.duration) * 100;
             updateProgressUI(pct);
@@ -1669,7 +1752,11 @@
         });
 
         audio.addEventListener('ended', () => {
-            if (audio.loop) return;
+            if (loopStart !== null && loopEnd !== null && loopEnd > loopStart) {
+                audio.currentTime = loopStart;
+                audio.play().catch(() => {});
+                return;
+            }
             if (activeCard) {
                 activeCard.classList.remove('playing');
                 activeCard.querySelector('.play-indicator').textContent = 'PLAY';
@@ -1677,13 +1764,6 @@
             vizStatus.textContent = 'Finished';
             updateProgressUI(0);
         });
-
-        function formatTime(sec) {
-            if (isNaN(sec)) return '00:00';
-            const m = Math.floor(sec / 60).toString().padStart(2, '0');
-            const s = Math.floor(sec % 60).toString().padStart(2, '0');
-            return `${m}:${s}`;
-        }
 
         // Centered Radial Red-to-White Loudness Gradient Visualizer (Full #ff0033 on peaks)
         function drawVisualizer() {
