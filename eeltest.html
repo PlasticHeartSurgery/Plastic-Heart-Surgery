@@ -993,20 +993,20 @@
 
                         <div class="knob-unit">
                             <span class="knob-title">LPF</span>
-                            <div class="knob-dial" id="lpfKnob" role="slider" tabindex="0" aria-label="Low Pass Filter cutoff frequency" aria-valuemin="200" aria-valuemax="20000" aria-valuenow="20000" title="Drag up/down or scroll to adjust Low Pass cutoff. Double-click to reset (20.0kHz).">
+                            <div class="knob-dial" id="lpfKnob" role="slider" tabindex="0" aria-label="Low Pass Filter cutoff frequency" aria-valuemin="0" aria-valuemax="25000" aria-valuenow="25000" title="Drag up/down or scroll to adjust Low Pass cutoff (0Hz–25kHz). Double-click to reset (25.0kHz).">
                                 <div class="knob-indicator" id="lpfIndicator"></div>
                             </div>
-                            <span class="knob-val" id="lpfValue">20.0kHz</span>
-                            <span class="knob-sub">LOW PASS</span>
+                            <span class="knob-val" id="lpfValue">25.0kHz</span>
+                            <span class="knob-sub">0–25kHz</span>
                         </div>
 
                         <div class="knob-unit">
                             <span class="knob-title">HPF</span>
-                            <div class="knob-dial" id="hpfKnob" role="slider" tabindex="0" aria-label="High Pass Filter cutoff frequency" aria-valuemin="20" aria-valuemax="2000" aria-valuenow="20" title="Drag up/down or scroll to adjust High Pass cutoff. Double-click to reset (20Hz).">
+                            <div class="knob-dial" id="hpfKnob" role="slider" tabindex="0" aria-label="High Pass Filter cutoff frequency" aria-valuemin="0" aria-valuemax="25000" aria-valuenow="0" title="Drag up/down or scroll to adjust High Pass cutoff (0Hz–25kHz). Double-click to reset (0Hz).">
                                 <div class="knob-indicator" id="hpfIndicator"></div>
                             </div>
-                            <span class="knob-val" id="hpfValue">20Hz</span>
-                            <span class="knob-sub">HIGH PASS</span>
+                            <span class="knob-val" id="hpfValue">0Hz</span>
+                            <span class="knob-sub">0–25kHz</span>
                         </div>
                     </div>
                     <button type="button" class="deck-btn" id="eqToggleBtn" aria-pressed="false" title="Red = EQ & Filters Active, White = Bypassed">EQ</button>
@@ -1231,8 +1231,8 @@
             bass: 0,
             mids: 0,
             treble: 0,
-            lpf: 20000,
-            hpf: 20
+            lpf: 25000,
+            hpf: 0
         };
 
         // Web Audio API state: Source -> HPF -> Bass (90Hz) -> Mids (1kHz) -> Treble (4kHz) -> LPF -> Analyser -> Destination
@@ -1248,13 +1248,18 @@
         let smoothedLoudness = 0;
         let fallbackPhase = 0;
 
+        function clampFilterHz(hz, fallbackMax) {
+            const nyquist = audioCtx && audioCtx.sampleRate ? audioCtx.sampleRate / 2 : fallbackMax;
+            return Math.max(0.01, Math.min(hz, nyquist - 1));
+        }
+
         function syncEQFilters() {
             if (!webAudioReady) return;
-            if (hpfFilter) hpfFilter.frequency.value = eqActive ? eqState.hpf : 20;
+            if (hpfFilter) hpfFilter.frequency.value = eqActive ? clampFilterHz(eqState.hpf, 25000) : 0.01;
             if (bassFilter) bassFilter.gain.value = eqActive ? eqState.bass : 0;
             if (midsFilter) midsFilter.gain.value = eqActive ? eqState.mids : 0;
             if (trebleFilter) trebleFilter.gain.value = eqActive ? eqState.treble : 0;
-            if (lpfFilter) lpfFilter.frequency.value = eqActive ? eqState.lpf : 20000;
+            if (lpfFilter) lpfFilter.frequency.value = eqActive ? clampFilterHz(eqState.lpf, 25000) : clampFilterHz(25000, 25000);
         }
 
         function updateEQToggleUI() {
@@ -1274,6 +1279,7 @@
                 if (audioCtx.state === 'suspended') {
                     audioCtx.resume();
                 }
+                syncEQFilters();
                 return;
             }
             try {
@@ -1283,7 +1289,7 @@
 
                 hpfFilter = audioCtx.createBiquadFilter();
                 hpfFilter.type = 'highpass';
-                hpfFilter.frequency.value = eqActive ? eqState.hpf : 20;
+                hpfFilter.frequency.value = eqActive ? clampFilterHz(eqState.hpf, 25000) : 0.01;
 
                 // Bass crossover at 90 Hz
                 bassFilter = audioCtx.createBiquadFilter();
@@ -1306,7 +1312,7 @@
 
                 lpfFilter = audioCtx.createBiquadFilter();
                 lpfFilter.type = 'lowpass';
-                lpfFilter.frequency.value = eqActive ? eqState.lpf : 20000;
+                lpfFilter.frequency.value = eqActive ? clampFilterHz(eqState.lpf, 25000) : clampFilterHz(25000, 25000);
 
                 analyser = audioCtx.createAnalyser();
                 analyser.fftSize = 256;
@@ -1446,35 +1452,51 @@
             setDb(0, false);
         }
 
-        // Logarithmic frequency knob helper for LPF & HPF (resetHz sits at top 0deg, sweeping -135deg to +135deg)
+        // Wide-range frequency knob helper (0 Hz to 25,000 Hz, with resetHz at top 0deg, sweeping -135deg to +135deg)
         function setupFreqKnob({ dialId, indicatorId, valueId, stateKey, minHz, maxHz, resetHz }) {
             const dial = document.getElementById(dialId);
             const indicator = document.getElementById(indicatorId);
             const valLabel = document.getElementById(valueId);
-            const minLog = Math.log10(minHz);
+            const floorRef = 1;
+            const minLog = Math.log10(floorRef);
             const maxLog = Math.log10(maxHz);
-            const resetLog = Math.log10(resetHz);
 
             function hzToNorm(hz) {
-                const logVal = Math.log10(Math.max(minHz, Math.min(maxHz, hz)));
-                return (logVal - minLog) / (maxLog - minLog);
+                if (hz <= floorRef) return 0;
+                const logVal = Math.log10(Math.min(maxHz, hz));
+                return Math.max(0, Math.min(1, (logVal - minLog) / (maxLog - minLog)));
             }
 
             function normToHz(norm) {
                 const clampedNorm = Math.max(0, Math.min(1, norm));
+                if (clampedNorm <= 0.004) return 0;
                 return Math.pow(10, minLog + clampedNorm * (maxLog - minLog));
             }
 
             function setHz(hz, snapReset = true) {
                 let clamped = Math.max(minHz, Math.min(maxHz, hz));
-                if (snapReset && Math.abs(Math.log10(clamped) - resetLog) <= 0.025) {
-                    clamped = resetHz;
+                if (snapReset) {
+                    if (resetHz === 0 && clamped <= 4) {
+                        clamped = 0;
+                    } else if (resetHz > 0 && Math.abs(clamped - resetHz) <= resetHz * 0.025) {
+                        clamped = resetHz;
+                    }
                 }
                 eqState[stateKey] = clamped;
                 dial.setAttribute('aria-valuenow', String(Math.round(clamped)));
                 valLabel.textContent = formatFreqLabel(clamped);
 
-                const deg = (hzToNorm(clamped) * 2 - 1) * 135;
+                const resetNorm = hzToNorm(resetHz);
+                const curNorm = hzToNorm(clamped);
+                let deg = 0;
+                if (resetNorm >= 0.999) {
+                    deg = (curNorm - 1) * 270;
+                } else if (resetNorm <= 0.001) {
+                    deg = curNorm * 270;
+                } else {
+                    deg = ((curNorm - resetNorm) / Math.max(0.001, 1 - resetNorm)) * 135;
+                }
+                deg = Math.max(-135, Math.min(135, deg));
                 indicator.style.transform = `translateX(-50%) rotate(${deg.toFixed(1)}deg)`;
 
                 syncEQFilters();
@@ -1500,7 +1522,7 @@
             window.addEventListener('mousemove', (e) => {
                 if (!isDraggingKnob) return;
                 const deltaY = dragStartY - e.clientY;
-                setHz(normToHz(dragStartNorm + deltaY / 110), true);
+                setHz(normToHz(dragStartNorm + deltaY / 120), true);
             });
 
             window.addEventListener('mouseup', () => {
@@ -1521,7 +1543,7 @@
                 if (!isDraggingKnob || e.touches.length !== 1) return;
                 e.preventDefault();
                 const deltaY = dragStartY - e.touches[0].clientY;
-                setHz(normToHz(dragStartNorm + deltaY / 110), true);
+                setHz(normToHz(dragStartNorm + deltaY / 120), true);
             }, { passive: false });
 
             window.addEventListener('touchend', () => {
@@ -1586,9 +1608,9 @@
             indicatorId: 'lpfIndicator',
             valueId: 'lpfValue',
             stateKey: 'lpf',
-            minHz: 200,
-            maxHz: 20000,
-            resetHz: 20000
+            minHz: 0,
+            maxHz: 25000,
+            resetHz: 25000
         });
 
         setupFreqKnob({
@@ -1596,9 +1618,9 @@
             indicatorId: 'hpfIndicator',
             valueId: 'hpfValue',
             stateKey: 'hpf',
-            minHz: 20,
-            maxHz: 2000,
-            resetHz: 20
+            minHz: 0,
+            maxHz: 25000,
+            resetHz: 0
         });
 
         updateEQToggleUI();
