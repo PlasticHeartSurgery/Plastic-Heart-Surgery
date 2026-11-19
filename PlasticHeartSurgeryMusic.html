@@ -411,6 +411,11 @@
             flex: 1;
             gap: 16px;
             flex-wrap: wrap;
+            transition: opacity 0.15s ease;
+        }
+
+        .eq-knobs-group.bypassed {
+            opacity: 0.45;
         }
 
         .knob-unit {
@@ -761,7 +766,7 @@
 
                 <!-- 3-Band EQ Mixer Knobs: Bass (90Hz Crossover), Mids, Treble -->
                 <div class="eq-row">
-                    <div class="eq-knobs-group">
+                    <div class="eq-knobs-group" id="eqKnobsGroup">
                         <div class="knob-unit">
                             <span class="knob-title">BASS</span>
                             <div class="knob-dial" id="bassKnob" role="slider" tabindex="0" aria-label="Bass EQ (90Hz crossover)" aria-valuemin="-24" aria-valuemax="12" aria-valuenow="0" title="Drag up/down or scroll to adjust Bass (90Hz crossover). Double-click to reset.">
@@ -789,7 +794,7 @@
                             <span class="knob-sub">4kHz</span>
                         </div>
                     </div>
-                    <button type="button" class="deck-btn" id="eqResetBtn" title="Reset Bass, Mids, and Treble to 0.0 dB">EQ 0</button>
+                    <button type="button" class="deck-btn" id="eqToggleBtn" aria-pressed="false" title="Red = EQ Active, White = EQ Bypassed">EQ</button>
                 </div>
             </div>
 
@@ -849,7 +854,8 @@
         const nudgeSlider = document.getElementById('nudgeSlider');
         const nudgeValue = document.getElementById('nudgeValue');
         const nudgeResetBtn = document.getElementById('nudgeResetBtn');
-        const eqResetBtn = document.getElementById('eqResetBtn');
+        const eqToggleBtn = document.getElementById('eqToggleBtn');
+        const eqKnobsGroup = document.getElementById('eqKnobsGroup');
 
         let activeCard = null;
         let isDraggingProgress = false;
@@ -857,7 +863,8 @@
         let currentMainPitchPct = 0;
         let currentNudgePct = 0;
 
-        // EQ state in dB (-24 dB cut to +12 dB boost)
+        // EQ state in dB (-24 dB cut to +12 dB boost); false = bypassed (white), true = active (red)
+        let eqActive = false;
         const eqState = {
             bass: 0,
             mids: 0,
@@ -910,10 +917,25 @@
 
         function syncEQFilters() {
             if (!webAudioReady) return;
-            if (bassFilter) bassFilter.gain.value = eqState.bass;
-            if (midsFilter) midsFilter.gain.value = eqState.mids;
-            if (trebleFilter) trebleFilter.gain.value = eqState.treble;
+            const effectiveBass = eqActive ? eqState.bass : 0;
+            const effectiveMids = eqActive ? eqState.mids : 0;
+            const effectiveTreble = eqActive ? eqState.treble : 0;
+            if (bassFilter) bassFilter.gain.value = effectiveBass;
+            if (midsFilter) midsFilter.gain.value = effectiveMids;
+            if (trebleFilter) trebleFilter.gain.value = effectiveTreble;
         }
+
+        function updateEQToggleUI() {
+            eqToggleBtn.classList.toggle('active', eqActive);
+            eqToggleBtn.setAttribute('aria-pressed', String(eqActive));
+            eqKnobsGroup.classList.toggle('bypassed', !eqActive);
+            syncEQFilters();
+        }
+
+        eqToggleBtn.addEventListener('click', () => {
+            eqActive = !eqActive;
+            updateEQToggleUI();
+        });
 
         function initAudioGraph() {
             if (audioCtx) {
@@ -931,20 +953,20 @@
                 bassFilter = audioCtx.createBiquadFilter();
                 bassFilter.type = 'lowshelf';
                 bassFilter.frequency.value = 90;
-                bassFilter.gain.value = eqState.bass;
+                bassFilter.gain.value = eqActive ? eqState.bass : 0;
 
                 // Midrange band centered at 1 kHz
                 midsFilter = audioCtx.createBiquadFilter();
                 midsFilter.type = 'peaking';
                 midsFilter.frequency.value = 1000;
                 midsFilter.Q.value = 1.0;
-                midsFilter.gain.value = eqState.mids;
+                midsFilter.gain.value = eqActive ? eqState.mids : 0;
 
                 // Treble band above 4 kHz
                 trebleFilter = audioCtx.createBiquadFilter();
                 trebleFilter.type = 'highshelf';
                 trebleFilter.frequency.value = 4000;
-                trebleFilter.gain.value = eqState.treble;
+                trebleFilter.gain.value = eqActive ? eqState.treble : 0;
 
                 analyser = audioCtx.createAnalyser();
                 analyser.fftSize = 256;
@@ -1077,32 +1099,28 @@
             return (val) => setDb(val, false);
         }
 
-        const setBassDb = setupRotaryKnob({
+        setupRotaryKnob({
             dialId: 'bassKnob',
             indicatorId: 'bassIndicator',
             valueId: 'bassValue',
             stateKey: 'bass'
         });
 
-        const setMidsDb = setupRotaryKnob({
+        setupRotaryKnob({
             dialId: 'midsKnob',
             indicatorId: 'midsIndicator',
             valueId: 'midsValue',
             stateKey: 'mids'
         });
 
-        const setTrebleDb = setupRotaryKnob({
+        setupRotaryKnob({
             dialId: 'trebleKnob',
             indicatorId: 'trebleIndicator',
             valueId: 'trebleValue',
             stateKey: 'treble'
         });
 
-        eqResetBtn.addEventListener('click', () => {
-            setBassDb(0);
-            setMidsDb(0);
-            setTrebleDb(0);
-        });
+        updateEQToggleUI();
 
         function updateVolumeUI(vol, isMuted) {
             const effectiveVol = isMuted ? 0 : vol;
