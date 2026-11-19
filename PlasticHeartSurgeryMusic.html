@@ -1015,7 +1015,7 @@
                         </div>
                     </div>
 
-                    <button type="button" class="deck-btn active" id="delayToggleBtn" aria-pressed="true" title="Red = Delay Active, White = Bypassed">DLY</button>
+                    <button type="button" class="deck-btn" id="delayToggleBtn" aria-pressed="false" title="Red = Delay Active, White = Bypassed">DLY</button>
                 </div>
             </div>
 
@@ -1214,7 +1214,7 @@
         };
 
         // Tap BPM & Delay state
-        let delayActive = true;
+        let delayActive = false;
         const delayState = {
             timeMs: 500,
             mix: 0,
