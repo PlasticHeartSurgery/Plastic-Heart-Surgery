@@ -473,7 +473,7 @@
             -webkit-tap-highlight-color: transparent;
             opacity: 0;
             transform: translateY(20px);
-            transition: 
+            transition:
                 opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
                 transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
                 box-shadow 0.3s ease,
@@ -877,7 +877,7 @@
             }
         });
 
-        /* --- AUDIO PLAYER, VOLUME & LOUDNESS GRADIENT VISUALIZER --- */
+        /* --- AUDIO PLAYER, VOLUME & RADIAL LOUDNESS GRADIENT VISUALIZER --- */
         const audio = document.getElementById('audioPlayer');
         const canvas = document.getElementById('audioVisualizer');
         const ctx = canvas.getContext('2d');
@@ -921,7 +921,6 @@
                 timeDomainData = new Uint8Array(analyser.fftSize);
                 webAudioReady = true;
             } catch (err) {
-                // Falls back cleanly if browser blocks Web Audio on local file:// origins
                 console.warn("Web Audio API fallback active:", err);
                 webAudioReady = false;
             }
@@ -1108,7 +1107,7 @@
             return `${m}:${s}`;
         }
 
-        // Red-to-White Loudness Gradient Visualizer
+        // Centered Radial Red-to-White Loudness Gradient Visualizer
         function drawVisualizer() {
             requestAnimationFrame(drawVisualizer);
             const dpr = window.devicePixelRatio || 1;
@@ -1126,7 +1125,6 @@
                         sumSquares += normalized * normalized;
                     }
                     const rms = Math.sqrt(sumSquares / timeDomainData.length);
-                    // Scale RMS sensitivity so musical dynamics clearly drive the red saturation
                     targetLoudness = Math.min(1, rms * 3.4);
                 } else {
                     fallbackPhase += 0.09;
@@ -1135,27 +1133,40 @@
                 }
             }
 
-            // Smooth attack and decay so the red-to-white shift feels fluid and responsive
             const smoothing = targetLoudness > smoothedLoudness ? 0.35 : 0.12;
             smoothedLoudness += (targetLoudness - smoothedLoudness) * smoothing;
 
-            // Interpolate from pure white (#ffffff) at silence to intense red (#ff0033) at loud peaks
-            const r = 255;
+            const centerX = width / 2;
+            const centerY = height / 2;
+            const maxRadius = Math.max(width, height) * 0.65;
+
+            const coreRadius = Math.max(4, maxRadius * (0.12 + smoothedLoudness * 0.55));
+            const outerRadius = Math.max(coreRadius + 10, maxRadius * (0.45 + smoothedLoudness * 0.65));
+
             const g = Math.round(255 * (1 - smoothedLoudness));
             const b = Math.round(255 - (255 - 51) * smoothedLoudness);
 
-            // Soft tint for the upper end of the gradient so it shifts red-to-white smoothly
-            const topIntensity = smoothedLoudness * 0.45;
-            const topG = Math.round(255 * (1 - topIntensity));
-            const topB = Math.round(255 - (255 - 51) * topIntensity);
+            const midIntensity = smoothedLoudness * 0.45;
+            const midG = Math.round(255 * (1 - midIntensity));
+            const midB = Math.round(255 - (255 - 51) * midIntensity);
 
-            const gradient = ctx.createLinearGradient(0, height, 0, 0);
-            gradient.addColorStop(0, `rgb(${r}, ${g}, ${b})`);
-            gradient.addColorStop(Math.max(0.15, smoothedLoudness), `rgba(${r}, ${g}, ${b}, ${0.35 + smoothedLoudness * 0.65})`);
-            gradient.addColorStop(1, `rgb(255, ${topG}, ${topB})`);
+            const radialGrad = ctx.createRadialGradient(
+                centerX,
+                centerY,
+                coreRadius * 0.15,
+                centerX,
+                centerY,
+                outerRadius
+            );
+
+            radialGrad.addColorStop(0, `rgb(255, ${g}, ${b})`);
+            radialGrad.addColorStop(0.55, `rgba(255, ${midG}, ${midB}, ${0.25 + smoothedLoudness * 0.75})`);
+            radialGrad.addColorStop(1, '#ffffff');
 
             ctx.clearRect(0, 0, width, height);
-            ctx.fillStyle = gradient;
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, width, height);
+            ctx.fillStyle = radialGrad;
             ctx.fillRect(0, 0, width, height);
         }
         drawVisualizer();
