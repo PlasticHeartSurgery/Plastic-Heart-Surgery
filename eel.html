@@ -19,6 +19,13 @@
             font-style: normal;
         }
 
+        @font-face {
+            font-family: 'Lyno Walt';
+            src: local('Lyno Walt'), url('fonts/lyno-walt.otf') format('opentype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
         *, *::before, *::after {
             box-sizing: border-box;
             margin: 0;
@@ -145,6 +152,11 @@
             margin-bottom: 24px;
         }
 
+        .num-font {
+            font-family: 'Lyno Walt', monospace;
+            font-variant-numeric: tabular-nums;
+        }
+
         /* Visualizer Box */
         .visualizer-card {
             background: #ffffff;
@@ -172,8 +184,9 @@
         }
 
         .visualizer-time {
-            font-family: monospace;
-            font-size: 0.85rem;
+            font-family: 'Lyno Walt', monospace;
+            font-size: 1.05rem;
+            letter-spacing: 0.08em;
             color: #333333;
             white-space: nowrap;
         }
@@ -182,7 +195,7 @@
             width: 100%;
             height: 140px;
             display: block;
-            background-color: #fff5f7;
+            background-color: #ffffff;
             border: 1px solid #000000;
             border-radius: 4px;
         }
@@ -243,6 +256,387 @@
             background: #ff0033;
         }
 
+        /* Control Rows */
+        .control-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 6px;
+            padding-top: 10px;
+            border-top: 1px solid #eeeeee;
+            flex-wrap: wrap;
+        }
+
+        .deck-btn {
+            font-family: 'Lyno Ulyscyr', sans-serif;
+            font-size: 0.75rem;
+            letter-spacing: 0.14em;
+            color: #111111;
+            background: #ffffff;
+            border: 2px solid #000000;
+            border-radius: 4px;
+            padding: 4px 10px;
+            min-width: 64px;
+            cursor: pointer;
+            user-select: none;
+            -webkit-user-select: none;
+            transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+        }
+
+        .deck-btn:hover,
+        .deck-btn.active {
+            background: #ff0033;
+            color: #ffffff;
+            border-color: #ff0033;
+        }
+
+        .loop-btn {
+            font-family: 'Lyno Walt', monospace;
+            font-weight: 700;
+            font-size: 0.9rem;
+            letter-spacing: 0.06em;
+            min-width: 78px;
+        }
+
+        .loop-halve-btn {
+            font-family: 'Lyno Walt', monospace;
+            font-weight: 700;
+            font-size: 0.85rem;
+            letter-spacing: 0.04em;
+            min-width: 44px;
+            padding: 4px 7px;
+        }
+
+        .loop-halve-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .range-btn {
+            font-family: 'Lyno Walt', monospace;
+            font-weight: 700;
+            font-size: 0.92rem;
+            letter-spacing: 0.05em;
+            min-width: 64px;
+        }
+
+        .deck-label {
+            font-family: 'Lyno Ulyscyr', sans-serif;
+            font-size: 0.75rem;
+            letter-spacing: 0.14em;
+            color: #333333;
+            min-width: 64px;
+            white-space: nowrap;
+        }
+
+        .pitch-slider-wrap {
+            flex: 1;
+            min-width: 130px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .pitch-notches {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 3px 7px 0 7px;
+            height: 11px;
+            pointer-events: none;
+        }
+
+        .pitch-notches.hidden {
+            visibility: hidden;
+        }
+
+        .pitch-notch {
+            width: 1px;
+            height: 5px;
+            background-color: #666666;
+        }
+
+        .pitch-notch.major {
+            width: 2px;
+            height: 7px;
+            background-color: #111111;
+        }
+
+        .pitch-notch.center {
+            width: 2px;
+            height: 9px;
+            background-color: #ff0033;
+        }
+
+        .deck-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            flex: 1;
+            min-width: 120px;
+            height: 8px;
+            background: #eeeeee;
+            border: 1px solid #000000;
+            border-radius: 4px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .deck-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            background: #ffffff;
+            border: 2px solid #000000;
+            border-radius: 50%;
+            box-shadow: 2px 2px 0px #000000;
+            cursor: pointer;
+            transition: background-color 0.15s ease;
+        }
+
+        .deck-slider::-webkit-slider-thumb:hover,
+        .deck-slider:active::-webkit-slider-thumb {
+            background: #ff0033;
+        }
+
+        .deck-slider::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            background: #ffffff;
+            border: 2px solid #000000;
+            border-radius: 50%;
+            box-shadow: 2px 2px 0px #000000;
+            cursor: pointer;
+            transition: background-color 0.15s ease;
+        }
+
+        .deck-slider::-moz-range-thumb:hover,
+        .deck-slider:active::-moz-range-thumb {
+            background: #ff0033;
+        }
+
+        .deck-readout {
+            font-family: 'Lyno Walt', monospace;
+            font-size: 1rem;
+            letter-spacing: 0.06em;
+            color: #333333;
+            min-width: 72px;
+            text-align: right;
+            white-space: nowrap;
+        }
+
+        /* 3-Band EQ + LPF / HPF Rotary Knobs & Tap Delay Section */
+        .eq-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            margin-top: 6px;
+            padding-top: 12px;
+            border-top: 1px solid #eeeeee;
+            flex-wrap: wrap;
+        }
+
+        .delay-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            margin-top: 8px;
+            padding-top: 12px;
+            border-top: 1px solid #eeeeee;
+            flex-wrap: wrap;
+        }
+
+        .delay-tap-cluster {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .bpm-circle-wrap {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .bpm-circle {
+            width: 62px;
+            height: 62px;
+            border-radius: 50%;
+            background: #ffffff;
+            border: 2px solid #000000;
+            box-shadow: 2px 2px 0px #000000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            transition: transform 0.08s ease, box-shadow 0.12s ease, border-color 0.12s ease, background-color 0.12s ease;
+        }
+
+        .bpm-circle:hover {
+            border-color: #ff0033;
+        }
+
+        .bpm-circle.pulse {
+            background: #ff0033;
+            border-color: #ff0033;
+            box-shadow: 0 0 18px rgba(255, 0, 51, 0.85), 2px 2px 0px #ff0033;
+            transform: scale(1.08);
+        }
+
+        .bpm-circle.pulse .bpm-circle-num,
+        .bpm-circle.pulse .bpm-circle-label {
+            color: #ffffff;
+        }
+
+        .bpm-circle-num {
+            font-family: 'Lyno Walt', sans-serif;
+            font-size: 1.35rem;
+            line-height: 1;
+            color: #ff0033;
+            letter-spacing: 0.04em;
+        }
+
+        .bpm-circle-label {
+            font-family: 'Lyno Ulyscyr', sans-serif;
+            font-size: 0.58rem;
+            letter-spacing: 0.16em;
+            color: #333333;
+            margin-top: 2px;
+        }
+
+        .delay-controls-stack {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            min-width: 92px;
+        }
+
+        .tap-btn {
+            font-family: 'Lyno Ulyscyr', sans-serif;
+            font-size: 0.82rem;
+            letter-spacing: 0.16em;
+            color: #111111;
+            background: #ffffff;
+            border: 2px solid #000000;
+            border-radius: 4px;
+            padding: 8px 14px;
+            min-width: 84px;
+            cursor: pointer;
+            user-select: none;
+            -webkit-user-select: none;
+            box-shadow: 2px 2px 0px #000000;
+            transition: background-color 0.1s ease, color 0.1s ease, border-color 0.1s ease, transform 0.08s ease;
+        }
+
+        .tap-btn:hover,
+        .tap-btn.active,
+        .tap-btn:active {
+            background: #ff0033;
+            color: #ffffff;
+            border-color: #ff0033;
+            transform: translateY(1px);
+        }
+
+        .tap-meta {
+            font-family: 'Lyno Walt', monospace;
+            font-size: 0.88rem;
+            letter-spacing: 0.05em;
+            color: #333333;
+            text-align: center;
+            line-height: 1.25;
+        }
+
+        .eq-knobs-group {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            flex: 1;
+            gap: 12px;
+            flex-wrap: wrap;
+            transition: opacity 0.15s ease;
+        }
+
+        .eq-knobs-group.bypassed {
+            opacity: 0.45;
+        }
+
+        .knob-unit {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: none;
+        }
+
+        .knob-dial {
+            position: relative;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: #ffffff;
+            border: 2px solid #000000;
+            box-shadow: 2px 2px 0px #000000;
+            cursor: ns-resize;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: border-color 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .knob-dial:hover,
+        .knob-dial.active {
+            border-color: #ff0033;
+            box-shadow: 2px 2px 0px #ff0033;
+        }
+
+        .knob-indicator {
+            position: absolute;
+            top: 3px;
+            left: 50%;
+            width: 3px;
+            height: 15px;
+            background: #ff0033;
+            border-radius: 2px;
+            transform-origin: 50% 21px;
+            transform: translateX(-50%) rotate(0deg);
+            pointer-events: none;
+        }
+
+        .knob-title {
+            font-family: 'Lyno Ulyscyr', sans-serif;
+            font-size: 0.75rem;
+            letter-spacing: 0.14em;
+            color: #111111;
+        }
+
+        .knob-sub {
+            font-family: 'Lyno Walt', monospace;
+            font-size: 0.82rem;
+            letter-spacing: 0.04em;
+            color: #555555;
+        }
+
+        .knob-val {
+            font-family: 'Lyno Walt', monospace;
+            font-size: 0.92rem;
+            letter-spacing: 0.05em;
+            color: #ff0033;
+            font-weight: 700;
+            min-width: 64px;
+            text-align: center;
+        }
+
         @media (pointer: coarse) {
             .progress-bar-container {
                 height: 12px;
@@ -252,6 +646,26 @@
                 width: 20px;
                 height: 20px;
                 background: #ff0033;
+            }
+            .deck-slider {
+                height: 10px;
+            }
+            .deck-slider::-webkit-slider-thumb {
+                width: 20px;
+                height: 20px;
+                background: #ff0033;
+            }
+            .deck-slider::-moz-range-thumb {
+                width: 20px;
+                height: 20px;
+                background: #ff0033;
+            }
+            .knob-dial {
+                width: 54px;
+                height: 54px;
+            }
+            .knob-indicator {
+                transform-origin: 50% 24px;
             }
         }
 
@@ -375,7 +789,7 @@
             -webkit-tap-highlight-color: transparent;
             opacity: 0;
             transform: translateY(20px);
-            transition: 
+            transition:
                 opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
                 transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
                 box-shadow 0.3s ease,
@@ -654,7 +1068,7 @@
         <section>
             <h2>Plastic Heart Surgery</h2>
 
-            <!-- Audio Visualizer -->
+            <!-- Audio Visualizer & Deck Controls -->
             <div class="visualizer-card">
                 <div class="visualizer-header">
                     <span class="visualizer-status" id="vizStatus">Ready — Tap track to play</span>
@@ -666,6 +1080,146 @@
                         <div class="progress-bar-fill" id="progressFill"></div>
                         <div class="progress-handle" id="progressHandle"></div>
                     </div>
+                </div>
+
+                <!-- Volume Slider -->
+                <div class="control-row">
+                    <button type="button" class="deck-btn" id="muteBtn" aria-label="Mute or unmute audio">VOL</button>
+                    <input type="range" class="deck-slider" id="volumeSlider" min="0" max="1" step="0.01" value="1" aria-label="Volume">
+                    <span class="deck-readout" id="volumeValue">100%</span>
+                </div>
+
+                <!-- CDJ / SL-1200 Pitch & Speed + Range Selector + Loop IN/OUT/÷2 Controls -->
+                <div class="control-row">
+                    <button type="button" class="deck-btn loop-btn" id="loopInBtn" aria-pressed="false" title="Set loop start point; click again to clear">IN</button>
+                    <button type="button" class="deck-btn loop-btn" id="loopOutBtn" aria-pressed="false" title="Set loop end point and repeat; click again to clear">OUT</button>
+                    <button type="button" class="deck-btn loop-halve-btn" id="loopHalveBtn" disabled title="Cut loop length in half (2x, 4x, 8x shorter and beyond)">÷2</button>
+                    <button type="button" class="deck-btn range-btn" id="pitchRangeBtn" title="Cycle tempo range: 8%, 16%, 32%, 64%, 128%">±8%</button>
+                    <div class="pitch-slider-wrap">
+                        <input type="range" class="deck-slider" id="pitchSlider" min="-8" max="8" step="0.1" value="0" aria-label="Pitch and play speed percentage" title="Drag to adjust pitch/speed. Double-click to reset to 0%.">
+                        <div class="pitch-notches" id="pitchNotches" aria-hidden="true"></div>
+                    </div>
+                    <span class="deck-readout" id="pitchValue">+0.00%</span>
+                    <button type="button" class="deck-btn" id="pitchResetBtn" title="Reset pitch and speed to 0%">0%</button>
+                </div>
+
+                <!-- Subtle Nudge Slider (±1.00% in 0.01% steps) -->
+                <div class="control-row">
+                    <span class="deck-label">NUDGE</span>
+                    <input type="range" class="deck-slider" id="nudgeSlider" min="-1" max="1" step="0.01" value="0" aria-label="Subtle pitch and speed nudge percentage" title="Drag to nudge pitch/speed. Double-click to reset to 0.00%.">
+                    <span class="deck-readout" id="nudgeValue">+0.00%</span>
+                    <button type="button" class="deck-btn" id="nudgeResetBtn" title="Reset nudge to 0.00%">RESET</button>
+                </div>
+
+                <!-- 3-Band EQ + LPF / HPF Rotary Knobs -->
+                <div class="eq-row">
+                    <div class="eq-knobs-group" id="eqKnobsGroup">
+                        <div class="knob-unit">
+                            <span class="knob-title">BASS</span>
+                            <div class="knob-dial" id="bassKnob" role="slider" tabindex="0" aria-label="Bass EQ (90Hz crossover)" aria-valuemin="-24" aria-valuemax="12" aria-valuenow="0" title="Drag up/down or scroll to adjust Bass (90Hz crossover). Double-click to reset.">
+                                <div class="knob-indicator" id="bassIndicator"></div>
+                            </div>
+                            <span class="knob-val" id="bassValue">0.0 dB</span>
+                            <span class="knob-sub">90Hz</span>
+                        </div>
+
+                        <div class="knob-unit">
+                            <span class="knob-title">MIDS</span>
+                            <div class="knob-dial" id="midsKnob" role="slider" tabindex="0" aria-label="Mids EQ (1kHz)" aria-valuemin="-24" aria-valuemax="12" aria-valuenow="0" title="Drag up/down or scroll to adjust Mids. Double-click to reset.">
+                                <div class="knob-indicator" id="midsIndicator"></div>
+                            </div>
+                            <span class="knob-val" id="midsValue">0.0 dB</span>
+                            <span class="knob-sub">1kHz</span>
+                        </div>
+
+                        <div class="knob-unit">
+                            <span class="knob-title">TREBLE</span>
+                            <div class="knob-dial" id="trebleKnob" role="slider" tabindex="0" aria-label="Treble EQ (4kHz)" aria-valuemin="-24" aria-valuemax="12" aria-valuenow="0" title="Drag up/down or scroll to adjust Treble. Double-click to reset.">
+                                <div class="knob-indicator" id="trebleIndicator"></div>
+                            </div>
+                            <span class="knob-val" id="trebleValue">0.0 dB</span>
+                            <span class="knob-sub">4kHz</span>
+                        </div>
+
+                        <div class="knob-unit">
+                            <span class="knob-title">LPF</span>
+                            <div class="knob-dial" id="lpfKnob" role="slider" tabindex="0" aria-label="Low Pass Filter cutoff frequency" aria-valuemin="0" aria-valuemax="25000" aria-valuenow="25000" title="Drag up/down or scroll to adjust Low Pass cutoff (0Hz–25kHz). Double-click to reset (25.0kHz).">
+                                <div class="knob-indicator" id="lpfIndicator"></div>
+                            </div>
+                            <span class="knob-val" id="lpfValue">25.0kHz</span>
+                            <span class="knob-sub">0–25kHz</span>
+                        </div>
+
+                        <div class="knob-unit">
+                            <span class="knob-title">HPF</span>
+                            <div class="knob-dial" id="hpfKnob" role="slider" tabindex="0" aria-label="High Pass Filter cutoff frequency" aria-valuemin="0" aria-valuemax="25000" aria-valuenow="0" title="Drag up/down or scroll to adjust High Pass cutoff (0Hz–25kHz). Double-click to reset (0Hz).">
+                                <div class="knob-indicator" id="hpfIndicator"></div>
+                            </div>
+                            <span class="knob-val" id="hpfValue">0Hz</span>
+                            <span class="knob-sub">0–25kHz</span>
+                        </div>
+                    </div>
+                    <button type="button" class="deck-btn" id="eqToggleBtn" aria-pressed="false" title="Red = EQ & Filters Active, White = Bypassed">EQ</button>
+                </div>
+
+                <!-- Tap BPM Circle + Tap Delay with Haas Widen & Tape Midrange Shaping -->
+                <div class="delay-row">
+                    <div class="delay-tap-cluster">
+                        <div class="bpm-circle-wrap">
+                            <button type="button" class="bpm-circle" id="bpmTapCircle" aria-label="Tap BPM" title="Tap repeatedly to measure BPM (also synced with TAP / T)">
+                                <span class="bpm-circle-num" id="bpmCircleNum">120</span>
+                                <span class="bpm-circle-label">BPM</span>
+                            </button>
+                        </div>
+
+                        <div class="delay-controls-stack">
+                            <div style="display:flex;gap:6px;">
+                                <button type="button" class="tap-btn" id="tapDelayBtn" title="Tap repeatedly to set delay time (or press T)">TAP</button>
+                                <button type="button" class="deck-btn" id="tapClearBtn" style="min-width:44px;padding:4px 7px;" title="Reset tap delay to 500ms / 120 BPM">CLR</button>
+                            </div>
+                            <div class="tap-meta" id="tapReadout">500ms<br>120 BPM</div>
+                        </div>
+                    </div>
+
+                    <div class="eq-knobs-group" id="delayKnobsGroup">
+                        <div class="knob-unit">
+                            <span class="knob-title">MIX</span>
+                            <div class="knob-dial" id="delayMixKnob" role="slider" tabindex="0" aria-label="Delay mix level" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" title="Drag up/down or scroll to adjust delay wet mix. Double-click to reset (0%).">
+                                <div class="knob-indicator" id="delayMixIndicator"></div>
+                            </div>
+                            <span class="knob-val" id="delayMixValue">0%</span>
+                            <span class="knob-sub">WET</span>
+                        </div>
+
+                        <div class="knob-unit">
+                            <span class="knob-title">FDBK</span>
+                            <div class="knob-dial" id="delayFdbkKnob" role="slider" tabindex="0" aria-label="Delay feedback amount" aria-valuemin="0" aria-valuemax="85" aria-valuenow="35" title="Drag up/down or scroll to adjust delay feedback. Double-click to reset (35%).">
+                                <div class="knob-indicator" id="delayFdbkIndicator"></div>
+                            </div>
+                            <span class="knob-val" id="delayFdbkValue">35%</span>
+                            <span class="knob-sub">REPEAT</span>
+                        </div>
+
+                        <div class="knob-unit">
+                            <span class="knob-title">WIDEN</span>
+                            <div class="knob-dial" id="delayWidenKnob" role="slider" tabindex="0" aria-label="Haas right-channel delay offset" aria-valuemin="0" aria-valuemax="28" aria-valuenow="0" title="0ms = center delay; turning up delays the right side (Haas effect). Double-click to reset (0.0ms).">
+                                <div class="knob-indicator" id="delayWidenIndicator"></div>
+                            </div>
+                            <span class="knob-val" id="delayWidenValue">0.0ms</span>
+                            <span class="knob-sub">HAAS R</span>
+                        </div>
+
+                        <div class="knob-unit">
+                            <span class="knob-title">TAPE</span>
+                            <div class="knob-dial" id="delayTapeKnob" role="slider" tabindex="0" aria-label="Tape midrange shaping amount" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" title="0% = full frequency delay; turning up focuses mids and rolls off highs & lows. Double-click to reset (0%).">
+                                <div class="knob-indicator" id="delayTapeIndicator"></div>
+                            </div>
+                            <span class="knob-val" id="delayTapeValue">0%</span>
+                            <span class="knob-sub">MIDS</span>
+                        </div>
+                    </div>
+
+                    <button type="button" class="deck-btn" id="delayToggleBtn" aria-pressed="false" title="Red = Delay Active, White = Bypassed">DLY</button>
                 </div>
             </div>
 
@@ -773,7 +1327,7 @@
             }
         });
 
-        /* --- AUDIO PLAYER & SAFE VISUALIZER LOGIC --- */
+        /* --- AUDIO PLAYER, VOLUME, PITCH/SPEED, NUDGE, LOOP IN/OUT/÷2, 3-BAND EQ, LPF/HPF, TAP BPM & DELAY, VISUALIZER --- */
         const audio = document.getElementById('audioPlayer');
         const canvas = document.getElementById('audioVisualizer');
         const ctx = canvas.getContext('2d');
@@ -783,10 +1337,1125 @@
         const progressContainer = document.getElementById('progressContainer');
         const progressFill = document.getElementById('progressFill');
         const progressHandle = document.getElementById('progressHandle');
+        const volumeSlider = document.getElementById('volumeSlider');
+        const volumeValue = document.getElementById('volumeValue');
+        const muteBtn = document.getElementById('muteBtn');
+        const loopInBtn = document.getElementById('loopInBtn');
+        const loopOutBtn = document.getElementById('loopOutBtn');
+        const loopHalveBtn = document.getElementById('loopHalveBtn');
+        const pitchRangeBtn = document.getElementById('pitchRangeBtn');
+        const pitchSlider = document.getElementById('pitchSlider');
+        const pitchNotches = document.getElementById('pitchNotches');
+        const pitchValue = document.getElementById('pitchValue');
+        const pitchResetBtn = document.getElementById('pitchResetBtn');
+        const nudgeSlider = document.getElementById('nudgeSlider');
+        const nudgeValue = document.getElementById('nudgeValue');
+        const nudgeResetBtn = document.getElementById('nudgeResetBtn');
+        const eqToggleBtn = document.getElementById('eqToggleBtn');
+        const eqKnobsGroup = document.getElementById('eqKnobsGroup');
+
+        const bpmTapCircle = document.getElementById('bpmTapCircle');
+        const bpmCircleNum = document.getElementById('bpmCircleNum');
+        const tapDelayBtn = document.getElementById('tapDelayBtn');
+        const tapClearBtn = document.getElementById('tapClearBtn');
+        const tapReadout = document.getElementById('tapReadout');
+        const delayKnobsGroup = document.getElementById('delayKnobsGroup');
+        const delayToggleBtn = document.getElementById('delayToggleBtn');
 
         let activeCard = null;
         let isDraggingProgress = false;
-        let wavePhase = 0;
+        let lastVolume = 1;
+        let currentMainPitchPct = 0;
+        let currentNudgePct = 0;
+        let stoppedByTempoZero = false;
+
+        let loopStart = null;
+        let loopEnd = null;
+        let loopLength = null;
+        let loopHalveCount = 0;
+
+        function formatTime(sec) {
+            if (sec === null || sec === undefined || isNaN(sec)) return '00:00';
+            const total = Math.max(0, sec);
+            const m = Math.floor(total / 60).toString().padStart(2, '0');
+            const s = Math.floor(total % 60).toString().padStart(2, '0');
+            return `${m}:${s}`;
+        }
+
+        function hasActiveLoop() {
+            return loopStart !== null && loopEnd !== null && loopEnd > loopStart;
+        }
+
+        function updateLoopButtonsUI() {
+            if (loopStart !== null) {
+                loopInBtn.textContent = `IN ${formatTime(loopStart)}`;
+                loopInBtn.classList.add('active');
+                loopInBtn.setAttribute('aria-pressed', 'true');
+            } else {
+                loopInBtn.textContent = 'IN';
+                loopInBtn.classList.remove('active');
+                loopInBtn.setAttribute('aria-pressed', 'false');
+            }
+
+            if (loopEnd !== null) {
+                loopOutBtn.textContent = `OUT ${formatTime(loopEnd)}`;
+                loopOutBtn.classList.add('active');
+                loopOutBtn.setAttribute('aria-pressed', 'true');
+            } else {
+                loopOutBtn.textContent = 'OUT';
+                loopOutBtn.classList.remove('active');
+                loopOutBtn.setAttribute('aria-pressed', 'false');
+            }
+
+            if (hasActiveLoop()) {
+                loopHalveBtn.disabled = false;
+                loopHalveBtn.classList.add('active');
+                const mult = Math.pow(2, loopHalveCount);
+                loopHalveBtn.textContent = mult > 1 ? `÷2 (${mult}x)` : '÷2';
+            } else {
+                loopHalveBtn.disabled = true;
+                loopHalveBtn.classList.remove('active');
+                loopHalveBtn.textContent = '÷2';
+            }
+        }
+
+        function clearLoop() {
+            loopStart = null;
+            loopEnd = null;
+            loopLength = null;
+            loopHalveCount = 0;
+            audio.loop = false;
+            updateLoopButtonsUI();
+        }
+
+        function relocateLoopToTime(targetTime) {
+            if (!hasActiveLoop()) return;
+            const len = loopLength && loopLength > 0.01 ? loopLength : Math.max(0.02, loopEnd - loopStart);
+            loopLength = len;
+
+            const dur = Number.isFinite(audio.duration) && audio.duration > 0 ? audio.duration : null;
+            let nextStart = Math.max(0, targetTime);
+            if (dur !== null && nextStart + len > dur) {
+                nextStart = Math.max(0, dur - len);
+            }
+            loopStart = nextStart;
+            loopEnd = nextStart + len;
+            updateLoopButtonsUI();
+        }
+
+        function checkLoopBoundaries() {
+            if (!hasActiveLoop()) return;
+            if (audio.paused || audio.ended || isDraggingProgress) return;
+            if (audio.currentTime >= loopEnd || audio.currentTime < loopStart - 0.05) {
+                audio.currentTime = loopStart;
+            }
+        }
+
+        loopInBtn.addEventListener('click', () => {
+            if (loopStart !== null) {
+                clearLoop();
+                return;
+            }
+            const now = Number.isFinite(audio.currentTime) ? audio.currentTime : 0;
+            loopStart = now;
+            loopHalveCount = 0;
+            if (loopEnd !== null) {
+                if (loopEnd <= loopStart) {
+                    loopEnd = null;
+                    loopLength = null;
+                } else {
+                    loopLength = loopEnd - loopStart;
+                }
+            }
+            audio.loop = false;
+            updateLoopButtonsUI();
+        });
+
+        loopOutBtn.addEventListener('click', () => {
+            if (loopEnd !== null) {
+                clearLoop();
+                return;
+            }
+            const now = Number.isFinite(audio.currentTime) ? audio.currentTime : 0;
+            if (loopStart === null) {
+                loopStart = 0;
+            }
+            if (now <= loopStart + 0.05) {
+                loopEnd = loopStart + 2;
+            } else {
+                loopEnd = now;
+            }
+            loopLength = Math.max(0.02, loopEnd - loopStart);
+            loopHalveCount = 0;
+            audio.loop = false;
+            updateLoopButtonsUI();
+        });
+
+        loopHalveBtn.addEventListener('click', () => {
+            if (!hasActiveLoop()) return;
+            const curLen = loopLength && loopLength > 0 ? loopLength : (loopEnd - loopStart);
+            const nextLen = Math.max(0.015, curLen / 2);
+            if (nextLen >= curLen - 0.0001) return;
+            loopLength = nextLen;
+            loopEnd = loopStart + nextLen;
+            loopHalveCount += 1;
+            audio.loop = false;
+            updateLoopButtonsUI();
+            if (audio.currentTime >= loopEnd || audio.currentTime < loopStart) {
+                audio.currentTime = loopStart;
+            }
+        });
+
+        updateLoopButtonsUI();
+
+        // EQ + LPF/HPF state
+        let eqActive = false;
+        const eqState = {
+            bass: 0,
+            mids: 0,
+            treble: 0,
+            lpf: 25000,
+            hpf: 0
+        };
+
+        // Tap BPM & Delay state: starts off until toggled on
+        let delayActive = false;
+        const delayState = {
+            timeMs: 500,
+            mix: 0,
+            fdbk: 35,
+            widenMs: 0,
+            tape: 0
+        };
+        let tapTimestamps = [];
+        let bpmPulseTimer = null;
+
+        let audioCtx = null;
+        let hpfFilter = null;
+        let bassFilter = null;
+        let midsFilter = null;
+        let trebleFilter = null;
+        let lpfFilter = null;
+        let masterBus = null;
+        let analyser = null;
+        let timeDomainData = null;
+
+        // Stereo Tap Delay graph nodes
+        let delayInputSplit = null;
+        let delayMerger = null;
+        let delayLineL = null;
+        let delayLineR = null;
+        let haasRightDelay = null;
+        let feedbackGainL = null;
+        let feedbackGainR = null;
+        let tapeLowCut = null;
+        let tapeMidBoost = null;
+        let tapeHighCut = null;
+        let delayWetGain = null;
+
+        let webAudioReady = false;
+        let smoothedLoudness = 0;
+        let fallbackPhase = 0;
+
+        function clampNyquistHz(hz, minFloor) {
+            const nyquist = audioCtx && audioCtx.sampleRate ? (audioCtx.sampleRate / 2) - 5 : 24000;
+            return Math.max(minFloor, Math.min(hz, nyquist));
+        }
+
+        function smoothParam(param, targetValue, timeConstant = 0.015) {
+            if (!param || !audioCtx) return;
+            const now = audioCtx.currentTime;
+            param.setTargetAtTime(targetValue, now, timeConstant);
+        }
+
+        function updateTapReadout() {
+            const ms = Math.round(delayState.timeMs);
+            const bpm = Math.round(60000 / Math.max(20, delayState.timeMs));
+            bpmCircleNum.textContent = String(bpm);
+            tapReadout.innerHTML = `${ms}ms<br>${bpm} BPM`;
+        }
+
+        function triggerBpmPulse() {
+            bpmTapCircle.classList.remove('pulse');
+            void bpmTapCircle.offsetWidth;
+            bpmTapCircle.classList.add('pulse');
+            clearTimeout(bpmPulseTimer);
+            bpmPulseTimer = setTimeout(() => {
+                bpmTapCircle.classList.remove('pulse');
+            }, 140);
+        }
+
+        function syncDelayGraph() {
+            updateTapReadout();
+            if (!webAudioReady || !audioCtx) return;
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume().catch(() => {});
+            }
+
+            const t = Math.max(0.02, Math.min(2.5, delayState.timeMs / 1000));
+            const haasSec = Math.max(0, Math.min(0.035, delayState.widenMs / 1000));
+            const wetAmt = delayActive ? (delayState.mix / 100) * 0.85 : 0;
+            const fbAmt = delayActive ? Math.min(0.85, (delayState.fdbk / 100) * 0.85) : 0;
+
+            const tapeAmt = Math.max(0, Math.min(1, delayState.tape / 100));
+            const lowCutHz = tapeAmt <= 0.005 ? 10 : clampNyquistHz(10 + Math.pow(tapeAmt, 1.35) * 440, 10);
+            const highCutHz = tapeAmt <= 0.005 ? 24000 : clampNyquistHz(24000 - Math.pow(tapeAmt, 1.15) * 21400, 1200);
+            const midGainDb = tapeAmt * 7.5;
+
+            smoothParam(delayLineL.delayTime, t, 0.02);
+            smoothParam(delayLineR.delayTime, t, 0.02);
+            smoothParam(haasRightDelay.delayTime, haasSec, 0.012);
+            smoothParam(feedbackGainL.gain, fbAmt, 0.02);
+            smoothParam(feedbackGainR.gain, fbAmt, 0.02);
+
+            smoothParam(tapeLowCut.frequency, lowCutHz, 0.02);
+            smoothParam(tapeMidBoost.gain, midGainDb, 0.02);
+            smoothParam(tapeHighCut.frequency, highCutHz, 0.02);
+
+            smoothParam(delayWetGain.gain, wetAmt, 0.02);
+        }
+
+        function updateDelayToggleUI() {
+            delayToggleBtn.classList.toggle('active', delayActive);
+            delayToggleBtn.setAttribute('aria-pressed', String(delayActive));
+            delayKnobsGroup.classList.toggle('bypassed', !delayActive);
+            syncDelayGraph();
+        }
+
+        delayToggleBtn.addEventListener('click', () => {
+            delayActive = !delayActive;
+            updateDelayToggleUI();
+        });
+
+        function registerTap() {
+            const now = performance.now();
+            if (tapTimestamps.length > 0 && now - tapTimestamps[tapTimestamps.length - 1] > 2500) {
+                tapTimestamps = [];
+            }
+            tapTimestamps.push(now);
+            if (tapTimestamps.length > 6) {
+                tapTimestamps.shift();
+            }
+
+            if (tapTimestamps.length >= 2) {
+                let totalInterval = 0;
+                for (let i = 1; i < tapTimestamps.length; i++) {
+                    totalInterval += tapTimestamps[i] - tapTimestamps[i - 1];
+                }
+                const avgMs = totalInterval / (tapTimestamps.length - 1);
+                delayState.timeMs = Math.max(20, Math.min(2500, avgMs));
+                syncDelayGraph();
+            }
+
+            triggerBpmPulse();
+            tapDelayBtn.classList.add('active');
+            setTimeout(() => tapDelayBtn.classList.remove('active'), 110);
+        }
+
+        bpmTapCircle.addEventListener('click', () => {
+            initAudioGraph();
+            registerTap();
+        });
+
+        tapDelayBtn.addEventListener('click', () => {
+            initAudioGraph();
+            registerTap();
+        });
+
+        tapClearBtn.addEventListener('click', () => {
+            tapTimestamps = [];
+            delayState.timeMs = 500;
+            syncDelayGraph();
+        });
+
+        window.addEventListener('keydown', (e) => {
+            if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) return;
+            if (e.key === 't' || e.key === 'T') {
+                if (!e.repeat) {
+                    initAudioGraph();
+                    registerTap();
+                }
+            }
+        });
+
+        function syncEQFilters() {
+            if (!webAudioReady || !audioCtx) return;
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume().catch(() => {});
+            }
+
+            if (!eqActive) {
+                smoothParam(hpfFilter.frequency, 1, 0.015);
+                smoothParam(bassFilter.gain, 0, 0.015);
+                smoothParam(midsFilter.gain, 0, 0.015);
+                smoothParam(trebleFilter.gain, 0, 0.015);
+                smoothParam(lpfFilter.frequency, clampNyquistHz(25000, 20), 0.015);
+                return;
+            }
+
+            const targetHpf = eqState.hpf <= 0 ? 1 : clampNyquistHz(eqState.hpf, 1);
+            const targetLpf = eqState.lpf <= 10 ? 10 : clampNyquistHz(eqState.lpf, 10);
+
+            smoothParam(hpfFilter.frequency, targetHpf, 0.015);
+            smoothParam(bassFilter.gain, eqState.bass, 0.015);
+            smoothParam(midsFilter.gain, eqState.mids, 0.015);
+            smoothParam(trebleFilter.gain, eqState.treble, 0.015);
+            smoothParam(lpfFilter.frequency, targetLpf, 0.015);
+        }
+
+        function updateEQToggleUI() {
+            eqToggleBtn.classList.toggle('active', eqActive);
+            eqToggleBtn.setAttribute('aria-pressed', String(eqActive));
+            eqKnobsGroup.classList.toggle('bypassed', !eqActive);
+            syncEQFilters();
+        }
+
+        eqToggleBtn.addEventListener('click', () => {
+            eqActive = !eqActive;
+            updateEQToggleUI();
+        });
+
+        function initAudioGraph() {
+            if (audioCtx) {
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume().catch(() => {});
+                }
+                syncEQFilters();
+                syncDelayGraph();
+                return;
+            }
+            try {
+                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                audioCtx = new AudioContextClass();
+                const source = audioCtx.createMediaElementSource(audio);
+
+                hpfFilter = audioCtx.createBiquadFilter();
+                hpfFilter.type = 'highpass';
+                hpfFilter.Q.value = 0.707;
+                hpfFilter.frequency.value = 1;
+
+                bassFilter = audioCtx.createBiquadFilter();
+                bassFilter.type = 'lowshelf';
+                bassFilter.frequency.value = 90;
+                bassFilter.gain.value = 0;
+
+                midsFilter = audioCtx.createBiquadFilter();
+                midsFilter.type = 'peaking';
+                midsFilter.frequency.value = 1000;
+                midsFilter.Q.value = 1.0;
+                midsFilter.gain.value = 0;
+
+                trebleFilter = audioCtx.createBiquadFilter();
+                trebleFilter.type = 'highshelf';
+                trebleFilter.frequency.value = 4000;
+                trebleFilter.gain.value = 0;
+
+                lpfFilter = audioCtx.createBiquadFilter();
+                lpfFilter.type = 'lowpass';
+                lpfFilter.Q.value = 0.707;
+                lpfFilter.frequency.value = clampNyquistHz(25000, 10);
+
+                // Stereo Tap Delay with Haas Widen & Tape shaping
+                tapeLowCut = audioCtx.createBiquadFilter();
+                tapeLowCut.type = 'highpass';
+                tapeLowCut.Q.value = 0.707;
+                tapeLowCut.frequency.value = 10;
+
+                tapeMidBoost = audioCtx.createBiquadFilter();
+                tapeMidBoost.type = 'peaking';
+                tapeMidBoost.frequency.value = 1150;
+                tapeMidBoost.Q.value = 0.9;
+                tapeMidBoost.gain.value = 0;
+
+                tapeHighCut = audioCtx.createBiquadFilter();
+                tapeHighCut.type = 'lowpass';
+                tapeHighCut.Q.value = 0.707;
+                tapeHighCut.frequency.value = clampNyquistHz(24000, 1200);
+
+                delayInputSplit = audioCtx.createChannelSplitter(2);
+                delayMerger = audioCtx.createChannelMerger(2);
+
+                delayLineL = audioCtx.createDelay(3.0);
+                delayLineR = audioCtx.createDelay(3.0);
+                haasRightDelay = audioCtx.createDelay(0.05);
+
+                delayLineL.delayTime.value = delayState.timeMs / 1000;
+                delayLineR.delayTime.value = delayState.timeMs / 1000;
+                haasRightDelay.delayTime.value = 0;
+
+                feedbackGainL = audioCtx.createGain();
+                feedbackGainR = audioCtx.createGain();
+                feedbackGainL.gain.value = 0.3;
+                feedbackGainR.gain.value = 0.3;
+
+                delayWetGain = audioCtx.createGain();
+                delayWetGain.gain.value = 0;
+
+                masterBus = audioCtx.createGain();
+                masterBus.gain.value = 1;
+
+                analyser = audioCtx.createAnalyser();
+                analyser.fftSize = 256;
+                analyser.smoothingTimeConstant = 0.8;
+                timeDomainData = new Uint8Array(analyser.fftSize);
+
+                source.connect(hpfFilter);
+                hpfFilter.connect(bassFilter);
+                bassFilter.connect(midsFilter);
+                midsFilter.connect(trebleFilter);
+                trebleFilter.connect(lpfFilter);
+                lpfFilter.connect(masterBus);
+
+                lpfFilter.connect(tapeLowCut);
+                tapeLowCut.connect(tapeMidBoost);
+                tapeMidBoost.connect(tapeHighCut);
+                tapeHighCut.connect(delayInputSplit);
+
+                delayInputSplit.connect(delayLineL, 0, 0);
+                delayLineL.connect(feedbackGainL);
+                feedbackGainL.connect(delayLineL);
+                delayLineL.connect(delayMerger, 0, 0);
+
+                delayInputSplit.connect(delayLineR, 1, 0);
+                delayLineR.connect(feedbackGainR);
+                feedbackGainR.connect(delayLineR);
+                delayLineR.connect(haasRightDelay);
+                haasRightDelay.connect(delayMerger, 0, 1);
+
+                delayMerger.connect(delayWetGain);
+                delayWetGain.connect(masterBus);
+
+                masterBus.connect(analyser);
+                analyser.connect(audioCtx.destination);
+
+                webAudioReady = true;
+                syncEQFilters();
+                syncDelayGraph();
+            } catch (err) {
+                console.warn("Web Audio API fallback active:", err);
+                webAudioReady = false;
+            }
+        }
+
+        function formatFreqLabel(hz) {
+            if (hz >= 1000) {
+                return `${(hz / 1000).toFixed(1)}kHz`;
+            }
+            return `${Math.round(hz)}Hz`;
+        }
+
+        function setupDbKnob({ dialId, indicatorId, valueId, stateKey }) {
+            const dial = document.getElementById(dialId);
+            const indicator = document.getElementById(indicatorId);
+            const valLabel = document.getElementById(valueId);
+            const minDb = -24;
+            const maxDb = 12;
+
+            function setDb(db, snapZero = true) {
+                let clamped = Math.max(minDb, Math.min(maxDb, db));
+                if (snapZero && Math.abs(clamped) <= 0.35) {
+                    clamped = 0;
+                }
+                eqState[stateKey] = clamped;
+                dial.setAttribute('aria-valuenow', clamped.toFixed(1));
+
+                const sign = clamped > 0 ? '+' : '';
+                valLabel.textContent = `${sign}${clamped.toFixed(1)} dB`;
+
+                let deg = 0;
+                if (clamped < 0) {
+                    deg = (clamped / Math.abs(minDb)) * 135;
+                } else if (clamped > 0) {
+                    deg = (clamped / maxDb) * 135;
+                }
+                indicator.style.transform = `translateX(-50%) rotate(${deg.toFixed(1)}deg)`;
+
+                syncEQFilters();
+            }
+
+            let dragStartY = 0;
+            let dragStartDb = 0;
+            let isDraggingKnob = false;
+
+            function startDrag(clientY) {
+                isDraggingKnob = true;
+                dragStartY = clientY;
+                dragStartDb = eqState[stateKey];
+                dial.classList.add('active');
+            }
+
+            dial.addEventListener('mousedown', (e) => {
+                if (e.detail > 1) return;
+                e.preventDefault();
+                startDrag(e.clientY);
+            });
+
+            window.addEventListener('mousemove', (e) => {
+                if (!isDraggingKnob) return;
+                const deltaY = dragStartY - e.clientY;
+                const nextDb = dragStartDb + (deltaY / 100) * (maxDb - minDb);
+                setDb(nextDb, true);
+            });
+
+            window.addEventListener('mouseup', () => {
+                if (isDraggingKnob) {
+                    isDraggingKnob = false;
+                    dial.classList.remove('active');
+                }
+            });
+
+            dial.addEventListener('touchstart', (e) => {
+                if (e.touches.length === 1) {
+                    e.preventDefault();
+                    startDrag(e.touches[0].clientY);
+                }
+            }, { passive: false });
+
+            window.addEventListener('touchmove', (e) => {
+                if (!isDraggingKnob || e.touches.length !== 1) return;
+                e.preventDefault();
+                const deltaY = dragStartY - e.touches[0].clientY;
+                const nextDb = dragStartDb + (deltaY / 100) * (maxDb - minDb);
+                setDb(nextDb, true);
+            }, { passive: false });
+
+            window.addEventListener('touchend', () => {
+                if (isDraggingKnob) {
+                    isDraggingKnob = false;
+                    dial.classList.remove('active');
+                }
+            });
+
+            dial.addEventListener('wheel', (e) => {
+                e.preventDefault();
+                const step = e.deltaY < 0 ? 0.5 : -0.5;
+                setDb(eqState[stateKey] + step, true);
+            }, { passive: false });
+
+            dial.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowUp' || e.key === 'ArrowRight') {
+                    e.preventDefault();
+                    setDb(eqState[stateKey] + 0.5, true);
+                } else if (e.key === 'ArrowDown' || e.key === 'ArrowLeft') {
+                    e.preventDefault();
+                    setDb(eqState[stateKey] - 0.5, true);
+                } else if (e.key === '0') {
+                    setDb(0, false);
+                }
+            });
+
+            dial.addEventListener('dblclick', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                isDraggingKnob = false;
+                dial.classList.remove('active');
+                setDb(0, false);
+            });
+
+            setDb(0, false);
+        }
+
+        function setupFreqKnob({ dialId, indicatorId, valueId, stateKey, minHz, maxHz, resetHz }) {
+            const dial = document.getElementById(dialId);
+            const indicator = document.getElementById(indicatorId);
+            const valLabel = document.getElementById(valueId);
+            const logFloor = 10;
+            const minLog = Math.log10(logFloor);
+            const maxLog = Math.log10(maxHz);
+
+            function hzToNorm(hz) {
+                if (hz <= 0) return 0;
+                if (hz < logFloor) {
+                    return Math.max(0, Math.min(0.06, (hz / logFloor) * 0.06));
+                }
+                const logVal = Math.log10(Math.min(maxHz, hz));
+                return Math.max(0.06, Math.min(1, 0.06 + ((logVal - minLog) / (maxLog - minLog)) * 0.94));
+            }
+
+            function normToHz(norm) {
+                const n = Math.max(0, Math.min(1, norm));
+                if (n <= 0.008) return 0;
+                if (n < 0.06) {
+                    return Math.round(((n - 0.008) / 0.052) * logFloor);
+                }
+                const logNorm = (n - 0.06) / 0.94;
+                return Math.pow(10, minLog + logNorm * (maxLog - minLog));
+            }
+
+            function setHz(hz, snapReset = true) {
+                let clamped = Math.max(minHz, Math.min(maxHz, hz));
+                if (snapReset) {
+                    if (clamped <= 2) {
+                        clamped = 0;
+                    } else if (resetHz > 0 && Math.abs(clamped - resetHz) <= resetHz * 0.02) {
+                        clamped = resetHz;
+                    }
+                }
+                eqState[stateKey] = clamped;
+                dial.setAttribute('aria-valuenow', String(Math.round(clamped)));
+                valLabel.textContent = formatFreqLabel(clamped);
+
+                const curNorm = hzToNorm(clamped);
+                const deg = (curNorm * 270) - 135;
+                indicator.style.transform = `translateX(-50%) rotate(${deg.toFixed(1)}deg)`;
+
+                syncEQFilters();
+            }
+
+            let dragStartY = 0;
+            let dragStartNorm = 0;
+            let isDraggingKnob = false;
+
+            function startDrag(clientY) {
+                isDraggingKnob = true;
+                dragStartY = clientY;
+                dragStartNorm = hzToNorm(eqState[stateKey]);
+                dial.classList.add('active');
+            }
+
+            dial.addEventListener('mousedown', (e) => {
+                if (e.detail > 1) return;
+                e.preventDefault();
+                startDrag(e.clientY);
+            });
+
+            window.addEventListener('mousemove', (e) => {
+                if (!isDraggingKnob) return;
+                const deltaY = dragStartY - e.clientY;
+                setHz(normToHz(dragStartNorm + deltaY / 130), true);
+            });
+
+            window.addEventListener('mouseup', () => {
+                if (isDraggingKnob) {
+                    isDraggingKnob = false;
+                    dial.classList.remove('active');
+                }
+            });
+
+            dial.addEventListener('touchstart', (e) => {
+                if (e.touches.length === 1) {
+                    e.preventDefault();
+                    startDrag(e.touches[0].clientY);
+                }
+            }, { passive: false });
+
+            window.addEventListener('touchmove', (e) => {
+                if (!isDraggingKnob || e.touches.length !== 1) return;
+                e.preventDefault();
+                const deltaY = dragStartY - e.touches[0].clientY;
+                setHz(normToHz(dragStartNorm + deltaY / 130), true);
+            }, { passive: false });
+
+            window.addEventListener('touchend', () => {
+                if (isDraggingKnob) {
+                    isDraggingKnob = false;
+                    dial.classList.remove('active');
+                }
+            });
+
+            dial.addEventListener('wheel', (e) => {
+                e.preventDefault();
+                const dir = e.deltaY < 0 ? 1 : -1;
+                setHz(normToHz(hzToNorm(eqState[stateKey]) + dir * 0.025), true);
+            }, { passive: false });
+
+            dial.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowUp' || e.key === 'ArrowRight') {
+                    e.preventDefault();
+                    setHz(normToHz(hzToNorm(eqState[stateKey]) + 0.025), true);
+                } else if (e.key === 'ArrowDown' || e.key === 'ArrowLeft') {
+                    e.preventDefault();
+                    setHz(normToHz(hzToNorm(eqState[stateKey]) - 0.025), true);
+                } else if (e.key === '0') {
+                    setHz(resetHz, false);
+                }
+            });
+
+            dial.addEventListener('dblclick', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                isDraggingKnob = false;
+                dial.classList.remove('active');
+                setHz(resetHz, false);
+            });
+
+            setHz(resetHz, false);
+        }
+
+        function setupLinearKnob({ dialId, indicatorId, valueId, stateKey, minVal, maxVal, resetVal, formatFn, snapZero = true }) {
+            const dial = document.getElementById(dialId);
+            const indicator = document.getElementById(indicatorId);
+            const valLabel = document.getElementById(valueId);
+
+            function setVal(val, allowSnap = true) {
+                let clamped = Math.max(minVal, Math.min(maxVal, val));
+                const span = maxVal - minVal;
+                if (allowSnap && snapZero && Math.abs(clamped - minVal) <= span * 0.015) {
+                    clamped = minVal;
+                }
+                delayState[stateKey] = clamped;
+                dial.setAttribute('aria-valuenow', String(Math.round(clamped * 10) / 10));
+                valLabel.textContent = formatFn(clamped);
+
+                const norm = (clamped - minVal) / span;
+                const deg = (norm * 270) - 135;
+                indicator.style.transform = `translateX(-50%) rotate(${deg.toFixed(1)}deg)`;
+
+                syncDelayGraph();
+            }
+
+            let dragStartY = 0;
+            let dragStartVal = 0;
+            let isDraggingKnob = false;
+
+            function startDrag(clientY) {
+                isDraggingKnob = true;
+                dragStartY = clientY;
+                dragStartVal = delayState[stateKey];
+                dial.classList.add('active');
+            }
+
+            dial.addEventListener('mousedown', (e) => {
+                if (e.detail > 1) return;
+                e.preventDefault();
+                startDrag(e.clientY);
+            });
+
+            window.addEventListener('mousemove', (e) => {
+                if (!isDraggingKnob) return;
+                const deltaY = dragStartY - e.clientY;
+                const span = maxVal - minVal;
+                setVal(dragStartVal + (deltaY / 110) * span, true);
+            });
+
+            window.addEventListener('mouseup', () => {
+                if (isDraggingKnob) {
+                    isDraggingKnob = false;
+                    dial.classList.remove('active');
+                }
+            });
+
+            dial.addEventListener('touchstart', (e) => {
+                if (e.touches.length === 1) {
+                    e.preventDefault();
+                    startDrag(e.touches[0].clientY);
+                }
+            }, { passive: false });
+
+            window.addEventListener('touchmove', (e) => {
+                if (!isDraggingKnob || e.touches.length !== 1) return;
+                e.preventDefault();
+                const deltaY = dragStartY - e.touches[0].clientY;
+                const span = maxVal - minVal;
+                setVal(dragStartVal + (deltaY / 110) * span, true);
+            }, { passive: false });
+
+            window.addEventListener('touchend', () => {
+                if (isDraggingKnob) {
+                    isDraggingKnob = false;
+                    dial.classList.remove('active');
+                }
+            });
+
+            dial.addEventListener('wheel', (e) => {
+                e.preventDefault();
+                const step = (maxVal - minVal) * 0.025 * (e.deltaY < 0 ? 1 : -1);
+                setVal(delayState[stateKey] + step, true);
+            }, { passive: false });
+
+            dial.addEventListener('keydown', (e) => {
+                const step = (maxVal - minVal) * 0.025;
+                if (e.key === 'ArrowUp' || e.key === 'ArrowRight') {
+                    e.preventDefault();
+                    setVal(delayState[stateKey] + step, true);
+                } else if (e.key === 'ArrowDown' || e.key === 'ArrowLeft') {
+                    e.preventDefault();
+                    setVal(delayState[stateKey] - step, true);
+                } else if (e.key === '0') {
+                    setVal(resetVal, false);
+                }
+            });
+
+            dial.addEventListener('dblclick', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                isDraggingKnob = false;
+                dial.classList.remove('active');
+                setVal(resetVal, false);
+            });
+
+            setVal(resetVal, false);
+        }
+
+        setupDbKnob({
+            dialId: 'bassKnob',
+            indicatorId: 'bassIndicator',
+            valueId: 'bassValue',
+            stateKey: 'bass'
+        });
+
+        setupDbKnob({
+            dialId: 'midsKnob',
+            indicatorId: 'midsIndicator',
+            valueId: 'midsValue',
+            stateKey: 'mids'
+        });
+
+        setupDbKnob({
+            dialId: 'trebleKnob',
+            indicatorId: 'trebleIndicator',
+            valueId: 'trebleValue',
+            stateKey: 'treble'
+        });
+
+        setupFreqKnob({
+            dialId: 'lpfKnob',
+            indicatorId: 'lpfIndicator',
+            valueId: 'lpfValue',
+            stateKey: 'lpf',
+            minHz: 0,
+            maxHz: 25000,
+            resetHz: 25000
+        });
+
+        setupFreqKnob({
+            dialId: 'hpfKnob',
+            indicatorId: 'hpfIndicator',
+            valueId: 'hpfValue',
+            stateKey: 'hpf',
+            minHz: 0,
+            maxHz: 25000,
+            resetHz: 0
+        });
+
+        setupLinearKnob({
+            dialId: 'delayMixKnob',
+            indicatorId: 'delayMixIndicator',
+            valueId: 'delayMixValue',
+            stateKey: 'mix',
+            minVal: 0,
+            maxVal: 100,
+            resetVal: 0,
+            formatFn: v => `${Math.round(v)}%`,
+            snapZero: true
+        });
+
+        setupLinearKnob({
+            dialId: 'delayFdbkKnob',
+            indicatorId: 'delayFdbkIndicator',
+            valueId: 'delayFdbkValue',
+            stateKey: 'fdbk',
+            minVal: 0,
+            maxVal: 85,
+            resetVal: 35,
+            formatFn: v => `${Math.round(v)}%`,
+            snapZero: true
+        });
+
+        setupLinearKnob({
+            dialId: 'delayWidenKnob',
+            indicatorId: 'delayWidenIndicator',
+            valueId: 'delayWidenValue',
+            stateKey: 'widenMs',
+            minVal: 0,
+            maxVal: 28,
+            resetVal: 0,
+            formatFn: v => v <= 0.05 ? '0.0ms' : `+${v.toFixed(1)}ms`,
+            snapZero: true
+        });
+
+        setupLinearKnob({
+            dialId: 'delayTapeKnob',
+            indicatorId: 'delayTapeIndicator',
+            valueId: 'delayTapeValue',
+            stateKey: 'tape',
+            minVal: 0,
+            maxVal: 100,
+            resetVal: 0,
+            formatFn: v => `${Math.round(v)}%`,
+            snapZero: true
+        });
+
+        updateEQToggleUI();
+        updateDelayToggleUI();
+
+        function updateVolumeUI(vol, isMuted) {
+            const effectiveVol = isMuted ? 0 : vol;
+            const pct = Math.round(effectiveVol * 100);
+            volumeSlider.value = effectiveVol;
+            volumeSlider.style.background = `linear-gradient(to right, #ff0033 ${pct}%, #eeeeee ${pct}%)`;
+            volumeValue.textContent = `${pct}%`;
+            if (isMuted || effectiveVol === 0) {
+                muteBtn.textContent = 'MUTED';
+                muteBtn.classList.add('active');
+            } else {
+                muteBtn.textContent = 'VOL';
+                muteBtn.classList.remove('active');
+            }
+        }
+
+        volumeSlider.addEventListener('input', (e) => {
+            const val = parseFloat(e.target.value);
+            audio.volume = val;
+            if (val > 0) {
+                audio.muted = false;
+                lastVolume = val;
+            }
+            updateVolumeUI(val, audio.muted);
+        });
+
+        muteBtn.addEventListener('click', () => {
+            if (audio.muted || audio.volume === 0) {
+                audio.muted = false;
+                const restoreVol = lastVolume > 0 ? lastVolume : 0.75;
+                audio.volume = restoreVol;
+                updateVolumeUI(restoreVol, false);
+            } else {
+                lastVolume = audio.volume;
+                audio.muted = true;
+                updateVolumeUI(0, true);
+            }
+        });
+
+        updateVolumeUI(1, false);
+
+        const pitchRanges = [8, 16, 32, 64, 128];
+        let pitchRangeIndex = 0;
+
+        function styleCenterSlider(slider, val, minVal, maxVal) {
+            const totalSpan = maxVal - minVal;
+            const zeroPosPct = ((0 - minVal) / totalSpan) * 100;
+            const currentPosPct = ((val - minVal) / totalSpan) * 100;
+            const left = Math.max(0, Math.min(100, Math.min(zeroPosPct, currentPosPct)));
+            const right = Math.max(0, Math.min(100, Math.max(zeroPosPct, currentPosPct)));
+            slider.style.background = `linear-gradient(to right, #eeeeee 0%, #eeeeee ${left}%, #ff0033 ${left}%, #ff0033 ${right}%, #eeeeee ${right}%, #eeeeee 100%)`;
+        }
+
+        function applyCombinedPlaybackRate() {
+            const rawTotalPct = currentMainPitchPct + currentNudgePct;
+            const sign = rawTotalPct > 0 ? '+' : '';
+            pitchValue.textContent = `${sign}${rawTotalPct.toFixed(2)}%`;
+
+            if (rawTotalPct <= -100) {
+                if (activeCard && !audio.paused) {
+                    audio.pause();
+                    stoppedByTempoZero = true;
+                    const title = activeCard.getAttribute('data-title') || 'Track';
+                    vizStatus.textContent = `Stopped (0.00x): ${title}`;
+                }
+                return;
+            }
+
+            const rate = Math.max(0.05, Math.min(4, 1 + (rawTotalPct / 100)));
+            audio.preservesPitch = false;
+            audio.mozPreservesPitch = false;
+            audio.webkitPreservesPitch = false;
+            if (Math.abs(audio.playbackRate - rate) > 0.0005) {
+                audio.playbackRate = rate;
+            }
+
+            if (stoppedByTempoZero && activeCard && audio.paused) {
+                stoppedByTempoZero = false;
+                initAudioGraph();
+                const title = activeCard.getAttribute('data-title') || 'Track';
+                audio.play().then(() => {
+                    vizStatus.textContent = `Now Playing: ${title}`;
+                }).catch(() => {});
+            }
+        }
+
+        function renderPitchNotches(range) {
+            pitchNotches.innerHTML = '';
+            if (range > 16) {
+                pitchNotches.classList.add('hidden');
+                return;
+            }
+            pitchNotches.classList.remove('hidden');
+            const step = range === 8 ? 1 : 2;
+            for (let v = -range; v <= range; v += step) {
+                const tick = document.createElement('span');
+                tick.className = 'pitch-notch';
+                if (v === 0) {
+                    tick.classList.add('center');
+                } else if (Math.abs(v) === range || Math.abs(v) === range / 2) {
+                    tick.classList.add('major');
+                }
+                pitchNotches.appendChild(tick);
+            }
+        }
+
+        function setPitchRange(range) {
+            pitchRangeBtn.textContent = `±${range}%`;
+            pitchSlider.min = String(-range);
+            pitchSlider.max = String(range);
+            pitchSlider.step = range <= 16 ? '0.1' : '0.5';
+            renderPitchNotches(range);
+
+            const clamped = Math.max(-range, Math.min(range, currentMainPitchPct));
+            setMainPitchPercent(clamped, false);
+        }
+
+        function setMainPitchPercent(pct, snapZero = true) {
+            const range = pitchRanges[pitchRangeIndex];
+            let clamped = Math.max(-range, Math.min(range, pct));
+
+            const snapZone = range <= 16 ? 0.25 : 1.0;
+            if (snapZero && Math.abs(clamped) <= snapZone) {
+                clamped = 0;
+            }
+
+            currentMainPitchPct = clamped;
+            pitchSlider.value = String(clamped);
+            styleCenterSlider(pitchSlider, clamped, -range, range);
+            applyCombinedPlaybackRate();
+        }
+
+        function setNudgePercent(pct, snapZero = true) {
+            let clamped = Math.max(-1, Math.min(1, pct));
+            if (snapZero && Math.abs(clamped) <= 0.02) {
+                clamped = 0;
+            }
+            currentNudgePct = clamped;
+            nudgeSlider.value = clamped.toFixed(2);
+            const sign = clamped > 0 ? '+' : '';
+            nudgeValue.textContent = `${sign}${clamped.toFixed(2)}%`;
+            styleCenterSlider(nudgeSlider, clamped, -1, 1);
+            applyCombinedPlaybackRate();
+        }
+
+        pitchRangeBtn.addEventListener('click', () => {
+            pitchRangeIndex = (pitchRangeIndex + 1) % pitchRanges.length;
+            setPitchRange(pitchRanges[pitchRangeIndex]);
+        });
+
+        pitchSlider.addEventListener('input', (e) => {
+            setMainPitchPercent(parseFloat(e.target.value), true);
+        });
+
+        pitchSlider.addEventListener('dblclick', (e) => {
+            e.preventDefault();
+            setMainPitchPercent(0, false);
+        });
+
+        pitchResetBtn.addEventListener('click', () => {
+            setMainPitchPercent(0, false);
+        });
+
+        nudgeSlider.addEventListener('input', (e) => {
+            setNudgePercent(parseFloat(e.target.value), true);
+        });
+
+        nudgeSlider.addEventListener('dblclick', (e) => {
+            e.preventDefault();
+            setNudgePercent(0, false);
+        });
+
+        nudgeResetBtn.addEventListener('click', () => {
+            setNudgePercent(0, false);
+        });
+
+        setPitchRange(pitchRanges[0]);
+        setNudgePercent(0, false);
 
         const firstCard = document.querySelector('.track-card');
         if (firstCard) {
@@ -805,12 +2474,15 @@
         resizeCanvas();
 
         function toggleTrack(card) {
+            initAudioGraph();
+
             const rawSrc = card.getAttribute('data-src');
             const encodedSrc = encodeURI(rawSrc);
             const title = card.getAttribute('data-title') || 'Track';
 
             if (activeCard === card && !audio.paused) {
                 audio.pause();
+                stoppedByTempoZero = false;
                 card.classList.remove('playing');
                 card.querySelector('.play-indicator').textContent = 'PLAY';
                 vizStatus.textContent = `Paused: ${title}`;
@@ -823,6 +2495,7 @@
             });
 
             activeCard = card;
+            stoppedByTempoZero = false;
             card.classList.add('playing');
             card.querySelector('.play-indicator').textContent = 'PAUSE';
             vizStatus.textContent = `Loading: ${title}...`;
@@ -832,7 +2505,25 @@
                 audio.load();
             }
 
+            const rawTotalPct = currentMainPitchPct + currentNudgePct;
+            if (rawTotalPct <= -100) {
+                stoppedByTempoZero = true;
+                pitchValue.textContent = `${rawTotalPct.toFixed(2)}%`;
+                vizStatus.textContent = `Stopped (0.00x): ${title}`;
+                return;
+            }
+
+            applyCombinedPlaybackRate();
+            syncEQFilters();
+            syncDelayGraph();
+
             audio.play().then(() => {
+                if (audioCtx && audioCtx.state === 'suspended') {
+                    return audioCtx.resume();
+                }
+            }).then(() => {
+                syncEQFilters();
+                syncDelayGraph();
                 vizStatus.textContent = `Now Playing: ${title}`;
             }).catch(err => {
                 console.error("Playback error:", err);
@@ -853,9 +2544,17 @@
             const rect = progressContainer.getBoundingClientRect();
             const ratio = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
             const targetTime = ratio * audio.duration;
-            audio.currentTime = targetTime;
-            updateProgressUI(ratio * 100);
-            vizTime.textContent = `${formatTime(targetTime)} / ${formatTime(audio.duration)}`;
+            if (hasActiveLoop()) {
+                relocateLoopToTime(targetTime);
+                audio.currentTime = loopStart;
+                const loopPct = (loopStart / audio.duration) * 100;
+                updateProgressUI(loopPct);
+                vizTime.textContent = `${formatTime(loopStart)} / ${formatTime(audio.duration)}`;
+            } else {
+                audio.currentTime = targetTime;
+                updateProgressUI(ratio * 100);
+                vizTime.textContent = `${formatTime(targetTime)} / ${formatTime(audio.duration)}`;
+            }
         }
 
         progressWrapper.addEventListener('mousedown', (e) => {
@@ -905,6 +2604,7 @@
         });
 
         audio.addEventListener('timeupdate', () => {
+            checkLoopBoundaries();
             if (!audio.duration || isDraggingProgress) return;
             const pct = (audio.currentTime / audio.duration) * 100;
             updateProgressUI(pct);
@@ -912,6 +2612,11 @@
         });
 
         audio.addEventListener('ended', () => {
+            if (hasActiveLoop()) {
+                audio.currentTime = loopStart;
+                audio.play().catch(() => {});
+                return;
+            }
             if (activeCard) {
                 activeCard.classList.remove('playing');
                 activeCard.querySelector('.play-indicator').textContent = 'PLAY';
@@ -920,39 +2625,75 @@
             updateProgressUI(0);
         });
 
-        function formatTime(sec) {
-            if (isNaN(sec)) return '00:00';
-            const m = Math.floor(sec / 60).toString().padStart(2, '0');
-            const s = Math.floor(sec % 60).toString().padStart(2, '0');
-            return `${m}:${s}`;
-        }
-
-        // Animated waveform visualizer loop
         function drawVisualizer() {
             requestAnimationFrame(drawVisualizer);
+            checkLoopBoundaries();
+
+            if (audio.duration && !isNaN(audio.duration) && !audio.paused && !isDraggingProgress) {
+                const pct = (audio.currentTime / audio.duration) * 100;
+                updateProgressUI(pct);
+                vizTime.textContent = `${formatTime(audio.currentTime)} / ${formatTime(audio.duration)}`;
+            }
+
             const dpr = window.devicePixelRatio || 1;
             const width = canvas.width / dpr;
             const height = canvas.height / dpr;
 
-            ctx.clearRect(0, 0, width, height);
-
-            const bars = 28;
-            const barWidth = (width / bars) * 1.6;
-            let x = 0;
+            let targetLoudness = 0;
 
             if (!audio.paused && !audio.ended) {
-                wavePhase += 0.12;
+                if (webAudioReady && analyser) {
+                    analyser.getByteTimeDomainData(timeDomainData);
+                    let sumSquares = 0;
+                    for (let i = 0; i < timeDomainData.length; i++) {
+                        const normalized = (timeDomainData[i] - 128) / 128;
+                        sumSquares += normalized * normalized;
+                    }
+                    const rms = Math.sqrt(sumSquares / timeDomainData.length);
+                    targetLoudness = Math.min(1, Math.pow(rms * 5.5, 0.78));
+                } else {
+                    fallbackPhase += 0.09;
+                    const volFactor = audio.muted ? 0 : audio.volume;
+                    targetLoudness = ((Math.sin(fallbackPhase) + 1) * 0.45 + 0.1) * volFactor;
+                }
             }
 
-            for (let i = 0; i < bars; i++) {
-                let barHeight = 4;
-                if (!audio.paused && !audio.ended) {
-                    barHeight = (Math.sin(wavePhase + (i * 0.35)) + 1) * (height * 0.35) + 8;
-                }
-                ctx.fillStyle = '#ff0033';
-                ctx.fillRect(x, height - barHeight, barWidth - 2, Math.max(barHeight, 2));
-                x += barWidth;
-            }
+            const smoothing = targetLoudness > smoothedLoudness ? 0.45 : 0.14;
+            smoothedLoudness += (targetLoudness - smoothedLoudness) * smoothing;
+
+            const centerX = width / 2;
+            const centerY = height / 2;
+            const maxRadius = Math.max(width, height) * 0.75;
+
+            const coreRadius = Math.max(4, maxRadius * (0.08 + smoothedLoudness * 0.65));
+            const outerRadius = Math.max(coreRadius + 12, maxRadius * (0.35 + smoothedLoudness * 0.85));
+
+            const peakFactor = Math.min(1, smoothedLoudness * 1.15);
+            const g = Math.round(255 * (1 - peakFactor));
+            const b = Math.round(255 - (255 - 51) * peakFactor);
+
+            const midIntensity = Math.min(1, smoothedLoudness * 1.0);
+            const midG = Math.round(255 * (1 - midIntensity));
+            const midB = Math.round(255 - (255 - 51) * midIntensity);
+
+            const radialGrad = ctx.createRadialGradient(
+                centerX,
+                centerY,
+                coreRadius * 0.15,
+                centerX,
+                centerY,
+                outerRadius
+            );
+
+            radialGrad.addColorStop(0, `rgb(255, ${g}, ${b})`);
+            radialGrad.addColorStop(0.55, `rgba(255, ${midG}, ${midB}, ${Math.min(1, 0.2 + smoothedLoudness * 0.9)})`);
+            radialGrad.addColorStop(1, '#ffffff');
+
+            ctx.clearRect(0, 0, width, height);
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, width, height);
+            ctx.fillStyle = radialGrad;
+            ctx.fillRect(0, 0, width, height);
         }
         drawVisualizer();
 
