@@ -749,7 +749,7 @@
                     <button type="button" class="deck-btn" id="loopBtn" aria-pressed="false">LOOP</button>
                     <button type="button" class="deck-btn range-btn" id="pitchRangeBtn" title="Cycle tempo range: 8%, 16%, 32%, 64%, 128%">±8%</button>
                     <div class="pitch-slider-wrap">
-                        <input type="range" class="deck-slider" id="pitchSlider" min="-8" max="8" step="0.1" value="0" aria-label="Pitch and play speed percentage">
+                        <input type="range" class="deck-slider" id="pitchSlider" min="-8" max="8" step="0.1" value="0" aria-label="Pitch and play speed percentage" title="Drag to adjust pitch/speed. Double-click to reset to 0%.">
                         <div class="pitch-notches" id="pitchNotches" aria-hidden="true"></div>
                     </div>
                     <span class="deck-readout" id="pitchValue">+0.00%</span>
@@ -759,7 +759,7 @@
                 <!-- Subtle Nudge Slider (±1.00% in 0.01% steps) -->
                 <div class="control-row">
                     <span class="deck-label">NUDGE</span>
-                    <input type="range" class="deck-slider" id="nudgeSlider" min="-1" max="1" step="0.01" value="0" aria-label="Subtle pitch and speed nudge percentage">
+                    <input type="range" class="deck-slider" id="nudgeSlider" min="-1" max="1" step="0.01" value="0" aria-label="Subtle pitch and speed nudge percentage" title="Drag to nudge pitch/speed. Double-click to reset to 0.00%.">
                     <span class="deck-readout" id="nudgeValue">+0.00%</span>
                     <button type="button" class="deck-btn" id="nudgeResetBtn" title="Reset nudge to 0.00%">CENTER</button>
                 </div>
@@ -862,6 +862,7 @@
         let lastVolume = 1;
         let currentMainPitchPct = 0;
         let currentNudgePct = 0;
+        let stoppedByTempoZero = false;
 
         // EQ state in dB (-24 dB cut to +12 dB boost); false = bypassed (white), true = active (red)
         let eqActive = false;
@@ -1183,15 +1184,34 @@
         }
 
         function applyCombinedPlaybackRate() {
-            const totalPct = Math.max(-95, currentMainPitchPct + currentNudgePct);
-            const rate = 1 + (totalPct / 100);
+            const rawTotalPct = currentMainPitchPct + currentNudgePct;
+            const sign = rawTotalPct > 0 ? '+' : '';
+            pitchValue.textContent = `${sign}${rawTotalPct.toFixed(2)}%`;
+
+            if (rawTotalPct <= -100) {
+                if (activeCard && !audio.paused) {
+                    audio.pause();
+                    stoppedByTempoZero = true;
+                    const title = activeCard.getAttribute('data-title') || 'Track';
+                    vizStatus.textContent = `Stopped (0.00x): ${title}`;
+                }
+                return;
+            }
+
+            const rate = Math.max(0.01, 1 + (rawTotalPct / 100));
             audio.preservesPitch = false;
             audio.mozPreservesPitch = false;
             audio.webkitPreservesPitch = false;
             audio.playbackRate = rate;
 
-            const sign = totalPct > 0 ? '+' : '';
-            pitchValue.textContent = `${sign}${totalPct.toFixed(2)}%`;
+            if (stoppedByTempoZero && activeCard && audio.paused) {
+                stoppedByTempoZero = false;
+                initAudioGraph();
+                const title = activeCard.getAttribute('data-title') || 'Track';
+                audio.play().then(() => {
+                    vizStatus.textContent = `Now Playing: ${title}`;
+                }).catch(() => {});
+            }
         }
 
         function renderPitchNotches(range) {
@@ -1223,16 +1243,16 @@
             renderPitchNotches(range);
 
             const clamped = Math.max(-range, Math.min(range, currentMainPitchPct));
-            setMainPitchPercent(clamped);
+            setMainPitchPercent(clamped, false);
         }
 
-        function setMainPitchPercent(pct) {
+        function setMainPitchPercent(pct, snapZero = true) {
             const range = pitchRanges[pitchRangeIndex];
             let clamped = Math.max(-range, Math.min(range, pct));
 
             // Magnetic center detent at 0.0%
             const snapZone = range <= 16 ? 0.25 : 1.0;
-            if (Math.abs(clamped) <= snapZone) {
+            if (snapZero && Math.abs(clamped) <= snapZone) {
                 clamped = 0;
             }
 
@@ -1242,10 +1262,10 @@
             applyCombinedPlaybackRate();
         }
 
-        function setNudgePercent(pct) {
+        function setNudgePercent(pct, snapZero = true) {
             let clamped = Math.max(-1, Math.min(1, pct));
             // Subtle magnetic snap right at 0.00%
-            if (Math.abs(clamped) <= 0.02) {
+            if (snapZero && Math.abs(clamped) <= 0.02) {
                 clamped = 0;
             }
             currentNudgePct = clamped;
@@ -1262,23 +1282,33 @@
         });
 
         pitchSlider.addEventListener('input', (e) => {
-            setMainPitchPercent(parseFloat(e.target.value));
+            setMainPitchPercent(parseFloat(e.target.value), true);
+        });
+
+        pitchSlider.addEventListener('dblclick', (e) => {
+            e.preventDefault();
+            setMainPitchPercent(0, false);
         });
 
         pitchResetBtn.addEventListener('click', () => {
-            setMainPitchPercent(0);
+            setMainPitchPercent(0, false);
         });
 
         nudgeSlider.addEventListener('input', (e) => {
-            setNudgePercent(parseFloat(e.target.value));
+            setNudgePercent(parseFloat(e.target.value), true);
+        });
+
+        nudgeSlider.addEventListener('dblclick', (e) => {
+            e.preventDefault();
+            setNudgePercent(0, false);
         });
 
         nudgeResetBtn.addEventListener('click', () => {
-            setNudgePercent(0);
+            setNudgePercent(0, false);
         });
 
         setPitchRange(pitchRanges[0]);
-        setNudgePercent(0);
+        setNudgePercent(0, false);
 
         const firstCard = document.querySelector('.track-card');
         if (firstCard) {
@@ -1306,6 +1336,7 @@
 
             if (activeCard === card && !audio.paused) {
                 audio.pause();
+                stoppedByTempoZero = false;
                 card.classList.remove('playing');
                 card.querySelector('.play-indicator').textContent = 'PLAY';
                 vizStatus.textContent = `Paused: ${title}`;
@@ -1318,6 +1349,7 @@
             });
 
             activeCard = card;
+            stoppedByTempoZero = false;
             card.classList.add('playing');
             card.querySelector('.play-indicator').textContent = 'PAUSE';
             setActiveArt(artPath, title);
@@ -1326,6 +1358,14 @@
             if (!audio.src.endsWith(encodedSrc)) {
                 audio.src = encodedSrc;
                 audio.load();
+            }
+
+            const rawTotalPct = currentMainPitchPct + currentNudgePct;
+            if (rawTotalPct <= -100) {
+                stoppedByTempoZero = true;
+                pitchValue.textContent = `${rawTotalPct.toFixed(2)}%`;
+                vizStatus.textContent = `Stopped (0.00x): ${title}`;
+                return;
             }
 
             applyCombinedPlaybackRate();
