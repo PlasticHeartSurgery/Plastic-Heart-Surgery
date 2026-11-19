@@ -892,7 +892,6 @@
         let currentNudgePct = 0;
         let stoppedByTempoZero = false;
 
-        // A/B Loop state (IN = start time in seconds, OUT = end time in seconds)
         let loopStart = null;
         let loopEnd = null;
 
@@ -977,7 +976,6 @@
             hpf: 0
         };
 
-        // Sync card thumbnails from each card's data-art attribute on load
         document.querySelectorAll('.track-card').forEach(card => {
             const artPath = (card.getAttribute('data-art') || '').trim();
             const thumbBox = card.querySelector('.track-art-thumb');
@@ -1010,7 +1008,6 @@
             activeArtImg.src = cleanPath;
         }
 
-        // Web Audio API state: Source -> HPF -> Bass (90Hz) -> Mids (1kHz) -> Treble (4kHz) -> LPF -> Analyser -> Destination
         let audioCtx = null;
         let hpfFilter = null;
         let bassFilter = null;
@@ -1023,18 +1020,40 @@
         let smoothedLoudness = 0;
         let fallbackPhase = 0;
 
-        function clampFilterHz(hz, fallbackMax) {
-            const nyquist = audioCtx && audioCtx.sampleRate ? audioCtx.sampleRate / 2 : fallbackMax;
-            return Math.max(0.01, Math.min(hz, nyquist - 1));
+        function clampNyquistHz(hz, minFloor) {
+            const nyquist = audioCtx && audioCtx.sampleRate ? (audioCtx.sampleRate / 2) - 5 : 24000;
+            return Math.max(minFloor, Math.min(hz, nyquist));
+        }
+
+        function smoothParam(param, targetValue, timeConstant = 0.015) {
+            if (!param || !audioCtx) return;
+            const now = audioCtx.currentTime;
+            param.setTargetAtTime(targetValue, now, timeConstant);
         }
 
         function syncEQFilters() {
-            if (!webAudioReady) return;
-            if (hpfFilter) hpfFilter.frequency.value = eqActive ? clampFilterHz(eqState.hpf, 25000) : 0.01;
-            if (bassFilter) bassFilter.gain.value = eqActive ? eqState.bass : 0;
-            if (midsFilter) midsFilter.gain.value = eqActive ? eqState.mids : 0;
-            if (trebleFilter) trebleFilter.gain.value = eqActive ? eqState.treble : 0;
-            if (lpfFilter) lpfFilter.frequency.value = eqActive ? clampFilterHz(eqState.lpf, 25000) : clampFilterHz(25000, 25000);
+            if (!webAudioReady || !audioCtx) return;
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume().catch(() => {});
+            }
+
+            if (!eqActive) {
+                smoothParam(hpfFilter.frequency, 1, 0.015);
+                smoothParam(bassFilter.gain, 0, 0.015);
+                smoothParam(midsFilter.gain, 0, 0.015);
+                smoothParam(trebleFilter.gain, 0, 0.015);
+                smoothParam(lpfFilter.frequency, clampNyquistHz(25000, 20), 0.015);
+                return;
+            }
+
+            const targetHpf = eqState.hpf <= 0 ? 1 : clampNyquistHz(eqState.hpf, 1);
+            const targetLpf = eqState.lpf <= 10 ? 10 : clampNyquistHz(eqState.lpf, 10);
+
+            smoothParam(hpfFilter.frequency, targetHpf, 0.015);
+            smoothParam(bassFilter.gain, eqState.bass, 0.015);
+            smoothParam(midsFilter.gain, eqState.mids, 0.015);
+            smoothParam(trebleFilter.gain, eqState.treble, 0.015);
+            smoothParam(lpfFilter.frequency, targetLpf, 0.015);
         }
 
         function updateEQToggleUI() {
@@ -1052,7 +1071,7 @@
         function initAudioGraph() {
             if (audioCtx) {
                 if (audioCtx.state === 'suspended') {
-                    audioCtx.resume();
+                    audioCtx.resume().catch(() => {});
                 }
                 syncEQFilters();
                 return;
@@ -1064,33 +1083,33 @@
 
                 hpfFilter = audioCtx.createBiquadFilter();
                 hpfFilter.type = 'highpass';
-                hpfFilter.frequency.value = eqActive ? clampFilterHz(eqState.hpf, 25000) : 0.01;
+                hpfFilter.Q.value = 0.707;
+                hpfFilter.frequency.value = 1;
 
-                // Bass crossover at 90 Hz
                 bassFilter = audioCtx.createBiquadFilter();
                 bassFilter.type = 'lowshelf';
                 bassFilter.frequency.value = 90;
-                bassFilter.gain.value = eqActive ? eqState.bass : 0;
+                bassFilter.gain.value = 0;
 
-                // Midrange band centered at 1 kHz
                 midsFilter = audioCtx.createBiquadFilter();
                 midsFilter.type = 'peaking';
                 midsFilter.frequency.value = 1000;
                 midsFilter.Q.value = 1.0;
-                midsFilter.gain.value = eqActive ? eqState.mids : 0;
+                midsFilter.gain.value = 0;
 
-                // Treble band above 4 kHz
                 trebleFilter = audioCtx.createBiquadFilter();
                 trebleFilter.type = 'highshelf';
                 trebleFilter.frequency.value = 4000;
-                trebleFilter.gain.value = eqActive ? eqState.treble : 0;
+                trebleFilter.gain.value = 0;
 
                 lpfFilter = audioCtx.createBiquadFilter();
                 lpfFilter.type = 'lowpass';
-                lpfFilter.frequency.value = eqActive ? clampFilterHz(eqState.lpf, 25000) : clampFilterHz(25000, 25000);
+                lpfFilter.Q.value = 0.707;
+                lpfFilter.frequency.value = clampNyquistHz(25000, 10);
 
                 analyser = audioCtx.createAnalyser();
                 analyser.fftSize = 256;
+                analyser.smoothingTimeConstant = 0.8;
                 timeDomainData = new Uint8Array(analyser.fftSize);
 
                 source.connect(hpfFilter);
@@ -1102,6 +1121,7 @@
                 analyser.connect(audioCtx.destination);
 
                 webAudioReady = true;
+                syncEQFilters();
             } catch (err) {
                 console.warn("Web Audio API fallback active:", err);
                 webAudioReady = false;
@@ -1115,7 +1135,6 @@
             return `${Math.round(hz)}Hz`;
         }
 
-        // Rotary knob setup helper (-24 dB to +12 dB, -135deg to +135deg, with 0 dB at top center 0deg)
         function setupDbKnob({ dialId, indicatorId, valueId, stateKey }) {
             const dial = document.getElementById(dialId);
             const indicator = document.getElementById(indicatorId);
@@ -1227,33 +1246,39 @@
             setDb(0, false);
         }
 
-        // Wide-range frequency knob helper (0 Hz to 25,000 Hz, with resetHz at top 0deg, sweeping -135deg to +135deg)
         function setupFreqKnob({ dialId, indicatorId, valueId, stateKey, minHz, maxHz, resetHz }) {
             const dial = document.getElementById(dialId);
             const indicator = document.getElementById(indicatorId);
             const valLabel = document.getElementById(valueId);
-            const floorRef = 1;
-            const minLog = Math.log10(floorRef);
+            const logFloor = 10;
+            const minLog = Math.log10(logFloor);
             const maxLog = Math.log10(maxHz);
 
             function hzToNorm(hz) {
-                if (hz <= floorRef) return 0;
+                if (hz <= 0) return 0;
+                if (hz < logFloor) {
+                    return Math.max(0, Math.min(0.06, (hz / logFloor) * 0.06));
+                }
                 const logVal = Math.log10(Math.min(maxHz, hz));
-                return Math.max(0, Math.min(1, (logVal - minLog) / (maxLog - minLog)));
+                return Math.max(0.06, Math.min(1, 0.06 + ((logVal - minLog) / (maxLog - minLog)) * 0.94));
             }
 
             function normToHz(norm) {
-                const clampedNorm = Math.max(0, Math.min(1, norm));
-                if (clampedNorm <= 0.004) return 0;
-                return Math.pow(10, minLog + clampedNorm * (maxLog - minLog));
+                const n = Math.max(0, Math.min(1, norm));
+                if (n <= 0.008) return 0;
+                if (n < 0.06) {
+                    return Math.round(((n - 0.008) / 0.052) * logFloor);
+                }
+                const logNorm = (n - 0.06) / 0.94;
+                return Math.pow(10, minLog + logNorm * (maxLog - minLog));
             }
 
             function setHz(hz, snapReset = true) {
                 let clamped = Math.max(minHz, Math.min(maxHz, hz));
                 if (snapReset) {
-                    if (resetHz === 0 && clamped <= 4) {
+                    if (clamped <= 2) {
                         clamped = 0;
-                    } else if (resetHz > 0 && Math.abs(clamped - resetHz) <= resetHz * 0.025) {
+                    } else if (resetHz > 0 && Math.abs(clamped - resetHz) <= resetHz * 0.02) {
                         clamped = resetHz;
                     }
                 }
@@ -1261,17 +1286,8 @@
                 dial.setAttribute('aria-valuenow', String(Math.round(clamped)));
                 valLabel.textContent = formatFreqLabel(clamped);
 
-                const resetNorm = hzToNorm(resetHz);
                 const curNorm = hzToNorm(clamped);
-                let deg = 0;
-                if (resetNorm >= 0.999) {
-                    deg = (curNorm - 1) * 270;
-                } else if (resetNorm <= 0.001) {
-                    deg = curNorm * 270;
-                } else {
-                    deg = ((curNorm - resetNorm) / Math.max(0.001, 1 - resetNorm)) * 135;
-                }
-                deg = Math.max(-135, Math.min(135, deg));
+                const deg = (curNorm * 270) - 135;
                 indicator.style.transform = `translateX(-50%) rotate(${deg.toFixed(1)}deg)`;
 
                 syncEQFilters();
@@ -1297,7 +1313,7 @@
             window.addEventListener('mousemove', (e) => {
                 if (!isDraggingKnob) return;
                 const deltaY = dragStartY - e.clientY;
-                setHz(normToHz(dragStartNorm + deltaY / 120), true);
+                setHz(normToHz(dragStartNorm + deltaY / 130), true);
             });
 
             window.addEventListener('mouseup', () => {
@@ -1318,7 +1334,7 @@
                 if (!isDraggingKnob || e.touches.length !== 1) return;
                 e.preventDefault();
                 const deltaY = dragStartY - e.touches[0].clientY;
-                setHz(normToHz(dragStartNorm + deltaY / 120), true);
+                setHz(normToHz(dragStartNorm + deltaY / 130), true);
             }, { passive: false });
 
             window.addEventListener('touchend', () => {
@@ -1331,16 +1347,16 @@
             dial.addEventListener('wheel', (e) => {
                 e.preventDefault();
                 const dir = e.deltaY < 0 ? 1 : -1;
-                setHz(normToHz(hzToNorm(eqState[stateKey]) + dir * 0.03), true);
+                setHz(normToHz(hzToNorm(eqState[stateKey]) + dir * 0.025), true);
             }, { passive: false });
 
             dial.addEventListener('keydown', (e) => {
                 if (e.key === 'ArrowUp' || e.key === 'ArrowRight') {
                     e.preventDefault();
-                    setHz(normToHz(hzToNorm(eqState[stateKey]) + 0.03), true);
+                    setHz(normToHz(hzToNorm(eqState[stateKey]) + 0.025), true);
                 } else if (e.key === 'ArrowDown' || e.key === 'ArrowLeft') {
                     e.preventDefault();
-                    setHz(normToHz(hzToNorm(eqState[stateKey]) - 0.03), true);
+                    setHz(normToHz(hzToNorm(eqState[stateKey]) - 0.025), true);
                 } else if (e.key === '0') {
                     setHz(resetHz, false);
                 }
@@ -1440,7 +1456,6 @@
 
         updateVolumeUI(1, false);
 
-        // CDJ / SL-1200 Pitch & Speed Range Cycle (8% -> 16% -> 32% -> 64% -> 128%)
         const pitchRanges = [8, 16, 32, 64, 128];
         let pitchRangeIndex = 0;
 
@@ -1468,11 +1483,13 @@
                 return;
             }
 
-            const rate = Math.max(0.01, 1 + (rawTotalPct / 100));
+            const rate = Math.max(0.05, Math.min(4, 1 + (rawTotalPct / 100)));
             audio.preservesPitch = false;
             audio.mozPreservesPitch = false;
             audio.webkitPreservesPitch = false;
-            audio.playbackRate = rate;
+            if (Math.abs(audio.playbackRate - rate) > 0.0005) {
+                audio.playbackRate = rate;
+            }
 
             if (stoppedByTempoZero && activeCard && audio.paused) {
                 stoppedByTempoZero = false;
@@ -1639,6 +1656,11 @@
             syncEQFilters();
 
             audio.play().then(() => {
+                if (audioCtx && audioCtx.state === 'suspended') {
+                    return audioCtx.resume();
+                }
+            }).then(() => {
+                syncEQFilters();
                 vizStatus.textContent = `Now Playing: ${title}`;
             }).catch(err => {
                 console.error("Playback error:", err);
@@ -1736,7 +1758,6 @@
             updateProgressUI(0);
         });
 
-        // Centered Radial Red-to-White Loudness Gradient Visualizer (Full #ff0033 on peaks)
         function drawVisualizer() {
             requestAnimationFrame(drawVisualizer);
             const dpr = window.devicePixelRatio || 1;
