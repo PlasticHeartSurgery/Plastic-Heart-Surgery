@@ -27,6 +27,8 @@
             line-height: 1.6;
             overflow-x: hidden;
             touch-action: pan-y;
+            -webkit-text-size-adjust: 100%;
+            text-size-adjust: 100%;
         }
 
         /* --- CENTERED GRADIENT LOADING BAR --- */
@@ -141,6 +143,27 @@
             font-size: 1rem;
         }
 
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in-content {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        body.images-loaded .fade-in-content {
+            animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            animation-delay: 0.15s;
+        }
+
         .art-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -161,7 +184,7 @@
             z-index: 1;
             opacity: 0;
             transform: translateY(15px) scale(1);
-            transition: 
+            transition:
                 opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
                 transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
                 box-shadow 1.5s ease,
@@ -200,9 +223,14 @@
             overflow: hidden;
             border-bottom: 2px solid #000000;
             cursor: zoom-in;
-            touch-action: none;
+            touch-action: pan-y;
             position: relative;
             transition: border-bottom-color 1.5s ease;
+        }
+
+        .art-image-frame a {
+            display: block;
+            touch-action: pan-y;
         }
 
         body.images-loaded .art-card:hover .art-image-frame,
@@ -217,14 +245,15 @@
             object-fit: cover;
             will-change: transform;
             transform-origin: center center;
-            /* Pure GPU-accelerated CSS transition: exponential ease-in-out curve for 50% faster, stutter-free zoom */
-            transition: transform 1.2s cubic-bezier(0.25, 1, 0.5, 1);
+            /* Fast initial snap-back that slows to a crawl at 1x (inverse exponential) */
+            transition: transform 9s cubic-bezier(0.05, 0.9, 0.1, 1);
         }
 
-        /* 400% magnification on hover */
+        /* Exponential zoom-in: creeps very slowly at first, then ramps up rapidly */
         .art-card:hover .art-image-frame img,
         .art-card.mobile-zoomed .art-image-frame img {
             transform: scale(4);
+            transition: transform 4.5s cubic-bezier(0.85, 0, 0.95, 0.4);
         }
 
         .art-info {
@@ -296,10 +325,10 @@
     <main>
         <section>
             <h2>Visual Arts</h2>
-            <p>Plastic's painting(s) that are currently available for exhibition/private sale/showings are shown (for inquiries and/or pricing, please email).</p>
+            <p class="fade-in-content">Plastic's painting(s) that are currently available for exhibition/private sale/showings are shown (for inquiries and/or pricing, please email).</p>
 
             <div class="art-grid">
-                
+
                 <!-- Painting Item 1 -->
                 <div class="art-card" style="--i: 1;">
                     <div class="art-image-frame">
@@ -355,7 +384,7 @@
                 <!-- Painting Item 5 -->
                 <div class="art-card" style="--i: 5;">
                     <div class="art-image-frame">
-                        <a href="I-Brushed-My-Teeth-and-Had-My-First-Bout-of-Psychosis-and-100th-Bout-of-Dysphoria,-but-I-Think-I-Scared-Myself-Less-Than-Prior.html">
+                        <a href="i-brushed-my-teeth-and-had-my-first-bout-of-psychosis-and-100th-bout-of-dysphoria-but-i-think-i-scared-myself-less-than-prior.html">
                             <img src="images/I Brushed My Teeth--100th Bout of Dysphoria, but I Think I Scared Myself Less Than Prior., Plastic, Oil, Lacquer, Urethane, Pastel, Pencil, Crayon on Canvas, 35 x 50, 2025.jpg" alt="I Brushed My Teeth">
                         </a>
                     </div>
@@ -364,11 +393,11 @@
                         <p class="art-desc">Oil, Pencil, Acrylic, Polyurethane, China Marker, Gesso, Wall Paint on Canvas, 35" x 50", 2025"</p>
                     </div>
                 </div>
-                
+
                 <!-- Painting Item 6 -->
                 <div class="art-card" style="--i: 6;">
                     <div class="art-image-frame">
-                        <a href="The-Swan-Song--Dousing-My-Naked-Body-in-a-Sea-of-Vomit;-I-Am-Going-Deaf,-a-New-Obsolescence.html">
+                        <a href="the-swan-song--dousing-my-naked-body-in-a-sea-of-vomit;-i-am-going-deaf,-a-new-obsolescence.html">
                             <img src="images/Swan.png" alt="The Swan Song">
                         </a>
                     </div>
@@ -377,11 +406,11 @@
                         <p class="art-desc">Oil, Pencil, Acrylic, Polyurethane, China Marker, Gesso, Wall Paint on Canvas, 35" x 50", 2025"</p>
                     </div>
                 </div>
-                      
+
                 <!-- Painting Item 7 -->
                 <div class="art-card" style="--i: 7;">
                     <div class="art-image-frame">
-                        <a href="Jesse.html">
+                        <a href="jesse.html">
                             <img src="images/Jesse.png" alt="Jesse">
                         </a>
                     </div>
@@ -390,7 +419,7 @@
                         <p class="art-desc">Oil, Pencil, Acrylic, China Marker, Wall Paint on Pallet, 40" x 64", 2025"</p>
                     </div>
                 </div>
-                
+
             </div>
         </section>
     </main>
@@ -423,33 +452,7 @@
                 };
             });
 
-            // Find the card most prominent in the current phone viewport quadrant
-            function getMostVisibleCard() {
-                const cards = document.querySelectorAll('.art-card');
-                let bestCard = null;
-                let maxVisibleArea = 0;
-                const viewHeight = window.innerHeight;
-                const viewWidth = window.innerWidth;
-
-                cards.forEach(card => {
-                    const rect = card.getBoundingClientRect();
-                    const visibleTop = Math.max(0, rect.top);
-                    const visibleBottom = Math.min(viewHeight, rect.bottom);
-                    const visibleHeight = Math.max(0, visibleBottom - visibleTop);
-                    const visibleLeft = Math.max(0, rect.left);
-                    const visibleRight = Math.min(viewWidth, rect.right);
-                    const visibleWidth = Math.max(0, visibleRight - visibleLeft);
-                    const area = visibleHeight * visibleWidth;
-
-                    if (area > maxVisibleArea) {
-                        maxVisibleArea = area;
-                        bestCard = card;
-                    }
-                });
-                return bestCard;
-            }
-
-            // Smooth GPU-accelerated CSS transform-origin cursor tracking
+            // Desktop hover origin tracking (unchanged)
             document.querySelectorAll('.art-card').forEach(card => {
                 const frame = card.querySelector('.art-image-frame');
                 const img = frame.querySelector('img');
@@ -461,79 +464,127 @@
                     img.style.transformOrigin = `${x}% ${y}%`;
                 });
 
-                frame.addEventListener('mouseleave', () => {
-                    img.style.transformOrigin = 'center center';
-                });
-
-                // Mobile Touch Gesture & Pinch Handling
-                let initialPinchDist = null;
-
-                frame.addEventListener('touchstart', (e) => {
-                    const activeCard = getMostVisibleCard();
-                    if (activeCard !== card) return;
-
-                    if (e.touches.length === 2) {
-                        e.preventDefault();
-                        initialPinchDist = Math.hypot(
-                            e.touches[0].clientX - e.touches[1].clientX,
-                            e.touches[0].clientY - e.touches[1].clientY
-                        );
-                    }
-                }, { passive: false });
-
-                frame.addEventListener('touchmove', (e) => {
-                    const activeCard = getMostVisibleCard();
-                    if (activeCard !== card) return;
-
-                    if (e.touches.length === 2) {
-                        e.preventDefault();
-                        const dist = Math.hypot(
-                            e.touches[0].clientX - e.touches[1].clientX,
-                            e.touches[0].clientY - e.touches[1].clientY
-                        );
-                        if (initialPinchDist && dist > initialPinchDist * 1.1) {
-                            card.classList.add('mobile-zoomed');
-                            const rect = frame.getBoundingClientRect();
-                            const midX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
-                            const midY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
-                            const x = ((midX - rect.left) / rect.width) * 100;
-                            const y = ((midY - rect.top) / rect.height) * 100;
-                            img.style.transformOrigin = `${x}% ${y}%`;
-                        }
-                    } else if (e.touches.length === 1 && card.classList.contains('mobile-zoomed')) {
-                        e.preventDefault();
-                        const rect = frame.getBoundingClientRect();
-                        const x = ((e.touches[0].clientX - rect.left) / rect.width) * 100;
-                        const y = ((e.touches[0].clientY - rect.top) / rect.height) * 100;
-                        img.style.transformOrigin = `${x}% ${y}%`;
-                    }
-                }, { passive: false });
-
-                frame.addEventListener('touchend', (e) => {
-                    if (e.touches.length === 0) {
-                        initialPinchDist = null;
-                    }
+                frame.addEventListener('mouseleave', (e) => {
+                    const rect = frame.getBoundingClientRect();
+                    const x = Math.max(0, Math.min(100, ((e.clientX - rect.left) / rect.width) * 100));
+                    const y = Math.max(0, Math.min(100, ((e.clientY - rect.top) / rect.height) * 100));
+                    img.style.transformOrigin = `${x}% ${y}%`;
                 });
             });
 
-            // Mobile Double-Tap to Toggle Zoom View on the most prominent viewport card
+            // Mobile touch state machine per card:
+            // 1. Not zoomed: double-tap -> magnifies + arms redirect on next tap
+            // 2. Zoomed & armed: single tap -> redirects to artwork page
+            //    OR double-tap -> un-magnifies + disarms redirect
+            const DOUBLE_TAP_DELAY = 300;
+            const MOVE_TOLERANCE = 12;
+
             document.querySelectorAll('.art-card').forEach(card => {
-                let lastTap = 0;
-                card.addEventListener('touchend', (e) => {
-                    const currentTime = new Date().getTime();
-                    const tapLength = currentTime - lastTap;
-                    if (tapLength < 300 && tapLength > 0) {
-                        const activeCard = getMostVisibleCard();
-                        if (activeCard === card) {
+                const frame = card.querySelector('.art-image-frame');
+                const link = frame.querySelector('a');
+                const img = frame.querySelector('img');
+
+                let touchStartX = 0;
+                let touchStartY = 0;
+                let touchMoved = false;
+                let lastTapTime = 0;
+                let redirectArmed = false;
+
+                function unzoomCard() {
+                    card.classList.remove('mobile-zoomed');
+                    img.style.transformOrigin = 'center center';
+                    redirectArmed = false;
+                }
+
+                // Prevent accidental immediate link navigation on touch devices
+                link.addEventListener('click', (e) => {
+                    if (window.matchMedia('(hover: none)').matches || e.pointerType === 'touch') {
+                        if (!redirectArmed || !card.classList.contains('mobile-zoomed')) {
                             e.preventDefault();
-                            card.classList.toggle('mobile-zoomed');
-                            if (!card.classList.contains('mobile-zoomed')) {
-                                const img = card.querySelector('.art-image-frame img');
-                                img.style.transformOrigin = 'center center';
-                            }
                         }
                     }
-                    lastTap = currentTime;
+                });
+
+                frame.addEventListener('touchstart', (e) => {
+                    if (e.touches.length !== 1) {
+                        touchMoved = true;
+                        return;
+                    }
+                    touchStartX = e.touches[0].clientX;
+                    touchStartY = e.touches[0].clientY;
+                    touchMoved = false;
+
+                    // While zoomed in, allow panning zoom origin with one finger without blocking page scroll
+                    if (card.classList.contains('mobile-zoomed')) {
+                        const rect = frame.getBoundingClientRect();
+                        const x = Math.max(0, Math.min(100, ((touchStartX - rect.left) / rect.width) * 100));
+                        const y = Math.max(0, Math.min(100, ((touchStartY - rect.top) / rect.height) * 100));
+                        img.style.transformOrigin = `${x}% ${y}%`;
+                    }
+                }, { passive: true });
+
+                frame.addEventListener('touchmove', (e) => {
+                    if (e.touches.length !== 1) {
+                        touchMoved = true;
+                        return;
+                    }
+                    const dx = e.touches[0].clientX - touchStartX;
+                    const dy = e.touches[0].clientY - touchStartY;
+                    if (Math.hypot(dx, dy) > MOVE_TOLERANCE) {
+                        touchMoved = true;
+                    }
+                    if (card.classList.contains('mobile-zoomed')) {
+                        const rect = frame.getBoundingClientRect();
+                        const x = Math.max(0, Math.min(100, ((e.touches[0].clientX - rect.left) / rect.width) * 100));
+                        const y = Math.max(0, Math.min(100, ((e.touches[0].clientY - rect.top) / rect.height) * 100));
+                        img.style.transformOrigin = `${x}% ${y}%`;
+                    }
+                }, { passive: true });
+
+                frame.addEventListener('touchend', (e) => {
+                    if (touchMoved || e.changedTouches.length !== 1) return;
+
+                    const now = Date.now();
+                    const sinceLastTap = now - lastTapTime;
+                    const isDoubleTap = sinceLastTap > 0 && sinceLastTap < DOUBLE_TAP_DELAY;
+
+                    if (isDoubleTap) {
+                        e.preventDefault();
+                        lastTapTime = 0;
+
+                        if (card.classList.contains('mobile-zoomed')) {
+                            // Double-tap while zoomed -> undo magnify
+                            unzoomCard();
+                        } else {
+                            // First double-tap -> magnify & arm redirect for next tap
+                            document.querySelectorAll('.art-card.mobile-zoomed').forEach(other => {
+                                if (other !== card) {
+                                    other.classList.remove('mobile-zoomed');
+                                    const otherImg = other.querySelector('.art-image-frame img');
+                                    if (otherImg) otherImg.style.transformOrigin = 'center center';
+                                }
+                            });
+                            const rect = frame.getBoundingClientRect();
+                            const tapX = e.changedTouches[0].clientX;
+                            const tapY = e.changedTouches[0].clientY;
+                            const x = Math.max(0, Math.min(100, ((tapX - rect.left) / rect.width) * 100));
+                            const y = Math.max(0, Math.min(100, ((tapY - rect.top) / rect.height) * 100));
+                            img.style.transformOrigin = `${x}% ${y}%`;
+                            card.classList.add('mobile-zoomed');
+                            redirectArmed = true;
+                        }
+                        return;
+                    }
+
+                    lastTapTime = now;
+
+                    // If already magnified and armed, a tap after the double-tap window redirects
+                    if (card.classList.contains('mobile-zoomed') && redirectArmed) {
+                        e.preventDefault();
+                        if (link && link.href) {
+                            window.location.href = link.href;
+                        }
+                    }
                 });
             });
         });
