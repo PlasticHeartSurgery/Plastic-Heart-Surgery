@@ -247,50 +247,109 @@
             background: #ff0033;
         }
 
-        /* Volume Control Bar */
-        .volume-controls {
+        /* Control Rows (Volume, CDJ / SL-1200 Pitch/Speed, Nudge & Loop) */
+        .control-row {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
             margin-top: 6px;
             padding-top: 10px;
             border-top: 1px solid #eeeeee;
+            flex-wrap: wrap;
         }
 
-        .mute-btn {
+        .deck-btn {
             font-family: 'Lyno Ulyscyr', sans-serif;
             font-size: 0.75rem;
-            letter-spacing: 0.15em;
+            letter-spacing: 0.14em;
             color: #111111;
             background: #ffffff;
             border: 2px solid #000000;
             border-radius: 4px;
             padding: 4px 10px;
-            min-width: 68px;
+            min-width: 64px;
             cursor: pointer;
             transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
         }
 
-        .mute-btn:hover,
-        .mute-btn.muted {
+        .deck-btn:hover,
+        .deck-btn.active {
             background: #ff0033;
             color: #ffffff;
             border-color: #ff0033;
         }
 
-        .volume-slider {
+        .range-btn {
+            font-family: monospace;
+            font-weight: 700;
+            font-size: 0.8rem;
+            letter-spacing: 0.04em;
+            min-width: 64px;
+        }
+
+        .deck-label {
+            font-family: 'Lyno Ulyscyr', sans-serif;
+            font-size: 0.75rem;
+            letter-spacing: 0.14em;
+            color: #333333;
+            min-width: 64px;
+            white-space: nowrap;
+        }
+
+        .pitch-slider-wrap {
+            flex: 1;
+            min-width: 130px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .pitch-notches {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 3px 7px 0 7px;
+            height: 11px;
+            pointer-events: none;
+        }
+
+        .pitch-notches.hidden {
+            visibility: hidden;
+        }
+
+        .pitch-notch {
+            width: 1px;
+            height: 5px;
+            background-color: #666666;
+        }
+
+        .pitch-notch.major {
+            width: 2px;
+            height: 7px;
+            background-color: #111111;
+        }
+
+        .pitch-notch.center {
+            width: 2px;
+            height: 9px;
+            background-color: #ff0033;
+        }
+
+        .deck-slider {
             -webkit-appearance: none;
             appearance: none;
+            width: 100%;
             flex: 1;
+            min-width: 120px;
             height: 8px;
-            background: linear-gradient(to right, #ff0033 100%, #eeeeee 100%);
+            background: #eeeeee;
             border: 1px solid #000000;
             border-radius: 4px;
             outline: none;
             cursor: pointer;
         }
 
-        .volume-slider::-webkit-slider-thumb {
+        .deck-slider::-webkit-slider-thumb {
             -webkit-appearance: none;
             appearance: none;
             width: 16px;
@@ -303,12 +362,12 @@
             transition: background-color 0.15s ease;
         }
 
-        .volume-slider::-webkit-slider-thumb:hover,
-        .volume-slider:active::-webkit-slider-thumb {
+        .deck-slider::-webkit-slider-thumb:hover,
+        .deck-slider:active::-webkit-slider-thumb {
             background: #ff0033;
         }
 
-        .volume-slider::-moz-range-thumb {
+        .deck-slider::-moz-range-thumb {
             width: 16px;
             height: 16px;
             background: #ffffff;
@@ -319,17 +378,105 @@
             transition: background-color 0.15s ease;
         }
 
-        .volume-slider::-moz-range-thumb:hover,
-        .volume-slider:active::-moz-range-thumb {
+        .deck-slider::-moz-range-thumb:hover,
+        .deck-slider:active::-moz-range-thumb {
             background: #ff0033;
         }
 
-        .volume-value {
+        .deck-readout {
             font-family: monospace;
             font-size: 0.85rem;
             color: #333333;
-            min-width: 42px;
+            min-width: 72px;
             text-align: right;
+            white-space: nowrap;
+        }
+
+        /* 3-Band EQ Rotary Knobs (Bass 90Hz Crossover / Mids / Treble) */
+        .eq-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-top: 6px;
+            padding-top: 12px;
+            border-top: 1px solid #eeeeee;
+            flex-wrap: wrap;
+        }
+
+        .eq-knobs-group {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            flex: 1;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .knob-unit {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: none;
+        }
+
+        .knob-dial {
+            position: relative;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: #ffffff;
+            border: 2px solid #000000;
+            box-shadow: 2px 2px 0px #000000;
+            cursor: ns-resize;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: border-color 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .knob-dial:hover,
+        .knob-dial.active {
+            border-color: #ff0033;
+            box-shadow: 2px 2px 0px #ff0033;
+        }
+
+        .knob-indicator {
+            position: absolute;
+            top: 4px;
+            left: 50%;
+            width: 3px;
+            height: 14px;
+            background: #ff0033;
+            border-radius: 2px;
+            transform-origin: 50% 20px;
+            transform: translateX(-50%) rotate(0deg);
+            pointer-events: none;
+        }
+
+        .knob-title {
+            font-family: 'Lyno Ulyscyr', sans-serif;
+            font-size: 0.75rem;
+            letter-spacing: 0.14em;
+            color: #111111;
+        }
+
+        .knob-sub {
+            font-family: monospace;
+            font-size: 0.7rem;
+            color: #555555;
+        }
+
+        .knob-val {
+            font-family: monospace;
+            font-size: 0.78rem;
+            color: #ff0033;
+            font-weight: 700;
+            min-width: 54px;
+            text-align: center;
         }
 
         @media (pointer: coarse) {
@@ -342,18 +489,25 @@
                 height: 20px;
                 background: #ff0033;
             }
-            .volume-slider {
+            .deck-slider {
                 height: 10px;
             }
-            .volume-slider::-webkit-slider-thumb {
+            .deck-slider::-webkit-slider-thumb {
                 width: 20px;
                 height: 20px;
                 background: #ff0033;
             }
-            .volume-slider::-moz-range-thumb {
+            .deck-slider::-moz-range-thumb {
                 width: 20px;
                 height: 20px;
                 background: #ff0033;
+            }
+            .knob-dial {
+                width: 54px;
+                height: 54px;
+            }
+            .knob-indicator {
+                transform-origin: 50% 23px;
             }
         }
 
@@ -579,10 +733,63 @@
                 </div>
 
                 <!-- Volume Slider -->
-                <div class="volume-controls">
-                    <button type="button" class="mute-btn" id="muteBtn" aria-label="Mute or unmute audio">VOL</button>
-                    <input type="range" class="volume-slider" id="volumeSlider" min="0" max="1" step="0.01" value="1" aria-label="Volume">
-                    <span class="volume-value" id="volumeValue">100%</span>
+                <div class="control-row">
+                    <button type="button" class="deck-btn" id="muteBtn" aria-label="Mute or unmute audio">VOL</button>
+                    <input type="range" class="deck-slider" id="volumeSlider" min="0" max="1" step="0.01" value="1" aria-label="Volume">
+                    <span class="deck-readout" id="volumeValue">100%</span>
+                </div>
+
+                <!-- CDJ / SL-1200 Pitch & Speed + Range Selector + Loop Controls -->
+                <div class="control-row">
+                    <button type="button" class="deck-btn" id="loopBtn" aria-pressed="false">LOOP</button>
+                    <button type="button" class="deck-btn range-btn" id="pitchRangeBtn" title="Cycle tempo range: 8%, 16%, 32%, 64%, 128%">±8%</button>
+                    <div class="pitch-slider-wrap">
+                        <input type="range" class="deck-slider" id="pitchSlider" min="-8" max="8" step="0.1" value="0" aria-label="Pitch and play speed percentage">
+                        <div class="pitch-notches" id="pitchNotches" aria-hidden="true"></div>
+                    </div>
+                    <span class="deck-readout" id="pitchValue">+0.00%</span>
+                    <button type="button" class="deck-btn" id="pitchResetBtn" title="Reset pitch and speed to 0%">0%</button>
+                </div>
+
+                <!-- Subtle Nudge Slider (±1.00% in 0.01% steps) -->
+                <div class="control-row">
+                    <span class="deck-label">NUDGE</span>
+                    <input type="range" class="deck-slider" id="nudgeSlider" min="-1" max="1" step="0.01" value="0" aria-label="Subtle pitch and speed nudge percentage">
+                    <span class="deck-readout" id="nudgeValue">+0.00%</span>
+                    <button type="button" class="deck-btn" id="nudgeResetBtn" title="Reset nudge to 0.00%">CENTER</button>
+                </div>
+
+                <!-- 3-Band EQ Mixer Knobs: Bass (90Hz Crossover), Mids, Treble -->
+                <div class="eq-row">
+                    <div class="eq-knobs-group">
+                        <div class="knob-unit">
+                            <span class="knob-title">BASS</span>
+                            <div class="knob-dial" id="bassKnob" role="slider" tabindex="0" aria-label="Bass EQ (90Hz crossover)" aria-valuemin="-24" aria-valuemax="12" aria-valuenow="0" title="Drag up/down or scroll to adjust Bass (90Hz crossover). Double-click to reset.">
+                                <div class="knob-indicator" id="bassIndicator"></div>
+                            </div>
+                            <span class="knob-val" id="bassValue">0.0 dB</span>
+                            <span class="knob-sub">90Hz</span>
+                        </div>
+
+                        <div class="knob-unit">
+                            <span class="knob-title">MIDS</span>
+                            <div class="knob-dial" id="midsKnob" role="slider" tabindex="0" aria-label="Mids EQ (1kHz)" aria-valuemin="-24" aria-valuemax="12" aria-valuenow="0" title="Drag up/down or scroll to adjust Mids. Double-click to reset.">
+                                <div class="knob-indicator" id="midsIndicator"></div>
+                            </div>
+                            <span class="knob-val" id="midsValue">0.0 dB</span>
+                            <span class="knob-sub">1kHz</span>
+                        </div>
+
+                        <div class="knob-unit">
+                            <span class="knob-title">TREBLE</span>
+                            <div class="knob-dial" id="trebleKnob" role="slider" tabindex="0" aria-label="Treble EQ (4kHz)" aria-valuemin="-24" aria-valuemax="12" aria-valuenow="0" title="Drag up/down or scroll to adjust Treble. Double-click to reset.">
+                                <div class="knob-indicator" id="trebleIndicator"></div>
+                            </div>
+                            <span class="knob-val" id="trebleValue">0.0 dB</span>
+                            <span class="knob-sub">4kHz</span>
+                        </div>
+                    </div>
+                    <button type="button" class="deck-btn" id="eqResetBtn" title="Reset Bass, Mids, and Treble to 0.0 dB">EQ 0</button>
                 </div>
             </div>
 
@@ -618,7 +825,7 @@
     <audio id="audioPlayer" playsinline webkit-playsinline preload="auto"></audio>
 
     <script>
-        /* --- AUDIO PLAYER, VOLUME & RADIAL LOUDNESS GRADIENT VISUALIZER --- */
+        /* --- AUDIO PLAYER, VOLUME, CDJ/SL-1200 PITCH/SPEED, NUDGE, LOOP, 3-BAND EQ & VISUALIZER --- */
         const audio = document.getElementById('audioPlayer');
         const canvas = document.getElementById('audioVisualizer');
         const ctx = canvas.getContext('2d');
@@ -633,10 +840,29 @@
         const volumeSlider = document.getElementById('volumeSlider');
         const volumeValue = document.getElementById('volumeValue');
         const muteBtn = document.getElementById('muteBtn');
+        const loopBtn = document.getElementById('loopBtn');
+        const pitchRangeBtn = document.getElementById('pitchRangeBtn');
+        const pitchSlider = document.getElementById('pitchSlider');
+        const pitchNotches = document.getElementById('pitchNotches');
+        const pitchValue = document.getElementById('pitchValue');
+        const pitchResetBtn = document.getElementById('pitchResetBtn');
+        const nudgeSlider = document.getElementById('nudgeSlider');
+        const nudgeValue = document.getElementById('nudgeValue');
+        const nudgeResetBtn = document.getElementById('nudgeResetBtn');
+        const eqResetBtn = document.getElementById('eqResetBtn');
 
         let activeCard = null;
         let isDraggingProgress = false;
         let lastVolume = 1;
+        let currentMainPitchPct = 0;
+        let currentNudgePct = 0;
+
+        // EQ state in dB (-24 dB cut to +12 dB boost)
+        const eqState = {
+            bass: 0,
+            mids: 0,
+            treble: 0
+        };
 
         // Sync card thumbnails from each card's data-art attribute on load
         document.querySelectorAll('.track-card').forEach(card => {
@@ -671,15 +897,25 @@
             activeArtImg.src = cleanPath;
         }
 
-        // Web Audio API state for real-time loudness analysis
+        // Web Audio API state: Source -> Bass (90Hz lowshelf) -> Mids (1kHz peaking) -> Treble (4kHz highshelf) -> Analyser -> Destination
         let audioCtx = null;
+        let bassFilter = null;
+        let midsFilter = null;
+        let trebleFilter = null;
         let analyser = null;
         let timeDomainData = null;
         let webAudioReady = false;
         let smoothedLoudness = 0;
         let fallbackPhase = 0;
 
-        function initAudioAnalyser() {
+        function syncEQFilters() {
+            if (!webAudioReady) return;
+            if (bassFilter) bassFilter.gain.value = eqState.bass;
+            if (midsFilter) midsFilter.gain.value = eqState.mids;
+            if (trebleFilter) trebleFilter.gain.value = eqState.treble;
+        }
+
+        function initAudioGraph() {
             if (audioCtx) {
                 if (audioCtx.state === 'suspended') {
                     audioCtx.resume();
@@ -690,17 +926,173 @@
                 const AudioContextClass = window.AudioContext || window.webkitAudioContext;
                 audioCtx = new AudioContextClass();
                 const source = audioCtx.createMediaElementSource(audio);
+
+                // Bass crossover at 90 Hz
+                bassFilter = audioCtx.createBiquadFilter();
+                bassFilter.type = 'lowshelf';
+                bassFilter.frequency.value = 90;
+                bassFilter.gain.value = eqState.bass;
+
+                // Midrange band centered at 1 kHz
+                midsFilter = audioCtx.createBiquadFilter();
+                midsFilter.type = 'peaking';
+                midsFilter.frequency.value = 1000;
+                midsFilter.Q.value = 1.0;
+                midsFilter.gain.value = eqState.mids;
+
+                // Treble band above 4 kHz
+                trebleFilter = audioCtx.createBiquadFilter();
+                trebleFilter.type = 'highshelf';
+                trebleFilter.frequency.value = 4000;
+                trebleFilter.gain.value = eqState.treble;
+
                 analyser = audioCtx.createAnalyser();
                 analyser.fftSize = 256;
-                source.connect(analyser);
-                analyser.connect(audioCtx.destination);
                 timeDomainData = new Uint8Array(analyser.fftSize);
+
+                source.connect(bassFilter);
+                bassFilter.connect(midsFilter);
+                midsFilter.connect(trebleFilter);
+                trebleFilter.connect(analyser);
+                analyser.connect(audioCtx.destination);
+
                 webAudioReady = true;
             } catch (err) {
                 console.warn("Web Audio API fallback active:", err);
                 webAudioReady = false;
             }
         }
+
+        // Rotary knob setup helper (-24 dB to +12 dB, -135deg to +135deg)
+        function setupRotaryKnob({ dialId, indicatorId, valueId, stateKey }) {
+            const dial = document.getElementById(dialId);
+            const indicator = document.getElementById(indicatorId);
+            const valLabel = document.getElementById(valueId);
+            const minDb = -24;
+            const maxDb = 12;
+
+            function setDb(db) {
+                let clamped = Math.max(minDb, Math.min(maxDb, db));
+                if (Math.abs(clamped) <= 0.35) {
+                    clamped = 0;
+                }
+                eqState[stateKey] = clamped;
+                dial.setAttribute('aria-valuenow', clamped.toFixed(1));
+
+                const sign = clamped > 0 ? '+' : '';
+                valLabel.textContent = `${sign}${clamped.toFixed(1)} dB`;
+
+                const norm = (clamped - minDb) / (maxDb - minDb); // 0 to 1
+                const deg = -135 + norm * 270;
+                indicator.style.transform = `translateX(-50%) rotate(${deg.toFixed(1)}deg)`;
+
+                syncEQFilters();
+            }
+
+            let dragStartY = 0;
+            let dragStartDb = 0;
+            let isDraggingKnob = false;
+
+            function startDrag(clientY) {
+                isDraggingKnob = true;
+                dragStartY = clientY;
+                dragStartDb = eqState[stateKey];
+                dial.classList.add('active');
+            }
+
+            dial.addEventListener('mousedown', (e) => {
+                e.preventDefault();
+                startDrag(e.clientY);
+            });
+
+            window.addEventListener('mousemove', (e) => {
+                if (!isDraggingKnob) return;
+                const deltaY = dragStartY - e.clientY;
+                const nextDb = dragStartDb + (deltaY / 100) * (maxDb - minDb);
+                setDb(nextDb);
+            });
+
+            window.addEventListener('mouseup', () => {
+                if (isDraggingKnob) {
+                    isDraggingKnob = false;
+                    dial.classList.remove('active');
+                }
+            });
+
+            dial.addEventListener('touchstart', (e) => {
+                if (e.touches.length === 1) {
+                    e.preventDefault();
+                    startDrag(e.touches[0].clientY);
+                }
+            }, { passive: false });
+
+            window.addEventListener('touchmove', (e) => {
+                if (!isDraggingKnob || e.touches.length !== 1) return;
+                e.preventDefault();
+                const deltaY = dragStartY - e.touches[0].clientY;
+                const nextDb = dragStartDb + (deltaY / 100) * (maxDb - minDb);
+                setDb(nextDb);
+            }, { passive: false });
+
+            window.addEventListener('touchend', () => {
+                if (isDraggingKnob) {
+                    isDraggingKnob = false;
+                    dial.classList.remove('active');
+                }
+            });
+
+            dial.addEventListener('wheel', (e) => {
+                e.preventDefault();
+                const step = e.deltaY < 0 ? 0.5 : -0.5;
+                setDb(eqState[stateKey] + step);
+            }, { passive: false });
+
+            dial.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowUp' || e.key === 'ArrowRight') {
+                    e.preventDefault();
+                    setDb(eqState[stateKey] + 0.5);
+                } else if (e.key === 'ArrowDown' || e.key === 'ArrowLeft') {
+                    e.preventDefault();
+                    setDb(eqState[stateKey] - 0.5);
+                } else if (e.key === '0') {
+                    setDb(0);
+                }
+            });
+
+            dial.addEventListener('dblclick', () => {
+                setDb(0);
+            });
+
+            setDb(0);
+            return setDb;
+        }
+
+        const setBassDb = setupRotaryKnob({
+            dialId: 'bassKnob',
+            indicatorId: 'bassIndicator',
+            valueId: 'bassValue',
+            stateKey: 'bass'
+        });
+
+        const setMidsDb = setupRotaryKnob({
+            dialId: 'midsKnob',
+            indicatorId: 'midsIndicator',
+            valueId: 'midsValue',
+            stateKey: 'mids'
+        });
+
+        const setTrebleDb = setupRotaryKnob({
+            dialId: 'trebleKnob',
+            indicatorId: 'trebleIndicator',
+            valueId: 'trebleValue',
+            stateKey: 'treble'
+        });
+
+        eqResetBtn.addEventListener('click', () => {
+            setBassDb(0);
+            setMidsDb(0);
+            setTrebleDb(0);
+        });
 
         function updateVolumeUI(vol, isMuted) {
             const effectiveVol = isMuted ? 0 : vol;
@@ -710,10 +1102,10 @@
             volumeValue.textContent = `${pct}%`;
             if (isMuted || effectiveVol === 0) {
                 muteBtn.textContent = 'MUTED';
-                muteBtn.classList.add('muted');
+                muteBtn.classList.add('active');
             } else {
                 muteBtn.textContent = 'VOL';
-                muteBtn.classList.remove('muted');
+                muteBtn.classList.remove('active');
             }
         }
 
@@ -742,6 +1134,124 @@
 
         updateVolumeUI(1, false);
 
+        // Loop toggle
+        loopBtn.addEventListener('click', () => {
+            audio.loop = !audio.loop;
+            loopBtn.classList.toggle('active', audio.loop);
+            loopBtn.setAttribute('aria-pressed', String(audio.loop));
+        });
+
+        // CDJ / SL-1200 Pitch & Speed Range Cycle (8% -> 16% -> 32% -> 64% -> 128%)
+        const pitchRanges = [8, 16, 32, 64, 128];
+        let pitchRangeIndex = 0;
+
+        function styleCenterSlider(slider, val, minVal, maxVal) {
+            const totalSpan = maxVal - minVal;
+            const zeroPosPct = ((0 - minVal) / totalSpan) * 100;
+            const currentPosPct = ((val - minVal) / totalSpan) * 100;
+            const left = Math.max(0, Math.min(100, Math.min(zeroPosPct, currentPosPct)));
+            const right = Math.max(0, Math.min(100, Math.max(zeroPosPct, currentPosPct)));
+            slider.style.background = `linear-gradient(to right, #eeeeee 0%, #eeeeee ${left}%, #ff0033 ${left}%, #ff0033 ${right}%, #eeeeee ${right}%, #eeeeee 100%)`;
+        }
+
+        function applyCombinedPlaybackRate() {
+            const totalPct = Math.max(-95, currentMainPitchPct + currentNudgePct);
+            const rate = 1 + (totalPct / 100);
+            audio.preservesPitch = false;
+            audio.mozPreservesPitch = false;
+            audio.webkitPreservesPitch = false;
+            audio.playbackRate = rate;
+
+            const sign = totalPct > 0 ? '+' : '';
+            pitchValue.textContent = `${sign}${totalPct.toFixed(2)}%`;
+        }
+
+        function renderPitchNotches(range) {
+            pitchNotches.innerHTML = '';
+            // Show ruler notches on 8% and 16% ranges (between 0 and 16%)
+            if (range > 16) {
+                pitchNotches.classList.add('hidden');
+                return;
+            }
+            pitchNotches.classList.remove('hidden');
+            const step = range === 8 ? 1 : 2;
+            for (let v = -range; v <= range; v += step) {
+                const tick = document.createElement('span');
+                tick.className = 'pitch-notch';
+                if (v === 0) {
+                    tick.classList.add('center');
+                } else if (Math.abs(v) === range || Math.abs(v) === range / 2) {
+                    tick.classList.add('major');
+                }
+                pitchNotches.appendChild(tick);
+            }
+        }
+
+        function setPitchRange(range) {
+            pitchRangeBtn.textContent = `±${range}%`;
+            pitchSlider.min = String(-range);
+            pitchSlider.max = String(range);
+            pitchSlider.step = range <= 16 ? '0.1' : '0.5';
+            renderPitchNotches(range);
+
+            const clamped = Math.max(-range, Math.min(range, currentMainPitchPct));
+            setMainPitchPercent(clamped);
+        }
+
+        function setMainPitchPercent(pct) {
+            const range = pitchRanges[pitchRangeIndex];
+            let clamped = Math.max(-range, Math.min(range, pct));
+
+            // Magnetic center detent at 0.0%
+            const snapZone = range <= 16 ? 0.25 : 1.0;
+            if (Math.abs(clamped) <= snapZone) {
+                clamped = 0;
+            }
+
+            currentMainPitchPct = clamped;
+            pitchSlider.value = String(clamped);
+            styleCenterSlider(pitchSlider, clamped, -range, range);
+            applyCombinedPlaybackRate();
+        }
+
+        function setNudgePercent(pct) {
+            let clamped = Math.max(-1, Math.min(1, pct));
+            // Subtle magnetic snap right at 0.00%
+            if (Math.abs(clamped) <= 0.02) {
+                clamped = 0;
+            }
+            currentNudgePct = clamped;
+            nudgeSlider.value = clamped.toFixed(2);
+            const sign = clamped > 0 ? '+' : '';
+            nudgeValue.textContent = `${sign}${clamped.toFixed(2)}%`;
+            styleCenterSlider(nudgeSlider, clamped, -1, 1);
+            applyCombinedPlaybackRate();
+        }
+
+        pitchRangeBtn.addEventListener('click', () => {
+            pitchRangeIndex = (pitchRangeIndex + 1) % pitchRanges.length;
+            setPitchRange(pitchRanges[pitchRangeIndex]);
+        });
+
+        pitchSlider.addEventListener('input', (e) => {
+            setMainPitchPercent(parseFloat(e.target.value));
+        });
+
+        pitchResetBtn.addEventListener('click', () => {
+            setMainPitchPercent(0);
+        });
+
+        nudgeSlider.addEventListener('input', (e) => {
+            setNudgePercent(parseFloat(e.target.value));
+        });
+
+        nudgeResetBtn.addEventListener('click', () => {
+            setNudgePercent(0);
+        });
+
+        setPitchRange(pitchRanges[0]);
+        setNudgePercent(0);
+
         const firstCard = document.querySelector('.track-card');
         if (firstCard) {
             audio.src = encodeURI(firstCard.getAttribute('data-src'));
@@ -759,7 +1269,7 @@
         resizeCanvas();
 
         function toggleTrack(card) {
-            initAudioAnalyser();
+            initAudioGraph();
 
             const rawSrc = card.getAttribute('data-src');
             const encodedSrc = encodeURI(rawSrc);
@@ -789,6 +1299,9 @@
                 audio.src = encodedSrc;
                 audio.load();
             }
+
+            applyCombinedPlaybackRate();
+            syncEQFilters();
 
             audio.play().then(() => {
                 vizStatus.textContent = `Now Playing: ${title}`;
@@ -870,6 +1383,7 @@
         });
 
         audio.addEventListener('ended', () => {
+            if (audio.loop) return;
             if (activeCard) {
                 activeCard.classList.remove('playing');
                 activeCard.querySelector('.play-indicator').textContent = 'PLAY';
