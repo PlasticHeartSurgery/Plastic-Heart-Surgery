@@ -396,12 +396,12 @@
             white-space: nowrap;
         }
 
-        /* 3-Band EQ Rotary Knobs (Bass 90Hz Crossover / Mids / Treble) */
+        /* 3-Band EQ + LPF / HPF Rotary Knobs */
         .eq-row {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 16px;
+            gap: 14px;
             margin-top: 6px;
             padding-top: 12px;
             border-top: 1px solid #eeeeee;
@@ -413,7 +413,7 @@
             align-items: center;
             justify-content: space-around;
             flex: 1;
-            gap: 16px;
+            gap: 12px;
             flex-wrap: wrap;
             transition: opacity 0.15s ease;
         }
@@ -484,7 +484,7 @@
             font-size: 0.78rem;
             color: #ff0033;
             font-weight: 700;
-            min-width: 54px;
+            min-width: 58px;
             text-align: center;
         }
 
@@ -961,7 +961,7 @@
                     <button type="button" class="deck-btn" id="nudgeResetBtn" title="Reset nudge to 0.00%">RESET</button>
                 </div>
 
-                <!-- 3-Band EQ Mixer Knobs: Bass (90Hz Crossover), Mids, Treble -->
+                <!-- 3-Band EQ + LPF / HPF Rotary Knobs -->
                 <div class="eq-row">
                     <div class="eq-knobs-group" id="eqKnobsGroup">
                         <div class="knob-unit">
@@ -990,8 +990,26 @@
                             <span class="knob-val" id="trebleValue">0.0 dB</span>
                             <span class="knob-sub">4kHz</span>
                         </div>
+
+                        <div class="knob-unit">
+                            <span class="knob-title">LPF</span>
+                            <div class="knob-dial" id="lpfKnob" role="slider" tabindex="0" aria-label="Low Pass Filter cutoff frequency" aria-valuemin="200" aria-valuemax="20000" aria-valuenow="20000" title="Drag up/down or scroll to adjust Low Pass cutoff. Double-click to reset (20.0kHz).">
+                                <div class="knob-indicator" id="lpfIndicator"></div>
+                            </div>
+                            <span class="knob-val" id="lpfValue">20.0kHz</span>
+                            <span class="knob-sub">LOW PASS</span>
+                        </div>
+
+                        <div class="knob-unit">
+                            <span class="knob-title">HPF</span>
+                            <div class="knob-dial" id="hpfKnob" role="slider" tabindex="0" aria-label="High Pass Filter cutoff frequency" aria-valuemin="20" aria-valuemax="2000" aria-valuenow="20" title="Drag up/down or scroll to adjust High Pass cutoff. Double-click to reset (20Hz).">
+                                <div class="knob-indicator" id="hpfIndicator"></div>
+                            </div>
+                            <span class="knob-val" id="hpfValue">20Hz</span>
+                            <span class="knob-sub">HIGH PASS</span>
+                        </div>
                     </div>
-                    <button type="button" class="deck-btn" id="eqToggleBtn" aria-pressed="false" title="Red = EQ Active, White = EQ Bypassed">EQ</button>
+                    <button type="button" class="deck-btn" id="eqToggleBtn" aria-pressed="false" title="Red = EQ & Filters Active, White = Bypassed">EQ</button>
                 </div>
             </div>
 
@@ -1099,7 +1117,7 @@
             }
         });
 
-        /* --- AUDIO PLAYER, VOLUME, PITCH/SPEED, NUDGE, LOOP IN/OUT, 3-BAND EQ & VISUALIZER --- */
+        /* --- AUDIO PLAYER, VOLUME, PITCH/SPEED, NUDGE, LOOP IN/OUT, 3-BAND EQ, LPF/HPF & VISUALIZER --- */
         const audio = document.getElementById('audioPlayer');
         const canvas = document.getElementById('audioVisualizer');
         const ctx = canvas.getContext('2d');
@@ -1207,19 +1225,23 @@
 
         updateLoopButtonsUI();
 
-        // EQ state in dB (-24 dB cut to +12 dB boost); false = bypassed (white), true = active (red)
+        // EQ + LPF/HPF state; false = bypassed (white), true = active (red)
         let eqActive = false;
         const eqState = {
             bass: 0,
             mids: 0,
-            treble: 0
+            treble: 0,
+            lpf: 20000,
+            hpf: 20
         };
 
-        // Web Audio API state: Source -> Bass (90Hz lowshelf) -> Mids (1kHz peaking) -> Treble (4kHz highshelf) -> Analyser -> Destination
+        // Web Audio API state: Source -> HPF -> Bass (90Hz) -> Mids (1kHz) -> Treble (4kHz) -> LPF -> Analyser -> Destination
         let audioCtx = null;
+        let hpfFilter = null;
         let bassFilter = null;
         let midsFilter = null;
         let trebleFilter = null;
+        let lpfFilter = null;
         let analyser = null;
         let timeDomainData = null;
         let webAudioReady = false;
@@ -1228,12 +1250,11 @@
 
         function syncEQFilters() {
             if (!webAudioReady) return;
-            const effectiveBass = eqActive ? eqState.bass : 0;
-            const effectiveMids = eqActive ? eqState.mids : 0;
-            const effectiveTreble = eqActive ? eqState.treble : 0;
-            if (bassFilter) bassFilter.gain.value = effectiveBass;
-            if (midsFilter) midsFilter.gain.value = effectiveMids;
-            if (trebleFilter) trebleFilter.gain.value = effectiveTreble;
+            if (hpfFilter) hpfFilter.frequency.value = eqActive ? eqState.hpf : 20;
+            if (bassFilter) bassFilter.gain.value = eqActive ? eqState.bass : 0;
+            if (midsFilter) midsFilter.gain.value = eqActive ? eqState.mids : 0;
+            if (trebleFilter) trebleFilter.gain.value = eqActive ? eqState.treble : 0;
+            if (lpfFilter) lpfFilter.frequency.value = eqActive ? eqState.lpf : 20000;
         }
 
         function updateEQToggleUI() {
@@ -1260,6 +1281,10 @@
                 audioCtx = new AudioContextClass();
                 const source = audioCtx.createMediaElementSource(audio);
 
+                hpfFilter = audioCtx.createBiquadFilter();
+                hpfFilter.type = 'highpass';
+                hpfFilter.frequency.value = eqActive ? eqState.hpf : 20;
+
                 // Bass crossover at 90 Hz
                 bassFilter = audioCtx.createBiquadFilter();
                 bassFilter.type = 'lowshelf';
@@ -1279,14 +1304,20 @@
                 trebleFilter.frequency.value = 4000;
                 trebleFilter.gain.value = eqActive ? eqState.treble : 0;
 
+                lpfFilter = audioCtx.createBiquadFilter();
+                lpfFilter.type = 'lowpass';
+                lpfFilter.frequency.value = eqActive ? eqState.lpf : 20000;
+
                 analyser = audioCtx.createAnalyser();
                 analyser.fftSize = 256;
                 timeDomainData = new Uint8Array(analyser.fftSize);
 
-                source.connect(bassFilter);
+                source.connect(hpfFilter);
+                hpfFilter.connect(bassFilter);
                 bassFilter.connect(midsFilter);
                 midsFilter.connect(trebleFilter);
-                trebleFilter.connect(analyser);
+                trebleFilter.connect(lpfFilter);
+                lpfFilter.connect(analyser);
                 analyser.connect(audioCtx.destination);
 
                 webAudioReady = true;
@@ -1296,8 +1327,15 @@
             }
         }
 
+        function formatFreqLabel(hz) {
+            if (hz >= 1000) {
+                return `${(hz / 1000).toFixed(1)}kHz`;
+            }
+            return `${Math.round(hz)}Hz`;
+        }
+
         // Rotary knob setup helper (-24 dB to +12 dB, -135deg to +135deg, with 0 dB at top center 0deg)
-        function setupRotaryKnob({ dialId, indicatorId, valueId, stateKey }) {
+        function setupDbKnob({ dialId, indicatorId, valueId, stateKey }) {
             const dial = document.getElementById(dialId);
             const indicator = document.getElementById(indicatorId);
             const valLabel = document.getElementById(valueId);
@@ -1408,25 +1446,159 @@
             setDb(0, false);
         }
 
-        setupRotaryKnob({
+        // Logarithmic frequency knob helper for LPF & HPF (resetHz sits at top 0deg, sweeping -135deg to +135deg)
+        function setupFreqKnob({ dialId, indicatorId, valueId, stateKey, minHz, maxHz, resetHz }) {
+            const dial = document.getElementById(dialId);
+            const indicator = document.getElementById(indicatorId);
+            const valLabel = document.getElementById(valueId);
+            const minLog = Math.log10(minHz);
+            const maxLog = Math.log10(maxHz);
+            const resetLog = Math.log10(resetHz);
+
+            function hzToNorm(hz) {
+                const logVal = Math.log10(Math.max(minHz, Math.min(maxHz, hz)));
+                return (logVal - minLog) / (maxLog - minLog);
+            }
+
+            function normToHz(norm) {
+                const clampedNorm = Math.max(0, Math.min(1, norm));
+                return Math.pow(10, minLog + clampedNorm * (maxLog - minLog));
+            }
+
+            function setHz(hz, snapReset = true) {
+                let clamped = Math.max(minHz, Math.min(maxHz, hz));
+                if (snapReset && Math.abs(Math.log10(clamped) - resetLog) <= 0.025) {
+                    clamped = resetHz;
+                }
+                eqState[stateKey] = clamped;
+                dial.setAttribute('aria-valuenow', String(Math.round(clamped)));
+                valLabel.textContent = formatFreqLabel(clamped);
+
+                const deg = (hzToNorm(clamped) * 2 - 1) * 135;
+                indicator.style.transform = `translateX(-50%) rotate(${deg.toFixed(1)}deg)`;
+
+                syncEQFilters();
+            }
+
+            let dragStartY = 0;
+            let dragStartNorm = 0;
+            let isDraggingKnob = false;
+
+            function startDrag(clientY) {
+                isDraggingKnob = true;
+                dragStartY = clientY;
+                dragStartNorm = hzToNorm(eqState[stateKey]);
+                dial.classList.add('active');
+            }
+
+            dial.addEventListener('mousedown', (e) => {
+                if (e.detail > 1) return;
+                e.preventDefault();
+                startDrag(e.clientY);
+            });
+
+            window.addEventListener('mousemove', (e) => {
+                if (!isDraggingKnob) return;
+                const deltaY = dragStartY - e.clientY;
+                setHz(normToHz(dragStartNorm + deltaY / 110), true);
+            });
+
+            window.addEventListener('mouseup', () => {
+                if (isDraggingKnob) {
+                    isDraggingKnob = false;
+                    dial.classList.remove('active');
+                }
+            });
+
+            dial.addEventListener('touchstart', (e) => {
+                if (e.touches.length === 1) {
+                    e.preventDefault();
+                    startDrag(e.touches[0].clientY);
+                }
+            }, { passive: false });
+
+            window.addEventListener('touchmove', (e) => {
+                if (!isDraggingKnob || e.touches.length !== 1) return;
+                e.preventDefault();
+                const deltaY = dragStartY - e.touches[0].clientY;
+                setHz(normToHz(dragStartNorm + deltaY / 110), true);
+            }, { passive: false });
+
+            window.addEventListener('touchend', () => {
+                if (isDraggingKnob) {
+                    isDraggingKnob = false;
+                    dial.classList.remove('active');
+                }
+            });
+
+            dial.addEventListener('wheel', (e) => {
+                e.preventDefault();
+                const dir = e.deltaY < 0 ? 1 : -1;
+                setHz(normToHz(hzToNorm(eqState[stateKey]) + dir * 0.03), true);
+            }, { passive: false });
+
+            dial.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowUp' || e.key === 'ArrowRight') {
+                    e.preventDefault();
+                    setHz(normToHz(hzToNorm(eqState[stateKey]) + 0.03), true);
+                } else if (e.key === 'ArrowDown' || e.key === 'ArrowLeft') {
+                    e.preventDefault();
+                    setHz(normToHz(hzToNorm(eqState[stateKey]) - 0.03), true);
+                } else if (e.key === '0') {
+                    setHz(resetHz, false);
+                }
+            });
+
+            dial.addEventListener('dblclick', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                isDraggingKnob = false;
+                dial.classList.remove('active');
+                setHz(resetHz, false);
+            });
+
+            setHz(resetHz, false);
+        }
+
+        setupDbKnob({
             dialId: 'bassKnob',
             indicatorId: 'bassIndicator',
             valueId: 'bassValue',
             stateKey: 'bass'
         });
 
-        setupRotaryKnob({
+        setupDbKnob({
             dialId: 'midsKnob',
             indicatorId: 'midsIndicator',
             valueId: 'midsValue',
             stateKey: 'mids'
         });
 
-        setupRotaryKnob({
+        setupDbKnob({
             dialId: 'trebleKnob',
             indicatorId: 'trebleIndicator',
             valueId: 'trebleValue',
             stateKey: 'treble'
+        });
+
+        setupFreqKnob({
+            dialId: 'lpfKnob',
+            indicatorId: 'lpfIndicator',
+            valueId: 'lpfValue',
+            stateKey: 'lpf',
+            minHz: 200,
+            maxHz: 20000,
+            resetHz: 20000
+        });
+
+        setupFreqKnob({
+            dialId: 'hpfKnob',
+            indicatorId: 'hpfIndicator',
+            valueId: 'hpfValue',
+            stateKey: 'hpf',
+            minHz: 20,
+            maxHz: 2000,
+            resetHz: 20
         });
 
         updateEQToggleUI();
