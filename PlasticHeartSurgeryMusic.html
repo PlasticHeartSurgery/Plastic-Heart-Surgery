@@ -19,7 +19,7 @@
             font-style: normal;
         }
 
-        * {
+        *, *::before, *::after {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
@@ -32,12 +32,14 @@
             display: flex;
             min-height: 100vh;
             line-height: 1.6;
+            overflow-x: hidden;
+            -webkit-text-size-adjust: 100%;
+            text-size-adjust: 100%;
         }
 
         .sidebar {
             width: 340px;
             background-color: #ffffff;
-            border-right: none;
             padding: 40px;
             display: flex;
             flex-direction: column;
@@ -47,6 +49,7 @@
             top: 0;
             left: 0;
             overflow-y: auto;
+            z-index: 10;
         }
 
         .site-title {
@@ -72,6 +75,7 @@
             color: #333333;
             text-decoration: none;
             transition: color 0.2s ease;
+            padding: 4px 0;
         }
 
         .nav-column-item:hover, .nav-column-item.active {
@@ -125,6 +129,7 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 12px;
+            gap: 10px;
         }
 
         .visualizer-status {
@@ -139,33 +144,217 @@
             font-family: monospace;
             font-size: 0.85rem;
             color: #333333;
+            white-space: nowrap;
+        }
+
+        /* Enlarged Active Album Art Above Gradient */
+        .active-art-banner {
+            display: none;
+            width: 100%;
+            margin-bottom: 14px;
+            border: 2px solid #000000;
+            border-radius: 4px;
+            background: #fafafa;
+            overflow: hidden;
+            animation: artReveal 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .active-art-banner.visible {
+            display: block;
+        }
+
+        @keyframes artReveal {
+            from {
+                opacity: 0;
+                transform: scale(0.97);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .active-art-banner img {
+            width: 100%;
+            max-height: 440px;
+            object-fit: contain;
+            display: block;
+            background: #ffffff;
         }
 
         #audioVisualizer {
             width: 100%;
             height: 140px;
             display: block;
-            background-color: #fff5f7;
+            background-color: #ffffff;
             border: 1px solid #000000;
             border-radius: 4px;
         }
 
+        /* Scrubbable Progress Bar */
+        .progress-bar-wrapper {
+            padding: 12px 0;
+            margin-top: 4px;
+            cursor: pointer;
+            touch-action: none;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
         .progress-bar-container {
+            position: relative;
             width: 100%;
-            height: 8px;
+            height: 10px;
             background: #eeeeee;
             border: 1px solid #000000;
             border-radius: 4px;
-            margin-top: 12px;
-            cursor: pointer;
-            overflow: hidden;
+            transition: height 0.15s ease;
+        }
+
+        .progress-bar-wrapper:hover .progress-bar-container,
+        .progress-bar-wrapper.dragging .progress-bar-container {
+            height: 14px;
         }
 
         .progress-bar-fill {
             height: 100%;
             width: 0%;
             background: #ff0033;
-            transition: width 0.1s linear;
+            border-radius: 3px 0 0 3px;
+            pointer-events: none;
+        }
+
+        .progress-handle {
+            position: absolute;
+            top: 50%;
+            left: 0%;
+            transform: translate(-50%, -50%);
+            width: 18px;
+            height: 18px;
+            background: #ffffff;
+            border: 2px solid #000000;
+            border-radius: 50%;
+            box-shadow: 2px 2px 0px #000000;
+            opacity: 0;
+            transition: opacity 0.15s ease, background-color 0.15s ease;
+            pointer-events: none;
+        }
+
+        .progress-bar-wrapper:hover .progress-handle,
+        .progress-bar-wrapper.dragging .progress-handle {
+            opacity: 1;
+            background: #ff0033;
+        }
+
+        /* Volume Control Bar */
+        .volume-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 6px;
+            padding-top: 10px;
+            border-top: 1px solid #eeeeee;
+        }
+
+        .mute-btn {
+            font-family: 'Lyno Ulyscyr', sans-serif;
+            font-size: 0.75rem;
+            letter-spacing: 0.15em;
+            color: #111111;
+            background: #ffffff;
+            border: 2px solid #000000;
+            border-radius: 4px;
+            padding: 4px 10px;
+            min-width: 68px;
+            cursor: pointer;
+            transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+        }
+
+        .mute-btn:hover,
+        .mute-btn.muted {
+            background: #ff0033;
+            color: #ffffff;
+            border-color: #ff0033;
+        }
+
+        .volume-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            flex: 1;
+            height: 8px;
+            background: linear-gradient(to right, #ff0033 100%, #eeeeee 100%);
+            border: 1px solid #000000;
+            border-radius: 4px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            background: #ffffff;
+            border: 2px solid #000000;
+            border-radius: 50%;
+            box-shadow: 2px 2px 0px #000000;
+            cursor: pointer;
+            transition: background-color 0.15s ease;
+        }
+
+        .volume-slider::-webkit-slider-thumb:hover,
+        .volume-slider:active::-webkit-slider-thumb {
+            background: #ff0033;
+        }
+
+        .volume-slider::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            background: #ffffff;
+            border: 2px solid #000000;
+            border-radius: 50%;
+            box-shadow: 2px 2px 0px #000000;
+            cursor: pointer;
+            transition: background-color 0.15s ease;
+        }
+
+        .volume-slider::-moz-range-thumb:hover,
+        .volume-slider:active::-moz-range-thumb {
+            background: #ff0033;
+        }
+
+        .volume-value {
+            font-family: monospace;
+            font-size: 0.85rem;
+            color: #333333;
+            min-width: 42px;
+            text-align: right;
+        }
+
+        @media (pointer: coarse) {
+            .progress-bar-container {
+                height: 12px;
+            }
+            .progress-handle {
+                opacity: 1;
+                width: 20px;
+                height: 20px;
+                background: #ff0033;
+            }
+            .volume-slider {
+                height: 10px;
+            }
+            .volume-slider::-webkit-slider-thumb {
+                width: 20px;
+                height: 20px;
+                background: #ff0033;
+            }
+            .volume-slider::-moz-range-thumb {
+                width: 20px;
+                height: 20px;
+                background: #ff0033;
+            }
         }
 
         /* Track Grid */
@@ -173,6 +362,7 @@
             display: flex;
             flex-direction: column;
             gap: 20px;
+            margin-bottom: 50px;
         }
 
         /* Clickable Track Card */
@@ -183,11 +373,14 @@
             background: #ffffff;
             border: 2px solid #000000;
             border-radius: 6px;
-            padding: 24px;
+            padding: 20px 24px;
             box-shadow: 4px 4px 0px #000000;
             cursor: pointer;
             user-select: none;
+            -webkit-user-select: none;
+            -webkit-tap-highlight-color: transparent;
             transition: transform 0.2s ease, border-color 0.4s ease, background-color 0.4s ease;
+            gap: 18px;
         }
 
         .track-card:hover, .track-card.playing {
@@ -211,12 +404,36 @@
             }
         }
 
+        .track-meta {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            min-width: 0;
+        }
+
+        .track-art-thumb {
+            width: 72px;
+            height: 72px;
+            flex-shrink: 0;
+            border: 2px solid #000000;
+            border-radius: 4px;
+            overflow: hidden;
+            background: #f5f5f5;
+        }
+
+        .track-art-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
         .link-tag {
             font-size: 0.85rem;
             text-transform: uppercase;
             letter-spacing: 0.1em;
             color: #ff0033;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
             font-weight: 600;
         }
 
@@ -225,10 +442,18 @@
             font-size: 1.5rem;
             letter-spacing: 0.12em;
             color: #111111;
-            margin-bottom: 4px;
+            margin-bottom: 2px;
         }
 
-        .play-indicator {
+        .track-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-shrink: 0;
+        }
+
+        .play-indicator,
+        .download-btn {
             font-family: 'Lyno Ulyscyr', sans-serif;
             font-size: 1rem;
             letter-spacing: 0.15em;
@@ -239,6 +464,15 @@
             background: #ffffff;
             min-width: 100px;
             text-align: center;
+            text-decoration: none;
+            transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+        }
+
+        .download-btn:hover,
+        .download-btn:active {
+            background: #ff0033;
+            color: #ffffff;
+            border-color: #ff0033;
         }
 
         .track-card.playing .play-indicator {
@@ -255,25 +489,45 @@
                 position: relative;
                 width: 100%;
                 height: auto;
-                padding: 30px 20px;
+                padding: 28px 20px;
             }
             main {
                 margin-left: 0;
-                padding: 40px 20px;
+                padding: 24px 16px 60px 16px;
                 max-width: 100%;
             }
             .site-title {
                 font-size: 1.2rem;
                 letter-spacing: 0.15em;
+                margin-bottom: 24px;
             }
             h2 {
                 font-size: 1.4rem;
                 letter-spacing: 0.15em;
             }
+            .visualizer-card {
+                padding: 16px;
+            }
+            .active-art-banner img {
+                max-height: 320px;
+            }
+            #audioVisualizer {
+                height: 110px;
+            }
             .track-card {
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 16px;
+                padding: 20px;
+            }
+            .track-actions {
+                width: 100%;
+                flex-direction: column;
+            }
+            .play-indicator,
+            .download-btn {
+                width: 100%;
+                padding: 12px 16px;
             }
         }
     </style>
@@ -303,163 +557,315 @@
         <section>
             <h2>Plastic Heart Surgery</h2>
 
-            <!-- Audio Visualizer -->
+            <!-- Top Player & Audio Visualizer Card -->
             <div class="visualizer-card">
                 <div class="visualizer-header">
-                    <span class="visualizer-status" id="vizStatus">Ready — Click a card to play</span>
+                    <span class="visualizer-status" id="vizStatus">Ready — Tap track to play</span>
                     <span class="visualizer-time" id="vizTime">00:00 / 00:00</span>
                 </div>
+
+                <!-- Enlarged Album Art Above the Gradient Visualizer -->
+                <div class="active-art-banner" id="activeArtBanner">
+                    <img id="activeArtImg" src="" alt="Album art">
+                </div>
+
                 <canvas id="audioVisualizer"></canvas>
-                <div class="progress-bar-container" id="progressContainer">
-                    <div class="progress-bar-fill" id="progressFill"></div>
+
+                <div class="progress-bar-wrapper" id="progressWrapper" tabindex="0" role="slider" aria-label="Seek audio position">
+                    <div class="progress-bar-container" id="progressContainer">
+                        <div class="progress-bar-fill" id="progressFill"></div>
+                        <div class="progress-handle" id="progressHandle"></div>
+                    </div>
+                </div>
+
+                <!-- Volume Slider -->
+                <div class="volume-controls">
+                    <button type="button" class="mute-btn" id="muteBtn" aria-label="Mute or unmute audio">VOL</button>
+                    <input type="range" class="volume-slider" id="volumeSlider" min="0" max="1" step="0.01" value="1" aria-label="Volume">
+                    <span class="volume-value" id="volumeValue">100%</span>
                 </div>
             </div>
 
             <!-- Clickable Track Cards Grid -->
             <div class="links-grid">
 
-                <!-- Eel (Instrumental) Track Card -->
-                <div class="track-card" data-src="audio/Eel (Instrumental).mp3" data-title="Eel (Instrumental)" onclick="toggleTrack(this)">
-                    <div>
-                        <div class="link-tag">Track 01</div>
-                        <div class="link-title">Eel (Instrumental)</div>
+                <!-- Set data-art to each track's album art image path -->
+                <div class="track-card"
+                     data-src="audio/Eel (Instrumental).mp3"
+                     data-title="Eel (Instrumental)"
+                     data-art=""
+                     onclick="toggleTrack(this)">
+                    <div class="track-meta">
+                        <div class="track-art-thumb">
+                            <img src="" alt="Eel (Instrumental) album art" onerror="this.parentElement.style.display='none'">
+                        </div>
+                        <div>
+                            <div class="link-tag">Track 01</div>
+                            <div class="link-title">Eel (Instrumental)</div>
+                        </div>
                     </div>
-                    <div class="play-indicator">PLAY</div>
+                    <div class="track-actions">
+                        <a href="audio/Eel (Instrumental).mp3" download="Eel (Instrumental).mp3" class="download-btn" onclick="event.stopPropagation()">DOWNLOAD</a>
+                        <div class="play-indicator">PLAY</div>
+                    </div>
                 </div>
 
             </div>
         </section>
     </main>
 
-    <!-- Hidden Audio Element (crossOrigin="anonymous" allows GitHub raw audio visualization) -->
-    <audio id="audioPlayer" crossorigin="anonymous"></audio>
+    <!-- Hidden Audio Element -->
+    <audio id="audioPlayer" playsinline webkit-playsinline preload="auto"></audio>
 
     <script>
+        /* --- AUDIO PLAYER, VOLUME & RADIAL LOUDNESS GRADIENT VISUALIZER --- */
         const audio = document.getElementById('audioPlayer');
         const canvas = document.getElementById('audioVisualizer');
         const ctx = canvas.getContext('2d');
         const vizStatus = document.getElementById('vizStatus');
         const vizTime = document.getElementById('vizTime');
-        const progressFill = document.getElementById('progressFill');
+        const activeArtBanner = document.getElementById('activeArtBanner');
+        const activeArtImg = document.getElementById('activeArtImg');
+        const progressWrapper = document.getElementById('progressWrapper');
         const progressContainer = document.getElementById('progressContainer');
+        const progressFill = document.getElementById('progressFill');
+        const progressHandle = document.getElementById('progressHandle');
+        const volumeSlider = document.getElementById('volumeSlider');
+        const volumeValue = document.getElementById('volumeValue');
+        const muteBtn = document.getElementById('muteBtn');
 
+        let activeCard = null;
+        let isDraggingProgress = false;
+        let lastVolume = 1;
+
+        // Sync card thumbnails from each card's data-art attribute on load
+        document.querySelectorAll('.track-card').forEach(card => {
+            const artPath = (card.getAttribute('data-art') || '').trim();
+            const thumbBox = card.querySelector('.track-art-thumb');
+            const thumbImg = thumbBox ? thumbBox.querySelector('img') : null;
+            if (thumbBox && thumbImg) {
+                if (artPath) {
+                    thumbImg.src = artPath;
+                    thumbBox.style.display = '';
+                } else {
+                    thumbBox.style.display = 'none';
+                }
+            }
+        });
+
+        function setActiveArt(artPath, title) {
+            const cleanPath = (artPath || '').trim();
+            if (!cleanPath) {
+                activeArtBanner.classList.remove('visible');
+                activeArtImg.removeAttribute('src');
+                return;
+            }
+            activeArtImg.onload = () => {
+                activeArtBanner.classList.add('visible');
+            };
+            activeArtImg.onerror = () => {
+                activeArtBanner.classList.remove('visible');
+                activeArtImg.removeAttribute('src');
+            };
+            activeArtImg.alt = `${title} album art`;
+            activeArtImg.src = cleanPath;
+        }
+
+        // Web Audio API state for real-time loudness analysis
         let audioCtx = null;
         let analyser = null;
-        let source = null;
-        let activeCard = null;
-        let demoOscillator = null;
-        let demoInterval = null;
-        let isDemoPlaying = false;
+        let timeDomainData = null;
+        let webAudioReady = false;
+        let smoothedLoudness = 0;
+        let fallbackPhase = 0;
 
-        // Resize canvas sharply for Retina/high-DPI screens
-        function resizeCanvas() {
-            const rect = canvas.getBoundingClientRect();
-            canvas.width = rect.width * window.devicePixelRatio;
-            canvas.height = rect.height * window.devicePixelRatio;
-            ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
-        }
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
-
-        function initAudioContext() {
-            if (!audioCtx) {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function initAudioAnalyser() {
+            if (audioCtx) {
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+                return;
+            }
+            try {
+                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                audioCtx = new AudioContextClass();
+                const source = audioCtx.createMediaElementSource(audio);
                 analyser = audioCtx.createAnalyser();
-                analyser.fftSize = 128;
-
-                source = audioCtx.createMediaElementSource(audio);
+                analyser.fftSize = 256;
                 source.connect(analyser);
                 analyser.connect(audioCtx.destination);
-            }
-            if (audioCtx.state === 'suspended') {
-                audioCtx.resume();
+                timeDomainData = new Uint8Array(analyser.fftSize);
+                webAudioReady = true;
+            } catch (err) {
+                console.warn("Web Audio API fallback active:", err);
+                webAudioReady = false;
             }
         }
 
-        function stopDemoSynth() {
-            if (demoOscillator) {
-                try { demoOscillator.stop(); } catch (e) {}
-                demoOscillator.disconnect();
-                demoOscillator = null;
+        function updateVolumeUI(vol, isMuted) {
+            const effectiveVol = isMuted ? 0 : vol;
+            const pct = Math.round(effectiveVol * 100);
+            volumeSlider.value = effectiveVol;
+            volumeSlider.style.background = `linear-gradient(to right, #ff0033 ${pct}%, #eeeeee ${pct}%)`;
+            volumeValue.textContent = `${pct}%`;
+            if (isMuted || effectiveVol === 0) {
+                muteBtn.textContent = 'MUTED';
+                muteBtn.classList.add('muted');
+            } else {
+                muteBtn.textContent = 'VOL';
+                muteBtn.classList.remove('muted');
             }
-            if (demoInterval) {
-                clearInterval(demoInterval);
-                demoInterval = null;
-            }
-            isDemoPlaying = false;
         }
 
-        // Fallback synth pulse when file fails to load
-        function startDemoSynth(title) {
-            stopDemoSynth();
-            isDemoPlaying = true;
-            const gainNode = audioCtx.createGain();
-            gainNode.gain.value = 0.08;
+        volumeSlider.addEventListener('input', (e) => {
+            const val = parseFloat(e.target.value);
+            audio.volume = val;
+            if (val > 0) {
+                audio.muted = false;
+                lastVolume = val;
+            }
+            updateVolumeUI(val, audio.muted);
+        });
 
-            demoOscillator = audioCtx.createOscillator();
-            demoOscillator.type = 'sawtooth';
-            demoOscillator.frequency.setValueAtTime(55, audioCtx.currentTime);
+        muteBtn.addEventListener('click', () => {
+            if (audio.muted || audio.volume === 0) {
+                audio.muted = false;
+                const restoreVol = lastVolume > 0 ? lastVolume : 0.75;
+                audio.volume = restoreVol;
+                updateVolumeUI(restoreVol, false);
+            } else {
+                lastVolume = audio.volume;
+                audio.muted = true;
+                updateVolumeUI(0, true);
+            }
+        });
 
-            demoOscillator.connect(gainNode);
-            gainNode.connect(analyser);
-            gainNode.connect(audioCtx.destination);
-            demoOscillator.start();
+        updateVolumeUI(1, false);
 
-            const notes = [55, 65.41, 73.42, 82.41, 55, 98.00, 73.42, 65.41];
-            let step = 0;
-            demoInterval = setInterval(() => {
-                if (demoOscillator && audioCtx) {
-                    demoOscillator.frequency.setValueAtTime(notes[step % notes.length], audioCtx.currentTime);
-                    step++;
-                }
-            }, 220);
-
-            vizStatus.textContent = `Visualizing Preview (File Not Found): ${title}`;
+        const firstCard = document.querySelector('.track-card');
+        if (firstCard) {
+            audio.src = encodeURI(firstCard.getAttribute('data-src'));
         }
+
+        function resizeCanvas() {
+            const rect = canvas.getBoundingClientRect();
+            const dpr = window.devicePixelRatio || 1;
+            canvas.width = rect.width * dpr;
+            canvas.height = rect.height * dpr;
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        }
+        window.addEventListener('resize', resizeCanvas);
+        window.addEventListener('orientationchange', () => setTimeout(resizeCanvas, 150));
+        resizeCanvas();
 
         function toggleTrack(card) {
-            initAudioContext();
-            const src = card.getAttribute('data-src');
-            const title = card.getAttribute('data-title') || 'Track';
+            initAudioAnalyser();
 
-            // If clicking the currently active card
-            if (activeCard === card) {
-                if (!audio.paused || isDemoPlaying) {
-                    audio.pause();
-                    stopDemoSynth();
-                    card.classList.remove('playing');
-                    card.querySelector('.play-indicator').textContent = 'PLAY';
-                    vizStatus.textContent = `Paused: ${title}`;
-                    return;
-                }
+            const rawSrc = card.getAttribute('data-src');
+            const encodedSrc = encodeURI(rawSrc);
+            const title = card.getAttribute('data-title') || 'Track';
+            const artPath = card.getAttribute('data-art') || '';
+
+            if (activeCard === card && !audio.paused) {
+                audio.pause();
+                card.classList.remove('playing');
+                card.querySelector('.play-indicator').textContent = 'PLAY';
+                vizStatus.textContent = `Paused: ${title}`;
+                return;
             }
 
-            // Reset any previously active card
             document.querySelectorAll('.track-card').forEach(c => {
                 c.classList.remove('playing');
                 c.querySelector('.play-indicator').textContent = 'PLAY';
             });
-            stopDemoSynth();
 
             activeCard = card;
             card.classList.add('playing');
             card.querySelector('.play-indicator').textContent = 'PAUSE';
+            setActiveArt(artPath, title);
             vizStatus.textContent = `Loading: ${title}...`;
 
-            audio.src = src;
+            if (!audio.src.endsWith(encodedSrc)) {
+                audio.src = encodedSrc;
+                audio.load();
+            }
+
             audio.play().then(() => {
                 vizStatus.textContent = `Now Playing: ${title}`;
-            }).catch(() => {
-                // Fallback synth so the visualizer still works if the file path is incorrect
-                startDemoSynth(title);
+            }).catch(err => {
+                console.error("Playback error:", err);
+                vizStatus.textContent = `Error: File not found or path incorrect (${rawSrc})`;
+                card.classList.remove('playing');
+                card.querySelector('.play-indicator').textContent = 'PLAY';
             });
         }
 
-        // Update time and progress bar for real MP3 files
+        function updateProgressUI(pct) {
+            const clamped = Math.max(0, Math.min(100, pct));
+            progressFill.style.width = `${clamped}%`;
+            progressHandle.style.left = `${clamped}%`;
+        }
+
+        function seekFromClientX(clientX) {
+            if (!audio.duration || isNaN(audio.duration)) return;
+            const rect = progressContainer.getBoundingClientRect();
+            const ratio = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+            const targetTime = ratio * audio.duration;
+            audio.currentTime = targetTime;
+            updateProgressUI(ratio * 100);
+            vizTime.textContent = `${formatTime(targetTime)} / ${formatTime(audio.duration)}`;
+        }
+
+        progressWrapper.addEventListener('mousedown', (e) => {
+            isDraggingProgress = true;
+            progressWrapper.classList.add('dragging');
+            seekFromClientX(e.clientX);
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (!isDraggingProgress) return;
+            seekFromClientX(e.clientX);
+        });
+
+        window.addEventListener('mouseup', () => {
+            if (isDraggingProgress) {
+                isDraggingProgress = false;
+                progressWrapper.classList.remove('dragging');
+            }
+        });
+
+        progressWrapper.addEventListener('touchstart', (e) => {
+            if (e.touches.length === 1) {
+                e.preventDefault();
+                isDraggingProgress = true;
+                progressWrapper.classList.add('dragging');
+                seekFromClientX(e.touches[0].clientX);
+            }
+        }, { passive: false });
+
+        window.addEventListener('touchmove', (e) => {
+            if (!isDraggingProgress || e.touches.length !== 1) return;
+            e.preventDefault();
+            seekFromClientX(e.touches[0].clientX);
+        }, { passive: false });
+
+        window.addEventListener('touchend', () => {
+            if (isDraggingProgress) {
+                isDraggingProgress = false;
+                progressWrapper.classList.remove('dragging');
+            }
+        });
+
+        audio.addEventListener('loadedmetadata', () => {
+            if (!isNaN(audio.duration)) {
+                vizTime.textContent = `${formatTime(audio.currentTime)} / ${formatTime(audio.duration)}`;
+            }
+        });
+
         audio.addEventListener('timeupdate', () => {
-            if (!audio.duration) return;
+            if (!audio.duration || isDraggingProgress) return;
             const pct = (audio.currentTime / audio.duration) * 100;
-            progressFill.style.width = `${pct}%`;
+            updateProgressUI(pct);
             vizTime.textContent = `${formatTime(audio.currentTime)} / ${formatTime(audio.duration)}`;
         });
 
@@ -469,52 +875,79 @@
                 activeCard.querySelector('.play-indicator').textContent = 'PLAY';
             }
             vizStatus.textContent = 'Finished';
-            progressFill.style.width = '0%';
-        });
-
-        progressContainer.addEventListener('click', (e) => {
-            if (!audio.duration) return;
-            const rect = progressContainer.getBoundingClientRect();
-            const clickPos = (e.clientX - rect.left) / rect.width;
-            audio.currentTime = clickPos * audio.duration;
+            updateProgressUI(0);
         });
 
         function formatTime(sec) {
+            if (isNaN(sec)) return '00:00';
             const m = Math.floor(sec / 60).toString().padStart(2, '0');
             const s = Math.floor(sec % 60).toString().padStart(2, '0');
             return `${m}:${s}`;
         }
 
-        // Real-time Frequency Visualizer Loop
+        // Centered Radial Red-to-White Loudness Gradient Visualizer (Full #ff0033 on peaks)
         function drawVisualizer() {
             requestAnimationFrame(drawVisualizer);
-            const width = canvas.width / window.devicePixelRatio;
-            const height = canvas.height / window.devicePixelRatio;
+            const dpr = window.devicePixelRatio || 1;
+            const width = canvas.width / dpr;
+            const height = canvas.height / dpr;
+
+            let targetLoudness = 0;
+
+            if (!audio.paused && !audio.ended) {
+                if (webAudioReady && analyser) {
+                    analyser.getByteTimeDomainData(timeDomainData);
+                    let sumSquares = 0;
+                    for (let i = 0; i < timeDomainData.length; i++) {
+                        const normalized = (timeDomainData[i] - 128) / 128;
+                        sumSquares += normalized * normalized;
+                    }
+                    const rms = Math.sqrt(sumSquares / timeDomainData.length);
+                    targetLoudness = Math.min(1, Math.pow(rms * 5.5, 0.78));
+                } else {
+                    fallbackPhase += 0.09;
+                    const volFactor = audio.muted ? 0 : audio.volume;
+                    targetLoudness = ((Math.sin(fallbackPhase) + 1) * 0.45 + 0.1) * volFactor;
+                }
+            }
+
+            const smoothing = targetLoudness > smoothedLoudness ? 0.45 : 0.14;
+            smoothedLoudness += (targetLoudness - smoothedLoudness) * smoothing;
+
+            const centerX = width / 2;
+            const centerY = height / 2;
+            const maxRadius = Math.max(width, height) * 0.75;
+
+            const coreRadius = Math.max(4, maxRadius * (0.08 + smoothedLoudness * 0.65));
+            const outerRadius = Math.max(coreRadius + 12, maxRadius * (0.35 + smoothedLoudness * 0.85));
+
+            const peakFactor = Math.min(1, smoothedLoudness * 1.15);
+            const g = Math.round(255 * (1 - peakFactor));
+            const b = Math.round(255 - (255 - 51) * peakFactor);
+
+            const midIntensity = Math.min(1, smoothedLoudness * 1.0);
+            const midG = Math.round(255 * (1 - midIntensity));
+            const midB = Math.round(255 - (255 - 51) * midIntensity);
+
+            const radialGrad = ctx.createRadialGradient(
+                centerX,
+                centerY,
+                coreRadius * 0.15,
+                centerX,
+                centerY,
+                outerRadius
+            );
+
+            radialGrad.addColorStop(0, `rgb(255, ${g}, ${b})`);
+            radialGrad.addColorStop(0.55, `rgba(255, ${midG}, ${midB}, ${Math.min(1, 0.2 + smoothedLoudness * 0.9)})`);
+            radialGrad.addColorStop(1, '#ffffff');
 
             ctx.clearRect(0, 0, width, height);
-
-            if (!analyser) {
-                // Idle baseline
-                ctx.fillStyle = '#ff0033';
-                ctx.fillRect(0, height / 2 - 1, width, 2);
-                return;
-            }
-
-            const bufferLength = analyser.frequencyBinCount;
-            const dataArray = new Uint8Array(bufferLength);
-            analyser.getByteFrequencyData(dataArray);
-
-            const barWidth = (width / bufferLength) * 1.6;
-            let x = 0;
-
-            for (let i = 0; i < bufferLength; i++) {
-                const barHeight = (dataArray[i] / 255) * (height - 16);
-                ctx.fillStyle = '#ff0033';
-                ctx.fillRect(x, height - barHeight, barWidth - 2, Math.max(barHeight, 2));
-                x += barWidth;
-            }
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, width, height);
+            ctx.fillStyle = radialGrad;
+            ctx.fillRect(0, 0, width, height);
         }
-
         drawVisualizer();
     </script>
 </body>
