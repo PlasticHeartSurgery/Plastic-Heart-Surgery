@@ -19,6 +19,13 @@
             font-style: normal;
         }
 
+        @font-face {
+            font-family: 'Lyno Walt';
+            src: local('Lyno Walt'), url('fonts/lyno-walt.otf') format('opentype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
         *, *::before, *::after {
             box-sizing: border-box;
             margin: 0;
@@ -114,6 +121,11 @@
             margin-bottom: 24px;
         }
 
+        .num-font {
+            font-family: 'Lyno Walt', monospace;
+            font-variant-numeric: tabular-nums;
+        }
+
         /* Visualizer Box */
         .visualizer-card {
             background: #ffffff;
@@ -141,8 +153,9 @@
         }
 
         .visualizer-time {
-            font-family: monospace;
-            font-size: 0.85rem;
+            font-family: 'Lyno Walt', monospace;
+            font-size: 1.05rem;
+            letter-spacing: 0.08em;
             color: #333333;
             white-space: nowrap;
         }
@@ -282,18 +295,18 @@
         }
 
         .loop-btn {
-            font-family: monospace;
+            font-family: 'Lyno Walt', monospace;
             font-weight: 700;
-            font-size: 0.78rem;
-            letter-spacing: 0.04em;
+            font-size: 0.9rem;
+            letter-spacing: 0.06em;
             min-width: 78px;
         }
 
         .range-btn {
-            font-family: monospace;
+            font-family: 'Lyno Walt', monospace;
             font-weight: 700;
-            font-size: 0.8rem;
-            letter-spacing: 0.04em;
+            font-size: 0.92rem;
+            letter-spacing: 0.05em;
             min-width: 64px;
         }
 
@@ -394,8 +407,9 @@
         }
 
         .deck-readout {
-            font-family: monospace;
-            font-size: 0.85rem;
+            font-family: 'Lyno Walt', monospace;
+            font-size: 1rem;
+            letter-spacing: 0.06em;
             color: #333333;
             min-width: 72px;
             text-align: right;
@@ -427,10 +441,73 @@
 
         .delay-tap-cluster {
             display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .bpm-circle-wrap {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .bpm-circle {
+            width: 62px;
+            height: 62px;
+            border-radius: 50%;
+            background: #ffffff;
+            border: 2px solid #000000;
+            box-shadow: 2px 2px 0px #000000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            transition: transform 0.08s ease, box-shadow 0.12s ease, border-color 0.12s ease, background-color 0.12s ease;
+        }
+
+        .bpm-circle:hover {
+            border-color: #ff0033;
+        }
+
+        .bpm-circle.pulse {
+            background: #ff0033;
+            border-color: #ff0033;
+            box-shadow: 0 0 18px rgba(255, 0, 51, 0.85), 2px 2px 0px #ff0033;
+            transform: scale(1.08);
+        }
+
+        .bpm-circle.pulse .bpm-circle-num,
+        .bpm-circle.pulse .bpm-circle-label {
+            color: #ffffff;
+        }
+
+        .bpm-circle-num {
+            font-family: 'Lyno Walt', sans-serif;
+            font-size: 1.35rem;
+            line-height: 1;
+            color: #ff0033;
+            letter-spacing: 0.04em;
+        }
+
+        .bpm-circle-label {
+            font-family: 'Lyno Ulyscyr', sans-serif;
+            font-size: 0.58rem;
+            letter-spacing: 0.16em;
+            color: #333333;
+            margin-top: 2px;
+        }
+
+        .delay-controls-stack {
+            display: flex;
             flex-direction: column;
             align-items: center;
             gap: 6px;
-            min-width: 96px;
+            min-width: 92px;
         }
 
         .tap-btn {
@@ -460,8 +537,9 @@
         }
 
         .tap-meta {
-            font-family: monospace;
-            font-size: 0.74rem;
+            font-family: 'Lyno Walt', monospace;
+            font-size: 0.88rem;
+            letter-spacing: 0.05em;
             color: #333333;
             text-align: center;
             line-height: 1.25;
@@ -533,14 +611,16 @@
         }
 
         .knob-sub {
-            font-family: monospace;
-            font-size: 0.7rem;
+            font-family: 'Lyno Walt', monospace;
+            font-size: 0.82rem;
+            letter-spacing: 0.04em;
             color: #555555;
         }
 
         .knob-val {
-            font-family: monospace;
-            font-size: 0.78rem;
+            font-family: 'Lyno Walt', monospace;
+            font-size: 0.92rem;
+            letter-spacing: 0.05em;
             color: #ff0033;
             font-weight: 700;
             min-width: 64px;
@@ -755,7 +835,6 @@
     </style>
 </head>
 <body>
-
     <div class="sidebar">
         <div>
             <a href="index.html" class="site-title">Plastic Heart Surgery</a>
@@ -879,14 +958,23 @@
                     <button type="button" class="deck-btn" id="eqToggleBtn" aria-pressed="false" title="Red = EQ & Filters Active, White = Bypassed">EQ</button>
                 </div>
 
-                <!-- Tap Delay with Haas Widen & Tape Midrange Shaping -->
+                <!-- Tap BPM Circle + Tap Delay with Haas Widen & Tape Midrange Shaping -->
                 <div class="delay-row">
                     <div class="delay-tap-cluster">
-                        <div style="display:flex;gap:6px;">
-                            <button type="button" class="tap-btn" id="tapDelayBtn" title="Tap repeatedly to set delay time (or press T)">TAP</button>
-                            <button type="button" class="deck-btn" id="tapClearBtn" style="min-width:44px;padding:4px 7px;" title="Reset tap delay to 500ms">CLR</button>
+                        <div class="bpm-circle-wrap">
+                            <button type="button" class="bpm-circle" id="bpmTapCircle" aria-label="Tap BPM" title="Tap repeatedly to measure BPM (also synced with TAP / T)">
+                                <span class="bpm-circle-num" id="bpmCircleNum">120</span>
+                                <span class="bpm-circle-label">BPM</span>
+                            </button>
                         </div>
-                        <div class="tap-meta" id="tapReadout">500ms<br>120 BPM</div>
+
+                        <div class="delay-controls-stack">
+                            <div style="display:flex;gap:6px;">
+                                <button type="button" class="tap-btn" id="tapDelayBtn" title="Tap repeatedly to set delay time (or press T)">TAP</button>
+                                <button type="button" class="deck-btn" id="tapClearBtn" style="min-width:44px;padding:4px 7px;" title="Reset tap delay to 500ms / 120 BPM">CLR</button>
+                            </div>
+                            <div class="tap-meta" id="tapReadout">500ms<br>120 BPM</div>
+                        </div>
                     </div>
 
                     <div class="eq-knobs-group" id="delayKnobsGroup">
@@ -963,7 +1051,7 @@
     <audio id="audioPlayer" playsinline webkit-playsinline preload="auto"></audio>
 
     <script>
-        /* --- AUDIO PLAYER, VOLUME, CDJ/SL-1200 PITCH/SPEED, NUDGE, LOOP IN/OUT, 3-BAND EQ, LPF/HPF, TAP DELAY & VISUALIZER --- */
+        /* --- AUDIO PLAYER, VOLUME, CDJ/SL-1200 PITCH/SPEED, NUDGE, LOOP IN/OUT, 3-BAND EQ, LPF/HPF, TAP BPM & DELAY, VISUALIZER --- */
         const audio = document.getElementById('audioPlayer');
         const canvas = document.getElementById('audioVisualizer');
         const ctx = canvas.getContext('2d');
@@ -991,6 +1079,8 @@
         const eqToggleBtn = document.getElementById('eqToggleBtn');
         const eqKnobsGroup = document.getElementById('eqKnobsGroup');
 
+        const bpmTapCircle = document.getElementById('bpmTapCircle');
+        const bpmCircleNum = document.getElementById('bpmCircleNum');
         const tapDelayBtn = document.getElementById('tapDelayBtn');
         const tapClearBtn = document.getElementById('tapClearBtn');
         const tapReadout = document.getElementById('tapReadout');
@@ -1006,6 +1096,7 @@
 
         let loopStart = null;
         let loopEnd = null;
+        let loopLength = null;
 
         function formatTime(sec) {
             if (sec === null || sec === undefined || isNaN(sec)) return '00:00';
@@ -1037,11 +1128,39 @@
             }
         }
 
+        function hasActiveLoop() {
+            return loopStart !== null && loopEnd !== null && loopEnd > loopStart;
+        }
+
         function clearLoop() {
             loopStart = null;
             loopEnd = null;
+            loopLength = null;
             audio.loop = false;
             updateLoopButtonsUI();
+        }
+
+        function relocateLoopToTime(targetTime) {
+            if (!hasActiveLoop()) return;
+            const len = loopLength && loopLength > 0.02 ? loopLength : Math.max(0.05, loopEnd - loopStart);
+            loopLength = len;
+
+            const dur = Number.isFinite(audio.duration) && audio.duration > 0 ? audio.duration : null;
+            let nextStart = Math.max(0, targetTime);
+            if (dur !== null && nextStart + len > dur) {
+                nextStart = Math.max(0, dur - len);
+            }
+            loopStart = nextStart;
+            loopEnd = nextStart + len;
+            updateLoopButtonsUI();
+        }
+
+        function checkLoopBoundaries() {
+            if (!hasActiveLoop()) return;
+            if (audio.paused || audio.ended || isDraggingProgress) return;
+            if (audio.currentTime >= loopEnd || audio.currentTime < loopStart - 0.05) {
+                audio.currentTime = loopStart;
+            }
         }
 
         loopInBtn.addEventListener('click', () => {
@@ -1051,10 +1170,15 @@
             }
             const now = Number.isFinite(audio.currentTime) ? audio.currentTime : 0;
             loopStart = now;
-            if (loopEnd !== null && loopEnd <= loopStart) {
-                loopEnd = null;
-                audio.loop = false;
+            if (loopEnd !== null) {
+                if (loopEnd <= loopStart) {
+                    loopEnd = null;
+                    loopLength = null;
+                } else {
+                    loopLength = loopEnd - loopStart;
+                }
             }
+            audio.loop = false;
             updateLoopButtonsUI();
         });
 
@@ -1072,6 +1196,7 @@
             } else {
                 loopEnd = now;
             }
+            loopLength = Math.max(0.05, loopEnd - loopStart);
             audio.loop = false;
             updateLoopButtonsUI();
         });
@@ -1088,7 +1213,7 @@
             hpf: 0
         };
 
-        // Tap Delay state
+        // Tap BPM & Delay state
         let delayActive = true;
         const delayState = {
             timeMs: 500,
@@ -1098,6 +1223,7 @@
             tape: 0
         };
         let tapTimestamps = [];
+        let bpmPulseTimer = null;
 
         document.querySelectorAll('.track-card').forEach(card => {
             const artPath = (card.getAttribute('data-art') || '').trim();
@@ -1172,7 +1298,18 @@
         function updateTapReadout() {
             const ms = Math.round(delayState.timeMs);
             const bpm = Math.round(60000 / Math.max(20, delayState.timeMs));
+            bpmCircleNum.textContent = String(bpm);
             tapReadout.innerHTML = `${ms}ms<br>${bpm} BPM`;
+        }
+
+        function triggerBpmPulse() {
+            bpmTapCircle.classList.remove('pulse');
+            void bpmTapCircle.offsetWidth;
+            bpmTapCircle.classList.add('pulse');
+            clearTimeout(bpmPulseTimer);
+            bpmPulseTimer = setTimeout(() => {
+                bpmTapCircle.classList.remove('pulse');
+            }, 140);
         }
 
         function syncDelayGraph() {
@@ -1237,9 +1374,15 @@
                 syncDelayGraph();
             }
 
+            triggerBpmPulse();
             tapDelayBtn.classList.add('active');
             setTimeout(() => tapDelayBtn.classList.remove('active'), 110);
         }
+
+        bpmTapCircle.addEventListener('click', () => {
+            initAudioGraph();
+            registerTap();
+        });
 
         tapDelayBtn.addEventListener('click', () => {
             initAudioGraph();
@@ -2130,9 +2273,17 @@
             const rect = progressContainer.getBoundingClientRect();
             const ratio = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
             const targetTime = ratio * audio.duration;
-            audio.currentTime = targetTime;
-            updateProgressUI(ratio * 100);
-            vizTime.textContent = `${formatTime(targetTime)} / ${formatTime(audio.duration)}`;
+            if (hasActiveLoop()) {
+                relocateLoopToTime(targetTime);
+                audio.currentTime = loopStart;
+                const loopPct = (loopStart / audio.duration) * 100;
+                updateProgressUI(loopPct);
+                vizTime.textContent = `${formatTime(loopStart)} / ${formatTime(audio.duration)}`;
+            } else {
+                audio.currentTime = targetTime;
+                updateProgressUI(ratio * 100);
+                vizTime.textContent = `${formatTime(targetTime)} / ${formatTime(audio.duration)}`;
+            }
         }
 
         progressWrapper.addEventListener('mousedown', (e) => {
@@ -2182,11 +2333,7 @@
         });
 
         audio.addEventListener('timeupdate', () => {
-            if (loopStart !== null && loopEnd !== null && loopEnd > loopStart) {
-                if (audio.currentTime >= loopEnd) {
-                    audio.currentTime = loopStart;
-                }
-            }
+            checkLoopBoundaries();
             if (!audio.duration || isDraggingProgress) return;
             const pct = (audio.currentTime / audio.duration) * 100;
             updateProgressUI(pct);
@@ -2194,7 +2341,7 @@
         });
 
         audio.addEventListener('ended', () => {
-            if (loopStart !== null && loopEnd !== null && loopEnd > loopStart) {
+            if (hasActiveLoop()) {
                 audio.currentTime = loopStart;
                 audio.play().catch(() => {});
                 return;
@@ -2209,6 +2356,14 @@
 
         function drawVisualizer() {
             requestAnimationFrame(drawVisualizer);
+            checkLoopBoundaries();
+
+            if (audio.duration && !isNaN(audio.duration) && !audio.paused && !isDraggingProgress) {
+                const pct = (audio.currentTime / audio.duration) * 100;
+                updateProgressUI(pct);
+                vizTime.textContent = `${formatTime(audio.currentTime)} / ${formatTime(audio.duration)}`;
+            }
+
             const dpr = window.devicePixelRatio || 1;
             const width = canvas.width / dpr;
             const height = canvas.height / dpr;
