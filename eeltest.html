@@ -1107,7 +1107,7 @@
             return `${m}:${s}`;
         }
 
-        // Centered Radial Red-to-White Loudness Gradient Visualizer
+        // Centered Radial Red-to-White Loudness Gradient Visualizer (Full #ff0033 on peaks)
         function drawVisualizer() {
             requestAnimationFrame(drawVisualizer);
             const dpr = window.devicePixelRatio || 1;
@@ -1125,28 +1125,32 @@
                         sumSquares += normalized * normalized;
                     }
                     const rms = Math.sqrt(sumSquares / timeDomainData.length);
-                    targetLoudness = Math.min(1, rms * 3.4);
+                    // Push peaks firmly to 1.0 (#ff0033) while keeping quiet passages near 0 (#ffffff)
+                    targetLoudness = Math.min(1, Math.pow(rms * 5.5, 0.78));
                 } else {
                     fallbackPhase += 0.09;
                     const volFactor = audio.muted ? 0 : audio.volume;
-                    targetLoudness = ((Math.sin(fallbackPhase) + 1) * 0.35 + 0.15) * volFactor;
+                    targetLoudness = ((Math.sin(fallbackPhase) + 1) * 0.45 + 0.1) * volFactor;
                 }
             }
 
-            const smoothing = targetLoudness > smoothedLoudness ? 0.35 : 0.12;
+            const smoothing = targetLoudness > smoothedLoudness ? 0.45 : 0.14;
             smoothedLoudness += (targetLoudness - smoothedLoudness) * smoothing;
 
             const centerX = width / 2;
             const centerY = height / 2;
-            const maxRadius = Math.max(width, height) * 0.65;
+            const maxRadius = Math.max(width, height) * 0.75;
 
-            const coreRadius = Math.max(4, maxRadius * (0.12 + smoothedLoudness * 0.55));
-            const outerRadius = Math.max(coreRadius + 10, maxRadius * (0.45 + smoothedLoudness * 0.65));
+            const coreRadius = Math.max(4, maxRadius * (0.08 + smoothedLoudness * 0.65));
+            const outerRadius = Math.max(coreRadius + 12, maxRadius * (0.35 + smoothedLoudness * 0.85));
 
-            const g = Math.round(255 * (1 - smoothedLoudness));
-            const b = Math.round(255 - (255 - 51) * smoothedLoudness);
+            // Snap smoothly to pure #ff0033 (255, 0, 51) at high loudness
+            const peakFactor = Math.min(1, smoothedLoudness * 1.15);
+            const g = Math.round(255 * (1 - peakFactor));
+            const b = Math.round(255 - (255 - 51) * peakFactor);
 
-            const midIntensity = smoothedLoudness * 0.45;
+            // Mid-stop pushes out toward full red on loud hits so the center core glows solid #ff0033
+            const midIntensity = Math.min(1, smoothedLoudness * 1.0);
             const midG = Math.round(255 * (1 - midIntensity));
             const midB = Math.round(255 - (255 - 51) * midIntensity);
 
@@ -1160,7 +1164,7 @@
             );
 
             radialGrad.addColorStop(0, `rgb(255, ${g}, ${b})`);
-            radialGrad.addColorStop(0.55, `rgba(255, ${midG}, ${midB}, ${0.25 + smoothedLoudness * 0.75})`);
+            radialGrad.addColorStop(0.55, `rgba(255, ${midG}, ${midB}, ${Math.min(1, 0.2 + smoothedLoudness * 0.9)})`);
             radialGrad.addColorStop(1, '#ffffff');
 
             ctx.clearRect(0, 0, width, height);
