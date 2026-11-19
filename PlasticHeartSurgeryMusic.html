@@ -446,13 +446,13 @@
 
         .knob-indicator {
             position: absolute;
-            top: 4px;
+            top: 3px;
             left: 50%;
             width: 3px;
-            height: 14px;
+            height: 15px;
             background: #ff0033;
             border-radius: 2px;
-            transform-origin: 50% 20px;
+            transform-origin: 50% 21px;
             transform: translateX(-50%) rotate(0deg);
             pointer-events: none;
         }
@@ -507,7 +507,7 @@
                 height: 54px;
             }
             .knob-indicator {
-                transform-origin: 50% 23px;
+                transform-origin: 50% 24px;
             }
         }
 
@@ -963,7 +963,7 @@
             }
         }
 
-        // Rotary knob setup helper (-24 dB to +12 dB, -135deg to +135deg)
+        // Rotary knob setup helper (-24 dB to +12 dB, -135deg to +135deg, with 0 dB at top center 0deg)
         function setupRotaryKnob({ dialId, indicatorId, valueId, stateKey }) {
             const dial = document.getElementById(dialId);
             const indicator = document.getElementById(indicatorId);
@@ -971,9 +971,9 @@
             const minDb = -24;
             const maxDb = 12;
 
-            function setDb(db) {
+            function setDb(db, snapZero = true) {
                 let clamped = Math.max(minDb, Math.min(maxDb, db));
-                if (Math.abs(clamped) <= 0.35) {
+                if (snapZero && Math.abs(clamped) <= 0.35) {
                     clamped = 0;
                 }
                 eqState[stateKey] = clamped;
@@ -982,8 +982,13 @@
                 const sign = clamped > 0 ? '+' : '';
                 valLabel.textContent = `${sign}${clamped.toFixed(1)} dB`;
 
-                const norm = (clamped - minDb) / (maxDb - minDb); // 0 to 1
-                const deg = -135 + norm * 270;
+                // Map -24..0 to -135..0 deg and 0..+12 to 0..+135 deg so 0 dB is exact top center (0deg)
+                let deg = 0;
+                if (clamped < 0) {
+                    deg = (clamped / Math.abs(minDb)) * 135;
+                } else if (clamped > 0) {
+                    deg = (clamped / maxDb) * 135;
+                }
                 indicator.style.transform = `translateX(-50%) rotate(${deg.toFixed(1)}deg)`;
 
                 syncEQFilters();
@@ -1001,6 +1006,7 @@
             }
 
             dial.addEventListener('mousedown', (e) => {
+                if (e.detail > 1) return;
                 e.preventDefault();
                 startDrag(e.clientY);
             });
@@ -1009,7 +1015,7 @@
                 if (!isDraggingKnob) return;
                 const deltaY = dragStartY - e.clientY;
                 const nextDb = dragStartDb + (deltaY / 100) * (maxDb - minDb);
-                setDb(nextDb);
+                setDb(nextDb, true);
             });
 
             window.addEventListener('mouseup', () => {
@@ -1031,7 +1037,7 @@
                 e.preventDefault();
                 const deltaY = dragStartY - e.touches[0].clientY;
                 const nextDb = dragStartDb + (deltaY / 100) * (maxDb - minDb);
-                setDb(nextDb);
+                setDb(nextDb, true);
             }, { passive: false });
 
             window.addEventListener('touchend', () => {
@@ -1044,27 +1050,31 @@
             dial.addEventListener('wheel', (e) => {
                 e.preventDefault();
                 const step = e.deltaY < 0 ? 0.5 : -0.5;
-                setDb(eqState[stateKey] + step);
+                setDb(eqState[stateKey] + step, true);
             }, { passive: false });
 
             dial.addEventListener('keydown', (e) => {
                 if (e.key === 'ArrowUp' || e.key === 'ArrowRight') {
                     e.preventDefault();
-                    setDb(eqState[stateKey] + 0.5);
+                    setDb(eqState[stateKey] + 0.5, true);
                 } else if (e.key === 'ArrowDown' || e.key === 'ArrowLeft') {
                     e.preventDefault();
-                    setDb(eqState[stateKey] - 0.5);
+                    setDb(eqState[stateKey] - 0.5, true);
                 } else if (e.key === '0') {
-                    setDb(0);
+                    setDb(0, false);
                 }
             });
 
-            dial.addEventListener('dblclick', () => {
-                setDb(0);
+            dial.addEventListener('dblclick', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                isDraggingKnob = false;
+                dial.classList.remove('active');
+                setDb(0, false);
             });
 
-            setDb(0);
-            return setDb;
+            setDb(0, false);
+            return (val) => setDb(val, false);
         }
 
         const setBassDb = setupRotaryKnob({
