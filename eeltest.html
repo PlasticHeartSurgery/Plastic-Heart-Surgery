@@ -609,6 +609,32 @@
             transform: translateY(1px);
         }
 
+        .dm2-osc-btn {
+            font-family: 'Lyno Ulyscyr', sans-serif;
+            font-size: 0.72rem;
+            letter-spacing: 0.14em;
+            color: #111111;
+            background: #ffffff;
+            border: 2px solid #000000;
+            border-radius: 4px;
+            padding: 5px 10px;
+            cursor: pointer;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            box-shadow: 2px 2px 0px #000000;
+            transition: background-color 0.1s ease, color 0.1s ease, border-color 0.1s ease, box-shadow 0.1s ease, transform 0.08s ease;
+        }
+
+        .dm2-osc-btn:hover,
+        .dm2-osc-btn.active {
+            background: #ff0033;
+            color: #ffffff;
+            border-color: #ff0033;
+            box-shadow: 0 0 12px rgba(255, 0, 51, 0.75), 2px 2px 0px #ff0033;
+            transform: translateY(1px);
+        }
+
         .tap-meta {
             font-family: 'Lyno Walt', monospace;
             font-size: 0.88rem;
@@ -1387,7 +1413,7 @@
                         <button type="button" class="deck-btn" id="eqToggleBtn" aria-pressed="false" title="Click to toggle & show EQ & Filters">EQ</button>
                     </div>
 
-                    <!-- Tap BPM Circle + Tap Delay with Haas Widen & Tape Midrange Shaping -->
+                    <!-- Tap BPM Circle + Tap Delay with Haas Widen, Tape Midrange Shaping & DM-2 Oscillation -->
                     <div class="delay-row">
                         <div class="delay-tap-cluster">
                             <div class="bpm-circle-wrap">
@@ -1402,18 +1428,19 @@
                                     <button type="button" class="tap-btn" id="tapDelayBtn" title="Tap repeatedly to set delay time (or press T)">TAP</button>
                                     <button type="button" class="deck-btn" id="tapClearBtn" style="min-width:44px;padding:4px 7px;" title="Reset tap delay to 500ms / 120 BPM">CLR</button>
                                 </div>
+                                <button type="button" class="dm2-osc-btn" id="dm2OscBtn" aria-pressed="false" title="Hold or click to trigger DM-2 style runaway oscillation feedback">OSC FB</button>
                                 <div class="tap-meta" id="tapReadout">500ms<br>120 BPM</div>
                             </div>
                         </div>
 
                         <div class="eq-knobs-group" id="delayKnobsGroup">
                             <div class="knob-unit">
-                                <span class="knob-title">MIX</span>
-                                <div class="knob-dial" id="delayMixKnob" role="slider" tabindex="0" aria-label="Delay mix level" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" title="Drag up/down or scroll to adjust delay wet mix (0% dry to 100% wet). Double-click to reset (0%).">
+                                <span class="knob-title">DRY / WET</span>
+                                <div class="knob-dial" id="delayMixKnob" role="slider" tabindex="0" aria-label="Delay dry wet mix" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" title="0% = 100% Dry, 100% = 100% Wet. Double-click to reset (0%).">
                                     <div class="knob-indicator" id="delayMixIndicator"></div>
                                 </div>
                                 <span class="knob-val" id="delayMixValue">0%</span>
-                                <span class="knob-sub">DRY/WET</span>
+                                <span class="knob-sub">0–100%</span>
                             </div>
 
                             <div class="knob-unit">
@@ -1795,6 +1822,7 @@
         const tapDelayBtn = document.getElementById('tapDelayBtn');
         const tapClearBtn = document.getElementById('tapClearBtn');
         const tapReadout = document.getElementById('tapReadout');
+        const dm2OscBtn = document.getElementById('dm2OscBtn');
         const delayKnobsGroup = document.getElementById('delayKnobsGroup');
         const delayToggleBtn = document.getElementById('delayToggleBtn');
 
@@ -2009,6 +2037,7 @@
 
         // Tap BPM & Delay state
         let delayActive = false;
+        let dm2OscActive = false;
         const delayState = {
             timeMs: 500,
             mix: 0,
@@ -2056,7 +2085,7 @@
         let analyser = null;
         let timeDomainData = null;
 
-        // Stereo Tap Delay graph nodes
+        // Stereo Tap Delay graph nodes + DM-2 Oscillation sweep & soft limiter
         let delayInputSplit = null;
         let delayMerger = null;
         let delayLineL = null;
@@ -2068,6 +2097,9 @@
         let tapeMidBoost = null;
         let tapeHighCut = null;
         let delayWetGain = null;
+        let dm2LfoNode = null;
+        let dm2LfoDepthGain = null;
+        let dm2LoopLimiter = null;
 
         // Reverb graph nodes
         let convolverNode = null;
@@ -2123,6 +2155,16 @@
                 }
             }
             return impulse;
+        }
+
+        function createSoftClipCurve(amount = 6) {
+            const samples = 256;
+            const curve = new Float32Array(samples);
+            for (let i = 0; i < samples; i++) {
+                const x = (i * 2) / (samples - 1) - 1;
+                curve[i] = Math.tanh(x * amount) / Math.tanh(amount);
+            }
+            return curve;
         }
 
         function getGranulatorDurationSec() {
@@ -2464,10 +2506,11 @@
 
         function syncDryWetBalance() {
             if (!webAudioReady || !audioCtx || !dryPathGain) return;
-            // 0% = 100% dry (dry = 1.0, wet = 0.0); 100% = 100% wet (dry = 0.0, wet = 1.0)
+            // 0% = 100% dry (dry = 1.0, wet = 0.0); 100% = 100% wet (dry = 0.0, wet = 1.0)[cite: 2]
+            const dWetNorm = delayActive ? Math.max(0, Math.min(1, delayState.mix / 100)) : 0;
             const gWetNorm = grainActive ? Math.max(0, Math.min(1, fxState.grainMix / 100)) : 0;
             const oWetNorm = oscDlyActive ? Math.max(0, Math.min(1, fxState.oscMix / 100)) : 0;
-            const maxSoloWet = Math.max(gWetNorm, oWetNorm);
+            const maxSoloWet = Math.max(dWetNorm, gWetNorm, oWetNorm);
             const dryAmt = Math.max(0, 1 - maxSoloWet);
             smoothParam(dryPathGain.gain, dryAmt, 0.02);
         }
@@ -2478,7 +2521,7 @@
                 convolverNode.buffer = createImpulseResponseBuffer(audioCtx, fxState.revDecay, 2.5);
                 lastBuiltRevDecay = fxState.revDecay;
             }
-            const wetAmt = revActive ? (fxState.revMix / 100) * 0.85 : 0;
+            const wetAmt = revActive ? (fxState.revMix / 100) : 0;
             smoothParam(revWetGain.gain, wetAmt, 0.02);
         }
 
@@ -2598,8 +2641,13 @@
 
             const t = Math.max(0.02, Math.min(2.5, delayState.timeMs / 1000));
             const haasSec = Math.max(0, Math.min(0.035, delayState.widenMs / 1000));
-            const wetAmt = delayActive ? (delayState.mix / 100) * 0.85 : 0;
-            const fbAmt = delayActive ? Math.min(0.85, (delayState.fdbk / 100) * 0.85) : 0;
+            const effectiveDelayActive = delayActive || dm2OscActive;
+            const wetAmt = effectiveDelayActive
+                ? (dm2OscActive ? Math.max(delayState.mix / 100, 0.75) : (delayState.mix / 100))
+                : 0;
+            const fbAmt = effectiveDelayActive
+                ? (dm2OscActive ? 1.16 : Math.min(0.85, (delayState.fdbk / 100) * 0.85))
+                : 0;
 
             const tapeAmt = Math.max(0, Math.min(1, delayState.tape / 100));
             const lowCutHz = tapeAmt <= 0.005 ? 10 : clampNyquistHz(10 + Math.pow(tapeAmt, 1.35) * 440, 10);
@@ -2609,15 +2657,57 @@
             smoothParam(delayLineL.delayTime, t, 0.02);
             smoothParam(delayLineR.delayTime, t, 0.02);
             smoothParam(haasRightDelay.delayTime, haasSec, 0.012);
-            smoothParam(feedbackGainL.gain, fbAmt, 0.02);
-            smoothParam(feedbackGainR.gain, fbAmt, 0.02);
+            smoothParam(feedbackGainL.gain, fbAmt, 0.025);
+            smoothParam(feedbackGainR.gain, fbAmt, 0.025);
+
+            // DM-2 analog BBD oscillation pitch/clock sweep when OSC FB is held/active
+            if (dm2LfoNode && dm2LfoDepthGain) {
+                smoothParam(dm2LfoNode.frequency, dm2OscActive ? 3.2 : 0.05, 0.03);
+                smoothParam(dm2LfoDepthGain.gain, dm2OscActive ? 0.0045 : 0.0, 0.03);
+            }
 
             smoothParam(tapeLowCut.frequency, lowCutHz, 0.02);
             smoothParam(tapeMidBoost.gain, midGainDb, 0.02);
             smoothParam(tapeHighCut.frequency, highCutHz, 0.02);
 
             smoothParam(delayWetGain.gain, wetAmt, 0.02);
+            syncDryWetBalance();
         }
+
+        function setDm2Oscillation(active) {
+            dm2OscActive = Boolean(active);
+            dm2OscBtn.classList.toggle('active', dm2OscActive);
+            dm2OscBtn.setAttribute('aria-pressed', String(dm2OscActive));
+            if (dm2OscActive) {
+                initAudioGraph();
+            }
+            syncDelayGraph();
+        }
+
+        dm2OscBtn.addEventListener('pointerdown', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            setDm2Oscillation(true);
+        });
+
+        window.addEventListener('pointerup', () => {
+            if (dm2OscActive) {
+                setDm2Oscillation(false);
+            }
+        });
+
+        window.addEventListener('pointercancel', () => {
+            if (dm2OscActive) {
+                setDm2Oscillation(false);
+            }
+        });
+
+        dm2OscBtn.addEventListener('keydown', (e) => {
+            if (e.key === ' ' || e.key === 'Enter') {
+                e.preventDefault();
+                setDm2Oscillation(!dm2OscActive);
+            }
+        });
 
         function updateDelayToggleUI() {
             delayToggleBtn.classList.toggle('active', delayActive);
@@ -2769,7 +2859,7 @@
                 dryPathGain = audioCtx.createGain();
                 dryPathGain.gain.value = 1;
 
-                // Stereo Tap Delay with Haas Widen & Tape shaping
+                // Stereo Tap Delay with Haas Widen, Tape shaping & DM-2 Oscillation feedback
                 tapeLowCut = audioCtx.createBiquadFilter();
                 tapeLowCut.type = 'highpass';
                 tapeLowCut.Q.value = 0.707;
@@ -2799,8 +2889,19 @@
 
                 feedbackGainL = audioCtx.createGain();
                 feedbackGainR = audioCtx.createGain();
-                feedbackGainL.gain.value = 0.3;
-                feedbackGainR.gain.value = 0.3;
+                feedbackGainL.gain.value = 0;
+                feedbackGainR.gain.value = 0;
+
+                dm2LoopLimiter = audioCtx.createWaveShaper();
+                dm2LoopLimiter.curve = createSoftClipCurve(5);
+                dm2LoopLimiter.oversample = '2x';
+
+                dm2LfoNode = audioCtx.createOscillator();
+                dm2LfoNode.type = 'sine';
+                dm2LfoNode.frequency.value = 3.2;
+
+                dm2LfoDepthGain = audioCtx.createGain();
+                dm2LfoDepthGain.gain.value = 0;
 
                 delayWetGain = audioCtx.createGain();
                 delayWetGain.gain.value = 0;
@@ -2863,14 +2964,19 @@
                 // Granulator live stream feed
                 lpfFilter.connect(grainLiveTapDelay);
 
-                // Tap Delay send/return
+                // Tap Delay send/return + DM-2 oscillation LFO & soft saturation loop
+                dm2LfoNode.connect(dm2LfoDepthGain);
+                dm2LfoDepthGain.connect(delayLineL.delayTime);
+                dm2LfoDepthGain.connect(delayLineR.delayTime);
+
                 lpfFilter.connect(tapeLowCut);
                 tapeLowCut.connect(tapeMidBoost);
                 tapeMidBoost.connect(tapeHighCut);
                 tapeHighCut.connect(delayInputSplit);
 
                 delayInputSplit.connect(delayLineL, 0, 0);
-                delayLineL.connect(feedbackGainL);
+                delayLineL.connect(dm2LoopLimiter);
+                dm2LoopLimiter.connect(feedbackGainL);
                 feedbackGainL.connect(delayLineL);
                 delayLineL.connect(delayMerger, 0, 0);
 
@@ -2908,6 +3014,7 @@
                 masterBus.connect(analyser);
                 analyser.connect(audioCtx.destination);
 
+                dm2LfoNode.start();
                 oscLfoNode.start();
 
                 webAudioReady = true;
