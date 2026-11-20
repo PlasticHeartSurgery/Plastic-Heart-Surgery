@@ -1224,10 +1224,83 @@
                 letter-spacing: 0.15em;
             }
             .visualizer-card {
-                padding: 16px;
+                padding: 14px;
             }
             #audioVisualizer {
                 height: 110px;
+            }
+            .fx-module-block {
+                padding: 9px 10px;
+                margin-bottom: 9px;
+            }
+            .eq-row,
+            .delay-row {
+                gap: 8px;
+                padding-top: 9px;
+            }
+            .eq-knobs-group {
+                flex-wrap: nowrap;
+                justify-content: flex-start;
+                align-items: flex-start;
+                gap: 6px;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                padding-bottom: 4px;
+                width: 100%;
+            }
+            .knob-unit {
+                flex: 0 0 auto;
+                min-width: 48px;
+                gap: 2px;
+            }
+            .knob-dial,
+            .knob-dial:hover,
+            .knob-dial.active {
+                width: 38px;
+                height: 38px;
+            }
+            .knob-indicator {
+                top: 2px;
+                width: 2.5px;
+                height: 12px;
+                transform-origin: 50% 17px;
+            }
+            .knob-title {
+                font-size: 0.6rem;
+                letter-spacing: 0.06em;
+                white-space: nowrap;
+            }
+            .knob-val {
+                font-size: 0.74rem;
+                letter-spacing: 0.02em;
+                min-width: 0;
+                white-space: nowrap;
+            }
+            .knob-sub {
+                font-size: 0.65rem;
+                white-space: nowrap;
+            }
+            .bpm-circle {
+                width: 48px;
+                height: 48px;
+            }
+            .bpm-circle-num {
+                font-size: 1.05rem;
+            }
+            .bpm-circle-label {
+                font-size: 0.5rem;
+            }
+            .tap-btn {
+                padding: 6px 10px;
+                min-width: 64px;
+                font-size: 0.72rem;
+            }
+            .dm2-osc-btn {
+                padding: 4px 8px;
+                font-size: 0.64rem;
+            }
+            .tap-meta {
+                font-size: 0.75rem;
             }
             .track-card {
                 flex-direction: column;
@@ -2181,8 +2254,6 @@
             return curve;
         }
 
-        // Equal-power dry/wet law: at 50% (t = 0.5), dry = cos(pi/4) ~ 0.707, wet = sin(pi/4) ~ 0.707
-        // preserving perceived original song loudness without hollow dip.
         function equalPowerDryGain(normMix) {
             const t = Math.max(0, Math.min(1, normMix));
             return Math.cos(t * Math.PI * 0.5);
@@ -2539,13 +2610,11 @@
             const oWetNorm = oscDlyActive ? Math.max(0, Math.min(1, fxState.oscMix / 100)) : 0;
             const rWetNorm = revActive ? Math.max(0, Math.min(1, fxState.revMix / 100)) : 0;
 
-            // Equal-power dry curve so 50% dry/wet keeps full perceived original song loudness
             const dryFromMix = Math.min(
                 equalPowerDryGain(dWetNorm),
                 equalPowerDryGain(gWetNorm),
                 equalPowerDryGain(oWetNorm)
             );
-            // Reverb is an additive space send when mix > 0, with gentle dry trim only at very high wet
             const revDryTrim = rWetNorm > 0.75 ? (1 - (rWetNorm - 0.75) * 0.4) : 1;
             smoothParam(dryPathGain.gain, Math.max(0, dryFromMix * revDryTrim), 0.02);
         }
@@ -2557,7 +2626,6 @@
                 lastBuiltRevDecay = fxState.revDecay;
             }
             const wetNorm = revActive ? (fxState.revMix / 100) : 0;
-            // At 50% wet, sin(pi/4) ~ 0.707 gives balanced tail without washing out or losing loudness
             const wetAmt = wetNorm > 0 ? equalPowerWetGain(wetNorm) * 0.85 : 0;
             smoothParam(revWetGain.gain, wetAmt, 0.02);
             syncDryWetBalance();
@@ -2700,7 +2768,6 @@
             smoothParam(feedbackGainL.gain, fbAmt, 0.025);
             smoothParam(feedbackGainR.gain, fbAmt, 0.025);
 
-            // DM-2 analog BBD oscillation pitch/clock sweep when OSC FB is held/active
             if (dm2LfoNode && dm2LfoDepthGain) {
                 smoothParam(dm2LfoNode.frequency, dm2OscActive ? 3.2 : 0.05, 0.03);
                 smoothParam(dm2LfoDepthGain.gain, dm2OscActive ? 0.0045 : 0.0, 0.03);
@@ -2987,7 +3054,6 @@
                 preMaximizerBus = audioCtx.createGain();
                 preMaximizerBus.gain.value = 1;
 
-                // Maximizer / Brickwall Limiter to tame stacked wet layers & DM-2 oscillation peaks
                 maximizerLimiter = audioCtx.createDynamicsCompressor();
                 maximizerLimiter.threshold.value = -3.0;
                 maximizerLimiter.knee.value = 2.0;
@@ -3003,7 +3069,6 @@
                 analyser.smoothingTimeConstant = 0.8;
                 timeDomainData = new Uint8Array(analyser.fftSize);
 
-                // Dry & EQ path
                 source.connect(hpfFilter);
                 hpfFilter.connect(bassFilter);
                 bassFilter.connect(midsFilter);
@@ -3012,10 +3077,8 @@
                 lpfFilter.connect(dryPathGain);
                 dryPathGain.connect(preMaximizerBus);
 
-                // Granulator live stream feed
                 lpfFilter.connect(grainLiveTapDelay);
 
-                // Tap Delay send/return + DM-2 oscillation LFO & soft saturation loop
                 dm2LfoNode.connect(dm2LfoDepthGain);
                 dm2LfoDepthGain.connect(delayLineL.delayTime);
                 dm2LfoDepthGain.connect(delayLineR.delayTime);
@@ -3040,19 +3103,16 @@
                 delayMerger.connect(delayWetGain);
                 delayWetGain.connect(preMaximizerBus);
 
-                // Reverb send/return
                 lpfFilter.connect(convolverNode);
                 convolverNode.connect(revWetGain);
                 revWetGain.connect(preMaximizerBus);
 
-                // Granulator wet + feedback loop to preMaximizerBus
                 grainWetGain.connect(preMaximizerBus);
                 grainWetGain.connect(grainFbDelay);
                 grainFbDelay.connect(grainFbGain);
                 grainFbGain.connect(grainFbDelay);
                 grainFbGain.connect(preMaximizerBus);
 
-                // Oscillation Delay send/return + LFO
                 oscLfoNode.connect(oscLfoDepthGain);
                 oscLfoDepthGain.connect(oscDelayNode.delayTime);
 
@@ -3062,7 +3122,6 @@
                 oscDelayNode.connect(oscWetGain);
                 oscWetGain.connect(preMaximizerBus);
 
-                // Maximizer stage -> Master bus -> Analyser -> Destination
                 preMaximizerBus.connect(maximizerLimiter);
                 maximizerLimiter.connect(masterBus);
                 masterBus.connect(analyser);
@@ -3540,7 +3599,6 @@
             snapZero: true
         });
 
-        // Reverb Knobs
         setupLinearKnob({
             dialId: 'revDecayKnob',
             indicatorId: 'revDecayIndicator',
@@ -3569,7 +3627,6 @@
             onChangeCallback: syncReverbGraph
         });
 
-        // Granulator Knobs
         setupLinearKnob({
             dialId: 'grainSizeKnob',
             indicatorId: 'grainSizeIndicator',
@@ -3694,7 +3751,6 @@
             onChangeCallback: syncGranulatorGraph
         });
 
-        // Oscillation Delay Knobs
         setupLinearKnob({
             dialId: 'oscTimeKnob',
             indicatorId: 'oscTimeIndicator',
