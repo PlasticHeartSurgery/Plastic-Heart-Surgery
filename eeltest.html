@@ -1413,7 +1413,7 @@
                                     <div class="knob-indicator" id="delayMixIndicator"></div>
                                 </div>
                                 <span class="knob-val" id="delayMixValue">0%</span>
-                                <span class="knob-sub">WET/DRY</span>
+                                <span class="knob-sub">DRY/WET</span>
                             </div>
 
                             <div class="knob-unit">
@@ -1470,8 +1470,8 @@
                                 </div>
 
                                 <div class="knob-unit">
-                                    <span class="knob-title">WET / DRY</span>
-                                    <div class="knob-dial" id="revMixKnob" role="slider" tabindex="0" aria-label="Reverb wet dry mix" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" title="0% = 100% Dry, 100% = 100% Wet. Double-click to reset (0%).">
+                                    <span class="knob-title">DRY / WET</span>
+                                    <div class="knob-dial" id="revMixKnob" role="slider" tabindex="0" aria-label="Reverb dry wet mix" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" title="0% = 100% Dry, 100% = 100% Wet. Double-click to reset (0%).">
                                         <div class="knob-indicator" id="revMixIndicator"></div>
                                     </div>
                                     <span class="knob-val" id="revMixValue">0%</span>
@@ -1581,8 +1581,8 @@
                                     </div>
 
                                     <div class="knob-unit">
-                                        <span class="knob-title">WET / DRY</span>
-                                        <div class="knob-dial" id="grainMixKnob" role="slider" tabindex="0" aria-label="Granulator wet dry mix" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" title="0% = 100% Dry, 100% = 100% Wet. Double-click to reset (0%).">
+                                        <span class="knob-title">DRY / WET</span>
+                                        <div class="knob-dial" id="grainMixKnob" role="slider" tabindex="0" aria-label="Granulator dry wet mix" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" title="0% = 100% Dry, 100% = 100% Wet. Double-click to reset (0%).">
                                             <div class="knob-indicator" id="grainMixIndicator"></div>
                                         </div>
                                         <span class="knob-val" id="grainMixValue">0%</span>
@@ -1636,8 +1636,8 @@
                                 </div>
 
                                 <div class="knob-unit">
-                                    <span class="knob-title">WET / DRY</span>
-                                    <div class="knob-dial" id="oscMixKnob" role="slider" tabindex="0" aria-label="Oscillation delay wet dry mix" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" title="0% = 100% Dry, 100% = 100% Wet. Double-click to reset (0%).">
+                                    <span class="knob-title">DRY / WET</span>
+                                    <div class="knob-dial" id="oscMixKnob" role="slider" tabindex="0" aria-label="Oscillation delay dry wet mix" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" title="0% = 100% Dry, 100% = 100% Wet. Double-click to reset (0%).">
                                         <div class="knob-indicator" id="oscMixIndicator"></div>
                                     </div>
                                     <span class="knob-val" id="oscMixValue">0%</span>
@@ -2051,6 +2051,7 @@
         let midsFilter = null;
         let trebleFilter = null;
         let lpfFilter = null;
+        let dryPathGain = null;
         let masterBus = null;
         let analyser = null;
         let timeDomainData = null;
@@ -2398,15 +2399,14 @@
                     const env = audioCtx.createGain();
                     const fade = Math.min(0.015, grainSec * 0.3);
                     env.gain.setValueAtTime(0.0001, now);
-                    env.gain.linearRampToValueAtTime(0.45, now + fade);
-                    env.gain.setValueAtTime(0.45, now + Math.max(fade + 0.002, grainSec - fade));
+                    env.gain.linearRampToValueAtTime(0.55, now + fade);
+                    env.gain.setValueAtTime(0.55, now + Math.max(fade + 0.002, grainSec - fade));
                     env.gain.linearRampToValueAtTime(0.0001, now + grainSec);
 
                     gSource.connect(env);
                     chainOut = env;
                     gSource.start(now, offset, grainSec);
                 } else if (grainLiveTapDelay) {
-                    // Live stream granular windowing when decoded buffer isn't available (e.g. local file://)
                     let grainSec = baseGrainSec;
                     if (fxState.grainMode === 'glitch') {
                         grainSec = Math.max(0.015, baseGrainSec * 0.45);
@@ -2425,8 +2425,8 @@
                     const env = audioCtx.createGain();
                     const fade = Math.min(0.015, grainSec * 0.3);
                     env.gain.setValueAtTime(0.0001, now);
-                    env.gain.linearRampToValueAtTime(0.45, now + fade);
-                    env.gain.setValueAtTime(0.45, now + Math.max(fade + 0.002, grainSec - fade));
+                    env.gain.linearRampToValueAtTime(0.55, now + fade);
+                    env.gain.setValueAtTime(0.55, now + Math.max(fade + 0.002, grainSec - fade));
                     env.gain.linearRampToValueAtTime(0.0001, now + grainSec);
 
                     grainLiveTapDelay.connect(env);
@@ -2462,6 +2462,16 @@
             grainTimerId = setTimeout(triggerGranularGrain, nextDelay);
         }
 
+        function syncDryWetBalance() {
+            if (!webAudioReady || !audioCtx || !dryPathGain) return;
+            // 0% = 100% dry (dry = 1.0, wet = 0.0); 100% = 100% wet (dry = 0.0, wet = 1.0)
+            const gWetNorm = grainActive ? Math.max(0, Math.min(1, fxState.grainMix / 100)) : 0;
+            const oWetNorm = oscDlyActive ? Math.max(0, Math.min(1, fxState.oscMix / 100)) : 0;
+            const maxSoloWet = Math.max(gWetNorm, oWetNorm);
+            const dryAmt = Math.max(0, 1 - maxSoloWet);
+            smoothParam(dryPathGain.gain, dryAmt, 0.02);
+        }
+
         function syncReverbGraph() {
             if (!webAudioReady || !audioCtx || !convolverNode || !revWetGain) return;
             if (lastBuiltRevDecay !== fxState.revDecay) {
@@ -2474,10 +2484,12 @@
 
         function syncGranulatorGraph() {
             if (!webAudioReady || !audioCtx || !grainWetGain || !grainFbGain) return;
-            const wetAmt = grainActive ? (fxState.grainMix / 100) * 0.9 : 0;
+            const wetNorm = grainActive ? Math.max(0, Math.min(1, fxState.grainMix / 100)) : 0;
+            const wetAmt = wetNorm;
             const fbAmt = grainActive ? Math.min(0.82, (fxState.grainFdbk / 100) * 0.82) : 0;
             smoothParam(grainWetGain.gain, wetAmt, 0.02);
             smoothParam(grainFbGain.gain, fbAmt, 0.02);
+            syncDryWetBalance();
             scheduleNextGrain();
         }
 
@@ -2487,13 +2499,15 @@
             const fbAmt = oscDlyActive ? Math.min(0.88, (fxState.oscFdbk / 100) * 0.88) : 0;
             const lfoHz = Math.max(0.05, Math.min(12, fxState.oscLfoRate));
             const depthSec = oscDlyActive ? Math.max(0, Math.min(0.04, fxState.oscLfoDepthMs / 1000)) : 0;
-            const wetAmt = oscDlyActive ? (fxState.oscMix / 100) * 0.85 : 0;
+            const wetNorm = oscDlyActive ? Math.max(0, Math.min(1, fxState.oscMix / 100)) : 0;
+            const wetAmt = wetNorm;
 
             smoothParam(oscDelayNode.delayTime, dlySec, 0.02);
             smoothParam(oscFeedbackGain.gain, fbAmt, 0.02);
             smoothParam(oscLfoNode.frequency, lfoHz, 0.02);
             smoothParam(oscLfoDepthGain.gain, depthSec, 0.02);
             smoothParam(oscWetGain.gain, wetAmt, 0.02);
+            syncDryWetBalance();
         }
 
         function updateRevToggleUI() {
@@ -2752,6 +2766,9 @@
                 lpfFilter.Q.value = 0.707;
                 lpfFilter.frequency.value = clampNyquistHz(25000, 10);
 
+                dryPathGain = audioCtx.createGain();
+                dryPathGain.gain.value = 1;
+
                 // Stereo Tap Delay with Haas Widen & Tape shaping
                 tapeLowCut = audioCtx.createBiquadFilter();
                 tapeLowCut.type = 'highpass';
@@ -2840,7 +2857,8 @@
                 bassFilter.connect(midsFilter);
                 midsFilter.connect(trebleFilter);
                 trebleFilter.connect(lpfFilter);
-                lpfFilter.connect(masterBus);
+                lpfFilter.connect(dryPathGain);
+                dryPathGain.connect(masterBus);
 
                 // Granulator live stream feed
                 lpfFilter.connect(grainLiveTapDelay);
