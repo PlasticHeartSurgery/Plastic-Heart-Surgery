@@ -1821,7 +1821,7 @@
 
                                     <div class="knob-unit">
                                         <span class="knob-title">BIAS</span>
-                                        <div class="knob-dial" id="tubeBiasKnob" role="slider" tabindex="0" aria-label="Dynamic Tube bias percentage" aria-valuemin="-100" aria-valuemax="100" aria-valuenow="25" title="Tube operating bias (-100% to +100%). Double-click to reset (25%).">
+                                        <div class="knob-dial" id="tubeBiasKnob" role="slider" tabindex="0" aria-label="Dynamic Tube bias percentage" aria-valuemin="-100" aria-valuemax="100" aria-valuenow="25" title="Extreme tube bias (-100% to +100% — pushes into chaotic asymmetry at extremes). Double-click to reset (25%).">
                                             <div class="knob-indicator" id="tubeBiasIndicator"></div>
                                         </div>
                                         <span class="knob-val" id="tubeBiasValue">25%</span>
@@ -1948,7 +1948,7 @@
                             </div>
                         </div>
 
-                        <p class="fx-note">Granulator uses a live granular stream + decoded track buffer (when served over HTTP/HTTPS) with a looping playhead. All wet mixes default to 0% when opened.</p>
+                        <p class="fx-note">Dynamic Tube &amp; Redux run pre-EQ; Granulator uses a live granular stream + cached/decoded track buffer with a looping playhead. All wet mixes default to 0% when opened.</p>
                     </div>
                 </div>
             </div>
@@ -2024,7 +2024,7 @@
     </div>
 
     <!-- Hidden Audio Element -->
-    <audio id="audioPlayer" playsinline webkit-playsinline preload="metadata"></audio>
+    <audio id="audioPlayer" playsinline webkit-playsinline preload="auto"></audio>
 
     <script>
         /* --- LIGHTBOX MODAL LOGIC --- */
@@ -2057,7 +2057,7 @@
             }
         });
 
-        /* --- AUDIO PLAYER, VOLUME, PITCH/SPEED, NUDGE, LOOP IN/OUT/÷2, 3-BAND EQ, LPF/HPF, TAP BPM & DELAY, REVERB, GRANULATOR, OSC DELAY, DYNAMIC TUBE, REDUX, VISUALIZER --- */
+        /* --- AUDIO PLAYER, CACHE, VOLUME, PITCH/SPEED, NUDGE, LOOP IN/OUT/÷2, TUBE & REDUX PRE-EQ, 3-BAND EQ, LPF/HPF, TAP BPM & DELAY, REVERB, GRANULATOR, OSC DELAY, VISUALIZER --- */
         const audio = document.getElementById('audioPlayer');
         const canvas = document.getElementById('audioVisualizer');
         const ctx = canvas.getContext('2d');
@@ -2130,6 +2130,12 @@
         const reduxFilterPreBtn = document.getElementById('reduxFilterPreBtn');
         const reduxFilterPostBtn = document.getElementById('reduxFilterPostBtn');
         const reduxDcShiftBtn = document.getElementById('reduxDcShiftBtn');
+
+        // In-memory audio cache so scrubbing/replaying never drops out or re-downloads
+        const audioBlobCache = new Map();
+        const audioArrayBufferCache = new Map();
+        const audioFetchPromises = new Map();
+        let activeSourceUrl = '';
 
         let activeCard = null;
         let isDraggingProgress = false;
@@ -2214,6 +2220,68 @@
             reduxDcShift: false,
             reduxMix: 0
         };
+
+        function cacheAudioTrack(encodedUrl) {
+            if (!encodedUrl) return Promise.resolve(null);
+            if (audioBlobCache.has(encodedUrl)) {
+                return Promise.resolve({
+                    blobUrl: audioBlobCache.get(encodedUrl),
+                    arrayBuffer: audioArrayBufferCache.get(encodedUrl) || null
+                });
+            }
+            if (audioFetchPromises.has(encodedUrl)) {
+                return audioFetchPromises.get(encodedUrl);
+            }
+
+            const promise = fetch(encodedUrl, { cache: 'force-cache' })
+                .then(response => {
+                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                    return response.arrayBuffer();
+                })
+                .then(arrayBuf => {
+                    const copyForDecode = arrayBuf.slice(0);
+                    const blob = new Blob([arrayBuf], { type: 'audio/mpeg' });
+                    const blobUrl = URL.createObjectURL(blob);
+                    audioBlobCache.set(encodedUrl, blobUrl);
+                    audioArrayBufferCache.set(encodedUrl, copyForDecode);
+                    return { blobUrl, arrayBuffer: copyForDecode };
+                })
+                .catch(() => null)
+                .finally(() => {
+                    audioFetchPromises.delete(encodedUrl);
+                });
+
+            audioFetchPromises.set(encodedUrl, promise);
+            return promise;
+        }
+
+        function applyCachedAudioSrcToElement(encodedUrl) {
+            if (!encodedUrl) return;
+            activeSourceUrl = encodedUrl;
+            const cachedBlobUrl = audioBlobCache.get(encodedUrl);
+            if (cachedBlobUrl && audio.src !== cachedBlobUrl) {
+                const wasPlaying = !audio.paused;
+                const prevTime = Number.isFinite(audio.currentTime) ? audio.currentTime : 0;
+                const prevRate = audio.playbackRate || 1;
+                audio.src = cachedBlobUrl;
+                audio.load();
+                audio.addEventListener('loadedmetadata', function restoreOnce() {
+                    audio.removeEventListener('loadedmetadata', restoreOnce);
+                    audio.playbackRate = prevRate;
+                    if (prevTime > 0) {
+                        try { audio.currentTime = prevTime; } catch (_) {}
+                    }
+                    if (wasPlaying) {
+                        audio.play().catch(() => {});
+                    }
+                });
+                return;
+            }
+            if (!audio.src || (!audio.src.endsWith(encodedUrl) && audio.src !== cachedBlobUrl)) {
+                audio.src = encodedUrl;
+                audio.load();
+            }
+        }
 
         function setEffectsRackOpen(open) {
             effectsRackOpen = Boolean(open);
@@ -2403,6 +2471,7 @@
         updateLoopButtonsUI();
 
         let audioCtx = null;
+        let eqInputBus = null;
         let hpfFilter = null;
         let bassFilter = null;
         let midsFilter = null;
@@ -2458,7 +2527,7 @@
         let oscLfoDepthGain = null;
         let oscWetGain = null;
 
-        // Dynamic Tube graph nodes
+        // Dynamic Tube graph nodes (placed before EQ)
         let tubePreGain = null;
         let tubeShaper = null;
         let tubeToneFilter = null;
@@ -2469,7 +2538,7 @@
         let tubeEnvelopeFollower = 0;
         let lastTubeCurveKey = '';
 
-        // Redux graph nodes (ScriptProcessor bitcrusher / sample-rate reducer + Pre/Post filters + DC Shift)
+        // Redux graph nodes (placed before EQ)
         let reduxPreFilter = null;
         let reduxProcessor = null;
         let reduxPostFilter = null;
@@ -2517,27 +2586,36 @@
         function createDynamicTubeCurve(curveMode, biasNorm) {
             const samples = 512;
             const curve = new Float32Array(samples);
-            const biasOffset = biasNorm * 0.45;
-            const sharpness = curveMode === 'A' ? 2.4 : (curveMode === 'B' ? 3.8 : 5.6);
+            const absBias = Math.abs(biasNorm);
+            // Extreme bias pushes well beyond rails so at full throw it turns into chaotic nonsense
+            const biasOffset = biasNorm * (1.35 + Math.pow(absBias, 2) * 1.45);
+            const chaosBoost = Math.pow(absBias, 2.2);
+            const sharpness = curveMode === 'A'
+                ? (2.6 + chaosBoost * 14.0)
+                : (curveMode === 'B'
+                    ? (4.2 + chaosBoost * 18.0)
+                    : (6.4 + chaosBoost * 24.0));
 
             for (let i = 0; i < samples; i++) {
                 const x = (i * 2) / (samples - 1) - 1;
                 const biased = x + biasOffset;
                 let y;
                 if (curveMode === 'A') {
-                    // Warm asymmetric triode-style soft knee
                     y = biased >= 0
                         ? Math.tanh(biased * sharpness)
-                        : Math.tanh(biased * (sharpness * 0.72)) * 0.88;
+                        : Math.tanh(biased * (sharpness * 0.55)) * 0.92;
                 } else if (curveMode === 'B') {
-                    // Harder pentode compression & harmonic bite
                     const hard = Math.tanh(biased * sharpness);
-                    y = hard + 0.14 * Math.sin(biased * Math.PI * 2);
+                    y = hard + (0.18 + chaosBoost * 0.85) * Math.sin(biased * Math.PI * (3 + chaosBoost * 9));
                 } else {
-                    // Aggressive high-gain saturation & cut-off
-                    y = Math.tanh(biased * sharpness) * 1.06;
+                    const fold = Math.sin(biased * Math.PI * (2 + chaosBoost * 7));
+                    y = Math.tanh(biased * sharpness) * 1.15 + fold * chaosBoost * 0.65;
                 }
-                curve[i] = Math.max(-1.05, Math.min(1.05, y));
+                // Wrap/fold extreme excursions rather than cleanly clamping
+                if (Math.abs(y) > 1.0) {
+                    y = Math.sin(y * Math.PI * 0.75) * 1.05;
+                }
+                curve[i] = Math.max(-1.1, Math.min(1.1, y));
             }
             return curve;
         }
@@ -2721,19 +2799,29 @@
 
         async function ensureGranulatorBuffer(url) {
             if (!audioCtx || !url) return;
-            if (decodedAudioBuffer && loadedBufferSrc === url) {
+            const lookupUrl = activeSourceUrl || url;
+            if (decodedAudioBuffer && loadedBufferSrc === lookupUrl) {
                 grainSourceBadge.textContent = '(BUFFER + LIVE)';
                 return;
             }
             if (decodingInFlight) return;
             decodingInFlight = true;
             try {
-                const response = await fetch(url);
-                if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                const arrayBuf = await response.arrayBuffer();
+                let arrayBuf = audioArrayBufferCache.get(lookupUrl);
+                if (!arrayBuf) {
+                    const cached = await cacheAudioTrack(lookupUrl);
+                    arrayBuf = cached && cached.arrayBuffer ? cached.arrayBuffer.slice(0) : null;
+                } else {
+                    arrayBuf = arrayBuf.slice(0);
+                }
+                if (!arrayBuf) {
+                    const response = await fetch(lookupUrl, { cache: 'force-cache' });
+                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                    arrayBuf = await response.arrayBuffer();
+                }
                 const buf = await audioCtx.decodeAudioData(arrayBuf);
                 decodedAudioBuffer = buf;
-                loadedBufferSrc = url;
+                loadedBufferSrc = lookupUrl;
                 grainSourceBadge.textContent = '(BUFFER + LIVE)';
                 if (decodedAudioBuffer && decodedAudioBuffer.duration > 0) {
                     const curTime = Number.isFinite(audio.currentTime) ? (audio.currentTime % decodedAudioBuffer.duration) : 0;
@@ -2966,9 +3054,9 @@
                 lastTubeCurveKey = curveKey;
             }
 
-            const effectiveDriveDb = Math.max(0, Math.min(30, fxState.tubeDriveDb + envModOffset));
+            const effectiveDriveDb = Math.max(0, Math.min(36, fxState.tubeDriveDb + envModOffset + Math.abs(biasNorm) * 10));
             const preLinear = Math.pow(10, effectiveDriveDb / 20);
-            const postLinear = Math.pow(10, fxState.tubeOutputDb / 20) / Math.max(1, Math.pow(preLinear, 0.35));
+            const postLinear = Math.pow(10, fxState.tubeOutputDb / 20) / Math.max(1, Math.pow(preLinear, 0.25));
             const toneDb = fxState.tubeTone * 9;
 
             const wetNorm = (effectsRackOpen && tubeActive) ? Math.max(0, Math.min(1, fxState.tubeMix / 100)) : 0;
@@ -3038,8 +3126,8 @@
             grainModuleTop.classList.toggle('has-body', shouldShowBody);
             if (shouldShowBody) {
                 lastPlayheadTickTime = performance.now();
-                if (audioCtx && audio.src) {
-                    ensureGranulatorBuffer(audio.src);
+                if (audioCtx && (activeSourceUrl || audio.src)) {
+                    ensureGranulatorBuffer(activeSourceUrl || audio.src);
                 }
                 updateGranulatorPlayheadUI();
             }
@@ -3356,8 +3444,8 @@
                 syncOscDelayGraph();
                 syncTubeGraph(0);
                 syncReduxGraph();
-                if (audio.src) {
-                    ensureGranulatorBuffer(audio.src);
+                if (activeSourceUrl || audio.src) {
+                    ensureGranulatorBuffer(activeSourceUrl || audio.src);
                 }
                 return;
             }
@@ -3365,6 +3453,101 @@
                 const AudioContextClass = window.AudioContext || window.webkitAudioContext;
                 audioCtx = new AudioContextClass();
                 const source = audioCtx.createMediaElementSource(audio);
+
+                // Pre-EQ Dynamic Tube & Redux nodes
+                tubePreGain = audioCtx.createGain();
+                tubePreGain.gain.value = 1;
+
+                tubeShaper = audioCtx.createWaveShaper();
+                tubeShaper.curve = createDynamicTubeCurve(fxState.tubeCurve, fxState.tubeBiasPct / 100);
+                tubeShaper.oversample = '2x';
+                lastTubeCurveKey = `${fxState.tubeCurve}:${(fxState.tubeBiasPct / 100).toFixed(2)}`;
+
+                tubeToneFilter = audioCtx.createBiquadFilter();
+                tubeToneFilter.type = 'peaking';
+                tubeToneFilter.frequency.value = 1800;
+                tubeToneFilter.Q.value = 0.8;
+                tubeToneFilter.gain.value = 0;
+
+                tubePostGain = audioCtx.createGain();
+                tubePostGain.gain.value = 1;
+
+                tubeWetGain = audioCtx.createGain();
+                tubeWetGain.gain.value = 0;
+
+                tubeEnvAnalyser = audioCtx.createAnalyser();
+                tubeEnvAnalyser.fftSize = 256;
+                tubeEnvData = new Uint8Array(tubeEnvAnalyser.fftSize);
+
+                reduxPreFilter = audioCtx.createBiquadFilter();
+                reduxPreFilter.type = 'lowpass';
+                reduxPreFilter.Q.value = 0.8;
+                reduxPreFilter.frequency.value = clampNyquistHz(24000, 1000);
+
+                reduxPostFilter = audioCtx.createBiquadFilter();
+                reduxPostFilter.type = 'lowpass';
+                reduxPostFilter.Q.value = 0.8;
+                reduxPostFilter.frequency.value = clampNyquistHz(24000, 1000);
+
+                reduxWetGain = audioCtx.createGain();
+                reduxWetGain.gain.value = 0;
+
+                if (typeof audioCtx.createScriptProcessor === 'function') {
+                    reduxProcessor = audioCtx.createScriptProcessor(1024, 2, 2);
+                    const phaseHold = [0, 0];
+                    const sampleHold = [0, 0];
+
+                    reduxProcessor.onaudioprocess = (event) => {
+                        const input = event.inputBuffer;
+                        const output = event.outputBuffer;
+                        const sr = audioCtx.sampleRate || 44100;
+
+                        if (!effectsRackOpen || !reduxActive || fxState.reduxMix <= 0) {
+                            for (let ch = 0; ch < output.numberOfChannels; ch++) {
+                                output.getChannelData(ch).set(input.getChannelData(ch));
+                            }
+                            return;
+                        }
+
+                        const baseRateHz = Math.max(200, Math.min(sr, fxState.reduxRateKhz * 1000));
+                        const jitterAmt = Math.max(0, Math.min(1, fxState.reduxJitterPct / 100));
+                        const bits = Math.max(1, Math.min(16, fxState.reduxBits));
+                        const levels = Math.pow(2, bits);
+                        const shapeAmt = Math.max(0, Math.min(1, fxState.reduxShapePct / 100));
+                        const dcOffset = fxState.reduxDcShift ? 0.08 : 0;
+
+                        for (let ch = 0; ch < output.numberOfChannels; ch++) {
+                            const inData = input.getChannelData(ch);
+                            const outData = output.getChannelData(ch);
+                            let ph = phaseHold[ch] || 0;
+                            let held = sampleHold[ch] || 0;
+
+                            for (let i = 0; i < inData.length; i++) {
+                                const jitterScale = 1 + ((Math.random() * 2 - 1) * jitterAmt * 0.75);
+                                const stepInc = Math.min(1, (baseRateHz * jitterScale) / sr);
+                                ph += stepInc;
+                                if (ph >= 1) {
+                                    ph -= Math.floor(ph);
+                                    held = inData[i];
+                                }
+
+                                let q = Math.round(held * levels) / levels;
+                                if (shapeAmt > 0.001) {
+                                    const shaped = Math.tanh(q * (1 + shapeAmt * 4.5)) / Math.tanh(1 + shapeAmt * 4.5);
+                                    q = q * (1 - shapeAmt) + shaped * shapeAmt;
+                                }
+                                outData[i] = Math.max(-1, Math.min(1, q + dcOffset));
+                            }
+
+                            phaseHold[ch] = ph;
+                            sampleHold[ch] = held;
+                        }
+                    };
+                }
+
+                // Post-Tube/Post-Redux EQ stage
+                eqInputBus = audioCtx.createGain();
+                eqInputBus.gain.value = 1;
 
                 hpfFilter = audioCtx.createBiquadFilter();
                 hpfFilter.type = 'highpass';
@@ -3480,98 +3663,6 @@
                 oscWetGain = audioCtx.createGain();
                 oscWetGain.gain.value = 0;
 
-                // Dynamic Tube Chain
-                tubePreGain = audioCtx.createGain();
-                tubePreGain.gain.value = 1;
-
-                tubeShaper = audioCtx.createWaveShaper();
-                tubeShaper.curve = createDynamicTubeCurve(fxState.tubeCurve, fxState.tubeBiasPct / 100);
-                tubeShaper.oversample = '2x';
-                lastTubeCurveKey = `${fxState.tubeCurve}:${(fxState.tubeBiasPct / 100).toFixed(2)}`;
-
-                tubeToneFilter = audioCtx.createBiquadFilter();
-                tubeToneFilter.type = 'peaking';
-                tubeToneFilter.frequency.value = 1800;
-                tubeToneFilter.Q.value = 0.8;
-                tubeToneFilter.gain.value = 0;
-
-                tubePostGain = audioCtx.createGain();
-                tubePostGain.gain.value = 1;
-
-                tubeWetGain = audioCtx.createGain();
-                tubeWetGain.gain.value = 0;
-
-                tubeEnvAnalyser = audioCtx.createAnalyser();
-                tubeEnvAnalyser.fftSize = 256;
-                tubeEnvData = new Uint8Array(tubeEnvAnalyser.fftSize);
-
-                // Redux Chain (Pre Filter -> Sample/Bit Reducer -> Post Filter -> Wet Gain)
-                reduxPreFilter = audioCtx.createBiquadFilter();
-                reduxPreFilter.type = 'lowpass';
-                reduxPreFilter.Q.value = 0.8;
-                reduxPreFilter.frequency.value = clampNyquistHz(24000, 1000);
-
-                reduxPostFilter = audioCtx.createBiquadFilter();
-                reduxPostFilter.type = 'lowpass';
-                reduxPostFilter.Q.value = 0.8;
-                reduxPostFilter.frequency.value = clampNyquistHz(24000, 1000);
-
-                reduxWetGain = audioCtx.createGain();
-                reduxWetGain.gain.value = 0;
-
-                if (typeof audioCtx.createScriptProcessor === 'function') {
-                    reduxProcessor = audioCtx.createScriptProcessor(1024, 2, 2);
-                    const phaseHold = [0, 0];
-                    const sampleHold = [0, 0];
-
-                    reduxProcessor.onaudioprocess = (event) => {
-                        const input = event.inputBuffer;
-                        const output = event.outputBuffer;
-                        const sr = audioCtx.sampleRate || 44100;
-
-                        if (!effectsRackOpen || !reduxActive || fxState.reduxMix <= 0) {
-                            for (let ch = 0; ch < output.numberOfChannels; ch++) {
-                                output.getChannelData(ch).set(input.getChannelData(ch));
-                            }
-                            return;
-                        }
-
-                        const baseRateHz = Math.max(200, Math.min(sr, fxState.reduxRateKhz * 1000));
-                        const jitterAmt = Math.max(0, Math.min(1, fxState.reduxJitterPct / 100));
-                        const bits = Math.max(1, Math.min(16, fxState.reduxBits));
-                        const levels = Math.pow(2, bits);
-                        const shapeAmt = Math.max(0, Math.min(1, fxState.reduxShapePct / 100));
-                        const dcOffset = fxState.reduxDcShift ? 0.08 : 0;
-
-                        for (let ch = 0; ch < output.numberOfChannels; ch++) {
-                            const inData = input.getChannelData(ch);
-                            const outData = output.getChannelData(ch);
-                            let ph = phaseHold[ch] || 0;
-                            let held = sampleHold[ch] || 0;
-
-                            for (let i = 0; i < inData.length; i++) {
-                                const jitterScale = 1 + ((Math.random() * 2 - 1) * jitterAmt * 0.75);
-                                const stepInc = Math.min(1, (baseRateHz * jitterScale) / sr);
-                                ph += stepInc;
-                                if (ph >= 1) {
-                                    ph -= Math.floor(ph);
-                                    held = inData[i];
-                                }
-
-                                let q = Math.round(held * levels) / levels;
-                                if (shapeAmt > 0.001) {
-                                    const shaped = Math.tanh(q * (1 + shapeAmt * 4.5)) / Math.tanh(1 + shapeAmt * 4.5);
-                                    q = q * (1 - shapeAmt) + shaped * shapeAmt;
-                                }
-                                outData[i] = Math.max(-1, Math.min(1, q + dcOffset));
-                            }
-
-                            phaseHold[ch] = ph;
-                            sampleHold[ch] = held;
-                        }
-                    };
-                }
-
                 // Transparent maximizer bus (high threshold & gentle knee so un-pushed audio is untouched)
                 preMaximizerBus = audioCtx.createGain();
                 preMaximizerBus.gain.value = 1;
@@ -3591,13 +3682,37 @@
                 analyser.smoothingTimeConstant = 0.8;
                 timeDomainData = new Uint8Array(analyser.fftSize);
 
-                source.connect(hpfFilter);
+                // 1) Dry signal goes straight to EQ bus
+                source.connect(eqInputBus);
+
+                // 2) Dynamic Tube runs BEFORE EQ and feeds into EQ bus
+                source.connect(tubeEnvAnalyser);
+                source.connect(tubePreGain);
+                tubePreGain.connect(tubeShaper);
+                tubeShaper.connect(tubeToneFilter);
+                tubeToneFilter.connect(tubePostGain);
+                tubePostGain.connect(tubeWetGain);
+                tubeWetGain.connect(eqInputBus);
+
+                // 3) Redux runs BEFORE EQ and feeds into EQ bus
+                source.connect(reduxPreFilter);
+                if (reduxProcessor) {
+                    reduxPreFilter.connect(reduxProcessor);
+                    reduxProcessor.connect(reduxPostFilter);
+                } else {
+                    reduxPreFilter.connect(reduxPostFilter);
+                }
+                reduxPostFilter.connect(reduxWetGain);
+                reduxWetGain.connect(eqInputBus);
+
+                // 4) EQ chain (HPF -> Bass -> Mids -> Treble -> LPF)
+                eqInputBus.connect(hpfFilter);
                 hpfFilter.connect(bassFilter);
                 bassFilter.connect(midsFilter);
                 midsFilter.connect(trebleFilter);
                 trebleFilter.connect(lpfFilter);
 
-                // Dry transparent path
+                // Dry transparent path after EQ
                 lpfFilter.connect(dryPathGain);
                 dryPathGain.connect(preMaximizerBus);
 
@@ -3651,26 +3766,6 @@
                 oscDelayNode.connect(oscWetGain);
                 oscWetGain.connect(preMaximizerBus);
 
-                // Dynamic Tube
-                lpfFilter.connect(tubeEnvAnalyser);
-                lpfFilter.connect(tubePreGain);
-                tubePreGain.connect(tubeShaper);
-                tubeShaper.connect(tubeToneFilter);
-                tubeToneFilter.connect(tubePostGain);
-                tubePostGain.connect(tubeWetGain);
-                tubeWetGain.connect(preMaximizerBus);
-
-                // Redux
-                lpfFilter.connect(reduxPreFilter);
-                if (reduxProcessor) {
-                    reduxPreFilter.connect(reduxProcessor);
-                    reduxProcessor.connect(reduxPostFilter);
-                } else {
-                    reduxPreFilter.connect(reduxPostFilter);
-                }
-                reduxPostFilter.connect(reduxWetGain);
-                reduxWetGain.connect(preMaximizerBus);
-
                 // Output bus -> Maximizer -> Master -> Analyser -> Destination
                 preMaximizerBus.connect(maximizerLimiter);
                 maximizerLimiter.connect(masterBus);
@@ -3689,8 +3784,8 @@
                 syncTubeGraph(0);
                 syncReduxGraph();
                 scheduleNextGrain();
-                if (audio.src) {
-                    ensureGranulatorBuffer(audio.src);
+                if (activeSourceUrl || audio.src) {
+                    ensureGranulatorBuffer(activeSourceUrl || audio.src);
                 }
             } catch (err) {
                 console.warn("Web Audio API fallback active:", err);
@@ -4767,7 +4862,14 @@
 
         const firstCard = document.querySelector('.track-card');
         if (firstCard) {
-            audio.src = encodeURI(firstCard.getAttribute('data-src'));
+            const initialEncodedSrc = encodeURI(firstCard.getAttribute('data-src'));
+            activeSourceUrl = initialEncodedSrc;
+            audio.src = initialEncodedSrc;
+            cacheAudioTrack(initialEncodedSrc).then(cached => {
+                if (cached && cached.blobUrl && activeSourceUrl === initialEncodedSrc && audio.paused) {
+                    applyCachedAudioSrcToElement(initialEncodedSrc);
+                }
+            });
         }
 
         function resizeCanvas() {
@@ -4808,12 +4910,24 @@
             card.querySelector('.play-indicator').textContent = 'PAUSE';
             vizStatus.textContent = `Loading: ${title}...`;
 
-            if (!audio.src || !audio.src.endsWith(encodedSrc)) {
-                audio.src = encodedSrc;
+            const cachedBlobUrl = audioBlobCache.get(encodedSrc);
+            const isSameTrack = activeSourceUrl === encodedSrc && (
+                audio.src === encodedSrc || (cachedBlobUrl && audio.src === cachedBlobUrl)
+            );
+
+            if (!isSameTrack) {
+                activeSourceUrl = encodedSrc;
+                audio.src = cachedBlobUrl || encodedSrc;
                 audio.load();
             }
 
-            ensureGranulatorBuffer(audio.src);
+            cacheAudioTrack(encodedSrc).then(cached => {
+                if (cached && cached.blobUrl && activeSourceUrl === encodedSrc && audio.src !== cached.blobUrl) {
+                    applyCachedAudioSrcToElement(encodedSrc);
+                }
+            });
+
+            ensureGranulatorBuffer(encodedSrc);
 
             const rawTotalPct = currentMainPitchPct + currentNudgePct;
             if (rawTotalPct <= -100) {
@@ -4915,10 +5029,12 @@
             } else {
                 updateProgressUI(ratio * 100);
                 vizTime.textContent = `${formatTime(targetTime)} / ${formatTime(dur)}`;
-                if (audio.readyState >= 2 && !audio.seeking) {
+                if (audio.readyState >= 1) {
                     try {
                         audio.currentTime = targetTime;
-                    } catch (_) {}
+                    } catch (_) {
+                        pendingSeekTime = targetTime;
+                    }
                 } else {
                     pendingSeekTime = targetTime;
                 }
