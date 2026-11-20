@@ -722,7 +722,7 @@
             text-align: center;
         }
 
-        /* Reverb, Granulator & Oscillation Delay Panel */
+        /* Reverb, Granulator, Oscillation Delay, Dynamic Tube & Redux Panel */
         .fx-section-box {
             margin-top: 8px;
             padding-top: 12px;
@@ -805,6 +805,52 @@
 
         .fx-select:focus {
             outline: none;
+            border-color: #ff0033;
+        }
+
+        .tube-curve-group {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .tube-curve-btn {
+            font-family: 'Lyno Walt', monospace;
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: #111111;
+            background: #ffffff;
+            border: 2px solid #000000;
+            border-radius: 4px;
+            padding: 2px 9px;
+            cursor: pointer;
+            transition: background-color 0.12s ease, color 0.12s ease, border-color 0.12s ease;
+        }
+
+        .tube-curve-btn.active,
+        .tube-curve-btn:hover {
+            background: #ff0033;
+            color: #ffffff;
+            border-color: #ff0033;
+        }
+
+        .redux-toggle-pill {
+            font-family: 'Lyno Ulyscyr', sans-serif;
+            font-size: 0.7rem;
+            letter-spacing: 0.12em;
+            color: #111111;
+            background: #ffffff;
+            border: 2px solid #000000;
+            border-radius: 4px;
+            padding: 3px 9px;
+            cursor: pointer;
+            transition: background-color 0.12s ease, color 0.12s ease, border-color 0.12s ease;
+        }
+
+        .redux-toggle-pill.active,
+        .redux-toggle-pill:hover {
+            background: #ff0033;
+            color: #ffffff;
             border-color: #ff0033;
         }
 
@@ -1539,10 +1585,10 @@
                         <button type="button" class="deck-btn" id="delayToggleBtn" aria-pressed="false" title="Red = Delay Active, White = Bypassed">DLY</button>
                     </div>
 
-                    <!-- Reverb, Granulator & Oscillation Delay Panel -->
+                    <!-- Reverb, Granulator, Oscillation Delay, Dynamic Tube & Redux Panel -->
                     <div class="fx-section-box">
                         <div class="fx-section-header">
-                            <span class="fx-section-title">REVERB · GRANULATOR · OSC DELAY</span>
+                            <span class="fx-section-title">REVERB · GRANULATOR · OSC DELAY · DYNAMIC TUBE · REDUX</span>
                         </div>
 
                         <!-- Reverb Module -->
@@ -1738,7 +1784,171 @@
                             </div>
                         </div>
 
-                        <p class="fx-note">Granulator uses a live granular stream + decoded track buffer (when served over HTTP/HTTPS) with a looping playhead.</p>
+                        <!-- Dynamic Tube Module -->
+                        <div class="fx-module-block">
+                            <div class="fx-module-top" id="tubeModuleTop">
+                                <span class="fx-module-name">DYNAMIC TUBE (DRY 0 → WET 100)</span>
+                                <button type="button" class="deck-btn" id="tubeToggleBtn" aria-pressed="false" title="Click to toggle & show Dynamic Tube">TUBE</button>
+                            </div>
+                            <div class="collapsible-block" id="tubeBodyGroup">
+                                <div class="fx-select-row">
+                                    <span class="fx-select-label">CURVE</span>
+                                    <div class="tube-curve-group" role="group" aria-label="Dynamic Tube curve mode">
+                                        <button type="button" class="tube-curve-btn active" data-tube-curve="A">A</button>
+                                        <button type="button" class="tube-curve-btn" data-tube-curve="B">B</button>
+                                        <button type="button" class="tube-curve-btn" data-tube-curve="C">C</button>
+                                    </div>
+                                </div>
+
+                                <div class="eq-knobs-group" id="tubeKnobsGroup">
+                                    <div class="knob-unit">
+                                        <span class="knob-title">DRIVE</span>
+                                        <div class="knob-dial" id="tubeDriveKnob" role="slider" tabindex="0" aria-label="Dynamic Tube drive in dB" aria-valuemin="0" aria-valuemax="24" aria-valuenow="5.5" title="Tube saturation drive (0.0dB–24.0dB). Double-click to reset (5.5dB).">
+                                            <div class="knob-indicator" id="tubeDriveIndicator"></div>
+                                        </div>
+                                        <span class="knob-val" id="tubeDriveValue">+5.5dB</span>
+                                        <span class="knob-sub">SAT</span>
+                                    </div>
+
+                                    <div class="knob-unit">
+                                        <span class="knob-title">TONE</span>
+                                        <div class="knob-dial" id="tubeToneKnob" role="slider" tabindex="0" aria-label="Dynamic Tube tone tilt" aria-valuemin="-1" aria-valuemax="1" aria-valuenow="-0.27" title="Tube tonal balance (-1.00 to +1.00). Double-click to reset (-0.27).">
+                                            <div class="knob-indicator" id="tubeToneIndicator"></div>
+                                        </div>
+                                        <span class="knob-val" id="tubeToneValue">-0.27</span>
+                                        <span class="knob-sub">TILT</span>
+                                    </div>
+
+                                    <div class="knob-unit">
+                                        <span class="knob-title">BIAS</span>
+                                        <div class="knob-dial" id="tubeBiasKnob" role="slider" tabindex="0" aria-label="Dynamic Tube bias percentage" aria-valuemin="-100" aria-valuemax="100" aria-valuenow="25" title="Tube operating bias (-100% to +100%). Double-click to reset (25%).">
+                                            <div class="knob-indicator" id="tubeBiasIndicator"></div>
+                                        </div>
+                                        <span class="knob-val" id="tubeBiasValue">25%</span>
+                                        <span class="knob-sub">ASYM</span>
+                                    </div>
+
+                                    <div class="knob-unit">
+                                        <span class="knob-title">ENV</span>
+                                        <div class="knob-dial" id="tubeEnvKnob" role="slider" tabindex="0" aria-label="Dynamic Tube envelope modulation amount" aria-valuemin="-100" aria-valuemax="100" aria-valuenow="0" title="Envelope drive modulation (-100% to +100%). Double-click to reset (0%).">
+                                            <div class="knob-indicator" id="tubeEnvIndicator"></div>
+                                        </div>
+                                        <span class="knob-val" id="tubeEnvValue">0%</span>
+                                        <span class="knob-sub">DYN</span>
+                                    </div>
+
+                                    <div class="knob-unit">
+                                        <span class="knob-title">ATTACK</span>
+                                        <div class="knob-dial" id="tubeAttackKnob" role="slider" tabindex="0" aria-label="Dynamic Tube envelope attack in milliseconds" aria-valuemin="0.5" aria-valuemax="150" aria-valuenow="5" title="Envelope follower attack (0.5ms–150ms). Double-click to reset (5.0ms).">
+                                            <div class="knob-indicator" id="tubeAttackIndicator"></div>
+                                        </div>
+                                        <span class="knob-val" id="tubeAttackValue">5.0ms</span>
+                                        <span class="knob-sub">ATK</span>
+                                    </div>
+
+                                    <div class="knob-unit">
+                                        <span class="knob-title">RELEASE</span>
+                                        <div class="knob-dial" id="tubeReleaseKnob" role="slider" tabindex="0" aria-label="Dynamic Tube envelope release in milliseconds" aria-valuemin="5" aria-valuemax="600" aria-valuenow="35" title="Envelope follower release (5ms–600ms). Double-click to reset (35.0ms).">
+                                            <div class="knob-indicator" id="tubeReleaseIndicator"></div>
+                                        </div>
+                                        <span class="knob-val" id="tubeReleaseValue">35.0ms</span>
+                                        <span class="knob-sub">REL</span>
+                                    </div>
+
+                                    <div class="knob-unit">
+                                        <span class="knob-title">OUTPUT</span>
+                                        <div class="knob-dial" id="tubeOutputKnob" role="slider" tabindex="0" aria-label="Dynamic Tube output gain in dB" aria-valuemin="-18" aria-valuemax="12" aria-valuenow="0" title="Tube output gain (-18.0dB to +12.0dB). Double-click to reset (0.0dB).">
+                                            <div class="knob-indicator" id="tubeOutputIndicator"></div>
+                                        </div>
+                                        <span class="knob-val" id="tubeOutputValue">0.0dB</span>
+                                        <span class="knob-sub">TRIM</span>
+                                    </div>
+
+                                    <div class="knob-unit">
+                                        <span class="knob-title">DRY / WET</span>
+                                        <div class="knob-dial" id="tubeMixKnob" role="slider" tabindex="0" aria-label="Dynamic Tube dry wet mix" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" title="0% = 100% Dry, 100% = 100% Wet. Double-click to reset (0%).">
+                                            <div class="knob-indicator" id="tubeMixIndicator"></div>
+                                        </div>
+                                        <span class="knob-val" id="tubeMixValue">0%</span>
+                                        <span class="knob-sub">0–100%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Redux Module -->
+                        <div class="fx-module-block">
+                            <div class="fx-module-top" id="reduxModuleTop">
+                                <span class="fx-module-name">REDUX (DRY 0 → WET 100)</span>
+                                <button type="button" class="deck-btn" id="reduxToggleBtn" aria-pressed="false" title="Click to toggle & show Redux">RDX</button>
+                            </div>
+                            <div class="collapsible-block" id="reduxBodyGroup">
+                                <div class="fx-select-row">
+                                    <span class="fx-select-label">FILTER</span>
+                                    <button type="button" class="redux-toggle-pill" id="reduxFilterPreBtn" aria-pressed="false">PRE</button>
+                                    <button type="button" class="redux-toggle-pill" id="reduxFilterPostBtn" aria-pressed="false">POST</button>
+                                    <button type="button" class="redux-toggle-pill" id="reduxDcShiftBtn" aria-pressed="false" style="margin-left:8px;">DC SHIFT</button>
+                                </div>
+
+                                <div class="eq-knobs-group" id="reduxKnobsGroup">
+                                    <div class="knob-unit">
+                                        <span class="knob-title">RATE</span>
+                                        <div class="knob-dial" id="reduxRateKnob" role="slider" tabindex="0" aria-label="Redux sample rate in kHz" aria-valuemin="0.2" aria-valuemax="48" aria-valuenow="40" title="Sample rate reduction (0.2kHz–48.0kHz). Double-click to reset (40.0kHz).">
+                                            <div class="knob-indicator" id="reduxRateIndicator"></div>
+                                        </div>
+                                        <span class="knob-val" id="reduxRateValue">40.0kHz</span>
+                                        <span class="knob-sub">SRATE</span>
+                                    </div>
+
+                                    <div class="knob-unit">
+                                        <span class="knob-title">BITS</span>
+                                        <div class="knob-dial" id="reduxBitsKnob" role="slider" tabindex="0" aria-label="Redux bit depth" aria-valuemin="1" aria-valuemax="16" aria-valuenow="12" title="Bit depth reduction (1 bit–16 bits). Double-click to reset (12).">
+                                            <div class="knob-indicator" id="reduxBitsIndicator"></div>
+                                        </div>
+                                        <span class="knob-val" id="reduxBitsValue">12</span>
+                                        <span class="knob-sub">DEPTH</span>
+                                    </div>
+
+                                    <div class="knob-unit">
+                                        <span class="knob-title">JITTER</span>
+                                        <div class="knob-dial" id="reduxJitterKnob" role="slider" tabindex="0" aria-label="Redux clock jitter percentage" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" title="Sample rate clock jitter (0%–100%). Double-click to reset (0%).">
+                                            <div class="knob-indicator" id="reduxJitterIndicator"></div>
+                                        </div>
+                                        <span class="knob-val" id="reduxJitterValue">0%</span>
+                                        <span class="knob-sub">CLOCK</span>
+                                    </div>
+
+                                    <div class="knob-unit">
+                                        <span class="knob-title">SHAPE</span>
+                                        <div class="knob-dial" id="reduxShapeKnob" role="slider" tabindex="0" aria-label="Redux wave shaping percentage" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" title="Quantizer curve wave shaping (0%–100%). Double-click to reset (0%).">
+                                            <div class="knob-indicator" id="reduxShapeIndicator"></div>
+                                        </div>
+                                        <span class="knob-val" id="reduxShapeValue">0%</span>
+                                        <span class="knob-sub">CURVE</span>
+                                    </div>
+
+                                    <div class="knob-unit">
+                                        <span class="knob-title">FILTER</span>
+                                        <div class="knob-dial" id="reduxFilterKnob" role="slider" tabindex="0" aria-label="Redux filter frequency or resonance" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" title="Pre/Post filter position (0–100). Double-click to reset (0).">
+                                            <div class="knob-indicator" id="reduxFilterIndicator"></div>
+                                        </div>
+                                        <span class="knob-val" id="reduxFilterValue">0.00</span>
+                                        <span class="knob-sub">PRE/POST</span>
+                                    </div>
+
+                                    <div class="knob-unit">
+                                        <span class="knob-title">DRY / WET</span>
+                                        <div class="knob-dial" id="reduxMixKnob" role="slider" tabindex="0" aria-label="Redux dry wet mix" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" title="0% = 100% Dry, 100% = 100% Wet. Double-click to reset (0%).">
+                                            <div class="knob-indicator" id="reduxMixIndicator"></div>
+                                        </div>
+                                        <span class="knob-val" id="reduxMixValue">0%</span>
+                                        <span class="knob-sub">0–100%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <p class="fx-note">Granulator uses a live granular stream + decoded track buffer (when served over HTTP/HTTPS) with a looping playhead. All wet mixes default to 0% when opened.</p>
                     </div>
                 </div>
             </div>
@@ -1847,7 +2057,7 @@
             }
         });
 
-        /* --- AUDIO PLAYER, VOLUME, PITCH/SPEED, NUDGE, LOOP IN/OUT/÷2, 3-BAND EQ, LPF/HPF, TAP BPM & DELAY, REVERB, GRANULATOR, OSC DELAY, VISUALIZER --- */
+        /* --- AUDIO PLAYER, VOLUME, PITCH/SPEED, NUDGE, LOOP IN/OUT/÷2, 3-BAND EQ, LPF/HPF, TAP BPM & DELAY, REVERB, GRANULATOR, OSC DELAY, DYNAMIC TUBE, REDUX, VISUALIZER --- */
         const audio = document.getElementById('audioPlayer');
         const canvas = document.getElementById('audioVisualizer');
         const ctx = canvas.getContext('2d');
@@ -1909,6 +2119,18 @@
         const oscModuleTop = document.getElementById('oscModuleTop');
         const oscDlyKnobsGroup = document.getElementById('oscDlyKnobsGroup');
 
+        const tubeToggleBtn = document.getElementById('tubeToggleBtn');
+        const tubeModuleTop = document.getElementById('tubeModuleTop');
+        const tubeBodyGroup = document.getElementById('tubeBodyGroup');
+        const tubeCurveBtns = Array.from(document.querySelectorAll('.tube-curve-btn'));
+
+        const reduxToggleBtn = document.getElementById('reduxToggleBtn');
+        const reduxModuleTop = document.getElementById('reduxModuleTop');
+        const reduxBodyGroup = document.getElementById('reduxBodyGroup');
+        const reduxFilterPreBtn = document.getElementById('reduxFilterPreBtn');
+        const reduxFilterPostBtn = document.getElementById('reduxFilterPostBtn');
+        const reduxDcShiftBtn = document.getElementById('reduxDcShiftBtn');
+
         let activeCard = null;
         let isDraggingProgress = false;
         let pendingSeekTime = null;
@@ -1947,10 +2169,12 @@
         let tapTimestamps = [];
         let bpmPulseTimer = null;
 
-        // Reverb, Granulator & Oscillation Delay state (all start at 0% mix for full transparency)
+        // Reverb, Granulator, Oscillation Delay, Dynamic Tube & Redux state (all start at 0% mix for full transparency)
         let revActive = false;
         let grainActive = false;
         let oscDlyActive = false;
+        let tubeActive = false;
+        let reduxActive = false;
         let grainLoopEnabled = true;
 
         const fxState = {
@@ -1970,7 +2194,25 @@
             oscFdbk: 45,
             oscLfoRate: 1.2,
             oscLfoDepthMs: 8.0,
-            oscMix: 0
+            oscMix: 0,
+            tubeCurve: 'A',
+            tubeDriveDb: 5.5,
+            tubeTone: -0.27,
+            tubeBiasPct: 25,
+            tubeEnvPct: 0,
+            tubeAttackMs: 5.0,
+            tubeReleaseMs: 35.0,
+            tubeOutputDb: 0,
+            tubeMix: 0,
+            reduxRateKhz: 40.0,
+            reduxBits: 12,
+            reduxJitterPct: 0,
+            reduxShapePct: 0,
+            reduxFilterAmt: 0,
+            reduxFilterPre: false,
+            reduxFilterPost: false,
+            reduxDcShift: false,
+            reduxMix: 0
         };
 
         function setEffectsRackOpen(open) {
@@ -1987,11 +2229,15 @@
                 revActive = true;
                 grainActive = true;
                 oscDlyActive = true;
+                tubeActive = true;
+                reduxActive = true;
                 updateEQToggleUI();
                 updateDelayToggleUI();
                 updateRevToggleUI();
                 updateGrainToggleUI();
                 updateOscDlyToggleUI();
+                updateTubeToggleUI();
+                updateReduxToggleUI();
                 syncDryWetBalance();
             } else {
                 syncDryWetBalance();
@@ -2212,6 +2458,23 @@
         let oscLfoDepthGain = null;
         let oscWetGain = null;
 
+        // Dynamic Tube graph nodes
+        let tubePreGain = null;
+        let tubeShaper = null;
+        let tubeToneFilter = null;
+        let tubePostGain = null;
+        let tubeWetGain = null;
+        let tubeEnvAnalyser = null;
+        let tubeEnvData = null;
+        let tubeEnvelopeFollower = 0;
+        let lastTubeCurveKey = '';
+
+        // Redux graph nodes (ScriptProcessor bitcrusher / sample-rate reducer + Pre/Post filters + DC Shift)
+        let reduxPreFilter = null;
+        let reduxProcessor = null;
+        let reduxPostFilter = null;
+        let reduxWetGain = null;
+
         let webAudioReady = false;
         let smoothedLoudness = 0;
         let fallbackPhase = 0;
@@ -2247,6 +2510,34 @@
             for (let i = 0; i < samples; i++) {
                 const x = (i * 2) / (samples - 1) - 1;
                 curve[i] = Math.tanh(x * amount) / Math.tanh(amount);
+            }
+            return curve;
+        }
+
+        function createDynamicTubeCurve(curveMode, biasNorm) {
+            const samples = 512;
+            const curve = new Float32Array(samples);
+            const biasOffset = biasNorm * 0.45;
+            const sharpness = curveMode === 'A' ? 2.4 : (curveMode === 'B' ? 3.8 : 5.6);
+
+            for (let i = 0; i < samples; i++) {
+                const x = (i * 2) / (samples - 1) - 1;
+                const biased = x + biasOffset;
+                let y;
+                if (curveMode === 'A') {
+                    // Warm asymmetric triode-style soft knee
+                    y = biased >= 0
+                        ? Math.tanh(biased * sharpness)
+                        : Math.tanh(biased * (sharpness * 0.72)) * 0.88;
+                } else if (curveMode === 'B') {
+                    // Harder pentode compression & harmonic bite
+                    const hard = Math.tanh(biased * sharpness);
+                    y = hard + 0.14 * Math.sin(biased * Math.PI * 2);
+                } else {
+                    // Aggressive high-gain saturation & cut-off
+                    y = Math.tanh(biased * sharpness) * 1.06;
+                }
+                curve[i] = Math.max(-1.05, Math.min(1.05, y));
             }
             return curve;
         }
@@ -2600,7 +2891,7 @@
 
         function syncDryWetBalance() {
             if (!webAudioReady || !audioCtx || !dryPathGain) return;
-            // When EFFECTS is minimized, bypass wet sends so dry signal stays 100% transparent
+            // When EFFECTS is minimized, keep dry signal at 1.0 so the song is 100% transparent
             if (!effectsRackOpen) {
                 smoothParam(dryPathGain.gain, 1.0, 0.015);
                 return;
@@ -2611,12 +2902,16 @@
                 : 0;
             const gWetNorm = grainActive ? Math.max(0, Math.min(1, fxState.grainMix / 100)) : 0;
             const oWetNorm = oscDlyActive ? Math.max(0, Math.min(1, fxState.oscMix / 100)) : 0;
+            const tWetNorm = tubeActive ? Math.max(0, Math.min(1, fxState.tubeMix / 100)) : 0;
+            const xWetNorm = reduxActive ? Math.max(0, Math.min(1, fxState.reduxMix / 100)) : 0;
             const rWetNorm = revActive ? Math.max(0, Math.min(1, fxState.revMix / 100)) : 0;
 
             const dryFromMix = Math.min(
                 equalPowerDryGain(dWetNorm),
                 equalPowerDryGain(gWetNorm),
-                equalPowerDryGain(oWetNorm)
+                equalPowerDryGain(oWetNorm),
+                equalPowerDryGain(tWetNorm),
+                equalPowerDryGain(xWetNorm)
             );
             const revDryTrim = rWetNorm > 0.75 ? (1 - (rWetNorm - 0.75) * 0.4) : 1;
             smoothParam(dryPathGain.gain, Math.max(0, Math.min(1, dryFromMix * revDryTrim)), 0.02);
@@ -2662,6 +2957,71 @@
             syncDryWetBalance();
         }
 
+        function syncTubeGraph(envModOffset = 0) {
+            if (!webAudioReady || !audioCtx || !tubePreGain || !tubeShaper || !tubeToneFilter || !tubePostGain || !tubeWetGain) return;
+            const biasNorm = Math.max(-1, Math.min(1, fxState.tubeBiasPct / 100));
+            const curveKey = `${fxState.tubeCurve}:${biasNorm.toFixed(2)}`;
+            if (curveKey !== lastTubeCurveKey) {
+                tubeShaper.curve = createDynamicTubeCurve(fxState.tubeCurve, biasNorm);
+                lastTubeCurveKey = curveKey;
+            }
+
+            const effectiveDriveDb = Math.max(0, Math.min(30, fxState.tubeDriveDb + envModOffset));
+            const preLinear = Math.pow(10, effectiveDriveDb / 20);
+            const postLinear = Math.pow(10, fxState.tubeOutputDb / 20) / Math.max(1, Math.pow(preLinear, 0.35));
+            const toneDb = fxState.tubeTone * 9;
+
+            const wetNorm = (effectsRackOpen && tubeActive) ? Math.max(0, Math.min(1, fxState.tubeMix / 100)) : 0;
+            const wetAmt = wetNorm > 0 ? equalPowerWetGain(wetNorm) : 0;
+
+            smoothParam(tubePreGain.gain, preLinear, 0.015);
+            smoothParam(tubeToneFilter.gain, toneDb, 0.015);
+            smoothParam(tubePostGain.gain, postLinear, 0.015);
+            smoothParam(tubeWetGain.gain, wetAmt, 0.02);
+            syncDryWetBalance();
+        }
+
+        function updateTubeEnvelopeFollower() {
+            if (!webAudioReady || !audioCtx || !tubeEnvAnalyser || !tubeEnvData) return;
+            if (!effectsRackOpen || !tubeActive || fxState.tubeMix <= 0 || Math.abs(fxState.tubeEnvPct) < 0.5) {
+                tubeEnvelopeFollower = 0;
+                return;
+            }
+            tubeEnvAnalyser.getByteTimeDomainData(tubeEnvData);
+            let peak = 0;
+            for (let i = 0; i < tubeEnvData.length; i++) {
+                const v = Math.abs((tubeEnvData[i] - 128) / 128);
+                if (v > peak) peak = v;
+            }
+            const atkSec = Math.max(0.001, fxState.tubeAttackMs / 1000);
+            const relSec = Math.max(0.005, fxState.tubeReleaseMs / 1000);
+            const dt = 1 / 60;
+            const coeff = peak > tubeEnvelopeFollower
+                ? (1 - Math.exp(-dt / atkSec))
+                : (1 - Math.exp(-dt / relSec));
+            tubeEnvelopeFollower += (peak - tubeEnvelopeFollower) * coeff;
+
+            const envDriveModDb = tubeEnvelopeFollower * (fxState.tubeEnvPct / 100) * 14;
+            syncTubeGraph(envDriveModDb);
+        }
+
+        function syncReduxGraph() {
+            if (!webAudioReady || !audioCtx || !reduxPreFilter || !reduxPostFilter || !reduxWetGain) return;
+            const fPos = Math.max(0, Math.min(1, fxState.reduxFilterAmt / 100));
+            const cutoffHz = clampNyquistHz(80 + Math.pow(fPos, 1.4) * 21000, 80);
+
+            const preActive = fxState.reduxFilterPre && fPos > 0.005;
+            const postActive = fxState.reduxFilterPost && fPos > 0.005;
+
+            smoothParam(reduxPreFilter.frequency, preActive ? cutoffHz : clampNyquistHz(24000, 1000), 0.02);
+            smoothParam(reduxPostFilter.frequency, postActive ? cutoffHz : clampNyquistHz(24000, 1000), 0.02);
+
+            const wetNorm = (effectsRackOpen && reduxActive) ? Math.max(0, Math.min(1, fxState.reduxMix / 100)) : 0;
+            const wetAmt = wetNorm > 0 ? equalPowerWetGain(wetNorm) : 0;
+            smoothParam(reduxWetGain.gain, wetAmt, 0.02);
+            syncDryWetBalance();
+        }
+
         function updateRevToggleUI() {
             revToggleBtn.classList.toggle('active', revActive);
             revToggleBtn.setAttribute('aria-pressed', String(revActive));
@@ -2694,6 +3054,24 @@
             syncOscDelayGraph();
         }
 
+        function updateTubeToggleUI() {
+            tubeToggleBtn.classList.toggle('active', tubeActive);
+            tubeToggleBtn.setAttribute('aria-pressed', String(tubeActive));
+            const showBody = tubeActive || effectsRackOpen;
+            tubeBodyGroup.classList.toggle('open', showBody);
+            tubeModuleTop.classList.toggle('has-body', showBody);
+            syncTubeGraph(0);
+        }
+
+        function updateReduxToggleUI() {
+            reduxToggleBtn.classList.toggle('active', reduxActive);
+            reduxToggleBtn.setAttribute('aria-pressed', String(reduxActive));
+            const showBody = reduxActive || effectsRackOpen;
+            reduxBodyGroup.classList.toggle('open', showBody);
+            reduxModuleTop.classList.toggle('has-body', showBody);
+            syncReduxGraph();
+        }
+
         revToggleBtn.addEventListener('click', () => {
             initAudioGraph();
             revActive = !revActive;
@@ -2710,6 +3088,50 @@
             initAudioGraph();
             oscDlyActive = !oscDlyActive;
             updateOscDlyToggleUI();
+        });
+
+        tubeToggleBtn.addEventListener('click', () => {
+            initAudioGraph();
+            tubeActive = !tubeActive;
+            updateTubeToggleUI();
+        });
+
+        tubeCurveBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                initAudioGraph();
+                fxState.tubeCurve = btn.getAttribute('data-tube-curve') || 'A';
+                tubeCurveBtns.forEach(b => b.classList.toggle('active', b === btn));
+                syncTubeGraph(0);
+            });
+        });
+
+        reduxToggleBtn.addEventListener('click', () => {
+            initAudioGraph();
+            reduxActive = !reduxActive;
+            updateReduxToggleUI();
+        });
+
+        reduxFilterPreBtn.addEventListener('click', () => {
+            initAudioGraph();
+            fxState.reduxFilterPre = !fxState.reduxFilterPre;
+            reduxFilterPreBtn.classList.toggle('active', fxState.reduxFilterPre);
+            reduxFilterPreBtn.setAttribute('aria-pressed', String(fxState.reduxFilterPre));
+            syncReduxGraph();
+        });
+
+        reduxFilterPostBtn.addEventListener('click', () => {
+            initAudioGraph();
+            fxState.reduxFilterPost = !fxState.reduxFilterPost;
+            reduxFilterPostBtn.classList.toggle('active', fxState.reduxFilterPost);
+            reduxFilterPostBtn.setAttribute('aria-pressed', String(fxState.reduxFilterPost));
+            syncReduxGraph();
+        });
+
+        reduxDcShiftBtn.addEventListener('click', () => {
+            initAudioGraph();
+            fxState.reduxDcShift = !fxState.reduxDcShift;
+            reduxDcShiftBtn.classList.toggle('active', fxState.reduxDcShift);
+            reduxDcShiftBtn.setAttribute('aria-pressed', String(fxState.reduxDcShift));
         });
 
         grainModeSelect.addEventListener('change', () => {
@@ -2932,6 +3354,8 @@
                 syncReverbGraph();
                 syncGranulatorGraph();
                 syncOscDelayGraph();
+                syncTubeGraph(0);
+                syncReduxGraph();
                 if (audio.src) {
                     ensureGranulatorBuffer(audio.src);
                 }
@@ -3056,15 +3480,108 @@
                 oscWetGain = audioCtx.createGain();
                 oscWetGain.gain.value = 0;
 
+                // Dynamic Tube Chain
+                tubePreGain = audioCtx.createGain();
+                tubePreGain.gain.value = 1;
+
+                tubeShaper = audioCtx.createWaveShaper();
+                tubeShaper.curve = createDynamicTubeCurve(fxState.tubeCurve, fxState.tubeBiasPct / 100);
+                tubeShaper.oversample = '2x';
+                lastTubeCurveKey = `${fxState.tubeCurve}:${(fxState.tubeBiasPct / 100).toFixed(2)}`;
+
+                tubeToneFilter = audioCtx.createBiquadFilter();
+                tubeToneFilter.type = 'peaking';
+                tubeToneFilter.frequency.value = 1800;
+                tubeToneFilter.Q.value = 0.8;
+                tubeToneFilter.gain.value = 0;
+
+                tubePostGain = audioCtx.createGain();
+                tubePostGain.gain.value = 1;
+
+                tubeWetGain = audioCtx.createGain();
+                tubeWetGain.gain.value = 0;
+
+                tubeEnvAnalyser = audioCtx.createAnalyser();
+                tubeEnvAnalyser.fftSize = 256;
+                tubeEnvData = new Uint8Array(tubeEnvAnalyser.fftSize);
+
+                // Redux Chain (Pre Filter -> Sample/Bit Reducer -> Post Filter -> Wet Gain)
+                reduxPreFilter = audioCtx.createBiquadFilter();
+                reduxPreFilter.type = 'lowpass';
+                reduxPreFilter.Q.value = 0.8;
+                reduxPreFilter.frequency.value = clampNyquistHz(24000, 1000);
+
+                reduxPostFilter = audioCtx.createBiquadFilter();
+                reduxPostFilter.type = 'lowpass';
+                reduxPostFilter.Q.value = 0.8;
+                reduxPostFilter.frequency.value = clampNyquistHz(24000, 1000);
+
+                reduxWetGain = audioCtx.createGain();
+                reduxWetGain.gain.value = 0;
+
+                if (typeof audioCtx.createScriptProcessor === 'function') {
+                    reduxProcessor = audioCtx.createScriptProcessor(1024, 2, 2);
+                    const phaseHold = [0, 0];
+                    const sampleHold = [0, 0];
+
+                    reduxProcessor.onaudioprocess = (event) => {
+                        const input = event.inputBuffer;
+                        const output = event.outputBuffer;
+                        const sr = audioCtx.sampleRate || 44100;
+
+                        if (!effectsRackOpen || !reduxActive || fxState.reduxMix <= 0) {
+                            for (let ch = 0; ch < output.numberOfChannels; ch++) {
+                                output.getChannelData(ch).set(input.getChannelData(ch));
+                            }
+                            return;
+                        }
+
+                        const baseRateHz = Math.max(200, Math.min(sr, fxState.reduxRateKhz * 1000));
+                        const jitterAmt = Math.max(0, Math.min(1, fxState.reduxJitterPct / 100));
+                        const bits = Math.max(1, Math.min(16, fxState.reduxBits));
+                        const levels = Math.pow(2, bits);
+                        const shapeAmt = Math.max(0, Math.min(1, fxState.reduxShapePct / 100));
+                        const dcOffset = fxState.reduxDcShift ? 0.08 : 0;
+
+                        for (let ch = 0; ch < output.numberOfChannels; ch++) {
+                            const inData = input.getChannelData(ch);
+                            const outData = output.getChannelData(ch);
+                            let ph = phaseHold[ch] || 0;
+                            let held = sampleHold[ch] || 0;
+
+                            for (let i = 0; i < inData.length; i++) {
+                                const jitterScale = 1 + ((Math.random() * 2 - 1) * jitterAmt * 0.75);
+                                const stepInc = Math.min(1, (baseRateHz * jitterScale) / sr);
+                                ph += stepInc;
+                                if (ph >= 1) {
+                                    ph -= Math.floor(ph);
+                                    held = inData[i];
+                                }
+
+                                let q = Math.round(held * levels) / levels;
+                                if (shapeAmt > 0.001) {
+                                    const shaped = Math.tanh(q * (1 + shapeAmt * 4.5)) / Math.tanh(1 + shapeAmt * 4.5);
+                                    q = q * (1 - shapeAmt) + shaped * shapeAmt;
+                                }
+                                outData[i] = Math.max(-1, Math.min(1, q + dcOffset));
+                            }
+
+                            phaseHold[ch] = ph;
+                            sampleHold[ch] = held;
+                        }
+                    };
+                }
+
+                // Transparent maximizer bus (high threshold & gentle knee so un-pushed audio is untouched)
                 preMaximizerBus = audioCtx.createGain();
                 preMaximizerBus.gain.value = 1;
 
                 maximizerLimiter = audioCtx.createDynamicsCompressor();
-                maximizerLimiter.threshold.value = -3.0;
-                maximizerLimiter.knee.value = 2.0;
-                maximizerLimiter.ratio.value = 20.0;
-                maximizerLimiter.attack.value = 0.002;
-                maximizerLimiter.release.value = 0.08;
+                maximizerLimiter.threshold.value = 0.0;
+                maximizerLimiter.knee.value = 0.5;
+                maximizerLimiter.ratio.value = 4.0;
+                maximizerLimiter.attack.value = 0.005;
+                maximizerLimiter.release.value = 0.12;
 
                 masterBus = audioCtx.createGain();
                 masterBus.gain.value = 1.0;
@@ -3079,11 +3596,15 @@
                 bassFilter.connect(midsFilter);
                 midsFilter.connect(trebleFilter);
                 trebleFilter.connect(lpfFilter);
+
+                // Dry transparent path
                 lpfFilter.connect(dryPathGain);
                 dryPathGain.connect(preMaximizerBus);
 
+                // Granulator live tap
                 lpfFilter.connect(grainLiveTapDelay);
 
+                // Stereo Tap Delay
                 dm2LfoNode.connect(dm2LfoDepthGain);
                 dm2LfoDepthGain.connect(delayLineL.delayTime);
                 dm2LfoDepthGain.connect(delayLineR.delayTime);
@@ -3108,16 +3629,19 @@
                 delayMerger.connect(delayWetGain);
                 delayWetGain.connect(preMaximizerBus);
 
+                // Reverb
                 lpfFilter.connect(convolverNode);
                 convolverNode.connect(revWetGain);
                 revWetGain.connect(preMaximizerBus);
 
+                // Granulator
                 grainWetGain.connect(preMaximizerBus);
                 grainWetGain.connect(grainFbDelay);
                 grainFbDelay.connect(grainFbGain);
                 grainFbGain.connect(grainFbDelay);
                 grainFbGain.connect(preMaximizerBus);
 
+                // Oscillation Delay
                 oscLfoNode.connect(oscLfoDepthGain);
                 oscLfoDepthGain.connect(oscDelayNode.delayTime);
 
@@ -3127,6 +3651,27 @@
                 oscDelayNode.connect(oscWetGain);
                 oscWetGain.connect(preMaximizerBus);
 
+                // Dynamic Tube
+                lpfFilter.connect(tubeEnvAnalyser);
+                lpfFilter.connect(tubePreGain);
+                tubePreGain.connect(tubeShaper);
+                tubeShaper.connect(tubeToneFilter);
+                tubeToneFilter.connect(tubePostGain);
+                tubePostGain.connect(tubeWetGain);
+                tubeWetGain.connect(preMaximizerBus);
+
+                // Redux
+                lpfFilter.connect(reduxPreFilter);
+                if (reduxProcessor) {
+                    reduxPreFilter.connect(reduxProcessor);
+                    reduxProcessor.connect(reduxPostFilter);
+                } else {
+                    reduxPreFilter.connect(reduxPostFilter);
+                }
+                reduxPostFilter.connect(reduxWetGain);
+                reduxWetGain.connect(preMaximizerBus);
+
+                // Output bus -> Maximizer -> Master -> Analyser -> Destination
                 preMaximizerBus.connect(maximizerLimiter);
                 maximizerLimiter.connect(masterBus);
                 masterBus.connect(analyser);
@@ -3141,6 +3686,8 @@
                 syncReverbGraph();
                 syncGranulatorGraph();
                 syncOscDelayGraph();
+                syncTubeGraph(0);
+                syncReduxGraph();
                 scheduleNextGrain();
                 if (audio.src) {
                     ensureGranulatorBuffer(audio.src);
@@ -3406,6 +3953,7 @@
             resetVal,
             formatFn,
             snapZero = true,
+            snapCenter = false,
             targetStore = delayState,
             onChangeCallback = syncDelayGraph
         }) {
@@ -3416,11 +3964,13 @@
             function setVal(val, allowSnap = true) {
                 let clamped = Math.max(minVal, Math.min(maxVal, val));
                 const span = maxVal - minVal;
-                if (allowSnap && snapZero && Math.abs(clamped - minVal) <= span * 0.015) {
+                if (allowSnap && snapCenter && Math.abs(clamped) <= span * 0.02) {
+                    clamped = 0;
+                } else if (allowSnap && snapZero && Math.abs(clamped - minVal) <= span * 0.015) {
                     clamped = minVal;
                 }
                 targetStore[stateKey] = clamped;
-                dial.setAttribute('aria-valuenow', String(Math.round(clamped * 10) / 10));
+                dial.setAttribute('aria-valuenow', String(Math.round(clamped * 100) / 100));
                 valLabel.textContent = formatFn(clamped);
 
                 const norm = (clamped - minVal) / span;
@@ -3826,11 +4376,215 @@
             onChangeCallback: syncOscDelayGraph
         });
 
+        // Dynamic Tube Knobs
+        setupLinearKnob({
+            dialId: 'tubeDriveKnob',
+            indicatorId: 'tubeDriveIndicator',
+            valueId: 'tubeDriveValue',
+            stateKey: 'tubeDriveDb',
+            minVal: 0,
+            maxVal: 24,
+            resetVal: 5.5,
+            formatFn: v => `+${v.toFixed(1)}dB`,
+            snapZero: true,
+            targetStore: fxState,
+            onChangeCallback: () => syncTubeGraph(0)
+        });
+
+        setupLinearKnob({
+            dialId: 'tubeToneKnob',
+            indicatorId: 'tubeToneIndicator',
+            valueId: 'tubeToneValue',
+            stateKey: 'tubeTone',
+            minVal: -1,
+            maxVal: 1,
+            resetVal: -0.27,
+            formatFn: v => (v > 0 ? `+${v.toFixed(2)}` : v.toFixed(2)),
+            snapZero: false,
+            snapCenter: true,
+            targetStore: fxState,
+            onChangeCallback: () => syncTubeGraph(0)
+        });
+
+        setupLinearKnob({
+            dialId: 'tubeBiasKnob',
+            indicatorId: 'tubeBiasIndicator',
+            valueId: 'tubeBiasValue',
+            stateKey: 'tubeBiasPct',
+            minVal: -100,
+            maxVal: 100,
+            resetVal: 25,
+            formatFn: v => `${Math.round(v)}%`,
+            snapZero: false,
+            snapCenter: true,
+            targetStore: fxState,
+            onChangeCallback: () => syncTubeGraph(0)
+        });
+
+        setupLinearKnob({
+            dialId: 'tubeEnvKnob',
+            indicatorId: 'tubeEnvIndicator',
+            valueId: 'tubeEnvValue',
+            stateKey: 'tubeEnvPct',
+            minVal: -100,
+            maxVal: 100,
+            resetVal: 0,
+            formatFn: v => `${Math.round(v)}%`,
+            snapZero: false,
+            snapCenter: true,
+            targetStore: fxState,
+            onChangeCallback: () => syncTubeGraph(0)
+        });
+
+        setupLinearKnob({
+            dialId: 'tubeAttackKnob',
+            indicatorId: 'tubeAttackIndicator',
+            valueId: 'tubeAttackValue',
+            stateKey: 'tubeAttackMs',
+            minVal: 0.5,
+            maxVal: 150,
+            resetVal: 5.0,
+            formatFn: v => `${v.toFixed(1)}ms`,
+            snapZero: false,
+            targetStore: fxState,
+            onChangeCallback: null
+        });
+
+        setupLinearKnob({
+            dialId: 'tubeReleaseKnob',
+            indicatorId: 'tubeReleaseIndicator',
+            valueId: 'tubeReleaseValue',
+            stateKey: 'tubeReleaseMs',
+            minVal: 5,
+            maxVal: 600,
+            resetVal: 35.0,
+            formatFn: v => `${v.toFixed(1)}ms`,
+            snapZero: false,
+            targetStore: fxState,
+            onChangeCallback: null
+        });
+
+        setupLinearKnob({
+            dialId: 'tubeOutputKnob',
+            indicatorId: 'tubeOutputIndicator',
+            valueId: 'tubeOutputValue',
+            stateKey: 'tubeOutputDb',
+            minVal: -18,
+            maxVal: 12,
+            resetVal: 0,
+            formatFn: v => (v > 0 ? `+${v.toFixed(1)}dB` : `${v.toFixed(1)}dB`),
+            snapZero: false,
+            snapCenter: true,
+            targetStore: fxState,
+            onChangeCallback: () => syncTubeGraph(0)
+        });
+
+        setupLinearKnob({
+            dialId: 'tubeMixKnob',
+            indicatorId: 'tubeMixIndicator',
+            valueId: 'tubeMixValue',
+            stateKey: 'tubeMix',
+            minVal: 0,
+            maxVal: 100,
+            resetVal: 0,
+            formatFn: v => `${Math.round(v)}%`,
+            snapZero: true,
+            targetStore: fxState,
+            onChangeCallback: () => syncTubeGraph(0)
+        });
+
+        // Redux Knobs
+        setupLinearKnob({
+            dialId: 'reduxRateKnob',
+            indicatorId: 'reduxRateIndicator',
+            valueId: 'reduxRateValue',
+            stateKey: 'reduxRateKhz',
+            minVal: 0.2,
+            maxVal: 48.0,
+            resetVal: 40.0,
+            formatFn: v => `${v.toFixed(1)}kHz`,
+            snapZero: false,
+            targetStore: fxState,
+            onChangeCallback: syncReduxGraph
+        });
+
+        setupLinearKnob({
+            dialId: 'reduxBitsKnob',
+            indicatorId: 'reduxBitsIndicator',
+            valueId: 'reduxBitsValue',
+            stateKey: 'reduxBits',
+            minVal: 1,
+            maxVal: 16,
+            resetVal: 12,
+            formatFn: v => String(Math.round(v)),
+            snapZero: false,
+            targetStore: fxState,
+            onChangeCallback: syncReduxGraph
+        });
+
+        setupLinearKnob({
+            dialId: 'reduxJitterKnob',
+            indicatorId: 'reduxJitterIndicator',
+            valueId: 'reduxJitterValue',
+            stateKey: 'reduxJitterPct',
+            minVal: 0,
+            maxVal: 100,
+            resetVal: 0,
+            formatFn: v => `${Math.round(v)}%`,
+            snapZero: true,
+            targetStore: fxState,
+            onChangeCallback: syncReduxGraph
+        });
+
+        setupLinearKnob({
+            dialId: 'reduxShapeKnob',
+            indicatorId: 'reduxShapeIndicator',
+            valueId: 'reduxShapeValue',
+            stateKey: 'reduxShapePct',
+            minVal: 0,
+            maxVal: 100,
+            resetVal: 0,
+            formatFn: v => `${Math.round(v)}%`,
+            snapZero: true,
+            targetStore: fxState,
+            onChangeCallback: syncReduxGraph
+        });
+
+        setupLinearKnob({
+            dialId: 'reduxFilterKnob',
+            indicatorId: 'reduxFilterIndicator',
+            valueId: 'reduxFilterValue',
+            stateKey: 'reduxFilterAmt',
+            minVal: 0,
+            maxVal: 100,
+            resetVal: 0,
+            formatFn: v => (v / 100).toFixed(2),
+            snapZero: true,
+            targetStore: fxState,
+            onChangeCallback: syncReduxGraph
+        });
+
+        setupLinearKnob({
+            dialId: 'reduxMixKnob',
+            indicatorId: 'reduxMixIndicator',
+            valueId: 'reduxMixValue',
+            stateKey: 'reduxMix',
+            minVal: 0,
+            maxVal: 100,
+            resetVal: 0,
+            formatFn: v => `${Math.round(v)}%`,
+            snapZero: true,
+            targetStore: fxState,
+            onChangeCallback: syncReduxGraph
+        });
+
         updateEQToggleUI();
         updateDelayToggleUI();
         updateRevToggleUI();
         updateGrainToggleUI();
         updateOscDlyToggleUI();
+        updateTubeToggleUI();
+        updateReduxToggleUI();
         updateGranulatorPlayheadUI();
 
         function updateVolumeUI(vol, isMuted) {
@@ -4075,6 +4829,8 @@
             syncReverbGraph();
             syncGranulatorGraph();
             syncOscDelayGraph();
+            syncTubeGraph(0);
+            syncReduxGraph();
             lastPlayheadTickTime = performance.now();
 
             audio.play().then(() => {
@@ -4087,6 +4843,8 @@
                 syncReverbGraph();
                 syncGranulatorGraph();
                 syncOscDelayGraph();
+                syncTubeGraph(0);
+                syncReduxGraph();
                 if (activeCard && !audio.paused) {
                     const activeTitle = activeCard.getAttribute('data-title') || 'Track';
                     vizStatus.textContent = `Now Playing: ${activeTitle}`;
@@ -4289,6 +5047,7 @@
             requestAnimationFrame(drawVisualizer);
             checkLoopBoundaries();
             advanceGranulatorPlayhead();
+            updateTubeEnvelopeFollower();
 
             if (audio.duration && !isNaN(audio.duration) && !audio.paused && !isDraggingProgress) {
                 const pct = (audio.currentTime / audio.duration) * 100;
