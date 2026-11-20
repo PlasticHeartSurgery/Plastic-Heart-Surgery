@@ -266,6 +266,22 @@
             flex-wrap: wrap;
         }
 
+        .collapsible-panel {
+            display: none;
+        }
+
+        .collapsible-panel.open {
+            display: flex;
+        }
+
+        .collapsible-block {
+            display: none;
+        }
+
+        .collapsible-block.open {
+            display: block;
+        }
+
         .deck-btn {
             font-family: 'Lyno Ulyscyr', sans-serif;
             font-size: 0.75rem;
@@ -564,10 +580,6 @@
             transition: opacity 0.15s ease;
         }
 
-        .eq-knobs-group.bypassed {
-            opacity: 0.45;
-        }
-
         .knob-unit {
             display: flex;
             flex-direction: column;
@@ -676,8 +688,11 @@
             align-items: center;
             justify-content: space-between;
             gap: 10px;
-            margin-bottom: 8px;
             flex-wrap: wrap;
+        }
+
+        .fx-module-top.has-body {
+            margin-bottom: 8px;
         }
 
         .fx-module-name {
@@ -1235,11 +1250,18 @@
                     <span class="deck-readout" id="volumeValue">100%</span>
                 </div>
 
-                <!-- CDJ / SL-1200 Pitch & Speed + Range Selector + Loop IN/OUT/÷2 Controls -->
+                <!-- Loop Toggle + Collapsible IN/OUT/÷2 Row -->
                 <div class="control-row">
-                    <button type="button" class="deck-btn loop-btn" id="loopInBtn" aria-pressed="false" title="Set loop start point; click again to clear">IN</button>
-                    <button type="button" class="deck-btn loop-btn" id="loopOutBtn" aria-pressed="false" title="Set loop end point and repeat; click again to clear">OUT</button>
-                    <button type="button" class="deck-btn loop-halve-btn" id="loopHalveBtn" disabled title="Cut loop length in half (2x, 4x, 8x shorter and beyond)">÷2</button>
+                    <button type="button" class="deck-btn" id="loopSectionToggleBtn" aria-expanded="false" title="Show or hide Loop IN / OUT / ÷2 controls">LOOP</button>
+                    <div class="collapsible-panel" id="loopControlsRow" style="align-items:center;gap:10px;flex-wrap:wrap;flex:1;">
+                        <button type="button" class="deck-btn loop-btn" id="loopInBtn" aria-pressed="false" title="Set loop start point; click again to clear">IN</button>
+                        <button type="button" class="deck-btn loop-btn" id="loopOutBtn" aria-pressed="false" title="Set loop end point and repeat; click again to clear">OUT</button>
+                        <button type="button" class="deck-btn loop-halve-btn" id="loopHalveBtn" disabled title="Cut loop length in half (2x, 4x, 8x shorter and beyond)">÷2</button>
+                    </div>
+                </div>
+
+                <!-- CDJ / SL-1200 Pitch & Speed + Range Selector -->
+                <div class="control-row">
                     <button type="button" class="deck-btn range-btn" id="pitchRangeBtn" title="Cycle tempo range: 8%, 16%, 32%, 64%, 128%">±8%</button>
                     <div class="pitch-slider-wrap">
                         <input type="range" class="deck-slider" id="pitchSlider" min="-8" max="8" step="0.1" value="0" aria-label="Pitch and play speed percentage" title="Drag to adjust pitch/speed. Double-click to reset to 0%.">
@@ -1257,9 +1279,9 @@
                     <button type="button" class="deck-btn" id="nudgeResetBtn" title="Reset nudge to 0.00%">RESET</button>
                 </div>
 
-                <!-- 3-Band EQ + LPF / HPF Rotary Knobs -->
+                <!-- 3-Band EQ + LPF / HPF Rotary Knobs (Minimized until EQ button clicked) -->
                 <div class="eq-row">
-                    <div class="eq-knobs-group" id="eqKnobsGroup">
+                    <div class="eq-knobs-group collapsible-panel" id="eqKnobsGroup">
                         <div class="knob-unit">
                             <span class="knob-title">BASS</span>
                             <div class="knob-dial" id="bassKnob" role="slider" tabindex="0" aria-label="Bass EQ (90Hz crossover)" aria-valuemin="-24" aria-valuemax="12" aria-valuenow="0" title="Drag up/down or scroll to adjust Bass (90Hz crossover). Double-click to reset.">
@@ -1305,7 +1327,7 @@
                             <span class="knob-sub">0–25kHz</span>
                         </div>
                     </div>
-                    <button type="button" class="deck-btn" id="eqToggleBtn" aria-pressed="false" title="Red = EQ & Filters Active, White = Bypassed">EQ</button>
+                    <button type="button" class="deck-btn" id="eqToggleBtn" aria-pressed="false" title="Click to toggle & show EQ & Filters">EQ</button>
                 </div>
 
                 <!-- Tap BPM Circle + Tap Delay with Haas Widen & Tape Midrange Shaping -->
@@ -1374,13 +1396,13 @@
                         <span class="fx-section-title">REVERB · GRANULATOR · OSC DELAY</span>
                     </div>
 
-                    <!-- Reverb Module -->
+                    <!-- Reverb Module (Minimized until REV clicked) -->
                     <div class="fx-module-block">
-                        <div class="fx-module-top">
+                        <div class="fx-module-top" id="revModuleTop">
                             <span class="fx-module-name">REVERB (DRY 0 → WET 100)</span>
-                            <button type="button" class="deck-btn" id="revToggleBtn" aria-pressed="false" title="Red = Reverb Active, White = Bypassed">REV</button>
+                            <button type="button" class="deck-btn" id="revToggleBtn" aria-pressed="false" title="Click to toggle & show Reverb">REV</button>
                         </div>
-                        <div class="eq-knobs-group bypassed" id="revKnobsGroup">
+                        <div class="eq-knobs-group collapsible-panel" id="revKnobsGroup">
                             <div class="knob-unit">
                                 <span class="knob-title">DECAY</span>
                                 <div class="knob-dial" id="revDecayKnob" role="slider" tabindex="0" aria-label="Reverb decay time" aria-valuemin="0.2" aria-valuemax="6" aria-valuenow="2.5" title="Drag up/down or scroll to adjust reverb decay (0.2s–6.0s). Double-click to reset (2.5s).">
@@ -1401,123 +1423,125 @@
                         </div>
                     </div>
 
-                    <!-- Granulator Module -->
+                    <!-- Granulator Module (Minimized until GRN clicked) -->
                     <div class="fx-module-block">
-                        <div class="fx-module-top">
+                        <div class="fx-module-top" id="grainModuleTop">
                             <span class="fx-module-name">GRANULATOR (ACTIVE TRACK + LOOP PLAYHEAD)</span>
-                            <button type="button" class="deck-btn" id="grainToggleBtn" aria-pressed="false" title="Red = Granulator Active, White = Bypassed">GRN</button>
+                            <button type="button" class="deck-btn" id="grainToggleBtn" aria-pressed="false" title="Click to toggle & show Granulator">GRN</button>
                         </div>
 
-                        <!-- Looping Playhead Bar for Granulator -->
-                        <div class="grain-playhead-box">
-                            <button type="button" class="deck-btn active" id="grainLoopBtn" aria-pressed="true" title="Toggle looping playhead scan inside granulator">LOOP</button>
-                            <div class="grain-playhead-track" id="grainPlayheadTrack" title="Click or drag to position the granulator looping playhead">
-                                <div class="grain-loop-window" id="grainLoopWindow"></div>
-                                <div class="grain-playhead-needle" id="grainPlayheadNeedle"></div>
-                            </div>
-                            <span class="grain-playhead-readout" id="grainPlayheadReadout">00:00</span>
-                        </div>
-
-                        <div class="fx-select-row">
-                            <label class="fx-select-label" for="grainModeSelect">MODE</label>
-                            <select class="fx-select" id="grainModeSelect" aria-label="Granular processing mode">
-                                <option value="standard">Standard / Time-Stretch</option>
-                                <option value="pitch">Pitch-Shift</option>
-                                <option value="delay">Granular Delay</option>
-                                <option value="freeze">Freeze / Buffer Hold</option>
-                                <option value="cloud">Cloud Diffusion</option>
-                                <option value="glitch">Glitch / Stutter</option>
-                            </select>
-
-                            <label class="fx-select-label" for="grainTimingSelect" style="min-width:auto;margin-left:8px;">TIMING</label>
-                            <select class="fx-select" id="grainTimingSelect" aria-label="Granular timing mode">
-                                <option value="asynchronous">Asynchronous</option>
-                                <option value="synchronous">Synchronous</option>
-                            </select>
-                        </div>
-
-                        <div class="eq-knobs-group bypassed" id="grainKnobsGroup">
-                            <div class="knob-unit">
-                                <span class="knob-title">SIZE</span>
-                                <div class="knob-dial" id="grainSizeKnob" role="slider" tabindex="0" aria-label="Grain size in milliseconds" aria-valuemin="15" aria-valuemax="500" aria-valuenow="110" title="Grain duration (15ms–500ms). Double-click to reset (110ms).">
-                                    <div class="knob-indicator" id="grainSizeIndicator"></div>
+                        <div class="collapsible-block" id="grainBodyGroup">
+                            <!-- Looping Playhead Bar for Granulator -->
+                            <div class="grain-playhead-box">
+                                <button type="button" class="deck-btn active" id="grainLoopBtn" aria-pressed="true" title="Toggle looping playhead scan inside granulator">LOOP</button>
+                                <div class="grain-playhead-track" id="grainPlayheadTrack" title="Click or drag to position the granulator looping playhead">
+                                    <div class="grain-loop-window" id="grainLoopWindow"></div>
+                                    <div class="grain-playhead-needle" id="grainPlayheadNeedle"></div>
                                 </div>
-                                <span class="knob-val" id="grainSizeValue">110ms</span>
-                                <span class="knob-sub">GRAIN</span>
+                                <span class="grain-playhead-readout" id="grainPlayheadReadout">00:00</span>
                             </div>
 
-                            <div class="knob-unit">
-                                <span class="knob-title">DENSITY</span>
-                                <div class="knob-dial" id="grainDensityKnob" role="slider" tabindex="0" aria-label="Grain density and overlap" aria-valuemin="0.25" aria-valuemax="4" aria-valuenow="1.5" title="Grain overlap density (0.25x–4.00x). Double-click to reset (1.50x).">
-                                    <div class="knob-indicator" id="grainDensityIndicator"></div>
-                                </div>
-                                <span class="knob-val" id="grainDensityValue">1.50x</span>
-                                <span class="knob-sub">OVERLAP</span>
+                            <div class="fx-select-row">
+                                <label class="fx-select-label" for="grainModeSelect">MODE</label>
+                                <select class="fx-select" id="grainModeSelect" aria-label="Granular processing mode">
+                                    <option value="standard">Standard / Time-Stretch</option>
+                                    <option value="pitch">Pitch-Shift</option>
+                                    <option value="delay">Granular Delay</option>
+                                    <option value="freeze">Freeze / Buffer Hold</option>
+                                    <option value="cloud">Cloud Diffusion</option>
+                                    <option value="glitch">Glitch / Stutter</option>
+                                </select>
+
+                                <label class="fx-select-label" for="grainTimingSelect" style="min-width:auto;margin-left:8px;">TIMING</label>
+                                <select class="fx-select" id="grainTimingSelect" aria-label="Granular timing mode">
+                                    <option value="asynchronous">Asynchronous</option>
+                                    <option value="synchronous">Synchronous</option>
+                                </select>
                             </div>
 
-                            <div class="knob-unit">
-                                <span class="knob-title">JITTER</span>
-                                <div class="knob-dial" id="grainJitterKnob" role="slider" tabindex="0" aria-label="Grain position jitter" aria-valuemin="0" aria-valuemax="100" aria-valuenow="30" title="Random position scatter / jitter. Double-click to reset (30%).">
-                                    <div class="knob-indicator" id="grainJitterIndicator"></div>
+                            <div class="eq-knobs-group" id="grainKnobsGroup">
+                                <div class="knob-unit">
+                                    <span class="knob-title">SIZE</span>
+                                    <div class="knob-dial" id="grainSizeKnob" role="slider" tabindex="0" aria-label="Grain size in milliseconds" aria-valuemin="15" aria-valuemax="500" aria-valuenow="110" title="Grain duration (15ms–500ms). Double-click to reset (110ms).">
+                                        <div class="knob-indicator" id="grainSizeIndicator"></div>
+                                    </div>
+                                    <span class="knob-val" id="grainSizeValue">110ms</span>
+                                    <span class="knob-sub">GRAIN</span>
                                 </div>
-                                <span class="knob-val" id="grainJitterValue">30%</span>
-                                <span class="knob-sub">SCATTER</span>
-                            </div>
 
-                            <div class="knob-unit">
-                                <span class="knob-title">POS / TAP</span>
-                                <div class="knob-dial" id="grainPosKnob" role="slider" tabindex="0" aria-label="Freeze position or delay tap offset" aria-valuemin="0" aria-valuemax="100" aria-valuenow="25" title="Freeze buffer hold position or granular delay tap offset. Double-click to reset (25%).">
-                                    <div class="knob-indicator" id="grainPosIndicator"></div>
+                                <div class="knob-unit">
+                                    <span class="knob-title">DENSITY</span>
+                                    <div class="knob-dial" id="grainDensityKnob" role="slider" tabindex="0" aria-label="Grain density and overlap" aria-valuemin="0.25" aria-valuemax="4" aria-valuenow="1.5" title="Grain overlap density (0.25x–4.00x). Double-click to reset (1.50x).">
+                                        <div class="knob-indicator" id="grainDensityIndicator"></div>
+                                    </div>
+                                    <span class="knob-val" id="grainDensityValue">1.50x</span>
+                                    <span class="knob-sub">OVERLAP</span>
                                 </div>
-                                <span class="knob-val" id="grainPosValue">25%</span>
-                                <span class="knob-sub">FREEZE/TAP</span>
-                            </div>
 
-                            <div class="knob-unit">
-                                <span class="knob-title">PITCH</span>
-                                <div class="knob-dial" id="grainPitchKnob" role="slider" tabindex="0" aria-label="Grain playback pitch rate" aria-valuemin="0.5" aria-valuemax="2" aria-valuenow="1" title="Grain playback rate / pitch (0.50x–2.00x). Double-click to reset (1.00x).">
-                                    <div class="knob-indicator" id="grainPitchIndicator"></div>
+                                <div class="knob-unit">
+                                    <span class="knob-title">JITTER</span>
+                                    <div class="knob-dial" id="grainJitterKnob" role="slider" tabindex="0" aria-label="Grain position jitter" aria-valuemin="0" aria-valuemax="100" aria-valuenow="30" title="Random position scatter / jitter. Double-click to reset (30%).">
+                                        <div class="knob-indicator" id="grainJitterIndicator"></div>
+                                    </div>
+                                    <span class="knob-val" id="grainJitterValue">30%</span>
+                                    <span class="knob-sub">SCATTER</span>
                                 </div>
-                                <span class="knob-val" id="grainPitchValue">1.00x</span>
-                                <span class="knob-sub">RATE</span>
-                            </div>
 
-                            <div class="knob-unit">
-                                <span class="knob-title">CLOUD FB</span>
-                                <div class="knob-dial" id="grainFdbkKnob" role="slider" tabindex="0" aria-label="Granular cloud feedback" aria-valuemin="0" aria-valuemax="85" aria-valuenow="25" title="Cloud diffusion / feedback smear. Double-click to reset (25%).">
-                                    <div class="knob-indicator" id="grainFdbkIndicator"></div>
+                                <div class="knob-unit">
+                                    <span class="knob-title">POS / TAP</span>
+                                    <div class="knob-dial" id="grainPosKnob" role="slider" tabindex="0" aria-label="Freeze position or delay tap offset" aria-valuemin="0" aria-valuemax="100" aria-valuenow="25" title="Freeze buffer hold position or granular delay tap offset. Double-click to reset (25%).">
+                                        <div class="knob-indicator" id="grainPosIndicator"></div>
+                                    </div>
+                                    <span class="knob-val" id="grainPosValue">25%</span>
+                                    <span class="knob-sub">FREEZE/TAP</span>
                                 </div>
-                                <span class="knob-val" id="grainFdbkValue">25%</span>
-                                <span class="knob-sub">DIFFUSE</span>
-                            </div>
 
-                            <div class="knob-unit">
-                                <span class="knob-title">PAN SPRD</span>
-                                <div class="knob-dial" id="grainPanKnob" role="slider" tabindex="0" aria-label="Granular stereo pan spread" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" title="Random left/right stereo spread per grain. Double-click to reset (50%).">
-                                    <div class="knob-indicator" id="grainPanIndicator"></div>
+                                <div class="knob-unit">
+                                    <span class="knob-title">PITCH</span>
+                                    <div class="knob-dial" id="grainPitchKnob" role="slider" tabindex="0" aria-label="Grain playback pitch rate" aria-valuemin="0.5" aria-valuemax="2" aria-valuenow="1" title="Grain playback rate / pitch (0.50x–2.00x). Double-click to reset (1.00x).">
+                                        <div class="knob-indicator" id="grainPitchIndicator"></div>
+                                    </div>
+                                    <span class="knob-val" id="grainPitchValue">1.00x</span>
+                                    <span class="knob-sub">RATE</span>
                                 </div>
-                                <span class="knob-val" id="grainPanValue">50%</span>
-                                <span class="knob-sub">STEREO</span>
-                            </div>
 
-                            <div class="knob-unit">
-                                <span class="knob-title">WET / DRY</span>
-                                <div class="knob-dial" id="grainMixKnob" role="slider" tabindex="0" aria-label="Granulator wet dry mix" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" title="0% = 100% Dry, 100% = 100% Wet. Double-click to reset (0%).">
-                                    <div class="knob-indicator" id="grainMixIndicator"></div>
+                                <div class="knob-unit">
+                                    <span class="knob-title">CLOUD FB</span>
+                                    <div class="knob-dial" id="grainFdbkKnob" role="slider" tabindex="0" aria-label="Granular cloud feedback" aria-valuemin="0" aria-valuemax="85" aria-valuenow="25" title="Cloud diffusion / feedback smear. Double-click to reset (25%).">
+                                        <div class="knob-indicator" id="grainFdbkIndicator"></div>
+                                    </div>
+                                    <span class="knob-val" id="grainFdbkValue">25%</span>
+                                    <span class="knob-sub">DIFFUSE</span>
                                 </div>
-                                <span class="knob-val" id="grainMixValue">0%</span>
-                                <span class="knob-sub">0–100%</span>
+
+                                <div class="knob-unit">
+                                    <span class="knob-title">PAN SPRD</span>
+                                    <div class="knob-dial" id="grainPanKnob" role="slider" tabindex="0" aria-label="Granular stereo pan spread" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" title="Random left/right stereo spread per grain. Double-click to reset (50%).">
+                                        <div class="knob-indicator" id="grainPanIndicator"></div>
+                                    </div>
+                                    <span class="knob-val" id="grainPanValue">50%</span>
+                                    <span class="knob-sub">STEREO</span>
+                                </div>
+
+                                <div class="knob-unit">
+                                    <span class="knob-title">WET / DRY</span>
+                                    <div class="knob-dial" id="grainMixKnob" role="slider" tabindex="0" aria-label="Granulator wet dry mix" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" title="0% = 100% Dry, 100% = 100% Wet. Double-click to reset (0%).">
+                                        <div class="knob-indicator" id="grainMixIndicator"></div>
+                                    </div>
+                                    <span class="knob-val" id="grainMixValue">0%</span>
+                                    <span class="knob-sub">0–100%</span>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- LFO Oscillation Feedback Delay Module -->
+                    <!-- LFO Oscillation Feedback Delay Module (Minimized until OSC clicked) -->
                     <div class="fx-module-block">
-                        <div class="fx-module-top">
+                        <div class="fx-module-top" id="oscModuleTop">
                             <span class="fx-module-name">OSCILLATION DELAY (DRY 0 → WET 100)</span>
-                            <button type="button" class="deck-btn" id="oscDlyToggleBtn" aria-pressed="false" title="Red = Oscillation Delay Active, White = Bypassed">OSC</button>
+                            <button type="button" class="deck-btn" id="oscDlyToggleBtn" aria-pressed="false" title="Click to toggle & show Oscillation Delay">OSC</button>
                         </div>
-                        <div class="eq-knobs-group bypassed" id="oscDlyKnobsGroup">
+                        <div class="eq-knobs-group collapsible-panel" id="oscDlyKnobsGroup">
                             <div class="knob-unit">
                                 <span class="knob-title">TIME</span>
                                 <div class="knob-dial" id="oscTimeKnob" role="slider" tabindex="0" aria-label="Oscillation delay base time in milliseconds" aria-valuemin="20" aria-valuemax="1000" aria-valuenow="280" title="Base oscillation delay time (20ms–1000ms). Double-click to reset (280ms).">
@@ -1640,7 +1664,7 @@
     </div>
 
     <!-- Hidden Audio Element -->
-    <audio id="audioPlayer" playsinline webkit-playsinline preload="auto"></audio>
+    <audio id="audioPlayer" playsinline webkit-playsinline preload="metadata"></audio>
 
     <script>
         /* --- LIGHTBOX MODAL LOGIC --- */
@@ -1686,9 +1710,13 @@
         const volumeSlider = document.getElementById('volumeSlider');
         const volumeValue = document.getElementById('volumeValue');
         const muteBtn = document.getElementById('muteBtn');
+
+        const loopSectionToggleBtn = document.getElementById('loopSectionToggleBtn');
+        const loopControlsRow = document.getElementById('loopControlsRow');
         const loopInBtn = document.getElementById('loopInBtn');
         const loopOutBtn = document.getElementById('loopOutBtn');
         const loopHalveBtn = document.getElementById('loopHalveBtn');
+
         const pitchRangeBtn = document.getElementById('pitchRangeBtn');
         const pitchSlider = document.getElementById('pitchSlider');
         const pitchNotches = document.getElementById('pitchNotches');
@@ -1709,9 +1737,11 @@
         const delayToggleBtn = document.getElementById('delayToggleBtn');
 
         const revToggleBtn = document.getElementById('revToggleBtn');
+        const revModuleTop = document.getElementById('revModuleTop');
         const revKnobsGroup = document.getElementById('revKnobsGroup');
         const grainToggleBtn = document.getElementById('grainToggleBtn');
-        const grainKnobsGroup = document.getElementById('grainKnobsGroup');
+        const grainModuleTop = document.getElementById('grainModuleTop');
+        const grainBodyGroup = document.getElementById('grainBodyGroup');
         const grainLoopBtn = document.getElementById('grainLoopBtn');
         const grainPlayheadTrack = document.getElementById('grainPlayheadTrack');
         const grainLoopWindow = document.getElementById('grainLoopWindow');
@@ -1720,15 +1750,18 @@
         const grainModeSelect = document.getElementById('grainModeSelect');
         const grainTimingSelect = document.getElementById('grainTimingSelect');
         const oscDlyToggleBtn = document.getElementById('oscDlyToggleBtn');
+        const oscModuleTop = document.getElementById('oscModuleTop');
         const oscDlyKnobsGroup = document.getElementById('oscDlyKnobsGroup');
 
         let activeCard = null;
         let isDraggingProgress = false;
+        let pendingSeekTime = null;
         let lastVolume = 1;
         let currentMainPitchPct = 0;
         let currentNudgePct = 0;
         let stoppedByTempoZero = false;
 
+        let loopSectionExpanded = false;
         let loopStart = null;
         let loopEnd = null;
         let loopLength = null;
@@ -1741,6 +1774,17 @@
             const s = Math.floor(total % 60).toString().padStart(2, '0');
             return `${m}:${s}`;
         }
+
+        function setLoopSectionExpanded(expanded) {
+            loopSectionExpanded = Boolean(expanded);
+            loopControlsRow.classList.toggle('open', loopSectionExpanded);
+            loopSectionToggleBtn.classList.toggle('active', loopSectionExpanded || hasActiveLoop());
+            loopSectionToggleBtn.setAttribute('aria-expanded', String(loopSectionExpanded));
+        }
+
+        loopSectionToggleBtn.addEventListener('click', () => {
+            setLoopSectionExpanded(!loopSectionExpanded);
+        });
 
         function hasActiveLoop() {
             return loopStart !== null && loopEnd !== null && loopEnd > loopStart;
@@ -1777,6 +1821,8 @@
                 loopHalveBtn.classList.remove('active');
                 loopHalveBtn.textContent = '÷2';
             }
+
+            loopSectionToggleBtn.classList.toggle('active', loopSectionExpanded || hasActiveLoop());
         }
 
         function clearLoop() {
@@ -2006,7 +2052,6 @@
 
         function getGranulatorLoopSpanSec(dur) {
             if (dur <= 0) return 2;
-            // Loop span scales with grain size & freeze/tap setting (0.4s to 4.0s)
             const baseSpan = Math.max(0.45, Math.min(4.0, (fxState.grainSizeMs / 1000) * 14));
             return Math.min(dur, baseSpan);
         }
@@ -2322,19 +2367,22 @@
         function updateRevToggleUI() {
             revToggleBtn.classList.toggle('active', revActive);
             revToggleBtn.setAttribute('aria-pressed', String(revActive));
-            revKnobsGroup.classList.toggle('bypassed', !revActive);
+            revKnobsGroup.classList.toggle('open', revActive);
+            revModuleTop.classList.toggle('has-body', revActive);
             syncReverbGraph();
         }
 
         function updateGrainToggleUI() {
             grainToggleBtn.classList.toggle('active', grainActive);
             grainToggleBtn.setAttribute('aria-pressed', String(grainActive));
-            grainKnobsGroup.classList.toggle('bypassed', !grainActive);
+            grainBodyGroup.classList.toggle('open', grainActive);
+            grainModuleTop.classList.toggle('has-body', grainActive);
             if (grainActive) {
                 lastPlayheadTickTime = performance.now();
                 if (audioCtx && audio.src) {
                     ensureGranulatorBuffer(audio.src);
                 }
+                updateGranulatorPlayheadUI();
             }
             syncGranulatorGraph();
         }
@@ -2342,7 +2390,8 @@
         function updateOscDlyToggleUI() {
             oscDlyToggleBtn.classList.toggle('active', oscDlyActive);
             oscDlyToggleBtn.setAttribute('aria-pressed', String(oscDlyActive));
-            oscDlyKnobsGroup.classList.toggle('bypassed', !oscDlyActive);
+            oscDlyKnobsGroup.classList.toggle('open', oscDlyActive);
+            oscModuleTop.classList.toggle('has-body', oscDlyActive);
             syncOscDelayGraph();
         }
 
@@ -2427,11 +2476,11 @@
         function updateDelayToggleUI() {
             delayToggleBtn.classList.toggle('active', delayActive);
             delayToggleBtn.setAttribute('aria-pressed', String(delayActive));
-            delayKnobsGroup.classList.toggle('bypassed', !delayActive);
             syncDelayGraph();
         }
 
         delayToggleBtn.addEventListener('click', () => {
+            initAudioGraph();
             delayActive = !delayActive;
             updateDelayToggleUI();
         });
@@ -2515,11 +2564,12 @@
         function updateEQToggleUI() {
             eqToggleBtn.classList.toggle('active', eqActive);
             eqToggleBtn.setAttribute('aria-pressed', String(eqActive));
-            eqKnobsGroup.classList.toggle('bypassed', !eqActive);
+            eqKnobsGroup.classList.toggle('open', eqActive);
             syncEQFilters();
         }
 
         eqToggleBtn.addEventListener('click', () => {
+            initAudioGraph();
             eqActive = !eqActive;
             updateEQToggleUI();
         });
@@ -3626,7 +3676,7 @@
             card.querySelector('.play-indicator').textContent = 'PAUSE';
             vizStatus.textContent = `Loading: ${title}...`;
 
-            if (!audio.src.endsWith(encodedSrc)) {
+            if (!audio.src || !audio.src.endsWith(encodedSrc)) {
                 audio.src = encodedSrc;
                 audio.load();
             }
@@ -3659,8 +3709,10 @@
                 syncReverbGraph();
                 syncGranulatorGraph();
                 syncOscDelayGraph();
-                ensureGranulatorBuffer(audio.src);
-                vizStatus.textContent = `Now Playing: ${title}`;
+                if (activeCard && !audio.paused) {
+                    const activeTitle = activeCard.getAttribute('data-title') || 'Track';
+                    vizStatus.textContent = `Now Playing: ${activeTitle}`;
+                }
             }).catch(err => {
                 console.error("Playback error:", err);
                 vizStatus.textContent = `Error: File not found or path incorrect (${rawSrc})`;
@@ -3675,71 +3727,161 @@
             progressHandle.style.left = `${clamped}%`;
         }
 
-        function seekFromClientX(clientX) {
-            if (!audio.duration || isNaN(audio.duration)) return;
-            const rect = progressContainer.getBoundingClientRect();
-            const ratio = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
-            const targetTime = ratio * audio.duration;
-            if (hasActiveLoop()) {
-                relocateLoopToTime(targetTime);
-                audio.currentTime = loopStart;
-                const loopPct = (loopStart / audio.duration) * 100;
-                updateProgressUI(loopPct);
-                vizTime.textContent = `${formatTime(loopStart)} / ${formatTime(audio.duration)}`;
-            } else {
-                audio.currentTime = targetTime;
-                updateProgressUI(ratio * 100);
-                vizTime.textContent = `${formatTime(targetTime)} / ${formatTime(audio.duration)}`;
+        function commitSeekTime(targetTime) {
+            const dur = Number.isFinite(audio.duration) && audio.duration > 0 ? audio.duration : null;
+            let clampedTime = Math.max(0, targetTime);
+            if (dur !== null) {
+                clampedTime = Math.min(dur, clampedTime);
             }
-            grainPlayheadSec = audio.currentTime;
-            grainLoopCenterSec = audio.currentTime;
+
+            if (audio.seekable && audio.seekable.length > 0) {
+                const startAvail = audio.seekable.start(0);
+                const endAvail = audio.seekable.end(audio.seekable.length - 1);
+                if (clampedTime < startAvail) clampedTime = startAvail;
+                if (clampedTime > endAvail) clampedTime = endAvail;
+            }
+
+            if (hasActiveLoop()) {
+                relocateLoopToTime(clampedTime);
+                clampedTime = loopStart;
+            }
+
+            if (audio.readyState >= 1) {
+                try {
+                    audio.currentTime = clampedTime;
+                    pendingSeekTime = null;
+                } catch (err) {
+                    pendingSeekTime = clampedTime;
+                }
+            } else {
+                pendingSeekTime = clampedTime;
+            }
+
+            if (dur !== null) {
+                updateProgressUI((clampedTime / dur) * 100);
+                vizTime.textContent = `${formatTime(clampedTime)} / ${formatTime(dur)}`;
+            }
+            grainPlayheadSec = clampedTime;
+            grainLoopCenterSec = clampedTime;
             updateGranulatorPlayheadUI();
         }
 
+        function seekFromClientX(clientX, finalize = false) {
+            const dur = Number.isFinite(audio.duration) && audio.duration > 0 ? audio.duration : null;
+            if (!dur) return;
+            const rect = progressContainer.getBoundingClientRect();
+            if (rect.width <= 0) return;
+            const ratio = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+            const targetTime = ratio * dur;
+
+            if (finalize) {
+                commitSeekTime(targetTime);
+            } else {
+                updateProgressUI(ratio * 100);
+                vizTime.textContent = `${formatTime(targetTime)} / ${formatTime(dur)}`;
+                if (audio.readyState >= 2 && !audio.seeking) {
+                    try {
+                        audio.currentTime = targetTime;
+                    } catch (_) {}
+                } else {
+                    pendingSeekTime = targetTime;
+                }
+            }
+        }
+
         progressWrapper.addEventListener('mousedown', (e) => {
+            if (!activeCard && audio.src) {
+                const card = document.querySelector('.track-card');
+                if (card) activeCard = card;
+            }
             isDraggingProgress = true;
             progressWrapper.classList.add('dragging');
-            seekFromClientX(e.clientX);
+            seekFromClientX(e.clientX, false);
         });
 
         window.addEventListener('mousemove', (e) => {
             if (!isDraggingProgress) return;
-            seekFromClientX(e.clientX);
+            seekFromClientX(e.clientX, false);
         });
 
-        window.addEventListener('mouseup', () => {
+        window.addEventListener('mouseup', (e) => {
             if (isDraggingProgress) {
                 isDraggingProgress = false;
                 progressWrapper.classList.remove('dragging');
+                seekFromClientX(e.clientX, true);
             }
         });
 
         progressWrapper.addEventListener('touchstart', (e) => {
             if (e.touches.length === 1) {
                 e.preventDefault();
+                if (!activeCard && audio.src) {
+                    const card = document.querySelector('.track-card');
+                    if (card) activeCard = card;
+                }
                 isDraggingProgress = true;
                 progressWrapper.classList.add('dragging');
-                seekFromClientX(e.touches[0].clientX);
+                seekFromClientX(e.touches[0].clientX, false);
             }
         }, { passive: false });
 
         window.addEventListener('touchmove', (e) => {
             if (!isDraggingProgress || e.touches.length !== 1) return;
             e.preventDefault();
-            seekFromClientX(e.touches[0].clientX);
+            seekFromClientX(e.touches[0].clientX, false);
         }, { passive: false });
 
-        window.addEventListener('touchend', () => {
+        window.addEventListener('touchend', (e) => {
             if (isDraggingProgress) {
                 isDraggingProgress = false;
                 progressWrapper.classList.remove('dragging');
+                const touch = e.changedTouches && e.changedTouches[0];
+                if (touch) {
+                    seekFromClientX(touch.clientX, true);
+                } else if (pendingSeekTime !== null) {
+                    commitSeekTime(pendingSeekTime);
+                }
             }
         });
 
         audio.addEventListener('loadedmetadata', () => {
             if (!isNaN(audio.duration)) {
-                vizTime.textContent = `${formatTime(audio.currentTime)} / ${formatTime(audio.duration)}`;
+                if (pendingSeekTime !== null) {
+                    const target = pendingSeekTime;
+                    pendingSeekTime = null;
+                    commitSeekTime(target);
+                } else {
+                    vizTime.textContent = `${formatTime(audio.currentTime)} / ${formatTime(audio.duration)}`;
+                }
                 updateGranulatorPlayheadUI();
+            }
+        });
+
+        audio.addEventListener('canplay', () => {
+            if (pendingSeekTime !== null) {
+                const target = pendingSeekTime;
+                pendingSeekTime = null;
+                try {
+                    audio.currentTime = target;
+                } catch (_) {}
+            }
+            if (activeCard && !audio.paused) {
+                const title = activeCard.getAttribute('data-title') || 'Track';
+                vizStatus.textContent = `Now Playing: ${title}`;
+            }
+        });
+
+        audio.addEventListener('waiting', () => {
+            if (activeCard && !audio.paused) {
+                const title = activeCard.getAttribute('data-title') || 'Track';
+                vizStatus.textContent = `Buffering: ${title}...`;
+            }
+        });
+
+        audio.addEventListener('seeked', () => {
+            if (activeCard && !audio.paused) {
+                const title = activeCard.getAttribute('data-title') || 'Track';
+                vizStatus.textContent = `Now Playing: ${title}`;
             }
         });
 
