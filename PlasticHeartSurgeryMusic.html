@@ -950,7 +950,7 @@
 
                         <div class="fx-module-block">
                             <div class="fx-module-top" id="tubeModuleTop">
-                                <span class="fx-module-name">DYNAMIC TUBE (DRY 0 → WET 100)</span>
+                                <span class="fx-module-name">DYNAMIC TUBE · PRE-EQ (DRY 0 → WET 100)</span>
                                 <button type="button" class="deck-btn" id="tubeToggleBtn" aria-pressed="false">TUBE</button>
                             </div>
                             <div class="collapsible-block" id="tubeBodyGroup">
@@ -977,7 +977,7 @@
 
                         <div class="fx-module-block">
                             <div class="fx-module-top" id="reduxModuleTop">
-                                <span class="fx-module-name">REDUX (DRY 0 → WET 100)</span>
+                                <span class="fx-module-name">REDUX · PRE-EQ (DRY 0 → WET 100)</span>
                                 <button type="button" class="deck-btn" id="reduxToggleBtn" aria-pressed="false">RDX</button>
                             </div>
                             <div class="collapsible-block" id="reduxBodyGroup">
@@ -998,7 +998,7 @@
                             </div>
                         </div>
 
-                        <p class="fx-note">All wet mixes default to 0% when opened. Maximizer stays transparent unless pushed.</p>
+                        <p class="fx-note">Dynamic Tube & Redux run pre-EQ into the EQ/filter stage. All wet mixes default to 0% when opened; maximizer stays transparent unless pushed.</p>
                     </div>
                 </div>
             </div>
@@ -1294,9 +1294,13 @@
         let freezeAnchorSec = null, grainPlayheadSec = 0, grainLoopCenterSec = 0;
         let lastPlayheadTickTime = performance.now(), isScrubbingGrainPlayhead = false;
         let oscDelayNode = null, oscFeedbackGain = null, oscLfoNode = null, oscLfoDepthGain = null, oscWetGain = null;
+
+        // Pre-EQ insert buses & nodes for Dynamic Tube and Redux
+        let preEqBus = null, preEqDryGain = null;
         let tubePreGain = null, tubeShaper = null, tubeToneFilter = null, tubePostGain = null, tubeWetGain = null;
         let tubeEnvAnalyser = null, tubeEnvData = null, tubeEnvelopeFollower = 0, lastTubeCurveKey = '';
         let reduxPreFilter = null, reduxProcessor = null, reduxPostFilter = null, reduxWetGain = null;
+
         let webAudioReady = false, smoothedLoudness = 0, fallbackPhase = 0;
 
         function clampNyquistHz(hz, minFloor) {
@@ -1519,14 +1523,22 @@
 
         function syncDryWetBalance() {
             if (!webAudioReady || !audioCtx || !dryPathGain) return;
-            if (!effectsRackOpen) { smoothParam(dryPathGain.gain, 1.0, 0.015); return; }
+            if (!effectsRackOpen) {
+                smoothParam(dryPathGain.gain, 1.0, 0.015);
+                if (preEqDryGain) smoothParam(preEqDryGain.gain, 1.0, 0.015);
+                return;
+            }
+            const tWet = tubeActive ? fxState.tubeMix / 100 : 0;
+            const xWet = reduxActive ? fxState.reduxMix / 100 : 0;
+            if (preEqDryGain) {
+                smoothParam(preEqDryGain.gain, Math.min(equalPowerDryGain(tWet), equalPowerDryGain(xWet)), 0.02);
+            }
+
             const dWet = (delayActive || dm2OscActive) ? (dm2OscActive ? Math.max(delayState.mix / 100, 0.75) : delayState.mix / 100) : 0;
             const gWet = grainActive ? fxState.grainMix / 100 : 0;
             const oWet = oscDlyActive ? fxState.oscMix / 100 : 0;
-            const tWet = tubeActive ? fxState.tubeMix / 100 : 0;
-            const xWet = reduxActive ? fxState.reduxMix / 100 : 0;
             const rWet = revActive ? fxState.revMix / 100 : 0;
-            const dryFromMix = Math.min(equalPowerDryGain(dWet), equalPowerDryGain(gWet), equalPowerDryGain(oWet), equalPowerDryGain(tWet), equalPowerDryGain(xWet));
+            const dryFromMix = Math.min(equalPowerDryGain(dWet), equalPowerDryGain(gWet), equalPowerDryGain(oWet));
             const revDryTrim = rWet > 0.75 ? (1 - (rWet - 0.75) * 0.4) : 1;
             smoothParam(dryPathGain.gain, Math.max(0, Math.min(1, dryFromMix * revDryTrim)), 0.02);
         }
@@ -1708,40 +1720,11 @@
                 audioCtx = new AudioContextClass();
                 const source = audioCtx.createMediaElementSource(audio);
 
-                hpfFilter = audioCtx.createBiquadFilter(); hpfFilter.type = 'highpass'; hpfFilter.Q.value = 0.707; hpfFilter.frequency.value = 1;
-                bassFilter = audioCtx.createBiquadFilter(); bassFilter.type = 'lowshelf'; bassFilter.frequency.value = 90; bassFilter.gain.value = 0;
-                midsFilter = audioCtx.createBiquadFilter(); midsFilter.type = 'peaking'; midsFilter.frequency.value = 1000; midsFilter.Q.value = 1.0; midsFilter.gain.value = 0;
-                trebleFilter = audioCtx.createBiquadFilter(); trebleFilter.type = 'highshelf'; trebleFilter.frequency.value = 4000; trebleFilter.gain.value = 0;
-                lpfFilter = audioCtx.createBiquadFilter(); lpfFilter.type = 'lowpass'; lpfFilter.Q.value = 0.707; lpfFilter.frequency.value = clampNyquistHz(25000, 10);
+                // Pre-EQ summing bus (Dynamic Tube & Redux feed into here BEFORE EQ)
+                preEqBus = audioCtx.createGain(); preEqBus.gain.value = 1;
+                preEqDryGain = audioCtx.createGain(); preEqDryGain.gain.value = 1;
 
-                dryPathGain = audioCtx.createGain(); dryPathGain.gain.value = 1;
-                tapeLowCut = audioCtx.createBiquadFilter(); tapeLowCut.type = 'highpass'; tapeLowCut.Q.value = 0.707; tapeLowCut.frequency.value = 10;
-                tapeMidBoost = audioCtx.createBiquadFilter(); tapeMidBoost.type = 'peaking'; tapeMidBoost.frequency.value = 1150; tapeMidBoost.Q.value = 0.9; tapeMidBoost.gain.value = 0;
-                tapeHighCut = audioCtx.createBiquadFilter(); tapeHighCut.type = 'lowpass'; tapeHighCut.Q.value = 0.707; tapeHighCut.frequency.value = clampNyquistHz(24000, 1200);
-
-                delayInputSplit = audioCtx.createChannelSplitter(2); delayMerger = audioCtx.createChannelMerger(2);
-                delayLineL = audioCtx.createDelay(3.0); delayLineR = audioCtx.createDelay(3.0); haasRightDelay = audioCtx.createDelay(0.05);
-                delayLineL.delayTime.value = delayLineR.delayTime.value = delayState.timeMs / 1000; haasRightDelay.delayTime.value = 0;
-                feedbackGainL = audioCtx.createGain(); feedbackGainR = audioCtx.createGain(); feedbackGainL.gain.value = feedbackGainR.gain.value = 0;
-                dm2LoopLimiter = audioCtx.createWaveShaper(); dm2LoopLimiter.curve = createSoftClipCurve(5); dm2LoopLimiter.oversample = '2x';
-                dm2LfoNode = audioCtx.createOscillator(); dm2LfoNode.type = 'sine'; dm2LfoNode.frequency.value = 3.2;
-                dm2LfoDepthGain = audioCtx.createGain(); dm2LfoDepthGain.gain.value = 0;
-                delayWetGain = audioCtx.createGain(); delayWetGain.gain.value = 0;
-
-                convolverNode = audioCtx.createConvolver(); convolverNode.buffer = createImpulseResponseBuffer(audioCtx, fxState.revDecay, 2.5); lastBuiltRevDecay = fxState.revDecay;
-                revWetGain = audioCtx.createGain(); revWetGain.gain.value = 0;
-
-                grainWetGain = audioCtx.createGain(); grainWetGain.gain.value = 0;
-                grainLiveTapDelay = audioCtx.createDelay(1.0); grainLiveTapDelay.delayTime.value = 0.05;
-                grainFbDelay = audioCtx.createDelay(1.0); grainFbDelay.delayTime.value = 0.14;
-                grainFbGain = audioCtx.createGain(); grainFbGain.gain.value = 0;
-
-                oscDelayNode = audioCtx.createDelay(1.5); oscDelayNode.delayTime.value = fxState.oscTimeMs / 1000;
-                oscFeedbackGain = audioCtx.createGain(); oscFeedbackGain.gain.value = 0;
-                oscLfoNode = audioCtx.createOscillator(); oscLfoNode.type = 'sine'; oscLfoNode.frequency.value = fxState.oscLfoRate;
-                oscLfoDepthGain = audioCtx.createGain(); oscLfoDepthGain.gain.value = 0;
-                oscWetGain = audioCtx.createGain(); oscWetGain.gain.value = 0;
-
+                // Dynamic Tube (Pre-EQ)
                 tubePreGain = audioCtx.createGain(); tubePreGain.gain.value = 1;
                 tubeShaper = audioCtx.createWaveShaper(); tubeShaper.curve = createDynamicTubeCurve(fxState.tubeCurve, fxState.tubeBiasPct / 100); tubeShaper.oversample = '2x';
                 lastTubeCurveKey = `${fxState.tubeCurve}:${(fxState.tubeBiasPct / 100).toFixed(2)}`;
@@ -1750,6 +1733,7 @@
                 tubeWetGain = audioCtx.createGain(); tubeWetGain.gain.value = 0;
                 tubeEnvAnalyser = audioCtx.createAnalyser(); tubeEnvAnalyser.fftSize = 256; tubeEnvData = new Uint8Array(tubeEnvAnalyser.fftSize);
 
+                // Redux (Pre-EQ)
                 reduxPreFilter = audioCtx.createBiquadFilter(); reduxPreFilter.type = 'lowpass'; reduxPreFilter.Q.value = 0.8; reduxPreFilter.frequency.value = clampNyquistHz(24000, 1000);
                 reduxPostFilter = audioCtx.createBiquadFilter(); reduxPostFilter.type = 'lowpass'; reduxPostFilter.Q.value = 0.8; reduxPostFilter.frequency.value = clampNyquistHz(24000, 1000);
                 reduxWetGain = audioCtx.createGain(); reduxWetGain.gain.value = 0;
@@ -1786,6 +1770,41 @@
                     };
                 }
 
+                // EQ + HPF / LPF stage (receives preEqBus)
+                hpfFilter = audioCtx.createBiquadFilter(); hpfFilter.type = 'highpass'; hpfFilter.Q.value = 0.707; hpfFilter.frequency.value = 1;
+                bassFilter = audioCtx.createBiquadFilter(); bassFilter.type = 'lowshelf'; bassFilter.frequency.value = 90; bassFilter.gain.value = 0;
+                midsFilter = audioCtx.createBiquadFilter(); midsFilter.type = 'peaking'; midsFilter.frequency.value = 1000; midsFilter.Q.value = 1.0; midsFilter.gain.value = 0;
+                trebleFilter = audioCtx.createBiquadFilter(); trebleFilter.type = 'highshelf'; trebleFilter.frequency.value = 4000; trebleFilter.gain.value = 0;
+                lpfFilter = audioCtx.createBiquadFilter(); lpfFilter.type = 'lowpass'; lpfFilter.Q.value = 0.707; lpfFilter.frequency.value = clampNyquistHz(25000, 10);
+
+                dryPathGain = audioCtx.createGain(); dryPathGain.gain.value = 1;
+                tapeLowCut = audioCtx.createBiquadFilter(); tapeLowCut.type = 'highpass'; tapeLowCut.Q.value = 0.707; tapeLowCut.frequency.value = 10;
+                tapeMidBoost = audioCtx.createBiquadFilter(); tapeMidBoost.type = 'peaking'; tapeMidBoost.frequency.value = 1150; tapeMidBoost.Q.value = 0.9; tapeMidBoost.gain.value = 0;
+                tapeHighCut = audioCtx.createBiquadFilter(); tapeHighCut.type = 'lowpass'; tapeHighCut.Q.value = 0.707; tapeHighCut.frequency.value = clampNyquistHz(24000, 1200);
+
+                delayInputSplit = audioCtx.createChannelSplitter(2); delayMerger = audioCtx.createChannelMerger(2);
+                delayLineL = audioCtx.createDelay(3.0); delayLineR = audioCtx.createDelay(3.0); haasRightDelay = audioCtx.createDelay(0.05);
+                delayLineL.delayTime.value = delayLineR.delayTime.value = delayState.timeMs / 1000; haasRightDelay.delayTime.value = 0;
+                feedbackGainL = audioCtx.createGain(); feedbackGainR = audioCtx.createGain(); feedbackGainL.gain.value = feedbackGainR.gain.value = 0;
+                dm2LoopLimiter = audioCtx.createWaveShaper(); dm2LoopLimiter.curve = createSoftClipCurve(5); dm2LoopLimiter.oversample = '2x';
+                dm2LfoNode = audioCtx.createOscillator(); dm2LfoNode.type = 'sine'; dm2LfoNode.frequency.value = 3.2;
+                dm2LfoDepthGain = audioCtx.createGain(); dm2LfoDepthGain.gain.value = 0;
+                delayWetGain = audioCtx.createGain(); delayWetGain.gain.value = 0;
+
+                convolverNode = audioCtx.createConvolver(); convolverNode.buffer = createImpulseResponseBuffer(audioCtx, fxState.revDecay, 2.5); lastBuiltRevDecay = fxState.revDecay;
+                revWetGain = audioCtx.createGain(); revWetGain.gain.value = 0;
+
+                grainWetGain = audioCtx.createGain(); grainWetGain.gain.value = 0;
+                grainLiveTapDelay = audioCtx.createDelay(1.0); grainLiveTapDelay.delayTime.value = 0.05;
+                grainFbDelay = audioCtx.createDelay(1.0); grainFbDelay.delayTime.value = 0.14;
+                grainFbGain = audioCtx.createGain(); grainFbGain.gain.value = 0;
+
+                oscDelayNode = audioCtx.createDelay(1.5); oscDelayNode.delayTime.value = fxState.oscTimeMs / 1000;
+                oscFeedbackGain = audioCtx.createGain(); oscFeedbackGain.gain.value = 0;
+                oscLfoNode = audioCtx.createOscillator(); oscLfoNode.type = 'sine'; oscLfoNode.frequency.value = fxState.oscLfoRate;
+                oscLfoDepthGain = audioCtx.createGain(); oscLfoDepthGain.gain.value = 0;
+                oscWetGain = audioCtx.createGain(); oscWetGain.gain.value = 0;
+
                 preMaximizerBus = audioCtx.createGain(); preMaximizerBus.gain.value = 1;
                 maximizerLimiter = audioCtx.createDynamicsCompressor();
                 maximizerLimiter.threshold.value = 0.0; maximizerLimiter.knee.value = 0.5; maximizerLimiter.ratio.value = 4.0;
@@ -1795,7 +1814,32 @@
                 analyser = audioCtx.createAnalyser(); analyser.fftSize = 256; analyser.smoothingTimeConstant = 0.8;
                 timeDomainData = new Uint8Array(analyser.fftSize);
 
-                source.connect(hpfFilter); hpfFilter.connect(bassFilter); bassFilter.connect(midsFilter); midsFilter.connect(trebleFilter); trebleFilter.connect(lpfFilter);
+                // 1. Pre-EQ Dry + Dynamic Tube + Redux into preEqBus
+                source.connect(preEqDryGain);
+                preEqDryGain.connect(preEqBus);
+
+                source.connect(tubeEnvAnalyser);
+                source.connect(tubePreGain);
+                tubePreGain.connect(tubeShaper);
+                tubeShaper.connect(tubeToneFilter);
+                tubeToneFilter.connect(tubePostGain);
+                tubePostGain.connect(tubeWetGain);
+                tubeWetGain.connect(preEqBus);
+
+                source.connect(reduxPreFilter);
+                if (reduxProcessor) { reduxPreFilter.connect(reduxProcessor); reduxProcessor.connect(reduxPostFilter); }
+                else { reduxPreFilter.connect(reduxPostFilter); }
+                reduxPostFilter.connect(reduxWetGain);
+                reduxWetGain.connect(preEqBus);
+
+                // 2. EQ & Filter chain (shapes preEqBus including Dynamic Tube & Redux)
+                preEqBus.connect(hpfFilter);
+                hpfFilter.connect(bassFilter);
+                bassFilter.connect(midsFilter);
+                midsFilter.connect(trebleFilter);
+                trebleFilter.connect(lpfFilter);
+
+                // 3. Post-EQ parallel paths into Maximizer
                 lpfFilter.connect(dryPathGain); dryPathGain.connect(preMaximizerBus);
                 lpfFilter.connect(grainLiveTapDelay);
 
@@ -1810,13 +1854,6 @@
 
                 oscLfoNode.connect(oscLfoDepthGain); oscLfoDepthGain.connect(oscDelayNode.delayTime);
                 lpfFilter.connect(oscDelayNode); oscDelayNode.connect(oscFeedbackGain); oscFeedbackGain.connect(oscDelayNode); oscDelayNode.connect(oscWetGain); oscWetGain.connect(preMaximizerBus);
-
-                lpfFilter.connect(tubeEnvAnalyser); lpfFilter.connect(tubePreGain); tubePreGain.connect(tubeShaper); tubeShaper.connect(tubeToneFilter); tubeToneFilter.connect(tubePostGain); tubePostGain.connect(tubeWetGain); tubeWetGain.connect(preMaximizerBus);
-
-                lpfFilter.connect(reduxPreFilter);
-                if (reduxProcessor) { reduxPreFilter.connect(reduxProcessor); reduxProcessor.connect(reduxPostFilter); }
-                else { reduxPreFilter.connect(reduxPostFilter); }
-                reduxPostFilter.connect(reduxWetGain); reduxWetGain.connect(preMaximizerBus);
 
                 preMaximizerBus.connect(maximizerLimiter); maximizerLimiter.connect(masterBus); masterBus.connect(analyser); analyser.connect(audioCtx.destination);
                 dm2LfoNode.start(); oscLfoNode.start();
