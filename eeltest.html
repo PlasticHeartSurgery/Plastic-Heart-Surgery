@@ -2991,16 +2991,17 @@
             const gWetNorm = grainActive ? Math.max(0, Math.min(1, fxState.grainMix / 100)) : 0;
             const oWetNorm = oscDlyActive ? Math.max(0, Math.min(1, fxState.oscMix / 100)) : 0;
             const tWetNorm = tubeActive ? Math.max(0, Math.min(1, fxState.tubeMix / 100)) : 0;
-            const xWetNorm = reduxActive ? Math.max(0, Math.min(1, fxState.reduxMix / 100)) : 0;
-            const rWetNorm = revActive ? Math.max(0, Math.min(1, fxState.revMix / 100)) : 0;
+            const xWetNorm = (effectsRackOpen && reduxActive) ? Math.max(0, Math.min(1, fxState.reduxMix / 100)) : 0;
+const rWetNorm = revActive ? Math.max(0, Math.min(1, fxState.revMix / 100)) : 0;
 
-            const dryFromMix = Math.min(
-                equalPowerDryGain(dWetNorm),
-                equalPowerDryGain(gWetNorm),
-                equalPowerDryGain(oWetNorm),
-                equalPowerDryGain(tWetNorm),
-                equalPowerDryGain(xWetNorm)
-            );
+const reduxDryGain = 1 - xWetNorm;
+const dryFromMix = Math.min(
+    equalPowerDryGain(dWetNorm),
+    equalPowerDryGain(gWetNorm),
+    equalPowerDryGain(oWetNorm),
+    equalPowerDryGain(tWetNorm),
+    reduxDryGain
+);
             const revDryTrim = rWetNorm > 0.75 ? (1 - (rWetNorm - 0.75) * 0.4) : 1;
             smoothParam(dryPathGain.gain, Math.max(0, Math.min(1, dryFromMix * revDryTrim)), 0.02);
         }
@@ -3093,7 +3094,7 @@
             syncTubeGraph(envDriveModDb);
         }
 
-        function syncReduxGraph() {
+       function syncReduxGraph() {
             if (!webAudioReady || !audioCtx || !reduxPreFilter || !reduxPostFilter || !reduxWetGain) return;
             const fPos = Math.max(0, Math.min(1, fxState.reduxFilterAmt / 100));
             const cutoffHz = clampNyquistHz(80 + Math.pow(fPos, 1.4) * 21000, 80);
