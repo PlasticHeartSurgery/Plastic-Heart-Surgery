@@ -2211,7 +2211,7 @@
             tubeOutputDb: 0,
             tubeMix: 0,
             reduxRateKhz: 40.0,
-            reduxBits: 12,
+            reduxBits: 16,
             reduxJitterPct: 0,
             reduxShapePct: 0,
             reduxFilterAmt: 0,
@@ -3536,7 +3536,7 @@
                                     const shaped = Math.tanh(q * (1 + shapeAmt * 4.5)) / Math.tanh(1 + shapeAmt * 4.5);
                                     q = q * (1 - shapeAmt) + shaped * shapeAmt;
                                 }
-                                outData[i] = Math.max(-1, Math.min(1, q + dcOffset));
+                            outData[i] = Math.max(-1, Math.min(1, q + dcOffset));
                             }
 
                             phaseHold[ch] = ph;
@@ -4610,7 +4610,7 @@
             stateKey: 'reduxBits',
             minVal: 1,
             maxVal: 16,
-            resetVal: 12,
+            resetVal: 16,
             formatFn: v => String(Math.round(v)),
             snapZero: false,
             targetStore: fxState,
