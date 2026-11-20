@@ -2385,8 +2385,7 @@
                 if (reduxProcessor) { reduxPreFilter.connect(reduxProcessor); reduxProcessor.connect(reduxPostFilter); }
                 else { reduxPreFilter.connect(reduxPostFilter); }
                 reduxPostFilter.connect(reduxWetGain);
-                reduxWetGain.connect(eqInputBus);
-                reduxWetGain.connect(preMaximizerBus);
+                reduxWetGain.connect(preEqBus);
 
                 // 2. EQ & Filter chain (shapes preEqBus including Dynamic Tube & Redux)
                 preEqBus.connect(hpfFilter);
