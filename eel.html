@@ -512,10 +512,11 @@
             flex-wrap: wrap;
         }
 
-        .delay-tap-cluster {
+       .delay-tap-cluster {
             display: flex;
             align-items: center;
             gap: 10px;
+            flex-wrap: wrap;
         }
 
         .bpm-circle-wrap {
@@ -1225,7 +1226,7 @@
             max-height: calc(95dvh - 64px);
         }
 
-        .lightbox-body img {
+    .lightbox-body img {
             display: block;
             max-width: 93vw;
             max-height: calc(95dvh - 68px);
@@ -1236,8 +1237,9 @@
         }
 
         @media (max-width: 768px) {
-            body {
-                flex-direction: column;
+            .delay-row .eq-knobs-group {
+                flex: 1 1 100%;
+                width: 100%;
             }
             .sidebar {
                 position: relative;
