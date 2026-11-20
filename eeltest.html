@@ -1,4 +1,4 @@
-combined_html = """<html lang="en">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -719,6 +719,64 @@ combined_html = """<html lang="en">
             border-color: #ff0033;
         }
 
+        /* Granulator Looping Playhead Strip */
+        .grain-playhead-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            padding: 8px;
+            border: 1px solid #000000;
+            border-radius: 4px;
+            background: #fafafa;
+            flex-wrap: wrap;
+        }
+
+        .grain-playhead-track {
+            position: relative;
+            flex: 1;
+            min-width: 150px;
+            height: 22px;
+            background: #ffffff;
+            border: 1px solid #000000;
+            border-radius: 3px;
+            cursor: pointer;
+            overflow: hidden;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: none;
+        }
+
+        .grain-loop-window {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 20%;
+            width: 24%;
+            background: rgba(255, 0, 51, 0.16);
+            border-left: 1px solid #ff0033;
+            border-right: 1px solid #ff0033;
+            pointer-events: none;
+        }
+
+        .grain-playhead-needle {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 20%;
+            width: 2px;
+            background: #ff0033;
+            box-shadow: 0 0 6px rgba(255, 0, 51, 0.8);
+            pointer-events: none;
+        }
+
+        .grain-playhead-readout {
+            font-family: 'Lyno Walt', monospace;
+            font-size: 0.85rem;
+            color: #333333;
+            white-space: nowrap;
+        }
+
         .fx-note {
             font-size: 0.78rem;
             color: #555555;
@@ -1272,11 +1330,11 @@ combined_html = """<html lang="en">
                     <div class="eq-knobs-group" id="delayKnobsGroup">
                         <div class="knob-unit">
                             <span class="knob-title">MIX</span>
-                            <div class="knob-dial" id="delayMixKnob" role="slider" tabindex="0" aria-label="Delay mix level" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" title="Drag up/down or scroll to adjust delay wet mix. Double-click to reset (0%).">
+                            <div class="knob-dial" id="delayMixKnob" role="slider" tabindex="0" aria-label="Delay mix level" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" title="Drag up/down or scroll to adjust delay wet mix (0% dry to 100% wet). Double-click to reset (0%).">
                                 <div class="knob-indicator" id="delayMixIndicator"></div>
                             </div>
                             <span class="knob-val" id="delayMixValue">0%</span>
-                            <span class="knob-sub">WET</span>
+                            <span class="knob-sub">WET/DRY</span>
                         </div>
 
                         <div class="knob-unit">
@@ -1310,7 +1368,7 @@ combined_html = """<html lang="en">
                     <button type="button" class="deck-btn" id="delayToggleBtn" aria-pressed="false" title="Red = Delay Active, White = Bypassed">DLY</button>
                 </div>
 
-                <!-- Reverb, Granulator (Modes & Parameters) & LFO Oscillation Delay -->
+                <!-- Reverb, Granulator & Oscillation Delay Panel -->
                 <div class="fx-section-box">
                     <div class="fx-section-header">
                         <span class="fx-section-title">REVERB · GRANULATOR · OSC DELAY</span>
@@ -1319,7 +1377,7 @@ combined_html = """<html lang="en">
                     <!-- Reverb Module -->
                     <div class="fx-module-block">
                         <div class="fx-module-top">
-                            <span class="fx-module-name">REVERB (WET / DRY)</span>
+                            <span class="fx-module-name">REVERB (DRY 0 → WET 100)</span>
                             <button type="button" class="deck-btn" id="revToggleBtn" aria-pressed="false" title="Red = Reverb Active, White = Bypassed">REV</button>
                         </div>
                         <div class="eq-knobs-group bypassed" id="revKnobsGroup">
@@ -1334,11 +1392,11 @@ combined_html = """<html lang="en">
 
                             <div class="knob-unit">
                                 <span class="knob-title">WET / DRY</span>
-                                <div class="knob-dial" id="revMixKnob" role="slider" tabindex="0" aria-label="Reverb wet dry mix" aria-valuemin="0" aria-valuemax="100" aria-valuenow="25" title="Drag up/down or scroll to adjust reverb wet/dry mix. Double-click to reset (25%).">
+                                <div class="knob-dial" id="revMixKnob" role="slider" tabindex="0" aria-label="Reverb wet dry mix" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" title="0% = 100% Dry, 100% = 100% Wet. Double-click to reset (0%).">
                                     <div class="knob-indicator" id="revMixIndicator"></div>
                                 </div>
-                                <span class="knob-val" id="revMixValue">25%</span>
-                                <span class="knob-sub">MIX</span>
+                                <span class="knob-val" id="revMixValue">0%</span>
+                                <span class="knob-sub">0–100%</span>
                             </div>
                         </div>
                     </div>
@@ -1346,9 +1404,20 @@ combined_html = """<html lang="en">
                     <!-- Granulator Module -->
                     <div class="fx-module-block">
                         <div class="fx-module-top">
-                            <span class="fx-module-name">GRANULATOR (MODES &amp; PARAMS)</span>
+                            <span class="fx-module-name">GRANULATOR (ACTIVE TRACK + LOOP PLAYHEAD)</span>
                             <button type="button" class="deck-btn" id="grainToggleBtn" aria-pressed="false" title="Red = Granulator Active, White = Bypassed">GRN</button>
                         </div>
+
+                        <!-- Looping Playhead Bar for Granulator -->
+                        <div class="grain-playhead-box">
+                            <button type="button" class="deck-btn active" id="grainLoopBtn" aria-pressed="true" title="Toggle looping playhead scan inside granulator">LOOP</button>
+                            <div class="grain-playhead-track" id="grainPlayheadTrack" title="Click or drag to position the granulator looping playhead">
+                                <div class="grain-loop-window" id="grainLoopWindow"></div>
+                                <div class="grain-playhead-needle" id="grainPlayheadNeedle"></div>
+                            </div>
+                            <span class="grain-playhead-readout" id="grainPlayheadReadout">00:00</span>
+                        </div>
+
                         <div class="fx-select-row">
                             <label class="fx-select-label" for="grainModeSelect">MODE</label>
                             <select class="fx-select" id="grainModeSelect" aria-label="Granular processing mode">
@@ -1433,11 +1502,11 @@ combined_html = """<html lang="en">
 
                             <div class="knob-unit">
                                 <span class="knob-title">WET / DRY</span>
-                                <div class="knob-dial" id="grainMixKnob" role="slider" tabindex="0" aria-label="Granulator wet dry mix" aria-valuemin="0" aria-valuemax="100" aria-valuenow="35" title="Granulator wet/dry balance. Double-click to reset (35%).">
+                                <div class="knob-dial" id="grainMixKnob" role="slider" tabindex="0" aria-label="Granulator wet dry mix" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" title="0% = 100% Dry, 100% = 100% Wet. Double-click to reset (0%).">
                                     <div class="knob-indicator" id="grainMixIndicator"></div>
                                 </div>
-                                <span class="knob-val" id="grainMixValue">35%</span>
-                                <span class="knob-sub">MIX</span>
+                                <span class="knob-val" id="grainMixValue">0%</span>
+                                <span class="knob-sub">0–100%</span>
                             </div>
                         </div>
                     </div>
@@ -1445,7 +1514,7 @@ combined_html = """<html lang="en">
                     <!-- LFO Oscillation Feedback Delay Module -->
                     <div class="fx-module-block">
                         <div class="fx-module-top">
-                            <span class="fx-module-name">OSCILLATION DELAY (VARIABLE &amp; LFO)</span>
+                            <span class="fx-module-name">OSCILLATION DELAY (DRY 0 → WET 100)</span>
                             <button type="button" class="deck-btn" id="oscDlyToggleBtn" aria-pressed="false" title="Red = Oscillation Delay Active, White = Bypassed">OSC</button>
                         </div>
                         <div class="eq-knobs-group bypassed" id="oscDlyKnobsGroup">
@@ -1487,16 +1556,16 @@ combined_html = """<html lang="en">
 
                             <div class="knob-unit">
                                 <span class="knob-title">WET / DRY</span>
-                                <div class="knob-dial" id="oscMixKnob" role="slider" tabindex="0" aria-label="Oscillation delay wet dry mix" aria-valuemin="0" aria-valuemax="100" aria-valuenow="30" title="Oscillation delay wet/dry mix. Double-click to reset (30%).">
+                                <div class="knob-dial" id="oscMixKnob" role="slider" tabindex="0" aria-label="Oscillation delay wet dry mix" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" title="0% = 100% Dry, 100% = 100% Wet. Double-click to reset (0%).">
                                     <div class="knob-indicator" id="oscMixIndicator"></div>
                                 </div>
-                                <span class="knob-val" id="oscMixValue">30%</span>
-                                <span class="knob-sub">MIX</span>
+                                <span class="knob-val" id="oscMixValue">0%</span>
+                                <span class="knob-sub">0–100%</span>
                             </div>
                         </div>
                     </div>
 
-                    <p class="fx-note">Granulator decodes the active track buffer for Freeze/Hold, Granular Delay, Cloud Diffusion, Pitch-Shift, Time-Stretch &amp; Glitch/Stutter (requires HTTP/HTTPS or same-origin audio).</p>
+                    <p class="fx-note">Granulator loads the active card track buffer and scans a looping playhead (requires HTTP/HTTPS or same-origin audio).</p>
                 </div>
             </div>
 
@@ -1643,6 +1712,11 @@ combined_html = """<html lang="en">
         const revKnobsGroup = document.getElementById('revKnobsGroup');
         const grainToggleBtn = document.getElementById('grainToggleBtn');
         const grainKnobsGroup = document.getElementById('grainKnobsGroup');
+        const grainLoopBtn = document.getElementById('grainLoopBtn');
+        const grainPlayheadTrack = document.getElementById('grainPlayheadTrack');
+        const grainLoopWindow = document.getElementById('grainLoopWindow');
+        const grainPlayheadNeedle = document.getElementById('grainPlayheadNeedle');
+        const grainPlayheadReadout = document.getElementById('grainPlayheadReadout');
         const grainModeSelect = document.getElementById('grainModeSelect');
         const grainTimingSelect = document.getElementById('grainTimingSelect');
         const oscDlyToggleBtn = document.getElementById('oscDlyToggleBtn');
@@ -1804,7 +1878,7 @@ combined_html = """<html lang="en">
             hpf: 0
         };
 
-        // Tap BPM & Delay state: starts off until toggled on
+        // Tap BPM & Delay state: starts off until toggled on; mix starts at 0 (0% wet / 100% dry)
         let delayActive = false;
         const delayState = {
             timeMs: 500,
@@ -1816,14 +1890,15 @@ combined_html = """<html lang="en">
         let tapTimestamps = [];
         let bpmPulseTimer = null;
 
-        // Reverb, Granulator & Oscillation Delay state
+        // Reverb, Granulator & Oscillation Delay state: all Wet/Dry knobs start at 0 (0% wet / 100% dry)
         let revActive = false;
         let grainActive = false;
         let oscDlyActive = false;
+        let grainLoopEnabled = true;
 
         const fxState = {
             revDecay: 2.5,
-            revMix: 25,
+            revMix: 0,
             grainMode: 'standard',
             grainTiming: 'asynchronous',
             grainSizeMs: 110,
@@ -1833,12 +1908,12 @@ combined_html = """<html lang="en">
             grainRate: 1.0,
             grainFdbk: 25,
             grainPan: 50,
-            grainMix: 35,
+            grainMix: 0,
             oscTimeMs: 280,
             oscFdbk: 45,
             oscLfoRate: 1.2,
             oscLfoDepthMs: 8.0,
-            oscMix: 30
+            oscMix: 0
         };
 
         let audioCtx = null;
@@ -1875,8 +1950,13 @@ combined_html = """<html lang="en">
         let grainFbGain = null;
         let decodedAudioBuffer = null;
         let loadedBufferSrc = null;
+        let decodingInFlight = false;
         let grainTimerId = null;
         let freezeAnchorSec = null;
+        let grainPlayheadSec = 0;
+        let grainLoopCenterSec = 0;
+        let lastPlayheadTickTime = performance.now();
+        let isScrubbingGrainPlayhead = false;
 
         // Oscillation Delay graph nodes
         let oscDelayNode = null;
@@ -1914,19 +1994,192 @@ combined_html = """<html lang="en">
             return impulse;
         }
 
+        function getGranulatorDurationSec() {
+            if (decodedAudioBuffer && decodedAudioBuffer.duration > 0) {
+                return decodedAudioBuffer.duration;
+            }
+            if (Number.isFinite(audio.duration) && audio.duration > 0) {
+                return audio.duration;
+            }
+            return 0;
+        }
+
+        function getGranulatorLoopSpanSec(dur) {
+            if (dur <= 0) return 2;
+            // Loop span scales with grain size & freeze/tap setting (0.4s to 4.0s)
+            const baseSpan = Math.max(0.45, Math.min(4.0, (fxState.grainSizeMs / 1000) * 14));
+            return Math.min(dur, baseSpan);
+        }
+
+        function updateGranulatorPlayheadUI() {
+            const dur = getGranulatorDurationSec();
+            if (dur <= 0) {
+                grainPlayheadNeedle.style.left = '0%';
+                grainLoopWindow.style.left = '0%';
+                grainLoopWindow.style.width = '15%';
+                grainPlayheadReadout.textContent = formatTime(grainPlayheadSec);
+                return;
+            }
+
+            const span = getGranulatorLoopSpanSec(dur);
+            const halfSpan = span * 0.5;
+            let startSec = grainLoopCenterSec - halfSpan;
+            let endSec = grainLoopCenterSec + halfSpan;
+            if (startSec < 0) {
+                startSec = 0;
+                endSec = Math.min(dur, span);
+            }
+            if (endSec > dur) {
+                endSec = dur;
+                startSec = Math.max(0, dur - span);
+            }
+
+            const clampedHead = Math.max(0, Math.min(dur, grainPlayheadSec));
+            const headPct = (clampedHead / dur) * 100;
+            const winLeftPct = (startSec / dur) * 100;
+            const winWidthPct = Math.max(2, ((endSec - startSec) / dur) * 100);
+
+            grainPlayheadNeedle.style.left = `${headPct}%`;
+            grainLoopWindow.style.left = `${winLeftPct}%`;
+            grainLoopWindow.style.width = `${winWidthPct}%`;
+            grainPlayheadReadout.textContent = formatTime(clampedHead);
+        }
+
+        function advanceGranulatorPlayhead() {
+            const now = performance.now();
+            const dtSec = Math.min(0.25, Math.max(0, (now - lastPlayheadTickTime) / 1000));
+            lastPlayheadTickTime = now;
+
+            const dur = getGranulatorDurationSec();
+            if (dur <= 0) {
+                updateGranulatorPlayheadUI();
+                return;
+            }
+
+            const isPlaying = !audio.paused && !audio.ended;
+            if (isScrubbingGrainPlayhead) {
+                updateGranulatorPlayheadUI();
+                return;
+            }
+
+            if (grainLoopEnabled) {
+                const span = getGranulatorLoopSpanSec(dur);
+                const halfSpan = span * 0.5;
+                let loopStartSec = grainLoopCenterSec - halfSpan;
+                let loopEndSec = grainLoopCenterSec + halfSpan;
+                if (loopStartSec < 0) {
+                    loopStartSec = 0;
+                    loopEndSec = Math.min(dur, span);
+                }
+                if (loopEndSec > dur) {
+                    loopEndSec = dur;
+                    loopStartSec = Math.max(0, dur - span);
+                }
+
+                if (isPlaying && grainActive) {
+                    const rate = Math.max(0.1, Math.min(3, fxState.grainRate * (audio.playbackRate || 1)));
+                    grainPlayheadSec += dtSec * rate;
+                    if (grainPlayheadSec >= loopEndSec || grainPlayheadSec < loopStartSec) {
+                        grainPlayheadSec = loopStartSec;
+                    }
+                } else if (!grainActive && isPlaying) {
+                    grainPlayheadSec = audio.currentTime % dur;
+                    grainLoopCenterSec = grainPlayheadSec;
+                }
+            } else if (isPlaying) {
+                grainPlayheadSec = audio.currentTime % dur;
+                grainLoopCenterSec = grainPlayheadSec;
+            }
+
+            updateGranulatorPlayheadUI();
+        }
+
+        function setGranulatorPlayheadFromClientX(clientX) {
+            const dur = getGranulatorDurationSec();
+            const rect = grainPlayheadTrack.getBoundingClientRect();
+            if (rect.width <= 0) return;
+            const ratio = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+            if (dur > 0) {
+                const targetSec = ratio * dur;
+                grainPlayheadSec = targetSec;
+                grainLoopCenterSec = targetSec;
+                freezeAnchorSec = targetSec;
+            }
+            updateGranulatorPlayheadUI();
+        }
+
+        grainPlayheadTrack.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            isScrubbingGrainPlayhead = true;
+            setGranulatorPlayheadFromClientX(e.clientX);
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (!isScrubbingGrainPlayhead) return;
+            setGranulatorPlayheadFromClientX(e.clientX);
+        });
+
+        window.addEventListener('mouseup', () => {
+            if (isScrubbingGrainPlayhead) {
+                isScrubbingGrainPlayhead = false;
+            }
+        });
+
+        grainPlayheadTrack.addEventListener('touchstart', (e) => {
+            if (e.touches.length === 1) {
+                e.preventDefault();
+                isScrubbingGrainPlayhead = true;
+                setGranulatorPlayheadFromClientX(e.touches[0].clientX);
+            }
+        }, { passive: false });
+
+        window.addEventListener('touchmove', (e) => {
+            if (!isScrubbingGrainPlayhead || e.touches.length !== 1) return;
+            e.preventDefault();
+            setGranulatorPlayheadFromClientX(e.touches[0].clientX);
+        }, { passive: false });
+
+        window.addEventListener('touchend', () => {
+            if (isScrubbingGrainPlayhead) {
+                isScrubbingGrainPlayhead = false;
+            }
+        });
+
+        grainLoopBtn.addEventListener('click', () => {
+            grainLoopEnabled = !grainLoopEnabled;
+            grainLoopBtn.classList.toggle('active', grainLoopEnabled);
+            grainLoopBtn.setAttribute('aria-pressed', String(grainLoopEnabled));
+            const dur = getGranulatorDurationSec();
+            if (grainLoopEnabled && dur > 0) {
+                grainLoopCenterSec = Number.isFinite(audio.currentTime) ? (audio.currentTime % dur) : grainPlayheadSec;
+                grainPlayheadSec = grainLoopCenterSec;
+            }
+            updateGranulatorPlayheadUI();
+        });
+
         async function ensureGranulatorBuffer(url) {
             if (!audioCtx || !url) return;
             if (decodedAudioBuffer && loadedBufferSrc === url) return;
+            if (decodingInFlight) return;
+            decodingInFlight = true;
             try {
                 const response = await fetch(url);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 const arrayBuf = await response.arrayBuffer();
-                decodedAudioBuffer = await audioCtx.decodeAudioData(arrayBuf);
+                const buf = await audioCtx.decodeAudioData(arrayBuf);
+                decodedAudioBuffer = buf;
                 loadedBufferSrc = url;
                 if (decodedAudioBuffer && decodedAudioBuffer.duration > 0) {
+                    const curTime = Number.isFinite(audio.currentTime) ? (audio.currentTime % decodedAudioBuffer.duration) : 0;
+                    grainPlayheadSec = curTime;
+                    grainLoopCenterSec = curTime;
                     freezeAnchorSec = (fxState.grainPosPct / 100) * decodedAudioBuffer.duration;
                 }
+                updateGranulatorPlayheadUI();
             } catch (err) {
                 console.warn("Granulator buffer decode skipped/failed:", err);
+            } finally {
+                decodingInFlight = false;
             }
         }
 
@@ -1934,7 +2187,9 @@ combined_html = """<html lang="en">
             let grainSec = baseGrainSec;
             let rate = fxState.grainRate;
             let jitterRatio = fxState.grainJitter / 100;
-            let basePos = (Number.isFinite(audio.currentTime) ? audio.currentTime : 0) % durationSec;
+            let basePos = grainLoopEnabled
+                ? grainPlayheadSec
+                : ((Number.isFinite(audio.currentTime) ? audio.currentTime : 0) % durationSec);
 
             switch (fxState.grainMode) {
                 case 'pitch':
@@ -1975,11 +2230,14 @@ combined_html = """<html lang="en">
         }
 
         function triggerGranularGrain() {
+            advanceGranulatorPlayhead();
+
             if (
                 webAudioReady &&
                 audioCtx &&
                 audioCtx.state === 'running' &&
                 grainActive &&
+                fxState.grainMix > 0 &&
                 decodedAudioBuffer &&
                 !audio.paused &&
                 !audio.ended
@@ -2072,8 +2330,11 @@ combined_html = """<html lang="en">
             grainToggleBtn.classList.toggle('active', grainActive);
             grainToggleBtn.setAttribute('aria-pressed', String(grainActive));
             grainKnobsGroup.classList.toggle('bypassed', !grainActive);
-            if (grainActive && audioCtx && audio.src) {
-                ensureGranulatorBuffer(audio.src);
+            if (grainActive) {
+                lastPlayheadTickTime = performance.now();
+                if (audioCtx && audio.src) {
+                    ensureGranulatorBuffer(audio.src);
+                }
             }
             syncGranulatorGraph();
         }
@@ -2912,7 +3173,7 @@ combined_html = """<html lang="en">
             snapZero: true
         });
 
-        // Reverb Knobs
+        // Reverb Knobs (Wet/Dry starts at 0)
         setupLinearKnob({
             dialId: 'revDecayKnob',
             indicatorId: 'revDecayIndicator',
@@ -2934,14 +3195,14 @@ combined_html = """<html lang="en">
             stateKey: 'revMix',
             minVal: 0,
             maxVal: 100,
-            resetVal: 25,
+            resetVal: 0,
             formatFn: v => `${Math.round(v)}%`,
             snapZero: true,
             targetStore: fxState,
             onChangeCallback: syncReverbGraph
         });
 
-        // Granulator Knobs
+        // Granulator Knobs (Wet/Dry starts at 0)
         setupLinearKnob({
             dialId: 'grainSizeKnob',
             indicatorId: 'grainSizeIndicator',
@@ -2953,7 +3214,10 @@ combined_html = """<html lang="en">
             formatFn: v => `${Math.round(v)}ms`,
             snapZero: false,
             targetStore: fxState,
-            onChangeCallback: scheduleNextGrain
+            onChangeCallback: () => {
+                scheduleNextGrain();
+                updateGranulatorPlayheadUI();
+            }
         });
 
         setupLinearKnob({
@@ -2996,9 +3260,14 @@ combined_html = """<html lang="en">
             snapZero: false,
             targetStore: fxState,
             onChangeCallback: () => {
-                if (decodedAudioBuffer && decodedAudioBuffer.duration > 0) {
-                    freezeAnchorSec = (fxState.grainPosPct / 100) * decodedAudioBuffer.duration;
+                const dur = getGranulatorDurationSec();
+                if (dur > 0) {
+                    const posSec = (fxState.grainPosPct / 100) * dur;
+                    freezeAnchorSec = posSec;
+                    grainLoopCenterSec = posSec;
+                    grainPlayheadSec = posSec;
                 }
+                updateGranulatorPlayheadUI();
             }
         });
 
@@ -3051,14 +3320,14 @@ combined_html = """<html lang="en">
             stateKey: 'grainMix',
             minVal: 0,
             maxVal: 100,
-            resetVal: 35,
+            resetVal: 0,
             formatFn: v => `${Math.round(v)}%`,
             snapZero: true,
             targetStore: fxState,
             onChangeCallback: syncGranulatorGraph
         });
 
-        // Oscillation Delay Knobs
+        // Oscillation Delay Knobs (Wet/Dry starts at 0)
         setupLinearKnob({
             dialId: 'oscTimeKnob',
             indicatorId: 'oscTimeIndicator',
@@ -3122,7 +3391,7 @@ combined_html = """<html lang="en">
             stateKey: 'oscMix',
             minVal: 0,
             maxVal: 100,
-            resetVal: 30,
+            resetVal: 0,
             formatFn: v => `${Math.round(v)}%`,
             snapZero: true,
             targetStore: fxState,
@@ -3134,6 +3403,7 @@ combined_html = """<html lang="en">
         updateRevToggleUI();
         updateGrainToggleUI();
         updateOscDlyToggleUI();
+        updateGranulatorPlayheadUI();
 
         function updateVolumeUI(vol, isMuted) {
             const effectiveVol = isMuted ? 0 : vol;
@@ -3377,6 +3647,7 @@ combined_html = """<html lang="en">
             syncReverbGraph();
             syncGranulatorGraph();
             syncOscDelayGraph();
+            lastPlayheadTickTime = performance.now();
 
             audio.play().then(() => {
                 if (audioCtx && audioCtx.state === 'suspended') {
@@ -3420,6 +3691,9 @@ combined_html = """<html lang="en">
                 updateProgressUI(ratio * 100);
                 vizTime.textContent = `${formatTime(targetTime)} / ${formatTime(audio.duration)}`;
             }
+            grainPlayheadSec = audio.currentTime;
+            grainLoopCenterSec = audio.currentTime;
+            updateGranulatorPlayheadUI();
         }
 
         progressWrapper.addEventListener('mousedown', (e) => {
@@ -3465,6 +3739,7 @@ combined_html = """<html lang="en">
         audio.addEventListener('loadedmetadata', () => {
             if (!isNaN(audio.duration)) {
                 vizTime.textContent = `${formatTime(audio.currentTime)} / ${formatTime(audio.duration)}`;
+                updateGranulatorPlayheadUI();
             }
         });
 
@@ -3493,6 +3768,7 @@ combined_html = """<html lang="en">
         function drawVisualizer() {
             requestAnimationFrame(drawVisualizer);
             checkLoopBoundaries();
+            advanceGranulatorPlayhead();
 
             if (audio.duration && !isNaN(audio.duration) && !audio.paused && !isDraggingProgress) {
                 const pct = (audio.currentTime / audio.duration) * 100;
@@ -3602,9 +3878,3 @@ combined_html = """<html lang="en">
     </script>
 </body>
 </html>
-"""
-
-with open("plastic-heart-surgery-music-fx.html", "w", encoding="utf-8") as f:
-    f.write(combined_html)
-
-print("Combined HTML saved to plastic-heart-surgery-music-fx.html")
