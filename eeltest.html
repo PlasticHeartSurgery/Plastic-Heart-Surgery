@@ -282,6 +282,54 @@
             display: block;
         }
 
+        /* Master EFFECTS Header Bar */
+        .effects-master-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-top: 12px;
+            padding: 10px 14px;
+            border: 2px solid #000000;
+            border-radius: 4px;
+            background: #ffffff;
+            cursor: pointer;
+            user-select: none;
+            -webkit-user-select: none;
+            transition: border-color 0.15s ease, background-color 0.15s ease;
+        }
+
+        .effects-master-bar:hover,
+        .effects-master-bar.open {
+            border-color: #ff0033;
+        }
+
+        .effects-master-title {
+            font-family: 'Lyno Ulyscyr', sans-serif;
+            font-size: 0.95rem;
+            letter-spacing: 0.22em;
+            color: #ff0033;
+            font-weight: 700;
+        }
+
+        .effects-master-state {
+            font-family: 'Lyno Ulyscyr', sans-serif;
+            font-size: 0.75rem;
+            letter-spacing: 0.16em;
+            color: #111111;
+            border: 2px solid #000000;
+            border-radius: 4px;
+            padding: 3px 10px;
+            background: #ffffff;
+            transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+        }
+
+        .effects-master-bar.open .effects-master-state {
+            background: #ff0033;
+            color: #ffffff;
+            border-color: #ff0033;
+        }
+
         .deck-btn {
             font-family: 'Lyno Ulyscyr', sans-serif;
             font-size: 0.75rem;
@@ -1236,6 +1284,8 @@
                     <span class="visualizer-time" id="vizTime">00:00 / 00:00</span>
                 </div>
                 <canvas id="audioVisualizer"></canvas>
+
+                <!-- 1. SEEK BAR -->
                 <div class="progress-bar-wrapper" id="progressWrapper" tabindex="0" role="slider" aria-label="Seek audio position">
                     <div class="progress-bar-container" id="progressContainer">
                         <div class="progress-bar-fill" id="progressFill"></div>
@@ -1243,353 +1293,361 @@
                     </div>
                 </div>
 
-                <!-- Volume Slider -->
+                <!-- 2. VOLUME SLIDER -->
                 <div class="control-row">
                     <button type="button" class="deck-btn" id="muteBtn" aria-label="Mute or unmute audio">VOL</button>
                     <input type="range" class="deck-slider" id="volumeSlider" min="0" max="1" step="0.01" value="1" aria-label="Volume">
                     <span class="deck-readout" id="volumeValue">100%</span>
                 </div>
 
-                <!-- Loop Toggle + Collapsible IN/OUT/÷2 Row -->
-                <div class="control-row">
-                    <button type="button" class="deck-btn" id="loopSectionToggleBtn" aria-expanded="false" title="Show or hide Loop IN / OUT / ÷2 controls">LOOP</button>
-                    <div class="collapsible-panel" id="loopControlsRow" style="align-items:center;gap:10px;flex-wrap:wrap;flex:1;">
-                        <button type="button" class="deck-btn loop-btn" id="loopInBtn" aria-pressed="false" title="Set loop start point; click again to clear">IN</button>
-                        <button type="button" class="deck-btn loop-btn" id="loopOutBtn" aria-pressed="false" title="Set loop end point and repeat; click again to clear">OUT</button>
-                        <button type="button" class="deck-btn loop-halve-btn" id="loopHalveBtn" disabled title="Cut loop length in half (2x, 4x, 8x shorter and beyond)">÷2</button>
-                    </div>
+                <!-- 3. EFFECTS HEADER (ALL OTHER CONTROLS HIDDEN UNTIL CLICKED) -->
+                <div class="effects-master-bar" id="effectsHeaderBtn" role="button" tabindex="0" aria-expanded="false" aria-controls="effectsRackContainer">
+                    <span class="effects-master-title">EFFECTS</span>
+                    <span class="effects-master-state" id="effectsMasterState">SHOW</span>
                 </div>
 
-                <!-- CDJ / SL-1200 Pitch & Speed + Range Selector -->
-                <div class="control-row">
-                    <button type="button" class="deck-btn range-btn" id="pitchRangeBtn" title="Cycle tempo range: 8%, 16%, 32%, 64%, 128%">±8%</button>
-                    <div class="pitch-slider-wrap">
-                        <input type="range" class="deck-slider" id="pitchSlider" min="-8" max="8" step="0.1" value="0" aria-label="Pitch and play speed percentage" title="Drag to adjust pitch/speed. Double-click to reset to 0%.">
-                        <div class="pitch-notches" id="pitchNotches" aria-hidden="true"></div>
-                    </div>
-                    <span class="deck-readout" id="pitchValue">+0.00%</span>
-                    <button type="button" class="deck-btn" id="pitchResetBtn" title="Reset pitch and speed to 0%">0%</button>
-                </div>
-
-                <!-- Subtle Nudge Slider (±1.00% in 0.01% steps) -->
-                <div class="control-row">
-                    <span class="deck-label">NUDGE</span>
-                    <input type="range" class="deck-slider" id="nudgeSlider" min="-1" max="1" step="0.01" value="0" aria-label="Subtle pitch and speed nudge percentage" title="Drag to nudge pitch/speed. Double-click to reset to 0.00%.">
-                    <span class="deck-readout" id="nudgeValue">+0.00%</span>
-                    <button type="button" class="deck-btn" id="nudgeResetBtn" title="Reset nudge to 0.00%">RESET</button>
-                </div>
-
-                <!-- 3-Band EQ + LPF / HPF Rotary Knobs (Minimized until EQ button clicked) -->
-                <div class="eq-row">
-                    <div class="eq-knobs-group collapsible-panel" id="eqKnobsGroup">
-                        <div class="knob-unit">
-                            <span class="knob-title">BASS</span>
-                            <div class="knob-dial" id="bassKnob" role="slider" tabindex="0" aria-label="Bass EQ (90Hz crossover)" aria-valuemin="-24" aria-valuemax="12" aria-valuenow="0" title="Drag up/down or scroll to adjust Bass (90Hz crossover). Double-click to reset.">
-                                <div class="knob-indicator" id="bassIndicator"></div>
-                            </div>
-                            <span class="knob-val" id="bassValue">0.0 dB</span>
-                            <span class="knob-sub">90Hz</span>
-                        </div>
-
-                        <div class="knob-unit">
-                            <span class="knob-title">MIDS</span>
-                            <div class="knob-dial" id="midsKnob" role="slider" tabindex="0" aria-label="Mids EQ (1kHz)" aria-valuemin="-24" aria-valuemax="12" aria-valuenow="0" title="Drag up/down or scroll to adjust Mids. Double-click to reset.">
-                                <div class="knob-indicator" id="midsIndicator"></div>
-                            </div>
-                            <span class="knob-val" id="midsValue">0.0 dB</span>
-                            <span class="knob-sub">1kHz</span>
-                        </div>
-
-                        <div class="knob-unit">
-                            <span class="knob-title">TREBLE</span>
-                            <div class="knob-dial" id="trebleKnob" role="slider" tabindex="0" aria-label="Treble EQ (4kHz)" aria-valuemin="-24" aria-valuemax="12" aria-valuenow="0" title="Drag up/down or scroll to adjust Treble. Double-click to reset.">
-                                <div class="knob-indicator" id="trebleIndicator"></div>
-                            </div>
-                            <span class="knob-val" id="trebleValue">0.0 dB</span>
-                            <span class="knob-sub">4kHz</span>
-                        </div>
-
-                        <div class="knob-unit">
-                            <span class="knob-title">LPF</span>
-                            <div class="knob-dial" id="lpfKnob" role="slider" tabindex="0" aria-label="Low Pass Filter cutoff frequency" aria-valuemin="0" aria-valuemax="25000" aria-valuenow="25000" title="Drag up/down or scroll to adjust Low Pass cutoff (0Hz–25kHz). Double-click to reset (25.0kHz).">
-                                <div class="knob-indicator" id="lpfIndicator"></div>
-                            </div>
-                            <span class="knob-val" id="lpfValue">25.0kHz</span>
-                            <span class="knob-sub">0–25kHz</span>
-                        </div>
-
-                        <div class="knob-unit">
-                            <span class="knob-title">HPF</span>
-                            <div class="knob-dial" id="hpfKnob" role="slider" tabindex="0" aria-label="High Pass Filter cutoff frequency" aria-valuemin="0" aria-valuemax="25000" aria-valuenow="0" title="Drag up/down or scroll to adjust High Pass cutoff (0Hz–25kHz). Double-click to reset (0Hz).">
-                                <div class="knob-indicator" id="hpfIndicator"></div>
-                            </div>
-                            <span class="knob-val" id="hpfValue">0Hz</span>
-                            <span class="knob-sub">0–25kHz</span>
-                        </div>
-                    </div>
-                    <button type="button" class="deck-btn" id="eqToggleBtn" aria-pressed="false" title="Click to toggle & show EQ & Filters">EQ</button>
-                </div>
-
-                <!-- Tap BPM Circle + Tap Delay with Haas Widen & Tape Midrange Shaping -->
-                <div class="delay-row">
-                    <div class="delay-tap-cluster">
-                        <div class="bpm-circle-wrap">
-                            <button type="button" class="bpm-circle" id="bpmTapCircle" aria-label="Tap BPM" title="Tap repeatedly to measure BPM (also synced with TAP / T)">
-                                <span class="bpm-circle-num" id="bpmCircleNum">120</span>
-                                <span class="bpm-circle-label">BPM</span>
-                            </button>
-                        </div>
-
-                        <div class="delay-controls-stack">
-                            <div style="display:flex;gap:6px;">
-                                <button type="button" class="tap-btn" id="tapDelayBtn" title="Tap repeatedly to set delay time (or press T)">TAP</button>
-                                <button type="button" class="deck-btn" id="tapClearBtn" style="min-width:44px;padding:4px 7px;" title="Reset tap delay to 500ms / 120 BPM">CLR</button>
-                            </div>
-                            <div class="tap-meta" id="tapReadout">500ms<br>120 BPM</div>
+                <div class="collapsible-block" id="effectsRackContainer">
+                    <!-- Loop Toggle + Collapsible IN/OUT/÷2 Row -->
+                    <div class="control-row">
+                        <button type="button" class="deck-btn" id="loopSectionToggleBtn" aria-expanded="false" title="Show or hide Loop IN / OUT / ÷2 controls">LOOP</button>
+                        <div class="collapsible-panel" id="loopControlsRow" style="align-items:center;gap:10px;flex-wrap:wrap;flex:1;">
+                            <button type="button" class="deck-btn loop-btn" id="loopInBtn" aria-pressed="false" title="Set loop start point; click again to clear">IN</button>
+                            <button type="button" class="deck-btn loop-btn" id="loopOutBtn" aria-pressed="false" title="Set loop end point and repeat; click again to clear">OUT</button>
+                            <button type="button" class="deck-btn loop-halve-btn" id="loopHalveBtn" disabled title="Cut loop length in half (2x, 4x, 8x shorter and beyond)">÷2</button>
                         </div>
                     </div>
 
-                    <div class="eq-knobs-group" id="delayKnobsGroup">
-                        <div class="knob-unit">
-                            <span class="knob-title">MIX</span>
-                            <div class="knob-dial" id="delayMixKnob" role="slider" tabindex="0" aria-label="Delay mix level" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" title="Drag up/down or scroll to adjust delay wet mix (0% dry to 100% wet). Double-click to reset (0%).">
-                                <div class="knob-indicator" id="delayMixIndicator"></div>
-                            </div>
-                            <span class="knob-val" id="delayMixValue">0%</span>
-                            <span class="knob-sub">WET/DRY</span>
+                    <!-- CDJ / SL-1200 Pitch & Speed + Range Selector -->
+                    <div class="control-row">
+                        <button type="button" class="deck-btn range-btn" id="pitchRangeBtn" title="Cycle tempo range: 8%, 16%, 32%, 64%, 128%">±8%</button>
+                        <div class="pitch-slider-wrap">
+                            <input type="range" class="deck-slider" id="pitchSlider" min="-8" max="8" step="0.1" value="0" aria-label="Pitch and play speed percentage" title="Drag to adjust pitch/speed. Double-click to reset to 0%.">
+                            <div class="pitch-notches" id="pitchNotches" aria-hidden="true"></div>
                         </div>
-
-                        <div class="knob-unit">
-                            <span class="knob-title">FDBK</span>
-                            <div class="knob-dial" id="delayFdbkKnob" role="slider" tabindex="0" aria-label="Delay feedback amount" aria-valuemin="0" aria-valuemax="85" aria-valuenow="35" title="Drag up/down or scroll to adjust delay feedback. Double-click to reset (35%).">
-                                <div class="knob-indicator" id="delayFdbkIndicator"></div>
-                            </div>
-                            <span class="knob-val" id="delayFdbkValue">35%</span>
-                            <span class="knob-sub">REPEAT</span>
-                        </div>
-
-                        <div class="knob-unit">
-                            <span class="knob-title">WIDEN</span>
-                            <div class="knob-dial" id="delayWidenKnob" role="slider" tabindex="0" aria-label="Haas right-channel delay offset" aria-valuemin="0" aria-valuemax="28" aria-valuenow="0" title="0ms = center delay; turning up delays the right side (Haas effect). Double-click to reset (0.0ms).">
-                                <div class="knob-indicator" id="delayWidenIndicator"></div>
-                            </div>
-                            <span class="knob-val" id="delayWidenValue">0.0ms</span>
-                            <span class="knob-sub">HAAS R</span>
-                        </div>
-
-                        <div class="knob-unit">
-                            <span class="knob-title">TAPE</span>
-                            <div class="knob-dial" id="delayTapeKnob" role="slider" tabindex="0" aria-label="Tape midrange shaping amount" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" title="0% = full frequency delay; turning up focuses mids and rolls off highs & lows. Double-click to reset (0%).">
-                                <div class="knob-indicator" id="delayTapeIndicator"></div>
-                            </div>
-                            <span class="knob-val" id="delayTapeValue">0%</span>
-                            <span class="knob-sub">MIDS</span>
-                        </div>
+                        <span class="deck-readout" id="pitchValue">+0.00%</span>
+                        <button type="button" class="deck-btn" id="pitchResetBtn" title="Reset pitch and speed to 0%">0%</button>
                     </div>
 
-                    <button type="button" class="deck-btn" id="delayToggleBtn" aria-pressed="false" title="Red = Delay Active, White = Bypassed">DLY</button>
-                </div>
-
-                <!-- Reverb, Granulator & Oscillation Delay Panel -->
-                <div class="fx-section-box">
-                    <div class="fx-section-header">
-                        <span class="fx-section-title">REVERB · GRANULATOR · OSC DELAY</span>
+                    <!-- Subtle Nudge Slider (±1.00% in 0.01% steps) -->
+                    <div class="control-row">
+                        <span class="deck-label">NUDGE</span>
+                        <input type="range" class="deck-slider" id="nudgeSlider" min="-1" max="1" step="0.01" value="0" aria-label="Subtle pitch and speed nudge percentage" title="Drag to nudge pitch/speed. Double-click to reset to 0.00%.">
+                        <span class="deck-readout" id="nudgeValue">+0.00%</span>
+                        <button type="button" class="deck-btn" id="nudgeResetBtn" title="Reset nudge to 0.00%">RESET</button>
                     </div>
 
-                    <!-- Reverb Module (Minimized until REV clicked) -->
-                    <div class="fx-module-block">
-                        <div class="fx-module-top" id="revModuleTop">
-                            <span class="fx-module-name">REVERB (DRY 0 → WET 100)</span>
-                            <button type="button" class="deck-btn" id="revToggleBtn" aria-pressed="false" title="Click to toggle & show Reverb">REV</button>
-                        </div>
-                        <div class="eq-knobs-group collapsible-panel" id="revKnobsGroup">
+                    <!-- 3-Band EQ + LPF / HPF Rotary Knobs -->
+                    <div class="eq-row">
+                        <div class="eq-knobs-group collapsible-panel" id="eqKnobsGroup">
                             <div class="knob-unit">
-                                <span class="knob-title">DECAY</span>
-                                <div class="knob-dial" id="revDecayKnob" role="slider" tabindex="0" aria-label="Reverb decay time" aria-valuemin="0.2" aria-valuemax="6" aria-valuenow="2.5" title="Drag up/down or scroll to adjust reverb decay (0.2s–6.0s). Double-click to reset (2.5s).">
-                                    <div class="knob-indicator" id="revDecayIndicator"></div>
+                                <span class="knob-title">BASS</span>
+                                <div class="knob-dial" id="bassKnob" role="slider" tabindex="0" aria-label="Bass EQ (90Hz crossover)" aria-valuemin="-24" aria-valuemax="12" aria-valuenow="0" title="Drag up/down or scroll to adjust Bass (90Hz crossover). Double-click to reset.">
+                                    <div class="knob-indicator" id="bassIndicator"></div>
                                 </div>
-                                <span class="knob-val" id="revDecayValue">2.5s</span>
-                                <span class="knob-sub">TAIL</span>
+                                <span class="knob-val" id="bassValue">0.0 dB</span>
+                                <span class="knob-sub">90Hz</span>
                             </div>
 
                             <div class="knob-unit">
-                                <span class="knob-title">WET / DRY</span>
-                                <div class="knob-dial" id="revMixKnob" role="slider" tabindex="0" aria-label="Reverb wet dry mix" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" title="0% = 100% Dry, 100% = 100% Wet. Double-click to reset (0%).">
-                                    <div class="knob-indicator" id="revMixIndicator"></div>
+                                <span class="knob-title">MIDS</span>
+                                <div class="knob-dial" id="midsKnob" role="slider" tabindex="0" aria-label="Mids EQ (1kHz)" aria-valuemin="-24" aria-valuemax="12" aria-valuenow="0" title="Drag up/down or scroll to adjust Mids. Double-click to reset.">
+                                    <div class="knob-indicator" id="midsIndicator"></div>
                                 </div>
-                                <span class="knob-val" id="revMixValue">0%</span>
-                                <span class="knob-sub">0–100%</span>
+                                <span class="knob-val" id="midsValue">0.0 dB</span>
+                                <span class="knob-sub">1kHz</span>
+                            </div>
+
+                            <div class="knob-unit">
+                                <span class="knob-title">TREBLE</span>
+                                <div class="knob-dial" id="trebleKnob" role="slider" tabindex="0" aria-label="Treble EQ (4kHz)" aria-valuemin="-24" aria-valuemax="12" aria-valuenow="0" title="Drag up/down or scroll to adjust Treble. Double-click to reset.">
+                                    <div class="knob-indicator" id="trebleIndicator"></div>
+                                </div>
+                                <span class="knob-val" id="trebleValue">0.0 dB</span>
+                                <span class="knob-sub">4kHz</span>
+                            </div>
+
+                            <div class="knob-unit">
+                                <span class="knob-title">LPF</span>
+                                <div class="knob-dial" id="lpfKnob" role="slider" tabindex="0" aria-label="Low Pass Filter cutoff frequency" aria-valuemin="0" aria-valuemax="25000" aria-valuenow="25000" title="Drag up/down or scroll to adjust Low Pass cutoff (0Hz–25kHz). Double-click to reset (25.0kHz).">
+                                    <div class="knob-indicator" id="lpfIndicator"></div>
+                                </div>
+                                <span class="knob-val" id="lpfValue">25.0kHz</span>
+                                <span class="knob-sub">0–25kHz</span>
+                            </div>
+
+                            <div class="knob-unit">
+                                <span class="knob-title">HPF</span>
+                                <div class="knob-dial" id="hpfKnob" role="slider" tabindex="0" aria-label="High Pass Filter cutoff frequency" aria-valuemin="0" aria-valuemax="25000" aria-valuenow="0" title="Drag up/down or scroll to adjust High Pass cutoff (0Hz–25kHz). Double-click to reset (0Hz).">
+                                    <div class="knob-indicator" id="hpfIndicator"></div>
+                                </div>
+                                <span class="knob-val" id="hpfValue">0Hz</span>
+                                <span class="knob-sub">0–25kHz</span>
                             </div>
                         </div>
+                        <button type="button" class="deck-btn" id="eqToggleBtn" aria-pressed="false" title="Click to toggle & show EQ & Filters">EQ</button>
                     </div>
 
-                    <!-- Granulator Module (Minimized until GRN clicked) -->
-                    <div class="fx-module-block">
-                        <div class="fx-module-top" id="grainModuleTop">
-                            <span class="fx-module-name">GRANULATOR (ACTIVE TRACK + LOOP PLAYHEAD)</span>
-                            <button type="button" class="deck-btn" id="grainToggleBtn" aria-pressed="false" title="Click to toggle & show Granulator">GRN</button>
+                    <!-- Tap BPM Circle + Tap Delay with Haas Widen & Tape Midrange Shaping -->
+                    <div class="delay-row">
+                        <div class="delay-tap-cluster">
+                            <div class="bpm-circle-wrap">
+                                <button type="button" class="bpm-circle" id="bpmTapCircle" aria-label="Tap BPM" title="Tap repeatedly to measure BPM (also synced with TAP / T)">
+                                    <span class="bpm-circle-num" id="bpmCircleNum">120</span>
+                                    <span class="bpm-circle-label">BPM</span>
+                                </button>
+                            </div>
+
+                            <div class="delay-controls-stack">
+                                <div style="display:flex;gap:6px;">
+                                    <button type="button" class="tap-btn" id="tapDelayBtn" title="Tap repeatedly to set delay time (or press T)">TAP</button>
+                                    <button type="button" class="deck-btn" id="tapClearBtn" style="min-width:44px;padding:4px 7px;" title="Reset tap delay to 500ms / 120 BPM">CLR</button>
+                                </div>
+                                <div class="tap-meta" id="tapReadout">500ms<br>120 BPM</div>
+                            </div>
                         </div>
 
-                        <div class="collapsible-block" id="grainBodyGroup">
-                            <!-- Looping Playhead Bar for Granulator -->
-                            <div class="grain-playhead-box">
-                                <button type="button" class="deck-btn active" id="grainLoopBtn" aria-pressed="true" title="Toggle looping playhead scan inside granulator">LOOP</button>
-                                <div class="grain-playhead-track" id="grainPlayheadTrack" title="Click or drag to position the granulator looping playhead">
-                                    <div class="grain-loop-window" id="grainLoopWindow"></div>
-                                    <div class="grain-playhead-needle" id="grainPlayheadNeedle"></div>
+                        <div class="eq-knobs-group" id="delayKnobsGroup">
+                            <div class="knob-unit">
+                                <span class="knob-title">MIX</span>
+                                <div class="knob-dial" id="delayMixKnob" role="slider" tabindex="0" aria-label="Delay mix level" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" title="Drag up/down or scroll to adjust delay wet mix (0% dry to 100% wet). Double-click to reset (0%).">
+                                    <div class="knob-indicator" id="delayMixIndicator"></div>
                                 </div>
-                                <span class="grain-playhead-readout" id="grainPlayheadReadout">00:00</span>
+                                <span class="knob-val" id="delayMixValue">0%</span>
+                                <span class="knob-sub">WET/DRY</span>
                             </div>
 
-                            <div class="fx-select-row">
-                                <label class="fx-select-label" for="grainModeSelect">MODE</label>
-                                <select class="fx-select" id="grainModeSelect" aria-label="Granular processing mode">
-                                    <option value="standard">Standard / Time-Stretch</option>
-                                    <option value="pitch">Pitch-Shift</option>
-                                    <option value="delay">Granular Delay</option>
-                                    <option value="freeze">Freeze / Buffer Hold</option>
-                                    <option value="cloud">Cloud Diffusion</option>
-                                    <option value="glitch">Glitch / Stutter</option>
-                                </select>
-
-                                <label class="fx-select-label" for="grainTimingSelect" style="min-width:auto;margin-left:8px;">TIMING</label>
-                                <select class="fx-select" id="grainTimingSelect" aria-label="Granular timing mode">
-                                    <option value="asynchronous">Asynchronous</option>
-                                    <option value="synchronous">Synchronous</option>
-                                </select>
+                            <div class="knob-unit">
+                                <span class="knob-title">FDBK</span>
+                                <div class="knob-dial" id="delayFdbkKnob" role="slider" tabindex="0" aria-label="Delay feedback amount" aria-valuemin="0" aria-valuemax="85" aria-valuenow="35" title="Drag up/down or scroll to adjust delay feedback. Double-click to reset (35%).">
+                                    <div class="knob-indicator" id="delayFdbkIndicator"></div>
+                                </div>
+                                <span class="knob-val" id="delayFdbkValue">35%</span>
+                                <span class="knob-sub">REPEAT</span>
                             </div>
 
-                            <div class="eq-knobs-group" id="grainKnobsGroup">
-                                <div class="knob-unit">
-                                    <span class="knob-title">SIZE</span>
-                                    <div class="knob-dial" id="grainSizeKnob" role="slider" tabindex="0" aria-label="Grain size in milliseconds" aria-valuemin="15" aria-valuemax="500" aria-valuenow="110" title="Grain duration (15ms–500ms). Double-click to reset (110ms).">
-                                        <div class="knob-indicator" id="grainSizeIndicator"></div>
-                                    </div>
-                                    <span class="knob-val" id="grainSizeValue">110ms</span>
-                                    <span class="knob-sub">GRAIN</span>
+                            <div class="knob-unit">
+                                <span class="knob-title">WIDEN</span>
+                                <div class="knob-dial" id="delayWidenKnob" role="slider" tabindex="0" aria-label="Haas right-channel delay offset" aria-valuemin="0" aria-valuemax="28" aria-valuenow="0" title="0ms = center delay; turning up delays the right side (Haas effect). Double-click to reset (0.0ms).">
+                                    <div class="knob-indicator" id="delayWidenIndicator"></div>
                                 </div>
+                                <span class="knob-val" id="delayWidenValue">0.0ms</span>
+                                <span class="knob-sub">HAAS R</span>
+                            </div>
 
-                                <div class="knob-unit">
-                                    <span class="knob-title">DENSITY</span>
-                                    <div class="knob-dial" id="grainDensityKnob" role="slider" tabindex="0" aria-label="Grain density and overlap" aria-valuemin="0.25" aria-valuemax="4" aria-valuenow="1.5" title="Grain overlap density (0.25x–4.00x). Double-click to reset (1.50x).">
-                                        <div class="knob-indicator" id="grainDensityIndicator"></div>
-                                    </div>
-                                    <span class="knob-val" id="grainDensityValue">1.50x</span>
-                                    <span class="knob-sub">OVERLAP</span>
+                            <div class="knob-unit">
+                                <span class="knob-title">TAPE</span>
+                                <div class="knob-dial" id="delayTapeKnob" role="slider" tabindex="0" aria-label="Tape midrange shaping amount" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" title="0% = full frequency delay; turning up focuses mids and rolls off highs & lows. Double-click to reset (0%).">
+                                    <div class="knob-indicator" id="delayTapeIndicator"></div>
                                 </div>
+                                <span class="knob-val" id="delayTapeValue">0%</span>
+                                <span class="knob-sub">MIDS</span>
+                            </div>
+                        </div>
 
-                                <div class="knob-unit">
-                                    <span class="knob-title">JITTER</span>
-                                    <div class="knob-dial" id="grainJitterKnob" role="slider" tabindex="0" aria-label="Grain position jitter" aria-valuemin="0" aria-valuemax="100" aria-valuenow="30" title="Random position scatter / jitter. Double-click to reset (30%).">
-                                        <div class="knob-indicator" id="grainJitterIndicator"></div>
-                                    </div>
-                                    <span class="knob-val" id="grainJitterValue">30%</span>
-                                    <span class="knob-sub">SCATTER</span>
-                                </div>
+                        <button type="button" class="deck-btn" id="delayToggleBtn" aria-pressed="false" title="Red = Delay Active, White = Bypassed">DLY</button>
+                    </div>
 
-                                <div class="knob-unit">
-                                    <span class="knob-title">POS / TAP</span>
-                                    <div class="knob-dial" id="grainPosKnob" role="slider" tabindex="0" aria-label="Freeze position or delay tap offset" aria-valuemin="0" aria-valuemax="100" aria-valuenow="25" title="Freeze buffer hold position or granular delay tap offset. Double-click to reset (25%).">
-                                        <div class="knob-indicator" id="grainPosIndicator"></div>
-                                    </div>
-                                    <span class="knob-val" id="grainPosValue">25%</span>
-                                    <span class="knob-sub">FREEZE/TAP</span>
-                                </div>
+                    <!-- Reverb, Granulator & Oscillation Delay Panel -->
+                    <div class="fx-section-box">
+                        <div class="fx-section-header">
+                            <span class="fx-section-title">REVERB · GRANULATOR · OSC DELAY</span>
+                        </div>
 
+                        <!-- Reverb Module -->
+                        <div class="fx-module-block">
+                            <div class="fx-module-top" id="revModuleTop">
+                                <span class="fx-module-name">REVERB (DRY 0 → WET 100)</span>
+                                <button type="button" class="deck-btn" id="revToggleBtn" aria-pressed="false" title="Click to toggle & show Reverb">REV</button>
+                            </div>
+                            <div class="eq-knobs-group collapsible-panel" id="revKnobsGroup">
                                 <div class="knob-unit">
-                                    <span class="knob-title">PITCH</span>
-                                    <div class="knob-dial" id="grainPitchKnob" role="slider" tabindex="0" aria-label="Grain playback pitch rate" aria-valuemin="0.5" aria-valuemax="2" aria-valuenow="1" title="Grain playback rate / pitch (0.50x–2.00x). Double-click to reset (1.00x).">
-                                        <div class="knob-indicator" id="grainPitchIndicator"></div>
+                                    <span class="knob-title">DECAY</span>
+                                    <div class="knob-dial" id="revDecayKnob" role="slider" tabindex="0" aria-label="Reverb decay time" aria-valuemin="0.2" aria-valuemax="6" aria-valuenow="2.5" title="Drag up/down or scroll to adjust reverb decay (0.2s–6.0s). Double-click to reset (2.5s).">
+                                        <div class="knob-indicator" id="revDecayIndicator"></div>
                                     </div>
-                                    <span class="knob-val" id="grainPitchValue">1.00x</span>
-                                    <span class="knob-sub">RATE</span>
-                                </div>
-
-                                <div class="knob-unit">
-                                    <span class="knob-title">CLOUD FB</span>
-                                    <div class="knob-dial" id="grainFdbkKnob" role="slider" tabindex="0" aria-label="Granular cloud feedback" aria-valuemin="0" aria-valuemax="85" aria-valuenow="25" title="Cloud diffusion / feedback smear. Double-click to reset (25%).">
-                                        <div class="knob-indicator" id="grainFdbkIndicator"></div>
-                                    </div>
-                                    <span class="knob-val" id="grainFdbkValue">25%</span>
-                                    <span class="knob-sub">DIFFUSE</span>
-                                </div>
-
-                                <div class="knob-unit">
-                                    <span class="knob-title">PAN SPRD</span>
-                                    <div class="knob-dial" id="grainPanKnob" role="slider" tabindex="0" aria-label="Granular stereo pan spread" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" title="Random left/right stereo spread per grain. Double-click to reset (50%).">
-                                        <div class="knob-indicator" id="grainPanIndicator"></div>
-                                    </div>
-                                    <span class="knob-val" id="grainPanValue">50%</span>
-                                    <span class="knob-sub">STEREO</span>
+                                    <span class="knob-val" id="revDecayValue">2.5s</span>
+                                    <span class="knob-sub">TAIL</span>
                                 </div>
 
                                 <div class="knob-unit">
                                     <span class="knob-title">WET / DRY</span>
-                                    <div class="knob-dial" id="grainMixKnob" role="slider" tabindex="0" aria-label="Granulator wet dry mix" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" title="0% = 100% Dry, 100% = 100% Wet. Double-click to reset (0%).">
-                                        <div class="knob-indicator" id="grainMixIndicator"></div>
+                                    <div class="knob-dial" id="revMixKnob" role="slider" tabindex="0" aria-label="Reverb wet dry mix" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" title="0% = 100% Dry, 100% = 100% Wet. Double-click to reset (0%).">
+                                        <div class="knob-indicator" id="revMixIndicator"></div>
                                     </div>
-                                    <span class="knob-val" id="grainMixValue">0%</span>
+                                    <span class="knob-val" id="revMixValue">0%</span>
                                     <span class="knob-sub">0–100%</span>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- LFO Oscillation Feedback Delay Module (Minimized until OSC clicked) -->
-                    <div class="fx-module-block">
-                        <div class="fx-module-top" id="oscModuleTop">
-                            <span class="fx-module-name">OSCILLATION DELAY (DRY 0 → WET 100)</span>
-                            <button type="button" class="deck-btn" id="oscDlyToggleBtn" aria-pressed="false" title="Click to toggle & show Oscillation Delay">OSC</button>
+                        <!-- Granulator Module -->
+                        <div class="fx-module-block">
+                            <div class="fx-module-top" id="grainModuleTop">
+                                <span class="fx-module-name">GRANULATOR <span id="grainSourceBadge" style="color:#ff0033;">(LIVE + BUFFER)</span></span>
+                                <button type="button" class="deck-btn" id="grainToggleBtn" aria-pressed="false" title="Click to toggle & show Granulator">GRN</button>
+                            </div>
+
+                            <div class="collapsible-block" id="grainBodyGroup">
+                                <!-- Looping Playhead Bar for Granulator -->
+                                <div class="grain-playhead-box">
+                                    <button type="button" class="deck-btn active" id="grainLoopBtn" aria-pressed="true" title="Toggle looping playhead scan inside granulator">LOOP</button>
+                                    <div class="grain-playhead-track" id="grainPlayheadTrack" title="Click or drag to position the granulator looping playhead">
+                                        <div class="grain-loop-window" id="grainLoopWindow"></div>
+                                        <div class="grain-playhead-needle" id="grainPlayheadNeedle"></div>
+                                    </div>
+                                    <span class="grain-playhead-readout" id="grainPlayheadReadout">00:00</span>
+                                </div>
+
+                                <div class="fx-select-row">
+                                    <label class="fx-select-label" for="grainModeSelect">MODE</label>
+                                    <select class="fx-select" id="grainModeSelect" aria-label="Granular processing mode">
+                                        <option value="standard">Standard / Time-Stretch</option>
+                                        <option value="pitch">Pitch-Shift</option>
+                                        <option value="delay">Granular Delay</option>
+                                        <option value="freeze">Freeze / Buffer Hold</option>
+                                        <option value="cloud">Cloud Diffusion</option>
+                                        <option value="glitch">Glitch / Stutter</option>
+                                    </select>
+
+                                    <label class="fx-select-label" for="grainTimingSelect" style="min-width:auto;margin-left:8px;">TIMING</label>
+                                    <select class="fx-select" id="grainTimingSelect" aria-label="Granular timing mode">
+                                        <option value="asynchronous">Asynchronous</option>
+                                        <option value="synchronous">Synchronous</option>
+                                    </select>
+                                </div>
+
+                                <div class="eq-knobs-group" id="grainKnobsGroup">
+                                    <div class="knob-unit">
+                                        <span class="knob-title">SIZE</span>
+                                        <div class="knob-dial" id="grainSizeKnob" role="slider" tabindex="0" aria-label="Grain size in milliseconds" aria-valuemin="15" aria-valuemax="500" aria-valuenow="110" title="Grain duration (15ms–500ms). Double-click to reset (110ms).">
+                                            <div class="knob-indicator" id="grainSizeIndicator"></div>
+                                        </div>
+                                        <span class="knob-val" id="grainSizeValue">110ms</span>
+                                        <span class="knob-sub">GRAIN</span>
+                                    </div>
+
+                                    <div class="knob-unit">
+                                        <span class="knob-title">DENSITY</span>
+                                        <div class="knob-dial" id="grainDensityKnob" role="slider" tabindex="0" aria-label="Grain density and overlap" aria-valuemin="0.25" aria-valuemax="4" aria-valuenow="1.5" title="Grain overlap density (0.25x–4.00x). Double-click to reset (1.50x).">
+                                            <div class="knob-indicator" id="grainDensityIndicator"></div>
+                                        </div>
+                                        <span class="knob-val" id="grainDensityValue">1.50x</span>
+                                        <span class="knob-sub">OVERLAP</span>
+                                    </div>
+
+                                    <div class="knob-unit">
+                                        <span class="knob-title">JITTER</span>
+                                        <div class="knob-dial" id="grainJitterKnob" role="slider" tabindex="0" aria-label="Grain position jitter" aria-valuemin="0" aria-valuemax="100" aria-valuenow="30" title="Random position scatter / jitter. Double-click to reset (30%).">
+                                            <div class="knob-indicator" id="grainJitterIndicator"></div>
+                                        </div>
+                                        <span class="knob-val" id="grainJitterValue">30%</span>
+                                        <span class="knob-sub">SCATTER</span>
+                                    </div>
+
+                                    <div class="knob-unit">
+                                        <span class="knob-title">POS / TAP</span>
+                                        <div class="knob-dial" id="grainPosKnob" role="slider" tabindex="0" aria-label="Freeze position or delay tap offset" aria-valuemin="0" aria-valuemax="100" aria-valuenow="25" title="Freeze buffer hold position or granular delay tap offset. Double-click to reset (25%).">
+                                            <div class="knob-indicator" id="grainPosIndicator"></div>
+                                        </div>
+                                        <span class="knob-val" id="grainPosValue">25%</span>
+                                        <span class="knob-sub">FREEZE/TAP</span>
+                                    </div>
+
+                                    <div class="knob-unit">
+                                        <span class="knob-title">PITCH</span>
+                                        <div class="knob-dial" id="grainPitchKnob" role="slider" tabindex="0" aria-label="Grain playback pitch rate" aria-valuemin="0.5" aria-valuemax="2" aria-valuenow="1" title="Grain playback rate / pitch (0.50x–2.00x). Double-click to reset (1.00x).">
+                                            <div class="knob-indicator" id="grainPitchIndicator"></div>
+                                        </div>
+                                        <span class="knob-val" id="grainPitchValue">1.00x</span>
+                                        <span class="knob-sub">RATE</span>
+                                    </div>
+
+                                    <div class="knob-unit">
+                                        <span class="knob-title">CLOUD FB</span>
+                                        <div class="knob-dial" id="grainFdbkKnob" role="slider" tabindex="0" aria-label="Granular cloud feedback" aria-valuemin="0" aria-valuemax="85" aria-valuenow="25" title="Cloud diffusion / feedback smear. Double-click to reset (25%).">
+                                            <div class="knob-indicator" id="grainFdbkIndicator"></div>
+                                        </div>
+                                        <span class="knob-val" id="grainFdbkValue">25%</span>
+                                        <span class="knob-sub">DIFFUSE</span>
+                                    </div>
+
+                                    <div class="knob-unit">
+                                        <span class="knob-title">PAN SPRD</span>
+                                        <div class="knob-dial" id="grainPanKnob" role="slider" tabindex="0" aria-label="Granular stereo pan spread" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" title="Random left/right stereo spread per grain. Double-click to reset (50%).">
+                                            <div class="knob-indicator" id="grainPanIndicator"></div>
+                                        </div>
+                                        <span class="knob-val" id="grainPanValue">50%</span>
+                                        <span class="knob-sub">STEREO</span>
+                                    </div>
+
+                                    <div class="knob-unit">
+                                        <span class="knob-title">WET / DRY</span>
+                                        <div class="knob-dial" id="grainMixKnob" role="slider" tabindex="0" aria-label="Granulator wet dry mix" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" title="0% = 100% Dry, 100% = 100% Wet. Double-click to reset (0%).">
+                                            <div class="knob-indicator" id="grainMixIndicator"></div>
+                                        </div>
+                                        <span class="knob-val" id="grainMixValue">0%</span>
+                                        <span class="knob-sub">0–100%</span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="eq-knobs-group collapsible-panel" id="oscDlyKnobsGroup">
-                            <div class="knob-unit">
-                                <span class="knob-title">TIME</span>
-                                <div class="knob-dial" id="oscTimeKnob" role="slider" tabindex="0" aria-label="Oscillation delay base time in milliseconds" aria-valuemin="20" aria-valuemax="1000" aria-valuenow="280" title="Base oscillation delay time (20ms–1000ms). Double-click to reset (280ms).">
-                                    <div class="knob-indicator" id="oscTimeIndicator"></div>
-                                </div>
-                                <span class="knob-val" id="oscTimeValue">280ms</span>
-                                <span class="knob-sub">DELAY</span>
-                            </div>
 
-                            <div class="knob-unit">
-                                <span class="knob-title">FEEDBACK</span>
-                                <div class="knob-dial" id="oscFdbkKnob" role="slider" tabindex="0" aria-label="Oscillation delay feedback" aria-valuemin="0" aria-valuemax="90" aria-valuenow="45" title="Oscillation delay feedback (0%–90%). Double-click to reset (45%).">
-                                    <div class="knob-indicator" id="oscFdbkIndicator"></div>
-                                </div>
-                                <span class="knob-val" id="oscFdbkValue">45%</span>
-                                <span class="knob-sub">LOOP</span>
+                        <!-- LFO Oscillation Feedback Delay Module -->
+                        <div class="fx-module-block">
+                            <div class="fx-module-top" id="oscModuleTop">
+                                <span class="fx-module-name">OSCILLATION DELAY (DRY 0 → WET 100)</span>
+                                <button type="button" class="deck-btn" id="oscDlyToggleBtn" aria-pressed="false" title="Click to toggle & show Oscillation Delay">OSC</button>
                             </div>
-
-                            <div class="knob-unit">
-                                <span class="knob-title">LFO RATE</span>
-                                <div class="knob-dial" id="oscLfoRateKnob" role="slider" tabindex="0" aria-label="Oscillation delay LFO rate in Hertz" aria-valuemin="0.05" aria-valuemax="12" aria-valuenow="1.2" title="LFO modulation speed (0.05Hz–12.0Hz). Double-click to reset (1.20Hz).">
-                                    <div class="knob-indicator" id="oscLfoRateIndicator"></div>
+                            <div class="eq-knobs-group collapsible-panel" id="oscDlyKnobsGroup">
+                                <div class="knob-unit">
+                                    <span class="knob-title">TIME</span>
+                                    <div class="knob-dial" id="oscTimeKnob" role="slider" tabindex="0" aria-label="Oscillation delay base time in milliseconds" aria-valuemin="20" aria-valuemax="1000" aria-valuenow="280" title="Base oscillation delay time (20ms–1000ms). Double-click to reset (280ms).">
+                                        <div class="knob-indicator" id="oscTimeIndicator"></div>
+                                    </div>
+                                    <span class="knob-val" id="oscTimeValue">280ms</span>
+                                    <span class="knob-sub">DELAY</span>
                                 </div>
-                                <span class="knob-val" id="oscLfoRateValue">1.20Hz</span>
-                                <span class="knob-sub">SPEED</span>
-                            </div>
 
-                            <div class="knob-unit">
-                                <span class="knob-title">LFO DEPTH</span>
-                                <div class="knob-dial" id="oscLfoDepthKnob" role="slider" tabindex="0" aria-label="Oscillation delay LFO depth in milliseconds" aria-valuemin="0" aria-valuemax="40" aria-valuenow="8" title="LFO delay-time sweep depth (0ms–40ms). Double-click to reset (8.0ms).">
-                                    <div class="knob-indicator" id="oscLfoDepthIndicator"></div>
+                                <div class="knob-unit">
+                                    <span class="knob-title">FEEDBACK</span>
+                                    <div class="knob-dial" id="oscFdbkKnob" role="slider" tabindex="0" aria-label="Oscillation delay feedback" aria-valuemin="0" aria-valuemax="90" aria-valuenow="45" title="Oscillation delay feedback (0%–90%). Double-click to reset (45%).">
+                                        <div class="knob-indicator" id="oscFdbkIndicator"></div>
+                                    </div>
+                                    <span class="knob-val" id="oscFdbkValue">45%</span>
+                                    <span class="knob-sub">LOOP</span>
                                 </div>
-                                <span class="knob-val" id="oscLfoDepthValue">8.0ms</span>
-                                <span class="knob-sub">SWEEP</span>
-                            </div>
 
-                            <div class="knob-unit">
-                                <span class="knob-title">WET / DRY</span>
-                                <div class="knob-dial" id="oscMixKnob" role="slider" tabindex="0" aria-label="Oscillation delay wet dry mix" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" title="0% = 100% Dry, 100% = 100% Wet. Double-click to reset (0%).">
-                                    <div class="knob-indicator" id="oscMixIndicator"></div>
+                                <div class="knob-unit">
+                                    <span class="knob-title">LFO RATE</span>
+                                    <div class="knob-dial" id="oscLfoRateKnob" role="slider" tabindex="0" aria-label="Oscillation delay LFO rate in Hertz" aria-valuemin="0.05" aria-valuemax="12" aria-valuenow="1.2" title="LFO modulation speed (0.05Hz–12.0Hz). Double-click to reset (1.20Hz).">
+                                        <div class="knob-indicator" id="oscLfoRateIndicator"></div>
+                                    </div>
+                                    <span class="knob-val" id="oscLfoRateValue">1.20Hz</span>
+                                    <span class="knob-sub">SPEED</span>
                                 </div>
-                                <span class="knob-val" id="oscMixValue">0%</span>
-                                <span class="knob-sub">0–100%</span>
+
+                                <div class="knob-unit">
+                                    <span class="knob-title">LFO DEPTH</span>
+                                    <div class="knob-dial" id="oscLfoDepthKnob" role="slider" tabindex="0" aria-label="Oscillation delay LFO depth in milliseconds" aria-valuemin="0" aria-valuemax="40" aria-valuenow="8" title="LFO delay-time sweep depth (0ms–40ms). Double-click to reset (8.0ms).">
+                                        <div class="knob-indicator" id="oscLfoDepthIndicator"></div>
+                                    </div>
+                                    <span class="knob-val" id="oscLfoDepthValue">8.0ms</span>
+                                    <span class="knob-sub">SWEEP</span>
+                                </div>
+
+                                <div class="knob-unit">
+                                    <span class="knob-title">WET / DRY</span>
+                                    <div class="knob-dial" id="oscMixKnob" role="slider" tabindex="0" aria-label="Oscillation delay wet dry mix" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" title="0% = 100% Dry, 100% = 100% Wet. Double-click to reset (0%).">
+                                        <div class="knob-indicator" id="oscMixIndicator"></div>
+                                    </div>
+                                    <span class="knob-val" id="oscMixValue">0%</span>
+                                    <span class="knob-sub">0–100%</span>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <p class="fx-note">Granulator loads the active card track buffer and scans a looping playhead (requires HTTP/HTTPS or same-origin audio).</p>
+                        <p class="fx-note">Granulator uses a live granular stream + decoded track buffer (when served over HTTP/HTTPS) with a looping playhead.</p>
+                    </div>
                 </div>
             </div>
 
@@ -1711,6 +1769,10 @@
         const volumeValue = document.getElementById('volumeValue');
         const muteBtn = document.getElementById('muteBtn');
 
+        const effectsHeaderBtn = document.getElementById('effectsHeaderBtn');
+        const effectsMasterState = document.getElementById('effectsMasterState');
+        const effectsRackContainer = document.getElementById('effectsRackContainer');
+
         const loopSectionToggleBtn = document.getElementById('loopSectionToggleBtn');
         const loopControlsRow = document.getElementById('loopControlsRow');
         const loopInBtn = document.getElementById('loopInBtn');
@@ -1742,6 +1804,7 @@
         const grainToggleBtn = document.getElementById('grainToggleBtn');
         const grainModuleTop = document.getElementById('grainModuleTop');
         const grainBodyGroup = document.getElementById('grainBodyGroup');
+        const grainSourceBadge = document.getElementById('grainSourceBadge');
         const grainLoopBtn = document.getElementById('grainLoopBtn');
         const grainPlayheadTrack = document.getElementById('grainPlayheadTrack');
         const grainLoopWindow = document.getElementById('grainLoopWindow');
@@ -1761,14 +1824,34 @@
         let currentNudgePct = 0;
         let stoppedByTempoZero = false;
 
+        let effectsRackOpen = false;
         let loopSectionExpanded = false;
         let loopStart = null;
         let loopEnd = null;
         let loopLength = null;
         let loopHalveCount = 0;
 
+        function setEffectsRackOpen(open) {
+            effectsRackOpen = Boolean(open);
+            effectsRackContainer.classList.toggle('open', effectsRackOpen);
+            effectsHeaderBtn.classList.toggle('open', effectsRackOpen);
+            effectsHeaderBtn.setAttribute('aria-expanded', String(effectsRackOpen));
+            effectsMasterState.textContent = effectsRackOpen ? 'HIDE' : 'SHOW';
+        }
+
+        effectsHeaderBtn.addEventListener('click', () => {
+            setEffectsRackOpen(!effectsRackOpen);
+        });
+
+        effectsHeaderBtn.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                setEffectsRackOpen(!effectsRackOpen);
+            }
+        });
+
         function formatTime(sec) {
-            if (sec === null || sec === undefined || isNaN(sec)) return '00:00';
+            if (sec === null || sec === undefined || isNaN(sec) || !Number.isFinite(sec)) return '00:00';
             const total = Math.max(0, sec);
             const m = Math.floor(total / 60).toString().padStart(2, '0');
             const s = Math.floor(total % 60).toString().padStart(2, '0');
@@ -1924,7 +2007,7 @@
             hpf: 0
         };
 
-        // Tap BPM & Delay state: starts off until toggled on; mix starts at 0 (0% wet / 100% dry)
+        // Tap BPM & Delay state
         let delayActive = false;
         const delayState = {
             timeMs: 500,
@@ -1936,7 +2019,7 @@
         let tapTimestamps = [];
         let bpmPulseTimer = null;
 
-        // Reverb, Granulator & Oscillation Delay state: all Wet/Dry knobs start at 0 (0% wet / 100% dry)
+        // Reverb, Granulator & Oscillation Delay state
         let revActive = false;
         let grainActive = false;
         let oscDlyActive = false;
@@ -1990,8 +2073,9 @@
         let revWetGain = null;
         let lastBuiltRevDecay = null;
 
-        // Granulator graph nodes & buffer state
+        // Granulator graph nodes & buffer state (Live stream + decoded buffer fallback)
         let grainWetGain = null;
+        let grainLiveTapDelay = null;
         let grainFbDelay = null;
         let grainFbGain = null;
         let decodedAudioBuffer = null;
@@ -2041,7 +2125,7 @@
         }
 
         function getGranulatorDurationSec() {
-            if (decodedAudioBuffer && decodedAudioBuffer.duration > 0) {
+            if (decodedAudioBuffer && decodedAudioBuffer.duration > 0 && Number.isFinite(decodedAudioBuffer.duration)) {
                 return decodedAudioBuffer.duration;
             }
             if (Number.isFinite(audio.duration) && audio.duration > 0) {
@@ -2099,6 +2183,11 @@
             if (dur <= 0) {
                 updateGranulatorPlayheadUI();
                 return;
+            }
+
+            if (grainPlayheadSec > dur) {
+                grainPlayheadSec = 0;
+                grainLoopCenterSec = 0;
             }
 
             const isPlaying = !audio.paused && !audio.ended;
@@ -2204,7 +2293,10 @@
 
         async function ensureGranulatorBuffer(url) {
             if (!audioCtx || !url) return;
-            if (decodedAudioBuffer && loadedBufferSrc === url) return;
+            if (decodedAudioBuffer && loadedBufferSrc === url) {
+                grainSourceBadge.textContent = '(BUFFER + LIVE)';
+                return;
+            }
             if (decodingInFlight) return;
             decodingInFlight = true;
             try {
@@ -2214,6 +2306,7 @@
                 const buf = await audioCtx.decodeAudioData(arrayBuf);
                 decodedAudioBuffer = buf;
                 loadedBufferSrc = url;
+                grainSourceBadge.textContent = '(BUFFER + LIVE)';
                 if (decodedAudioBuffer && decodedAudioBuffer.duration > 0) {
                     const curTime = Number.isFinite(audio.currentTime) ? (audio.currentTime % decodedAudioBuffer.duration) : 0;
                     grainPlayheadSec = curTime;
@@ -2222,7 +2315,7 @@
                 }
                 updateGranulatorPlayheadUI();
             } catch (err) {
-                console.warn("Granulator buffer decode skipped/failed:", err);
+                grainSourceBadge.textContent = '(LIVE STREAM)';
             } finally {
                 decodingInFlight = false;
             }
@@ -2283,15 +2376,20 @@
                 audioCtx.state === 'running' &&
                 grainActive &&
                 fxState.grainMix > 0 &&
-                decodedAudioBuffer &&
                 !audio.paused &&
                 !audio.ended
             ) {
-                const dur = decodedAudioBuffer.duration;
-                const baseSec = Math.min(fxState.grainSizeMs / 1000, Math.max(0.015, dur * 0.5));
-                if (dur > baseSec) {
-                    const { grainSec, rate, offset } = getGrainSliceParams(dur, baseSec);
-                    const now = audioCtx.currentTime;
+                const now = audioCtx.currentTime;
+                const baseGrainSec = Math.max(0.015, Math.min(0.5, fxState.grainSizeMs / 1000));
+
+                let chainOut = null;
+                let grainDuration = baseGrainSec;
+
+                if (decodedAudioBuffer && decodedAudioBuffer.duration > 0) {
+                    const dur = decodedAudioBuffer.duration;
+                    const gSec = Math.min(baseGrainSec, Math.max(0.015, dur * 0.5));
+                    grainDuration = gSec;
+                    const { grainSec, rate, offset } = getGrainSliceParams(dur, gSec);
 
                     const gSource = audioCtx.createBufferSource();
                     gSource.buffer = decodedAudioBuffer;
@@ -2300,20 +2398,54 @@
                     const env = audioCtx.createGain();
                     const fade = Math.min(0.015, grainSec * 0.3);
                     env.gain.setValueAtTime(0.0001, now);
-                    env.gain.linearRampToValueAtTime(0.35, now + fade);
-                    env.gain.setValueAtTime(0.35, now + Math.max(fade + 0.002, grainSec - fade));
+                    env.gain.linearRampToValueAtTime(0.45, now + fade);
+                    env.gain.setValueAtTime(0.45, now + Math.max(fade + 0.002, grainSec - fade));
                     env.gain.linearRampToValueAtTime(0.0001, now + grainSec);
 
-                    let chainOut = env;
+                    gSource.connect(env);
+                    chainOut = env;
+                    gSource.start(now, offset, grainSec);
+                } else if (grainLiveTapDelay) {
+                    // Live stream granular windowing when decoded buffer isn't available (e.g. local file://)
+                    let grainSec = baseGrainSec;
+                    if (fxState.grainMode === 'glitch') {
+                        grainSec = Math.max(0.015, baseGrainSec * 0.45);
+                    } else if (fxState.grainMode === 'cloud') {
+                        grainSec = Math.min(0.5, baseGrainSec * 1.35);
+                    }
+                    grainDuration = grainSec;
+
+                    const jitterSec = ((Math.random() - 0.5) * 2) * (fxState.grainJitter / 100) * 0.35;
+                    const modeOffset = fxState.grainMode === 'delay'
+                        ? (fxState.grainPosPct / 100) * 0.65
+                        : 0.04;
+                    const tapDelaySec = Math.max(0.005, Math.min(0.95, modeOffset + jitterSec));
+                    grainLiveTapDelay.delayTime.setValueAtTime(tapDelaySec, now);
+
+                    const env = audioCtx.createGain();
+                    const fade = Math.min(0.015, grainSec * 0.3);
+                    env.gain.setValueAtTime(0.0001, now);
+                    env.gain.linearRampToValueAtTime(0.45, now + fade);
+                    env.gain.setValueAtTime(0.45, now + Math.max(fade + 0.002, grainSec - fade));
+                    env.gain.linearRampToValueAtTime(0.0001, now + grainSec);
+
+                    grainLiveTapDelay.connect(env);
+                    chainOut = env;
+
+                    setTimeout(() => {
+                        try { grainLiveTapDelay.disconnect(env); } catch (_) {}
+                    }, Math.ceil((grainDuration + 0.05) * 1000));
+                }
+
+                if (chainOut && grainWetGain) {
                     if (typeof audioCtx.createStereoPanner === 'function') {
                         const panner = audioCtx.createStereoPanner();
                         panner.pan.value = (Math.random() * 2 - 1) * (fxState.grainPan / 100);
-                        env.connect(panner);
-                        chainOut = panner;
+                        chainOut.connect(panner);
+                        panner.connect(grainWetGain);
+                    } else {
+                        chainOut.connect(grainWetGain);
                     }
-
-                    chainOut.connect(grainWetGain);
-                    gSource.start(now, offset, grainSec);
                 }
             }
             scheduleNextGrain();
@@ -2342,7 +2474,7 @@
 
         function syncGranulatorGraph() {
             if (!webAudioReady || !audioCtx || !grainWetGain || !grainFbGain) return;
-            const wetAmt = grainActive ? (fxState.grainMix / 100) * 0.85 : 0;
+            const wetAmt = grainActive ? (fxState.grainMix / 100) * 0.9 : 0;
             const fbAmt = grainActive ? Math.min(0.82, (fxState.grainFdbk / 100) * 0.82) : 0;
             smoothParam(grainWetGain.gain, wetAmt, 0.02);
             smoothParam(grainFbGain.gain, fbAmt, 0.02);
@@ -2664,9 +2796,12 @@
                 revWetGain = audioCtx.createGain();
                 revWetGain.gain.value = 0;
 
-                // Granulator Bus + Cloud Diffusion Feedback
+                // Granulator Bus + Live Tap + Cloud Diffusion Feedback
                 grainWetGain = audioCtx.createGain();
                 grainWetGain.gain.value = 0;
+
+                grainLiveTapDelay = audioCtx.createDelay(1.0);
+                grainLiveTapDelay.delayTime.value = 0.05;
 
                 grainFbDelay = audioCtx.createDelay(1.0);
                 grainFbDelay.delayTime.value = 0.14;
@@ -2706,6 +2841,9 @@
                 midsFilter.connect(trebleFilter);
                 trebleFilter.connect(lpfFilter);
                 lpfFilter.connect(masterBus);
+
+                // Granulator live stream feed
+                lpfFilter.connect(grainLiveTapDelay);
 
                 // Tap Delay send/return
                 lpfFilter.connect(tapeLowCut);
@@ -3223,7 +3361,7 @@
             snapZero: true
         });
 
-        // Reverb Knobs (Wet/Dry starts at 0)
+        // Reverb Knobs
         setupLinearKnob({
             dialId: 'revDecayKnob',
             indicatorId: 'revDecayIndicator',
@@ -3252,7 +3390,7 @@
             onChangeCallback: syncReverbGraph
         });
 
-        // Granulator Knobs (Wet/Dry starts at 0)
+        // Granulator Knobs
         setupLinearKnob({
             dialId: 'grainSizeKnob',
             indicatorId: 'grainSizeIndicator',
@@ -3377,7 +3515,7 @@
             onChangeCallback: syncGranulatorGraph
         });
 
-        // Oscillation Delay Knobs (Wet/Dry starts at 0)
+        // Oscillation Delay Knobs
         setupLinearKnob({
             dialId: 'oscTimeKnob',
             indicatorId: 'oscTimeIndicator',
@@ -3448,6 +3586,7 @@
             onChangeCallback: syncOscDelayGraph
         });
 
+        setEffectsRackOpen(false);
         updateEQToggleUI();
         updateDelayToggleUI();
         updateRevToggleUI();
