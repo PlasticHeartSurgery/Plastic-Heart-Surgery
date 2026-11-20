@@ -85,7 +85,7 @@
       gap: 8px;
     }
 
-    button, .file-btn {
+    button, .file-btn, select {
       background: var(--panel-2);
       color: var(--ink);
       border: 1px solid var(--border);
@@ -100,7 +100,7 @@
       gap: 6px;
     }
 
-    button:hover, .file-btn:hover {
+    button:hover, .file-btn:hover, select:hover {
       border-color: var(--accent);
     }
 
@@ -108,6 +108,11 @@
       background: var(--accent-soft);
       border-color: var(--accent);
       color: #fff;
+    }
+
+    button:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
     }
 
     input[type="file"] {
@@ -149,6 +154,13 @@
       padding-bottom: 10px;
     }
 
+    .module-title-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
     .module-title {
       font-size: 13px;
       font-weight: 700;
@@ -159,6 +171,53 @@
     .module-meta {
       font-size: 11px;
       color: var(--muted);
+    }
+
+    .arrow-btn {
+      padding: 5px 9px;
+      font-size: 11px;
+      line-height: 1;
+      font-weight: 700;
+    }
+
+    .arrow-icon {
+      display: inline-block;
+      transition: transform 0.18s ease;
+    }
+
+    .arrow-btn.open .arrow-icon {
+      transform: rotate(180deg);
+    }
+
+    .reverb-top-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .reverb-controls-left {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .reverb-primary-knob {
+      width: 124px;
+    }
+
+    .reverb-drawer {
+      display: none;
+      flex-direction: column;
+      gap: 12px;
+      padding-top: 12px;
+      border-top: 1px dashed var(--border);
+    }
+
+    .reverb-drawer.open {
+      display: flex;
     }
 
     .scope-row {
@@ -315,8 +374,8 @@
   <div class="rack-wrap">
     <header class="top-bar">
       <div class="brand">
-        <div class="brand-title">PLASTIC HEART SURGERY <span>//</span> GRANULAR + FX</div>
-        <div class="brand-sub">Live Ring-Buffer Granulator + Source Audio / Internal Test Signal</div>
+        <div class="brand-title">PLASTIC HEART SURGERY <span>//</span> GRANULAR + REVERB + FX</div>
+        <div class="brand-sub">Live Ring-Buffer Granulator + Multi-Parameter Reverb + Filter/Drive</div>
       </div>
       <div class="transport">
         <button id="powerBtn" type="button">AUDIO: OFF</button>
@@ -333,7 +392,7 @@
     <section class="module" id="granulatorModule">
       <div class="module-head">
         <div class="module-title">Granulator 01</div>
-        <div class="module-meta" id="granMeta">BUFFER: LIVE RING + TEST OSC | GRAINS: 0</div>
+        <div class="module-meta" id="granMeta">FREEZE: OFF | ACTIVE GRAINS: 0</div>
       </div>
 
       <div class="scope-row">
@@ -344,14 +403,49 @@
 
       <div class="gran-extra">
         <button id="freezeBtn" type="button">FREEZE: OFF</button>
-        <span id="bufInfo">Captures mic/file/test source into a 4s stereo buffer. Even with no input, grains read from the buffer.</span>
+        <span id="bufInfo">Captures file/test source into a 4s stereo ring buffer.</span>
+      </div>
+    </section>
+
+    <section class="module" id="reverbModule">
+      <div class="module-head">
+        <div class="module-title-group">
+          <div class="module-title">Reverb</div>
+          <button id="reverbExpandBtn" class="arrow-btn" type="button" aria-expanded="false" aria-controls="reverbDrawer" title="Toggle Reverb Controls">
+            <span class="arrow-icon">▼</span>
+            <span>MORE</span>
+          </button>
+        </div>
+        <div class="module-meta" id="reverbMeta">MODE: ALGORITHMIC | TYPE: CATHEDRAL</div>
+      </div>
+
+      <div class="reverb-top-row">
+        <div class="reverb-controls-left">
+          <select id="reverbEngineSelect" aria-label="Reverb Engine Type">
+            <option value="algo">ENGINE: ALGORITHMIC SPACE</option>
+            <option value="ir">ENGINE: CONVOLUTION PROFILE</option>
+          </select>
+
+          <select id="irPresetSelect" aria-label="Reverb Space Type">
+            <option value="cathedral">SPACE: CATHEDRAL HALL</option>
+            <option value="plate">SPACE: VINTAGE PLATE</option>
+            <option value="metallic">SPACE: METALLIC TANK</option>
+            <option value="reverse">SPACE: REVERSE SWELL</option>
+          </select>
+        </div>
+
+        <div id="reverbMainKnobSlot" class="reverb-primary-knob"></div>
+      </div>
+
+      <div id="reverbDrawer" class="reverb-drawer">
+        <div class="knobs-grid" id="reverbExtraKnobs"></div>
       </div>
     </section>
 
     <section class="module" id="fxModule">
       <div class="module-head">
         <div class="module-title">Filter &amp; Drive Stage</div>
-        <div class="module-meta">POST GRANULATOR</div>
+        <div class="module-meta">POST CHAIN</div>
       </div>
       <div class="knobs-grid" id="fxKnobs"></div>
     </section>
@@ -364,19 +458,35 @@
         testSourceOn: true,
         freeze: false,
         filePlaying: false,
+        reverbOpen: false,
+        reverbEngine: "algo", // "algo" | "ir"
+        irPreset: "cathedral",
         gran: {
-          position: 0.25, // 0..1 normalized position in buffer
-          grainSize: 95,  // ms (15..400)
-          density: 28,    // grains per sec (2..80)
-          pitch: 0,       // semitones (-24..+24)
-          jitter: 0.2,    // 0..1
-          spread: 0.5,    // 0..1 stereo pan spread
-          mix: 0.75       // 0 = 100% DRY (bottom-left), 1 = 100% WET (full clockwise)
+          position: 0.25,
+          grainSize: 95,
+          density: 28,
+          pitch: 0,
+          jitter: 0.2,
+          spread: 0.5,
+          mix: 0.75
+        },
+        reverb: {
+          mix: 0.35,        // 0 = DRY (bottom-left), 1 = WET (full clockwise)
+          predelay: 24,     // ms (0..250)
+          character: 0.45,  // 0..1
+          thickness: 0.5,   // 0..1
+          distance: 0.45,   // 0..1
+          space: 2.2,       // seconds (0.2..10.0)
+          brightness: 0.65, // 0..1
+          width: 0.8,       // 0..1
+          ducking: 0.15,    // 0..1
+          lowPass: 9500,    // Hz (400..18000)
+          highPass: 120     // Hz (20..2000)
         },
         fx: {
-          cutoff: 4200,   // Hz (120..16000)
-          resonance: 2.2, // Q (0.5..18)
-          drive: 0.25     // 0..1
+          cutoff: 4200,
+          resonance: 2.2,
+          drive: 0.25
         }
       };
 
@@ -385,6 +495,24 @@
       let granDryGain = null;
       let granWetGain = null;
       let granBus = null;
+
+      let revInput = null;
+      let revDryGain = null;
+      let revWetGain = null;
+      let revPreDelayNode = null;
+      let revHighPassNode = null;
+      let revLowPassNode = null;
+      let revBrightShelfNode = null;
+      let revConvolverAlgo = null;
+      let revConvolverIR = null;
+      let revAlgoBranchGain = null;
+      let revIrBranchGain = null;
+      let revDuckGain = null;
+      let revEnvFollower = 0;
+      let revModOsc = null;
+      let revModGain = null;
+      let revSumGain = null;
+
       let filterNode = null;
       let driveNode = null;
       let analyser = null;
@@ -396,7 +524,6 @@
       let testGain = null;
       let captureProc = null;
 
-      // 4-second stereo ring buffer at default 48000 Hz (updated on init)
       let sampleRate = 48000;
       let bufLen = sampleRate * 4;
       let ringL = new Float32Array(bufLen);
@@ -408,6 +535,7 @@
 
       const statusPill = document.getElementById("statusPill");
       const granMeta = document.getElementById("granMeta");
+      const reverbMeta = document.getElementById("reverbMeta");
       const scopeCanvas = document.getElementById("granScope");
       const scopeCtx = scopeCanvas.getContext("2d");
 
@@ -429,15 +557,168 @@
         return curve;
       }
 
-      function updateWetDryMix() {
+      function updateGranWetDryMix() {
         if (!ctx || !granDryGain || !granWetGain) return;
         const m = Math.max(0, Math.min(1, state.gran.mix));
-        // Equal-power crossfade: m = 0 -> dry = 1, wet = 0; m = 1 -> dry = 0, wet = 1
         const dryVal = Math.cos(m * 0.5 * Math.PI);
         const wetVal = Math.sin(m * 0.5 * Math.PI);
         const now = ctx.currentTime;
         granDryGain.gain.setTargetAtTime(dryVal, now, 0.015);
         granWetGain.gain.setTargetAtTime(wetVal, now, 0.015);
+      }
+
+      function buildAlgoImpulse(spaceSec, thickness, distance, character, width) {
+        if (!ctx) return null;
+        const sr = ctx.sampleRate;
+        const len = Math.max(Math.floor(sr * 0.15), Math.min(Math.floor(sr * spaceSec), sr * 10));
+        const impulse = ctx.createBuffer(2, len, sr);
+        const l = impulse.getChannelData(0);
+        const r = impulse.getChannelData(1);
+
+        const decayRate = 3.2 + distance * 4.5;
+        let lpL = 0;
+        let lpR = 0;
+        const alpha = Math.max(0.04, Math.min(0.92, 0.25 + (1 - distance) * 0.55));
+
+        for (let i = 0; i < len; i++) {
+          const t = i / len;
+          const env = Math.pow(1 - t, decayRate);
+          const earlyBoost = i < sr * 0.06 ? 1.45 : 1.0;
+          const mod = 1 + character * 0.25 * Math.sin((2 * Math.PI * i) / (sr * (0.04 + character * 0.12)));
+
+          let nL = (Math.random() * 2 - 1) * env * earlyBoost * mod;
+          let nR = (Math.random() * 2 - 1) * env * earlyBoost * mod;
+
+          lpL = lpL + alpha * (nL - lpL);
+          lpR = lpR + alpha * (nR - lpR);
+          const warmMix = 0.2 + thickness * 0.65;
+          nL = nL * (1 - warmMix * 0.4) + lpL * warmMix;
+          nR = nR * (1 - warmMix * 0.4) + lpR * warmMix;
+
+          const mid = (nL + nR) * 0.5;
+          const side = ((nL - nR) * 0.5) * (0.25 + width * 1.35);
+          l[i] = mid + side;
+          r[i] = mid - side;
+        }
+        return impulse;
+      }
+
+      function buildPresetImpulse(presetName) {
+        if (!ctx) return null;
+        const sr = ctx.sampleRate;
+        if (presetName === "plate") {
+          const len = Math.floor(sr * 1.8);
+          const buf = ctx.createBuffer(2, len, sr);
+          const l = buf.getChannelData(0);
+          const r = buf.getChannelData(1);
+          for (let i = 0; i < len; i++) {
+            const t = i / len;
+            const env = Math.pow(1 - t, 2.4);
+            const shimmer = Math.sin(2 * Math.PI * 1950 * (i / sr)) * 0.08 * env;
+            l[i] = (Math.random() * 2 - 1) * env + shimmer;
+            r[i] = (Math.random() * 2 - 1) * env - shimmer;
+          }
+          return buf;
+        }
+        if (presetName === "metallic") {
+          const len = Math.floor(sr * 2.4);
+          const buf = ctx.createBuffer(2, len, sr);
+          const l = buf.getChannelData(0);
+          const r = buf.getChannelData(1);
+          for (let i = 0; i < len; i++) {
+            const sec = i / sr;
+            const t = i / len;
+            const env = Math.pow(1 - t, 2.1);
+            const ring =
+              0.24 * Math.sin(2 * Math.PI * 417 * sec) +
+              0.18 * Math.sin(2 * Math.PI * 789 * sec + 0.7) +
+              0.14 * Math.sin(2 * Math.PI * 1343 * sec + 1.5);
+            l[i] = ((Math.random() * 2 - 1) * 0.65 + ring) * env;
+            r[i] = ((Math.random() * 2 - 1) * 0.65 - ring * 0.9) * env;
+          }
+          return buf;
+        }
+        if (presetName === "reverse") {
+          const len = Math.floor(sr * 1.6);
+          const buf = ctx.createBuffer(2, len, sr);
+          const l = buf.getChannelData(0);
+          const r = buf.getChannelData(1);
+          for (let i = 0; i < len; i++) {
+            const t = i / len;
+            const env = Math.pow(t, 2.6);
+            l[i] = (Math.random() * 2 - 1) * env;
+            r[i] = (Math.random() * 2 - 1) * env;
+          }
+          return buf;
+        }
+        return buildAlgoImpulse(3.6, 0.65, 0.55, 0.5, 0.9);
+      }
+
+      let algoRebuildTimer = null;
+      function rebuildAlgoIR() {
+        if (!ctx || !revConvolverAlgo) return;
+        revConvolverAlgo.buffer = buildAlgoImpulse(
+          state.reverb.space,
+          state.reverb.thickness,
+          state.reverb.distance,
+          state.reverb.character,
+          state.reverb.width
+        );
+      }
+
+      function scheduleAlgoRebuild() {
+        if (!ctx) return;
+        clearTimeout(algoRebuildTimer);
+        algoRebuildTimer = setTimeout(rebuildAlgoIR, 60);
+      }
+
+      function rebuildPresetIR() {
+        if (!ctx || !revConvolverIR) return;
+        revConvolverIR.buffer = buildPresetImpulse(state.irPreset);
+      }
+
+      function updateReverbParams() {
+        if (!ctx) return;
+        const now = ctx.currentTime;
+        const m = Math.max(0, Math.min(1, state.reverb.mix));
+
+        if (revDryGain && revWetGain) {
+          revDryGain.gain.setTargetAtTime(Math.cos(m * 0.5 * Math.PI), now, 0.015);
+          revWetGain.gain.setTargetAtTime(Math.sin(m * 0.5 * Math.PI), now, 0.015);
+        }
+
+        if (revPreDelayNode) {
+          revPreDelayNode.delayTime.setTargetAtTime(state.reverb.predelay / 1000, now, 0.015);
+        }
+
+        if (revHighPassNode) {
+          revHighPassNode.frequency.setTargetAtTime(state.reverb.highPass, now, 0.015);
+        }
+
+        if (revLowPassNode) {
+          const distScale = 1 - state.reverb.distance * 0.35;
+          const lpFreq = Math.max(250, Math.min(19000, state.reverb.lowPass * distScale));
+          revLowPassNode.frequency.setTargetAtTime(lpFreq, now, 0.015);
+        }
+
+        if (revBrightShelfNode) {
+          const shelfDb = (state.reverb.brightness - 0.5) * 16;
+          revBrightShelfNode.gain.setTargetAtTime(shelfDb, now, 0.015);
+        }
+
+        if (revModOsc && revModGain) {
+          revModOsc.frequency.setTargetAtTime(0.2 + state.reverb.character * 3.8, now, 0.02);
+          revModGain.gain.setTargetAtTime(state.reverb.character * 0.008, now, 0.02);
+        }
+
+        if (revAlgoBranchGain && revIrBranchGain) {
+          const isIr = state.reverbEngine === "ir";
+          revAlgoBranchGain.gain.setTargetAtTime(isIr ? 0 : 1, now, 0.02);
+          revIrBranchGain.gain.setTargetAtTime(isIr ? 1 : 0, now, 0.02);
+        }
+
+        const modeLabel = state.reverbEngine === "ir" ? "CONVOLUTION" : "ALGORITHMIC";
+        reverbMeta.textContent = `MODE: ${modeLabel} | SPACE: ${state.irPreset.toUpperCase()} | ${state.reverb.space.toFixed(1)}s`;
       }
 
       function updateFxParams() {
@@ -449,7 +730,6 @@
       }
 
       function seedInitialBuffer() {
-        // Pre-fill ring buffer with rich harmonic/noise texture so grains are immediately audible
         for (let i = 0; i < bufLen; i++) {
           const t = i / sampleRate;
           const env = 0.5 + 0.5 * Math.sin(2 * Math.PI * 0.65 * t);
@@ -482,6 +762,55 @@
         granBus = ctx.createGain();
         granBus.gain.value = 1.65;
 
+        revInput = ctx.createGain();
+        revDryGain = ctx.createGain();
+        revWetGain = ctx.createGain();
+        revPreDelayNode = ctx.createDelay(0.5);
+        revHighPassNode = ctx.createBiquadFilter();
+        revHighPassNode.type = "highpass";
+
+        revLowPassNode = ctx.createBiquadFilter();
+        revLowPassNode.type = "lowpass";
+
+        revBrightShelfNode = ctx.createBiquadFilter();
+        revBrightShelfNode.type = "highshelf";
+        revBrightShelfNode.frequency.value = 2800;
+
+        revConvolverAlgo = ctx.createConvolver();
+        revConvolverIR = ctx.createConvolver();
+        revAlgoBranchGain = ctx.createGain();
+        revIrBranchGain = ctx.createGain();
+        revDuckGain = ctx.createGain();
+        revSumGain = ctx.createGain();
+
+        revModOsc = ctx.createOscillator();
+        revModGain = ctx.createGain();
+        revModOsc.type = "sine";
+        revModOsc.connect(revModGain);
+        revModGain.connect(revPreDelayNode.delayTime);
+        revModOsc.start();
+
+        rebuildAlgoIR();
+        rebuildPresetIR();
+
+        revInput.connect(revDryGain);
+
+        revInput.connect(revPreDelayNode);
+        revPreDelayNode.connect(revHighPassNode);
+        revHighPassNode.connect(revLowPassNode);
+
+        revLowPassNode.connect(revConvolverAlgo);
+        revConvolverAlgo.connect(revAlgoBranchGain);
+        revAlgoBranchGain.connect(revSumGain);
+
+        revLowPassNode.connect(revConvolverIR);
+        revConvolverIR.connect(revIrBranchGain);
+        revIrBranchGain.connect(revSumGain);
+
+        revSumGain.connect(revBrightShelfNode);
+        revBrightShelfNode.connect(revDuckGain);
+        revDuckGain.connect(revWetGain);
+
         filterNode = ctx.createBiquadFilter();
         filterNode.type = "lowpass";
         filterNode.frequency.value = state.fx.cutoff;
@@ -494,19 +823,18 @@
         analyser = ctx.createAnalyser();
         analyser.fftSize = 1024;
 
-        // Routing:
-        // Source -> granDryGain -> filterNode -> driveNode -> analyser -> masterGain -> destination
-        // Source -> captureProc (writes into ringL/ringR)
-        // Grains -> granBus -> granWetGain -> filterNode -> driveNode -> analyser -> masterGain -> destination
-        granDryGain.connect(filterNode);
+        granDryGain.connect(revInput);
         granBus.connect(granWetGain);
-        granWetGain.connect(filterNode);
+        granWetGain.connect(revInput);
+
+        revDryGain.connect(filterNode);
+        revWetGain.connect(filterNode);
+
         filterNode.connect(driveNode);
         driveNode.connect(analyser);
         analyser.connect(masterGain);
         masterGain.connect(ctx.destination);
 
-        // Internal test source so granulator always has an active signal if desired
         testOsc1 = ctx.createOscillator();
         testOsc2 = ctx.createOscillator();
         testLfo = ctx.createOscillator();
@@ -514,9 +842,9 @@
         const lfoGain = ctx.createGain();
 
         testOsc1.type = "sawtooth";
-        testOsc1.frequency.value = 98; // G2
+        testOsc1.frequency.value = 98;
         testOsc2.type = "triangle";
-        testOsc2.frequency.value = 146.83; // D3
+        testOsc2.frequency.value = 146.83;
         testLfo.type = "sine";
         testLfo.frequency.value = 0.45;
         lfoGain.gain.value = 14;
@@ -532,7 +860,6 @@
         testOsc2.start();
         testLfo.start();
 
-        // Capture audio into ring buffer via ScriptProcessorNode
         captureProc = ctx.createScriptProcessor(1024, 2, 2);
         const silentOut = ctx.createGain();
         silentOut.gain.value = 0;
@@ -541,18 +868,39 @@
         captureProc.connect(silentOut);
         silentOut.connect(ctx.destination);
 
+        revEnvFollower = 0;
         captureProc.onaudioprocess = (ev) => {
-          if (!state.started || state.freeze) return;
+          if (!state.started) return;
           const inL = ev.inputBuffer.getChannelData(0);
           const inR = ev.inputBuffer.numberOfChannels > 1 ? ev.inputBuffer.getChannelData(1) : inL;
+
+          let peak = 0;
           for (let i = 0; i < inL.length; i++) {
-            ringL[writeIdx] = inL[i];
-            ringR[writeIdx] = inR[i];
-            writeIdx = (writeIdx + 1) % bufLen;
+            const sL = inL[i];
+            const sR = inR[i];
+            if (!state.freeze) {
+              ringL[writeIdx] = sL;
+              ringR[writeIdx] = sR;
+              writeIdx = (writeIdx + 1) % bufLen;
+            }
+            const absS = Math.max(Math.abs(sL), Math.abs(sR));
+            if (absS > peak) peak = absS;
+          }
+
+          if (ctx && revDuckGain && state.reverb.ducking > 0.001) {
+            const targetEnv = Math.min(1, peak * 2.2);
+            revEnvFollower = targetEnv > revEnvFollower
+              ? revEnvFollower + (targetEnv - revEnvFollower) * 0.35
+              : revEnvFollower * 0.92;
+            const duckAtten = Math.max(0.15, 1 - revEnvFollower * state.reverb.ducking * 0.75);
+            revDuckGain.gain.setTargetAtTime(duckAtten, ctx.currentTime, 0.02);
+          } else if (ctx && revDuckGain) {
+            revDuckGain.gain.setTargetAtTime(1, ctx.currentTime, 0.03);
           }
         };
 
-        updateWetDryMix();
+        updateGranWetDryMix();
+        updateReverbParams();
         updateFxParams();
 
         if (ctx.state === "suspended") {
@@ -572,7 +920,6 @@
         const grainSamples = Math.max(64, Math.min(Math.floor(durationSec * sampleRate), Math.floor(bufLen * 0.45)));
         const playbackRate = Math.pow(2, state.gran.pitch / 12);
 
-        // Calculate read position relative to current writeIdx or absolute buffer
         const jitterOffset = (Math.random() * 2 - 1) * state.gran.jitter * bufLen * 0.25;
         let centerIdx = state.freeze
           ? Math.floor(state.gran.position * bufLen)
@@ -581,12 +928,10 @@
         let startIdx = Math.floor(centerIdx - grainSamples * 0.5);
         startIdx = ((startIdx % bufLen) + bufLen) % bufLen;
 
-        // Create grain AudioBuffer
         const gBuf = ctx.createBuffer(2, grainSamples, sampleRate);
         const outL = gBuf.getChannelData(0);
         const outR = gBuf.getChannelData(1);
 
-        // Hann window + sample read with linear interpolation
         for (let i = 0; i < grainSamples; i++) {
           const hann = 0.5 * (1 - Math.cos((2 * Math.PI * i) / (grainSamples - 1)));
           const srcPos = (startIdx + i * playbackRate) % bufLen;
@@ -605,7 +950,6 @@
         src.buffer = gBuf;
 
         const gGain = ctx.createGain();
-        // Scale grain gain inversely with density so dense clouds don't clip
         const normGain = Math.min(0.85, 2.2 / Math.sqrt(Math.max(4, state.gran.density)));
         gGain.gain.value = normGain;
 
@@ -632,7 +976,6 @@
         src.start();
       }
 
-      // Knob UI builder
       function createKnob(container, cfg) {
         const box = document.createElement("div");
         box.className = "knob-box";
@@ -661,7 +1004,6 @@
 
         function render() {
           const norm = getNorm();
-          // -135 deg (bottom-left, 0%) to +135 deg (bottom-right, 100%)
           const deg = -135 + norm * 270;
           indicator.style.transform = `rotate(${deg}deg)`;
           knob.setAttribute("aria-valuenow", String(cfg.get()));
@@ -679,7 +1021,6 @@
           render();
         }
 
-        // Mouse drag (vertical)
         knob.addEventListener("mousedown", (e) => {
           e.preventDefault();
           const startY = e.clientY;
@@ -699,7 +1040,6 @@
           window.addEventListener("mouseup", onUp);
         });
 
-        // Touch drag: only capture if user drags vertically past a small threshold so page scroll works easily
         let touchStartY = null;
         let touchStartX = null;
         let touchStartNorm = 0;
@@ -718,7 +1058,6 @@
           const dy = touchStartY - e.touches[0].clientY;
           const dx = Math.abs(e.touches[0].clientX - touchStartX);
 
-          // If horizontal movement is greater early on, let browser scroll naturally
           if (!dragLocked && dx > Math.abs(dy) && Math.abs(dy) < 10) {
             return;
           }
@@ -736,7 +1075,6 @@
           dragLocked = false;
         }, { passive: true });
 
-        // Wheel support
         knob.addEventListener("wheel", (e) => {
           e.preventDefault();
           const delta = e.deltaY < 0 ? 0.04 : -0.04;
@@ -814,7 +1152,7 @@
           get: () => state.gran.mix,
           set: (v) => {
             state.gran.mix = v;
-            updateWetDryMix();
+            updateGranWetDryMix();
           },
           format: (v) => {
             if (v <= 0.01) return "DRY";
@@ -823,6 +1161,153 @@
           }
         }
       ].forEach((cfg) => createKnob(granKnobsEl, cfg));
+
+      const reverbMainSlot = document.getElementById("reverbMainKnobSlot");
+      createKnob(reverbMainSlot, {
+        label: "DRY / WET",
+        min: 0,
+        max: 1,
+        step: 0.01,
+        get: () => state.reverb.mix,
+        set: (v) => {
+          state.reverb.mix = v;
+          updateReverbParams();
+        },
+        format: (v) => {
+          if (v <= 0.01) return "DRY";
+          if (v >= 0.99) return "WET";
+          return `${Math.round(v * 100)}% WET`;
+        }
+      });
+
+      const reverbExtraKnobsEl = document.getElementById("reverbExtraKnobs");
+      [
+        {
+          label: "PREDELAY",
+          min: 0,
+          max: 250,
+          step: 1,
+          get: () => state.reverb.predelay,
+          set: (v) => {
+            state.reverb.predelay = v;
+            updateReverbParams();
+          },
+          format: (v) => `${Math.round(v)} ms`
+        },
+        {
+          label: "CHARACTER",
+          min: 0,
+          max: 1,
+          step: 0.01,
+          get: () => state.reverb.character,
+          set: (v) => {
+            state.reverb.character = v;
+            updateReverbParams();
+            scheduleAlgoRebuild();
+          },
+          format: (v) => `${Math.round(v * 100)}%`
+        },
+        {
+          label: "THICKNESS",
+          min: 0,
+          max: 1,
+          step: 0.01,
+          get: () => state.reverb.thickness,
+          set: (v) => {
+            state.reverb.thickness = v;
+            updateReverbParams();
+            scheduleAlgoRebuild();
+          },
+          format: (v) => `${Math.round(v * 100)}%`
+        },
+        {
+          label: "DISTANCE",
+          min: 0,
+          max: 1,
+          step: 0.01,
+          get: () => state.reverb.distance,
+          set: (v) => {
+            state.reverb.distance = v;
+            updateReverbParams();
+            scheduleAlgoRebuild();
+          },
+          format: (v) => `${Math.round(v * 100)}%`
+        },
+        {
+          label: "SPACE",
+          min: 0.2,
+          max: 10,
+          step: 0.1,
+          get: () => state.reverb.space,
+          set: (v) => {
+            state.reverb.space = v;
+            updateReverbParams();
+            scheduleAlgoRebuild();
+          },
+          format: (v) => `${v.toFixed(1)} s`
+        },
+        {
+          label: "BRIGHTNESS",
+          min: 0,
+          max: 1,
+          step: 0.01,
+          get: () => state.reverb.brightness,
+          set: (v) => {
+            state.reverb.brightness = v;
+            updateReverbParams();
+          },
+          format: (v) => `${Math.round(v * 100)}%`
+        },
+        {
+          label: "WIDTH",
+          min: 0,
+          max: 1,
+          step: 0.01,
+          get: () => state.reverb.width,
+          set: (v) => {
+            state.reverb.width = v;
+            updateReverbParams();
+            scheduleAlgoRebuild();
+          },
+          format: (v) => `${Math.round(v * 100)}%`
+        },
+        {
+          label: "DUCKING",
+          min: 0,
+          max: 1,
+          step: 0.01,
+          get: () => state.reverb.ducking,
+          set: (v) => {
+            state.reverb.ducking = v;
+            updateReverbParams();
+          },
+          format: (v) => `${Math.round(v * 100)}%`
+        },
+        {
+          label: "LOW PASS",
+          min: 400,
+          max: 18000,
+          step: 50,
+          get: () => state.reverb.lowPass,
+          set: (v) => {
+            state.reverb.lowPass = v;
+            updateReverbParams();
+          },
+          format: (v) => v >= 1000 ? `${(v / 1000).toFixed(1)} kHz` : `${Math.round(v)} Hz`
+        },
+        {
+          label: "HIGH PASS",
+          min: 20,
+          max: 2000,
+          step: 10,
+          get: () => state.reverb.highPass,
+          set: (v) => {
+            state.reverb.highPass = v;
+            updateReverbParams();
+          },
+          format: (v) => v >= 1000 ? `${(v / 1000).toFixed(2)} kHz` : `${Math.round(v)} Hz`
+        }
+      ].forEach((cfg) => createKnob(reverbExtraKnobsEl, cfg));
 
       const fxKnobsEl = document.getElementById("fxKnobs");
       [
@@ -864,7 +1349,28 @@
         }
       ].forEach((cfg) => createKnob(fxKnobsEl, cfg));
 
-      // Transport & file controls
+      const reverbExpandBtn = document.getElementById("reverbExpandBtn");
+      const reverbDrawer = document.getElementById("reverbDrawer");
+      reverbExpandBtn.addEventListener("click", () => {
+        state.reverbOpen = !state.reverbOpen;
+        reverbDrawer.classList.toggle("open", state.reverbOpen);
+        reverbExpandBtn.classList.toggle("open", state.reverbOpen);
+        reverbExpandBtn.setAttribute("aria-expanded", String(state.reverbOpen));
+      });
+
+      const reverbEngineSelect = document.getElementById("reverbEngineSelect");
+      reverbEngineSelect.addEventListener("change", (e) => {
+        state.reverbEngine = e.target.value;
+        updateReverbParams();
+      });
+
+      const irPresetSelect = document.getElementById("irPresetSelect");
+      irPresetSelect.addEventListener("change", (e) => {
+        state.irPreset = e.target.value;
+        rebuildPresetIR();
+        updateReverbParams();
+      });
+
       document.getElementById("powerBtn").addEventListener("click", () => {
         if (!state.started) {
           initAudio();
@@ -938,7 +1444,6 @@
         }
       });
 
-      // Grain scheduler & scope loop
       function tick(now) {
         const dtMs = Math.min(100, now - lastFrameTime);
         lastFrameTime = now;
@@ -956,12 +1461,10 @@
 
         granMeta.textContent = `FREEZE: ${state.freeze ? "ON" : "OFF"} | ACTIVE GRAINS: ${activeGrainCount}`;
 
-        // Draw waveform / scope
         const w = scopeCanvas.width;
         const h = scopeCanvas.height;
         scopeCtx.clearRect(0, 0, w, h);
 
-        // Draw buffer overview line
         scopeCtx.strokeStyle = "rgba(255, 255, 255, 0.12)";
         scopeCtx.lineWidth = 1;
         scopeCtx.beginPath();
@@ -974,7 +1477,6 @@
         }
         scopeCtx.stroke();
 
-        // Draw playhead position marker
         const posX = state.gran.position * w;
         scopeCtx.strokeStyle = "#ff0033";
         scopeCtx.beginPath();
@@ -982,7 +1484,6 @@
         scopeCtx.lineTo(posX, h);
         scopeCtx.stroke();
 
-        // Draw live output waveform if analyser active
         if (analyser && state.started) {
           const data = new Uint8Array(analyser.fftSize);
           analyser.getByteTimeDomainData(data);
