@@ -3104,7 +3104,7 @@
             smoothParam(reduxPreFilter.frequency, preActive ? cutoffHz : clampNyquistHz(24000, 1000), 0.02);
             smoothParam(reduxPostFilter.frequency, postActive ? cutoffHz : clampNyquistHz(24000, 1000), 0.02);
 
-            const wetNorm = (effectsRackOpen && reduxActive) ? Math.max(0, Math.min(1, fxState.reduxMix / 100)) : 0;
+            const wetNorm = reduxActive ? (fxState.reduxMix / 100) : 0;
             const wetAmt = wetNorm > 0 ? equalPowerWetGain(wetNorm) : 0;
             smoothParam(reduxWetGain.gain, wetAmt, 0.02);
             syncDryWetBalance();
@@ -3502,7 +3502,7 @@
                         const output = event.outputBuffer;
                         const sr = audioCtx.sampleRate || 44100;
 
-                        if (!effectsRackOpen || !reduxActive || fxState.reduxMix <= 0) {
+                       if (!reduxActive || fxState.reduxMix <= 0) {
                             for (let ch = 0; ch < output.numberOfChannels; ch++) {
                                 output.getChannelData(ch).set(input.getChannelData(ch));
                             }
@@ -3702,8 +3702,9 @@
                 } else {
                     reduxPreFilter.connect(reduxPostFilter);
                 }
-                reduxPostFilter.connect(reduxWetGain);
+               reduxPostFilter.connect(reduxWetGain);
                 reduxWetGain.connect(eqInputBus);
+                reduxWetGain.connect(preMaximizerBus);
 
                 // 4) EQ chain (HPF -> Bass -> Mids -> Treble -> LPF)
                 eqInputBus.connect(hpfFilter);
