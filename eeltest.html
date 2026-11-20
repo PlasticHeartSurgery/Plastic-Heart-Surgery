@@ -1509,12 +1509,12 @@
 
                         <!-- Granulator Module -->
                         <div class="fx-module-block">
-                            <div class="fx-module-top" id="grainModuleTop">
+                            <div class="fx-module-top has-body" id="grainModuleTop">
                                 <span class="fx-module-name">GRANULATOR <span id="grainSourceBadge" style="color:#ff0033;">(LIVE + BUFFER)</span></span>
-                                <button type="button" class="deck-btn" id="grainToggleBtn" aria-pressed="false" title="Click to toggle & show Granulator">GRN</button>
+                                <button type="button" class="deck-btn" id="grainToggleBtn" aria-pressed="false" title="Click to toggle Granulator active state">GRN</button>
                             </div>
 
-                            <div class="collapsible-block" id="grainBodyGroup">
+                            <div class="collapsible-block open" id="grainBodyGroup">
                                 <!-- Looping Playhead Bar for Granulator -->
                                 <div class="grain-playhead-box">
                                     <button type="button" class="deck-btn active" id="grainLoopBtn" aria-pressed="true" title="Toggle looping playhead scan inside granulator">LOOP</button>
@@ -1865,6 +1865,19 @@
             effectsHeaderBtn.classList.toggle('open', effectsRackOpen);
             effectsHeaderBtn.setAttribute('aria-expanded', String(effectsRackOpen));
             effectsMasterState.textContent = effectsRackOpen ? 'HIDE' : 'SHOW';
+
+            if (effectsRackOpen) {
+                grainBodyGroup.classList.add('open');
+                grainModuleTop.classList.add('has-body');
+                lastPlayheadTickTime = performance.now();
+                if (audioCtx && audio.src) {
+                    ensureGranulatorBuffer(audio.src);
+                }
+                updateGranulatorPlayheadUI();
+            } else {
+                grainBodyGroup.classList.toggle('open', grainActive);
+                grainModuleTop.classList.toggle('has-body', grainActive);
+            }
         }
 
         effectsHeaderBtn.addEventListener('click', () => {
@@ -2564,9 +2577,10 @@
         function updateGrainToggleUI() {
             grainToggleBtn.classList.toggle('active', grainActive);
             grainToggleBtn.setAttribute('aria-pressed', String(grainActive));
-            grainBodyGroup.classList.toggle('open', grainActive);
-            grainModuleTop.classList.toggle('has-body', grainActive);
-            if (grainActive) {
+            const shouldShowBody = grainActive || effectsRackOpen;
+            grainBodyGroup.classList.toggle('open', shouldShowBody);
+            grainModuleTop.classList.toggle('has-body', shouldShowBody);
+            if (shouldShowBody) {
                 lastPlayheadTickTime = performance.now();
                 if (audioCtx && audio.src) {
                     ensureGranulatorBuffer(audio.src);
