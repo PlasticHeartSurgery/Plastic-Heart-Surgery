@@ -1706,7 +1706,7 @@
             oscTimeMs: 280, oscFdbk: 45, oscLfoRate: 1.2, oscLfoDepthMs: 8.0, oscMix: 0,
             tubeCurve: 'A', tubeDriveDb: 5.5, tubeTone: -0.27, tubeBiasPct: 25, tubeEnvPct: 0,
             tubeAttackMs: 5.0, tubeReleaseMs: 35.0, tubeOutputDb: 0, tubeMix: 0,
-            reduxRateKhz: 40.0, reduxBits: 12, reduxJitterPct: 0, reduxShapePct: 0,
+            reduxRateKhz: 40.0, reduxBits: 16, reduxJitterPct: 0, reduxShapePct: 0,
             reduxFilterAmt: 0, reduxFilterPre: false, reduxFilterPost: false, reduxDcShift: false, reduxMix: 0
         };
 
@@ -2149,7 +2149,7 @@
             const cutoffHz = clampNyquistHz(80 + Math.pow(fPos, 1.4) * 21000, 80);
             smoothParam(reduxPreFilter.frequency, (fxState.reduxFilterPre && fPos > 0.005) ? cutoffHz : clampNyquistHz(24000, 1000), 0.02);
             smoothParam(reduxPostFilter.frequency, (fxState.reduxFilterPost && fPos > 0.005) ? cutoffHz : clampNyquistHz(24000, 1000), 0.02);
-            const w = (effectsRackOpen && reduxActive) ? fxState.reduxMix / 100 : 0;
+            const w = reduxActive ? fxState.reduxMix / 100 : 0;
             smoothParam(reduxWetGain.gain, w > 0 ? equalPowerWetGain(w) : 0, 0.02);
             syncDryWetBalance();
         }
@@ -2294,8 +2294,10 @@
                     const phaseHold = [0, 0], sampleHold = [0, 0];
                     reduxProcessor.onaudioprocess = (event) => {
                         const input = event.inputBuffer, output = event.outputBuffer, sr = audioCtx.sampleRate || 44100;
-                        if (!effectsRackOpen || !reduxActive || fxState.reduxMix <= 0) {
-                            for (let ch = 0; ch < output.numberOfChannels; ch++) output.getChannelData(ch).set(input.getChannelData(ch));
+                        if (!reduxActive || fxState.reduxMix <= 0) {
+                            for (let ch = 0; ch < output.numberOfChannels; ch++) {
+                                output.getChannelData(ch).set(input.getChannelData(ch));
+                            }
                             return;
                         }
                         const baseRateHz = Math.max(200, Math.min(sr, fxState.reduxRateKhz * 1000));
@@ -2316,7 +2318,9 @@
                                 }
                                 outData[i] = Math.max(-1, Math.min(1, q + dcOffset));
                             }
-                            phaseHold[ch] = ph; sampleHold[ch] = held;
+
+                            phaseHold[ch] = ph;
+                            sampleHold[ch] = held;
                         }
                     };
                 }
@@ -2381,7 +2385,8 @@
                 if (reduxProcessor) { reduxPreFilter.connect(reduxProcessor); reduxProcessor.connect(reduxPostFilter); }
                 else { reduxPreFilter.connect(reduxPostFilter); }
                 reduxPostFilter.connect(reduxWetGain);
-                reduxWetGain.connect(preEqBus);
+                reduxWetGain.connect(eqInputBus);
+                reduxWetGain.connect(preMaximizerBus);
 
                 // 2. EQ & Filter chain (shapes preEqBus including Dynamic Tube & Redux)
                 preEqBus.connect(hpfFilter);
@@ -2527,7 +2532,7 @@
         setupLinearKnob({ dialId: 'tubeMixKnob', indicatorId: 'tubeMixIndicator', valueId: 'tubeMixValue', stateKey: 'tubeMix', minVal: 0, maxVal: 100, resetVal: 0, formatFn: v => `${Math.round(v)}%`, store: fxState, onChange: () => syncTubeGraph(0) });
 
         setupLinearKnob({ dialId: 'reduxRateKnob', indicatorId: 'reduxRateIndicator', valueId: 'reduxRateValue', stateKey: 'reduxRateKhz', minVal: 0.2, maxVal: 48.0, resetVal: 40.0, formatFn: v => `${v.toFixed(1)}kHz`, snapZero: false, store: fxState, onChange: syncReduxGraph });
-        setupLinearKnob({ dialId: 'reduxBitsKnob', indicatorId: 'reduxBitsIndicator', valueId: 'reduxBitsValue', stateKey: 'reduxBits', minVal: 1, maxVal: 16, resetVal: 12, formatFn: v => String(Math.round(v)), snapZero: false, store: fxState, onChange: syncReduxGraph });
+        setupLinearKnob({ dialId: 'reduxBitsKnob', indicatorId: 'reduxBitsIndicator', valueId: 'reduxBitsValue', stateKey: 'reduxBits', minVal: 1, maxVal: 16, resetVal: 16, formatFn: v => String(Math.round(v)), snapZero: false, store: fxState, onChange: syncReduxGraph });
         setupLinearKnob({ dialId: 'reduxJitterKnob', indicatorId: 'reduxJitterIndicator', valueId: 'reduxJitterValue', stateKey: 'reduxJitterPct', minVal: 0, maxVal: 100, resetVal: 0, formatFn: v => `${Math.round(v)}%`, store: fxState, onChange: syncReduxGraph });
         setupLinearKnob({ dialId: 'reduxShapeKnob', indicatorId: 'reduxShapeIndicator', valueId: 'reduxShapeValue', stateKey: 'reduxShapePct', minVal: 0, maxVal: 100, resetVal: 0, formatFn: v => `${Math.round(v)}%`, store: fxState, onChange: syncReduxGraph });
         setupLinearKnob({ dialId: 'reduxFilterKnob', indicatorId: 'reduxFilterIndicator', valueId: 'reduxFilterValue', stateKey: 'reduxFilterAmt', minVal: 0, maxVal: 100, resetVal: 0, formatFn: v => (v / 100).toFixed(2), store: fxState, onChange: syncReduxGraph });
