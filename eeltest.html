@@ -1509,12 +1509,12 @@
 
                         <!-- Granulator Module -->
                         <div class="fx-module-block">
-                            <div class="fx-module-top has-body" id="grainModuleTop">
+                            <div class="fx-module-top" id="grainModuleTop">
                                 <span class="fx-module-name">GRANULATOR <span id="grainSourceBadge" style="color:#ff0033;">(LIVE + BUFFER)</span></span>
                                 <button type="button" class="deck-btn" id="grainToggleBtn" aria-pressed="false" title="Click to toggle Granulator active state">GRN</button>
                             </div>
 
-                            <div class="collapsible-block open" id="grainBodyGroup">
+                            <div class="collapsible-block" id="grainBodyGroup">
                                 <!-- Looping Playhead Bar for Granulator -->
                                 <div class="grain-playhead-box">
                                     <button type="button" class="deck-btn active" id="grainLoopBtn" aria-pressed="true" title="Toggle looping playhead scan inside granulator">LOOP</button>
@@ -1859,6 +1859,55 @@
         let loopLength = null;
         let loopHalveCount = 0;
 
+        // EQ + LPF/HPF state
+        let eqActive = false;
+        const eqState = {
+            bass: 0,
+            mids: 0,
+            treble: 0,
+            lpf: 25000,
+            hpf: 0
+        };
+
+        // Tap BPM & Delay state
+        let delayActive = false;
+        let dm2OscActive = false;
+        const delayState = {
+            timeMs: 500,
+            mix: 0,
+            fdbk: 35,
+            widenMs: 0,
+            tape: 0
+        };
+        let tapTimestamps = [];
+        let bpmPulseTimer = null;
+
+        // Reverb, Granulator & Oscillation Delay state (all start at 0% mix)
+        let revActive = false;
+        let grainActive = false;
+        let oscDlyActive = false;
+        let grainLoopEnabled = true;
+
+        const fxState = {
+            revDecay: 2.5,
+            revMix: 0,
+            grainMode: 'standard',
+            grainTiming: 'asynchronous',
+            grainSizeMs: 110,
+            grainDensity: 1.5,
+            grainJitter: 30,
+            grainPosPct: 25,
+            grainRate: 1.0,
+            grainFdbk: 25,
+            grainPan: 50,
+            grainMix: 0,
+            oscTimeMs: 280,
+            oscFdbk: 45,
+            oscLfoRate: 1.2,
+            oscLfoDepthMs: 8.0,
+            oscMix: 0
+        };
+
         function setEffectsRackOpen(open) {
             effectsRackOpen = Boolean(open);
             effectsRackContainer.classList.toggle('open', effectsRackOpen);
@@ -1867,16 +1916,15 @@
             effectsMasterState.textContent = effectsRackOpen ? 'HIDE' : 'SHOW';
 
             if (effectsRackOpen) {
-                grainBodyGroup.classList.add('open');
-                grainModuleTop.classList.add('has-body');
-                lastPlayheadTickTime = performance.now();
-                if (audioCtx && audio.src) {
-                    ensureGranulatorBuffer(audio.src);
-                }
-                updateGranulatorPlayheadUI();
-            } else {
-                grainBodyGroup.classList.toggle('open', grainActive);
-                grainModuleTop.classList.toggle('has-body', grainActive);
+                initAudioGraph();
+                delayActive = true;
+                revActive = true;
+                grainActive = true;
+                oscDlyActive = true;
+                updateDelayToggleUI();
+                updateRevToggleUI();
+                updateGrainToggleUI();
+                updateOscDlyToggleUI();
             }
         }
 
@@ -2038,55 +2086,6 @@
 
         updateLoopButtonsUI();
 
-        // EQ + LPF/HPF state
-        let eqActive = false;
-        const eqState = {
-            bass: 0,
-            mids: 0,
-            treble: 0,
-            lpf: 25000,
-            hpf: 0
-        };
-
-        // Tap BPM & Delay state
-        let delayActive = false;
-        let dm2OscActive = false;
-        const delayState = {
-            timeMs: 500,
-            mix: 0,
-            fdbk: 35,
-            widenMs: 0,
-            tape: 0
-        };
-        let tapTimestamps = [];
-        let bpmPulseTimer = null;
-
-        // Reverb, Granulator & Oscillation Delay state
-        let revActive = false;
-        let grainActive = false;
-        let oscDlyActive = false;
-        let grainLoopEnabled = true;
-
-        const fxState = {
-            revDecay: 2.5,
-            revMix: 0,
-            grainMode: 'standard',
-            grainTiming: 'asynchronous',
-            grainSizeMs: 110,
-            grainDensity: 1.5,
-            grainJitter: 30,
-            grainPosPct: 25,
-            grainRate: 1.0,
-            grainFdbk: 25,
-            grainPan: 50,
-            grainMix: 0,
-            oscTimeMs: 280,
-            oscFdbk: 45,
-            oscLfoRate: 1.2,
-            oscLfoDepthMs: 8.0,
-            oscMix: 0
-        };
-
         let audioCtx = null;
         let hpfFilter = null;
         let bassFilter = null;
@@ -2094,6 +2093,8 @@
         let trebleFilter = null;
         let lpfFilter = null;
         let dryPathGain = null;
+        let preMaximizerBus = null;
+        let maximizerLimiter = null;
         let masterBus = null;
         let analyser = null;
         let timeDomainData = null;
@@ -2178,6 +2179,18 @@
                 curve[i] = Math.tanh(x * amount) / Math.tanh(amount);
             }
             return curve;
+        }
+
+        // Equal-power dry/wet law: at 50% (t = 0.5), dry = cos(pi/4) ~ 0.707, wet = sin(pi/4) ~ 0.707
+        // preserving perceived original song loudness without hollow dip.
+        function equalPowerDryGain(normMix) {
+            const t = Math.max(0, Math.min(1, normMix));
+            return Math.cos(t * Math.PI * 0.5);
+        }
+
+        function equalPowerWetGain(normMix) {
+            const t = Math.max(0, Math.min(1, normMix));
+            return Math.sin(t * Math.PI * 0.5);
         }
 
         function getGranulatorDurationSec() {
@@ -2519,13 +2532,22 @@
 
         function syncDryWetBalance() {
             if (!webAudioReady || !audioCtx || !dryPathGain) return;
-            // 0% = 100% dry (dry = 1.0, wet = 0.0); 100% = 100% wet (dry = 0.0, wet = 1.0)[cite: 2]
-            const dWetNorm = delayActive ? Math.max(0, Math.min(1, delayState.mix / 100)) : 0;
+            const dWetNorm = (delayActive || dm2OscActive)
+                ? (dm2OscActive ? Math.max(delayState.mix / 100, 0.75) : (delayState.mix / 100))
+                : 0;
             const gWetNorm = grainActive ? Math.max(0, Math.min(1, fxState.grainMix / 100)) : 0;
             const oWetNorm = oscDlyActive ? Math.max(0, Math.min(1, fxState.oscMix / 100)) : 0;
-            const maxSoloWet = Math.max(dWetNorm, gWetNorm, oWetNorm);
-            const dryAmt = Math.max(0, 1 - maxSoloWet);
-            smoothParam(dryPathGain.gain, dryAmt, 0.02);
+            const rWetNorm = revActive ? Math.max(0, Math.min(1, fxState.revMix / 100)) : 0;
+
+            // Equal-power dry curve so 50% dry/wet keeps full perceived original song loudness
+            const dryFromMix = Math.min(
+                equalPowerDryGain(dWetNorm),
+                equalPowerDryGain(gWetNorm),
+                equalPowerDryGain(oWetNorm)
+            );
+            // Reverb is an additive space send when mix > 0, with gentle dry trim only at very high wet
+            const revDryTrim = rWetNorm > 0.75 ? (1 - (rWetNorm - 0.75) * 0.4) : 1;
+            smoothParam(dryPathGain.gain, Math.max(0, dryFromMix * revDryTrim), 0.02);
         }
 
         function syncReverbGraph() {
@@ -2534,14 +2556,17 @@
                 convolverNode.buffer = createImpulseResponseBuffer(audioCtx, fxState.revDecay, 2.5);
                 lastBuiltRevDecay = fxState.revDecay;
             }
-            const wetAmt = revActive ? (fxState.revMix / 100) : 0;
+            const wetNorm = revActive ? (fxState.revMix / 100) : 0;
+            // At 50% wet, sin(pi/4) ~ 0.707 gives balanced tail without washing out or losing loudness
+            const wetAmt = wetNorm > 0 ? equalPowerWetGain(wetNorm) * 0.85 : 0;
             smoothParam(revWetGain.gain, wetAmt, 0.02);
+            syncDryWetBalance();
         }
 
         function syncGranulatorGraph() {
             if (!webAudioReady || !audioCtx || !grainWetGain || !grainFbGain) return;
             const wetNorm = grainActive ? Math.max(0, Math.min(1, fxState.grainMix / 100)) : 0;
-            const wetAmt = wetNorm;
+            const wetAmt = wetNorm > 0 ? equalPowerWetGain(wetNorm) : 0;
             const fbAmt = grainActive ? Math.min(0.82, (fxState.grainFdbk / 100) * 0.82) : 0;
             smoothParam(grainWetGain.gain, wetAmt, 0.02);
             smoothParam(grainFbGain.gain, fbAmt, 0.02);
@@ -2556,7 +2581,7 @@
             const lfoHz = Math.max(0.05, Math.min(12, fxState.oscLfoRate));
             const depthSec = oscDlyActive ? Math.max(0, Math.min(0.04, fxState.oscLfoDepthMs / 1000)) : 0;
             const wetNorm = oscDlyActive ? Math.max(0, Math.min(1, fxState.oscMix / 100)) : 0;
-            const wetAmt = wetNorm;
+            const wetAmt = wetNorm > 0 ? equalPowerWetGain(wetNorm) : 0;
 
             smoothParam(oscDelayNode.delayTime, dlySec, 0.02);
             smoothParam(oscFeedbackGain.gain, fbAmt, 0.02);
@@ -2656,9 +2681,10 @@
             const t = Math.max(0.02, Math.min(2.5, delayState.timeMs / 1000));
             const haasSec = Math.max(0, Math.min(0.035, delayState.widenMs / 1000));
             const effectiveDelayActive = delayActive || dm2OscActive;
-            const wetAmt = effectiveDelayActive
+            const wetNorm = effectiveDelayActive
                 ? (dm2OscActive ? Math.max(delayState.mix / 100, 0.75) : (delayState.mix / 100))
                 : 0;
+            const wetAmt = wetNorm > 0 ? equalPowerWetGain(wetNorm) : 0;
             const fbAmt = effectiveDelayActive
                 ? (dm2OscActive ? 1.16 : Math.min(0.85, (delayState.fdbk / 100) * 0.85))
                 : 0;
@@ -2958,8 +2984,19 @@
                 oscWetGain = audioCtx.createGain();
                 oscWetGain.gain.value = 0;
 
+                preMaximizerBus = audioCtx.createGain();
+                preMaximizerBus.gain.value = 1;
+
+                // Maximizer / Brickwall Limiter to tame stacked wet layers & DM-2 oscillation peaks
+                maximizerLimiter = audioCtx.createDynamicsCompressor();
+                maximizerLimiter.threshold.value = -3.0;
+                maximizerLimiter.knee.value = 2.0;
+                maximizerLimiter.ratio.value = 20.0;
+                maximizerLimiter.attack.value = 0.002;
+                maximizerLimiter.release.value = 0.08;
+
                 masterBus = audioCtx.createGain();
-                masterBus.gain.value = 1;
+                masterBus.gain.value = 1.08;
 
                 analyser = audioCtx.createAnalyser();
                 analyser.fftSize = 256;
@@ -2973,7 +3010,7 @@
                 midsFilter.connect(trebleFilter);
                 trebleFilter.connect(lpfFilter);
                 lpfFilter.connect(dryPathGain);
-                dryPathGain.connect(masterBus);
+                dryPathGain.connect(preMaximizerBus);
 
                 // Granulator live stream feed
                 lpfFilter.connect(grainLiveTapDelay);
@@ -3001,19 +3038,19 @@
                 haasRightDelay.connect(delayMerger, 0, 1);
 
                 delayMerger.connect(delayWetGain);
-                delayWetGain.connect(masterBus);
+                delayWetGain.connect(preMaximizerBus);
 
                 // Reverb send/return
                 lpfFilter.connect(convolverNode);
                 convolverNode.connect(revWetGain);
-                revWetGain.connect(masterBus);
+                revWetGain.connect(preMaximizerBus);
 
-                // Granulator wet + feedback loop to masterBus
-                grainWetGain.connect(masterBus);
+                // Granulator wet + feedback loop to preMaximizerBus
+                grainWetGain.connect(preMaximizerBus);
                 grainWetGain.connect(grainFbDelay);
                 grainFbDelay.connect(grainFbGain);
                 grainFbGain.connect(grainFbDelay);
-                grainFbGain.connect(masterBus);
+                grainFbGain.connect(preMaximizerBus);
 
                 // Oscillation Delay send/return + LFO
                 oscLfoNode.connect(oscLfoDepthGain);
@@ -3023,8 +3060,11 @@
                 oscDelayNode.connect(oscFeedbackGain);
                 oscFeedbackGain.connect(oscDelayNode);
                 oscDelayNode.connect(oscWetGain);
-                oscWetGain.connect(masterBus);
+                oscWetGain.connect(preMaximizerBus);
 
+                // Maximizer stage -> Master bus -> Analyser -> Destination
+                preMaximizerBus.connect(maximizerLimiter);
+                maximizerLimiter.connect(masterBus);
                 masterBus.connect(analyser);
                 analyser.connect(audioCtx.destination);
 
@@ -3725,7 +3765,6 @@
             onChangeCallback: syncOscDelayGraph
         });
 
-        setEffectsRackOpen(false);
         updateEQToggleUI();
         updateDelayToggleUI();
         updateRevToggleUI();
