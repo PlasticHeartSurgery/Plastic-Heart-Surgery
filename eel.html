@@ -1876,78 +1876,78 @@
                             </div>
                         </div>
 
-                        <!-- Redux Module -->
-                        <div class="fx-module-block">
-                            <div class="fx-module-top" id="reduxModuleTop">
-                                <span class="fx-module-name">REDUX (DRY 0 → WET 100)</span>
-                                <button type="button" class="deck-btn" id="reduxToggleBtn" aria-pressed="false" title="Click to toggle & show Redux">RDX</button>
-                            </div>
-                            <div class="collapsible-block" id="reduxBodyGroup">
-                                <div class="fx-select-row">
-                                    <span class="fx-select-label">FILTER</span>
-                                    <button type="button" class="redux-toggle-pill" id="reduxFilterPreBtn" aria-pressed="false">PRE</button>
-                                    <button type="button" class="redux-toggle-pill" id="reduxFilterPostBtn" aria-pressed="false">POST</button>
-                                    <button type="button" class="redux-toggle-pill" id="reduxDcShiftBtn" aria-pressed="false" style="margin-left:8px;">DC SHIFT</button>
-                                </div>
+                      <!-- Redux Module -->
+<div class="fx-module-block">
+    <div class="fx-module-top" id="reduxModuleTop">
+        <span class="fx-module-name">REDUX (DRY 0 → WET 100)</span>
+        <button type="button" class="deck-btn" id="reduxToggleBtn" aria-pressed="false" title="Click to toggle & show Redux">RDX</button>
+    </div>
 
-                                <div class="eq-knobs-group" id="reduxKnobsGroup">
-                                    <div class="knob-unit">
-                                        <span class="knob-title">RATE</span>
-                                        <div class="knob-dial" id="reduxRateKnob" role="slider" tabindex="0" aria-label="Redux sample rate in kHz" aria-valuemin="0.2" aria-valuemax="48" aria-valuenow="40" title="Sample rate reduction (0.2kHz–48.0kHz). Double-click to reset (40.0kHz).">
-                                            <div class="knob-indicator" id="reduxRateIndicator"></div>
-                                        </div>
-                                        <span class="knob-val" id="reduxRateValue">40.0kHz</span>
-                                        <span class="knob-sub">SRATE</span>
-                                    </div>
+    <div class="collapsible-block" id="reduxBodyGroup">
+        <div class="fx-select-row">
+            <span class="fx-select-label">FILTER</span>
+            <button type="button" class="redux-toggle-pill" id="reduxFilterPreBtn" aria-pressed="false">PRE</button>
+            <button type="button" class="redux-toggle-pill" id="reduxFilterPostBtn" aria-pressed="false">POST</button>
+            <button type="button" class="redux-toggle-pill" id="reduxDcShiftBtn" aria-pressed="false" style="margin-left:8px;">DC SHIFT</button>
+        </div>
 
-                                    <div class="knob-unit">
-                                        <span class="knob-title">BITS</span>
-                                        <div class="knob-dial" id="reduxBitsKnob" role="slider" tabindex="0" aria-label="Redux bit depth" aria-valuemin="1" aria-valuemax="16" aria-valuenow="12" title="Bit depth reduction (1 bit–16 bits). Double-click to reset (12).">
-                                            <div class="knob-indicator" id="reduxBitsIndicator"></div>
-                                        </div>
-                                        <span class="knob-val" id="reduxBitsValue">12</span>
-                                        <span class="knob-sub">DEPTH</span>
-                                    </div>
+        <div class="eq-knobs-group" id="reduxKnobsGroup">
+            <div class="knob-unit">
+                <span class="knob-title">RATE</span>
+                <div class="knob-dial" id="reduxRateKnob" role="slider" tabindex="0" aria-label="Redux sample rate in kHz" aria-valuemin="0.2" aria-valuemax="48" aria-valuenow="40" title="Sample rate reduction (0.2kHz–48.0kHz). Double-click to reset (40.0kHz).">
+                    <div class="knob-indicator" id="reduxRateIndicator"></div>
+                </div>
+                <span class="knob-val" id="reduxRateValue">40.0kHz</span>
+                <span class="knob-sub">SRATE</span>
+            </div>
 
-                                    <div class="knob-unit">
-                                        <span class="knob-title">JITTER</span>
-                                        <div class="knob-dial" id="reduxJitterKnob" role="slider" tabindex="0" aria-label="Redux clock jitter percentage" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" title="Sample rate clock jitter (0%–100%). Double-click to reset (0%).">
-                                            <div class="knob-indicator" id="reduxJitterIndicator"></div>
-                                        </div>
-                                        <span class="knob-val" id="reduxJitterValue">0%</span>
-                                        <span class="knob-sub">CLOCK</span>
-                                    </div>
+            <div class="knob-unit">
+                <span class="knob-title">BITS</span>
+                <div class="knob-dial" id="reduxBitsKnob" role="slider" tabindex="0" aria-label="Redux bit depth" aria-valuemin="1" aria-valuemax="16" aria-valuenow="16" title="Bit depth reduction (1 bit–16 bits). Double-click to reset (16).">
+                    <div class="knob-indicator" id="reduxBitsIndicator"></div>
+                </div>
+                <span class="knob-val" id="reduxBitsValue">16</span>
+                <span class="knob-sub">DEPTH</span>
+            </div>
 
-                                    <div class="knob-unit">
-                                        <span class="knob-title">SHAPE</span>
-                                        <div class="knob-dial" id="reduxShapeKnob" role="slider" tabindex="0" aria-label="Redux wave shaping percentage" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" title="Quantizer curve wave shaping (0%–100%). Double-click to reset (0%).">
-                                            <div class="knob-indicator" id="reduxShapeIndicator"></div>
-                                        </div>
-                                        <span class="knob-val" id="reduxShapeValue">0%</span>
-                                        <span class="knob-sub">CURVE</span>
-                                    </div>
+            <div class="knob-unit">
+                <span class="knob-title">JITTER</span>
+                <div class="knob-dial" id="reduxJitterKnob" role="slider" tabindex="0" aria-label="Redux clock jitter percentage" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" title="Sample rate clock jitter (0%–100%). Double-click to reset (0%).">
+                    <div class="knob-indicator" id="reduxJitterIndicator"></div>
+                </div>
+                <span class="knob-val" id="reduxJitterValue">0%</span>
+                <span class="knob-sub">CLOCK</span>
+            </div>
 
-                                    <div class="knob-unit">
-                                        <span class="knob-title">FILTER</span>
-                                        <div class="knob-dial" id="reduxFilterKnob" role="slider" tabindex="0" aria-label="Redux filter frequency or resonance" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" title="Pre/Post filter position (0–100). Double-click to reset (0).">
-                                            <div class="knob-indicator" id="reduxFilterIndicator"></div>
-                                        </div>
-                                        <span class="knob-val" id="reduxFilterValue">0.00</span>
-                                        <span class="knob-sub">PRE/POST</span>
-                                    </div>
+            <div class="knob-unit">
+                <span class="knob-title">SHAPE</span>
+                <div class="knob-dial" id="reduxShapeKnob" role="slider" tabindex="0" aria-label="Redux wave shaping percentage" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" title="Quantizer curve wave shaping (0%–100%). Double-click to reset (0%).">
+                    <div class="knob-indicator" id="reduxShapeIndicator"></div>
+                </div>
+                <span class="knob-val" id="reduxShapeValue">0%</span>
+                <span class="knob-sub">CURVE</span>
+            </div>
 
-                                    <div class="knob-unit">
-                                        <span class="knob-title">DRY / WET</span>
-                                        <div class="knob-dial" id="reduxMixKnob" role="slider" tabindex="0" aria-label="Redux dry wet mix" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" title="0% = 100% Dry, 100% = 100% Wet. Double-click to reset (0%).">
-                                            <div class="knob-indicator" id="reduxMixIndicator"></div>
-                                        </div>
-                                        <span class="knob-val" id="reduxMixValue">0%</span>
-                                        <span class="knob-sub">0–100%</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+            <div class="knob-unit">
+                <span class="knob-title">FILTER</span>
+                <div class="knob-dial" id="reduxFilterKnob" role="slider" tabindex="0" aria-label="Redux filter frequency or resonance" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" title="Pre/Post filter position (0–100). Double-click to reset (0).">
+                    <div class="knob-indicator" id="reduxFilterIndicator"></div>
+                </div>
+                <span class="knob-val" id="reduxFilterValue">0.00</span>
+                <span class="knob-sub">PRE/POST</span>
+            </div>
 
+            <div class="knob-unit">
+                <span class="knob-title">DRY / WET</span>
+                <div class="knob-dial" id="reduxMixKnob" role="slider" tabindex="0" aria-label="Redux dry wet mix" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" title="0% = 100% Dry, 100% = 100% Wet. Double-click to reset (0%).">
+                    <div class="knob-indicator" id="reduxMixIndicator"></div>
+                </div>
+                <span class="knob-val" id="reduxMixValue">0%</span>
+                <span class="knob-sub">0–100%</span>
+            </div>
+        </div>
+    </div>
+</div>
                         <p class="fx-note">Dynamic Tube &amp; Redux run pre-EQ; Granulator uses a live granular stream + cached/decoded track buffer with a looping playhead. All wet mixes default to 0% when opened.</p>
                     </div>
                 </div>
