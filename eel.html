@@ -43,7 +43,7 @@
             text-size-adjust: 100%;
         }
 
-        /* --- CENTERED GRADIENT LOADING BAR --- */
+  /* --- CENTERED GRADIENT LOADING BAR --- */
         .loader-container {
             position: fixed;
             top: 50%;
@@ -140,6 +140,7 @@
             flex: 1;
             padding: 80px 60px;
             max-width: 950px;
+            min-width: 0;
             background-color: #ffffff;
         }
 
@@ -164,6 +165,34 @@
             padding: 20px;
             box-shadow: 4px 4px 0px #000000;
             margin-bottom: 30px;
+        }
+
+        @media (max-width: 900px) {
+            body {
+                flex-direction: column;
+                overflow-x: clip;
+            }
+
+            .loader-container {
+                left: 50%;
+            }
+
+            .sidebar {
+                position: relative;
+                top: auto;
+                left: auto;
+                width: 100%;
+                height: auto;
+                padding: 28px 20px;
+            }
+
+            main {
+                margin-left: 0;
+                width: 100%;
+                max-width: 100%;
+                min-width: 0;
+                padding: 24px 16px 60px 16px;
+            }
         }
 
         .visualizer-header {
