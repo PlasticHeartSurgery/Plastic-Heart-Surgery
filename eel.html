@@ -3,7 +3,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Plastic Heart Surgery — Music</title>
-<style>
+    <style>
         @font-face {
             font-family: 'Lyno Ulyscyr';
             src: local('Lyno Ulyscyr'), url('fonts/lynoulyscyr.ttf') format('truetype');
@@ -31,12 +31,6 @@
             padding: 0;
         }
 
-        html,
-        body {
-            max-width: 100%;
-            overflow-x: clip;
-        }
-
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: #ffffff;
@@ -44,11 +38,12 @@
             display: flex;
             min-height: 100vh;
             line-height: 1.6;
+            overflow-x: hidden;
             -webkit-text-size-adjust: 100%;
             text-size-adjust: 100%;
         }
 
-        /* --- CENTERED GRADIENT LOADING BAR --- */
+  /* --- CENTERED GRADIENT LOADING BAR --- */
         .loader-container {
             position: fixed;
             top: 50%;
@@ -175,6 +170,7 @@
         @media (max-width: 900px) {
             body {
                 flex-direction: column;
+                overflow-x: clip;
             }
 
             .loader-container {
@@ -185,22 +181,16 @@
                 position: relative;
                 top: auto;
                 left: auto;
-                right: auto;
                 width: 100%;
-                max-width: 100%;
                 height: auto;
-                float: none;
                 padding: 28px 20px;
             }
 
             main {
-                position: relative;
                 margin-left: 0;
-                left: auto;
                 width: 100%;
                 max-width: 100%;
                 min-width: 0;
-                flex: none;
                 padding: 24px 16px 60px 16px;
             }
         }
@@ -551,7 +541,7 @@
             flex-wrap: wrap;
         }
 
-        .delay-tap-cluster {
+       .delay-tap-cluster {
             display: flex;
             align-items: center;
             gap: 10px;
@@ -958,7 +948,7 @@
             margin-top: 6px;
         }
 
-        @media (pointer: coarse) {
+     @media (pointer: coarse) {
             .progress-bar-container {
                 height: 12px;
             }
@@ -1310,7 +1300,7 @@
                 overflow-x: visible;
                 padding-bottom: 2px;
             }
-            #delayKnobsGroup .knob-unit {
+          #delayKnobsGroup .knob-unit {
                 flex: 1 1 0;
                 min-width: 0;
                 gap: 2px;
@@ -1341,24 +1331,15 @@
             }
             .sidebar {
                 position: relative;
-                top: auto;
-                left: auto;
-                right: auto;
                 width: 100%;
-                max-width: 100%;
                 height: auto;
-                float: none;
                 padding: 28px 20px;
             }
             main {
-                position: relative;
                 margin-left: 0;
-                left: auto;
-                width: 100%;
+                padding: 24px 16px 60px 16px;
                 max-width: 100%;
                 min-width: 0;
-                flex: none;
-                padding: 24px 16px 60px 16px;
             }
             .loader-container {
                 left: 50%;
