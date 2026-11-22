@@ -694,8 +694,7 @@
                 min-width: 0;
             }
 
-            .eq-row,
-            .delay-row {
+            .eq-row {
                 justify-content: flex-start;
             }
 
@@ -704,6 +703,61 @@
                 width: 100%;
                 justify-content: flex-start;
                 gap: 8px;
+            }
+
+            .delay-row {
+                flex-wrap: wrap;
+                justify-content: flex-start;
+                align-items: center;
+            }
+
+            .delay-tap-cluster {
+                flex: 1 1 auto;
+            }
+
+            #delayKnobsGroup {
+                order: 3;
+                flex: 1 1 100%;
+                width: 100%;
+                flex-wrap: nowrap;
+                justify-content: space-between;
+                align-items: flex-start;
+                gap: 4px;
+            }
+
+            #delayKnobsGroup .knob-unit {
+                flex: 1 1 0;
+                min-width: 0;
+                gap: 2px;
+            }
+
+            #delayKnobsGroup .knob-dial,
+            #delayKnobsGroup .knob-dial:hover,
+            #delayKnobsGroup .knob-dial.active {
+                width: 36px;
+                height: 36px;
+            }
+
+            #delayKnobsGroup .knob-indicator {
+                top: 2px;
+                width: 2px;
+                height: 11px;
+                transform-origin: 50% 16px;
+            }
+
+            #delayKnobsGroup .knob-title {
+                font-size: 0.56rem;
+                letter-spacing: 0.04em;
+            }
+
+            #delayKnobsGroup .knob-val {
+                font-size: 0.68rem;
+                letter-spacing: 0;
+            }
+
+            #delayKnobsGroup .knob-sub {
+                font-size: 0.58rem;
+                letter-spacing: 0;
             }
 
             .fx-select-row {
