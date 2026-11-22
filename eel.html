@@ -1300,7 +1300,7 @@
                 overflow-x: visible;
                 padding-bottom: 2px;
             }
-            #delayKnobsGroup .knob-unit {
+          #delayKnobsGroup .knob-unit {
                 flex: 1 1 0;
                 min-width: 0;
                 gap: 2px;
@@ -1339,6 +1339,7 @@
                 margin-left: 0;
                 padding: 24px 16px 60px 16px;
                 max-width: 100%;
+                min-width: 0;
             }
             .loader-container {
                 left: 50%;
@@ -1366,45 +1367,46 @@
                 gap: 8px;
                 padding-top: 9px;
             }
-            .eq-knobs-group {
-                flex-wrap: wrap;
-                justify-content: space-evenly;
+            .eq-knobs-group:not(#delayKnobsGroup) {
+                flex-wrap: nowrap;
+                justify-content: space-between;
                 align-items: flex-start;
-                gap: 8px 6px;
+                gap: 4px;
                 overflow-x: visible;
                 padding-bottom: 2px;
                 width: 100%;
             }
-            .knob-unit {
-                flex: 0 1 auto;
-                min-width: 58px;
+            .eq-knobs-group:not(#delayKnobsGroup) .knob-unit {
+                flex: 1 1 0;
+                min-width: 0;
                 gap: 2px;
             }
-            .knob-dial,
-            .knob-dial:hover,
-            .knob-dial.active {
-                width: 44px;
-                height: 44px;
+            .eq-knobs-group:not(#delayKnobsGroup) .knob-dial,
+            .eq-knobs-group:not(#delayKnobsGroup) .knob-dial:hover,
+            .eq-knobs-group:not(#delayKnobsGroup) .knob-dial.active {
+                width: 34px;
+                height: 34px;
             }
-            .knob-indicator {
+            .eq-knobs-group:not(#delayKnobsGroup) .knob-indicator {
                 top: 2px;
-                width: 2.5px;
-                height: 14px;
-                transform-origin: 50% 20px;
+                width: 2px;
+                height: 10px;
+                transform-origin: 50% 15px;
             }
-            .knob-title {
-                font-size: 0.64rem;
-                letter-spacing: 0.08em;
+            .eq-knobs-group:not(#delayKnobsGroup) .knob-title {
+                font-size: 0.54rem;
+                letter-spacing: 0.03em;
                 white-space: nowrap;
             }
-            .knob-val {
-                font-size: 0.78rem;
-                letter-spacing: 0.02em;
+            .eq-knobs-group:not(#delayKnobsGroup) .knob-val {
+                font-size: 0.64rem;
+                letter-spacing: 0;
                 min-width: 0;
                 white-space: nowrap;
             }
-            .knob-sub {
-                font-size: 0.68rem;
+            .eq-knobs-group:not(#delayKnobsGroup) .knob-sub {
+                font-size: 0.54rem;
+                letter-spacing: 0;
                 white-space: nowrap;
             }
             .bpm-circle {
