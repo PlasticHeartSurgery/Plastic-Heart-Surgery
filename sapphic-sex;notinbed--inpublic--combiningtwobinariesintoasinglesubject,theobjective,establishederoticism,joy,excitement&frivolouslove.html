@@ -164,13 +164,13 @@
             opacity: 0;
         }
 
-        /* --- LEFT & RIGHT DOUBLE CHEVRON ARROWS WITH LARGE CIRCULAR WHITE-TO-RED ORB GLOW --- */
+        /* --- LEFT & RIGHT DOUBLE CHEVRON ARROWS WITH SMOOTH WHITE-TO-RED ORB PULSE --- */
         .nav-arrow-btn {
             position: fixed;
             top: 50%;
             transform: translateY(-50%);
-            width: 136px;
-            height: 136px;
+            width: 144px;
+            height: 144px;
             background: transparent;
             border: none;
             cursor: pointer;
@@ -184,51 +184,60 @@
         }
 
         .next-arrow-btn {
-            right: 20px;
+            right: 16px;
         }
 
         .prev-arrow-btn {
-            left: 20px;
+            left: 16px;
         }
 
-        /* Large circular orb aura behind each arrow (~2x the previous glow spread) */
-        .nav-arrow-btn::before {
+        /* Large circular orb aura behind each arrow: smooth opacity crossfade from white to red */
+        .nav-arrow-btn::before,
+        .nav-arrow-btn::after {
             content: "";
             position: absolute;
-            width: 136px;
-            height: 136px;
+            width: 144px;
+            height: 144px;
             border-radius: 50%;
             pointer-events: none;
             z-index: -1;
-            animation: orbWhiteToRedPulse 4s ease-in-out infinite;
         }
 
-        @keyframes orbWhiteToRedPulse {
+        .nav-arrow-btn::before {
+            background: radial-gradient(
+                circle,
+                rgba(255, 255, 255, 0.95) 0%,
+                rgba(255, 255, 255, 0.65) 42%,
+                rgba(255, 255, 255, 0) 74%
+            );
+            animation: orbWhiteFade 4s ease-in-out infinite;
+        }
+
+        .nav-arrow-btn::after {
+            background: radial-gradient(
+                circle,
+                rgba(255, 0, 51, 0.55) 0%,
+                rgba(255, 0, 51, 0.34) 44%,
+                rgba(255, 0, 51, 0) 74%
+            );
+            animation: orbRedFade 4s ease-in-out infinite;
+        }
+
+        @keyframes orbWhiteFade {
             0%, 100% {
-                background: radial-gradient(
-                    circle,
-                    rgba(255, 255, 255, 0.98) 0%,
-                    rgba(255, 255, 255, 0.85) 36%,
-                    rgba(255, 255, 255, 0.42) 62%,
-                    rgba(255, 255, 255, 0) 76%
-                );
-                box-shadow:
-                    0 0 24px rgba(255, 255, 255, 0.95),
-                    0 0 48px rgba(255, 255, 255, 0.72);
-                transform: scale(0.94);
+                opacity: 1;
             }
             50% {
-                background: radial-gradient(
-                    circle,
-                    rgba(255, 255, 255, 0.92) 0%,
-                    rgba(255, 102, 133, 0.72) 32%,
-                    rgba(255, 0, 51, 0.56) 58%,
-                    rgba(255, 0, 51, 0) 76%
-                );
-                box-shadow:
-                    0 0 28px rgba(255, 0, 51, 0.78),
-                    0 0 56px rgba(255, 0, 51, 0.55);
-                transform: scale(1.06);
+                opacity: 0.15;
+            }
+        }
+
+        @keyframes orbRedFade {
+            0%, 100% {
+                opacity: 0.15;
+            }
+            50% {
+                opacity: 1;
             }
         }
 
@@ -317,18 +326,19 @@
                 letter-spacing: 0.15em;
             }
             .nav-arrow-btn {
-                width: 108px;
-                height: 108px;
+                width: 112px;
+                height: 112px;
             }
-            .nav-arrow-btn::before {
-                width: 108px;
-                height: 108px;
+            .nav-arrow-btn::before,
+            .nav-arrow-btn::after {
+                width: 112px;
+                height: 112px;
             }
             .next-arrow-btn {
-                right: -6px;
+                right: -8px;
             }
             .prev-arrow-btn {
-                left: -6px;
+                left: -8px;
             }
             .arrow-svg {
                 width: 52px;
@@ -554,6 +564,48 @@
                     goToPrevPhoto();
                 }
             });
+
+            // ==========================================
+            // MOBILE SWIPE NAVIGATION (LEFT = NEXT, RIGHT = PREV)
+            // ==========================================
+            let touchStartX = 0;
+            let touchStartY = 0;
+            let touchStartTime = 0;
+            let isMultiTouch = false;
+
+            window.addEventListener('touchstart', (e) => {
+                if (e.touches.length > 1) {
+                    isMultiTouch = true;
+                    return;
+                }
+                isMultiTouch = false;
+                touchStartX = e.touches[0].clientX;
+                touchStartY = e.touches[0].clientY;
+                touchStartTime = Date.now();
+            }, { passive: true });
+
+            window.addEventListener('touchend', (e) => {
+                // Ignore multi-touch, zoomed-in panning, or swipes started on the arrow buttons
+                if (isMultiTouch || frame.classList.contains('is-zoomed')) return;
+                if (e.target && e.target.closest && e.target.closest('.nav-arrow-btn')) return;
+
+                const touchEndX = e.changedTouches[0].clientX;
+                const touchEndY = e.changedTouches[0].clientY;
+                const deltaX = touchEndX - touchStartX;
+                const deltaY = touchEndY - touchStartY;
+                const elapsed = Date.now() - touchStartTime;
+
+                // Require a deliberate horizontal swipe (> 45px, mostly horizontal, < 700ms)
+                if (Math.abs(deltaX) > 45 && Math.abs(deltaX) > Math.abs(deltaY) * 1.4 && elapsed < 700) {
+                    if (deltaX < 0) {
+                        // Swiped left -> advance to next photo
+                        goToNextPhoto();
+                    } else if (deltaX > 0 && hasAdvancedOnce) {
+                        // Swiped right -> go back to previous photo
+                        goToPrevPhoto();
+                    }
+                }
+            }, { passive: true });
 
             // ==========================================
             // SECRET DOUBLE-CLICK / DOUBLE-TAP ZOOM
