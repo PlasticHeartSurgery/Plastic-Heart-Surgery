@@ -19,7 +19,7 @@
             align-items: center;
             min-height: 100vh;
             margin: 0;
-            background-color: #ffffff; /* Changed from #f4f4f4 to pure white */
+            background-color: #ffffff;
             font-family: Arial, sans-serif;
             overflow-x: hidden;
             touch-action: pan-y;
@@ -70,7 +70,8 @@
 
         /* --- PAGE ELEMENTS (HIDDEN INITIALLY, 6S FADE-IN) --- */
         .photo-frame,
-        .text-box {
+        .text-box,
+        .next-arrow-btn {
             opacity: 0;
             transform: translateY(15px);
             transition: 
@@ -82,6 +83,11 @@
         body.images-loaded .text-box {
             opacity: 1;
             transform: translateY(0);
+        }
+
+        body.images-loaded .next-arrow-btn {
+            opacity: 1;
+            transform: translateY(-50%);
         }
 
         /* --- IMAGE CONTAINER & SECRET DOUBLE-CLICK MAGNIFICATION --- */
@@ -106,9 +112,16 @@
             width: 100%;
             height: auto;
             display: block;
-            will-change: transform;
+            will-change: transform, opacity;
             transform-origin: center center;
-            transition: transform 3.6s cubic-bezier(0.05, 0.9, 0.1, 1);
+            opacity: 1;
+            transition: 
+                transform 3.6s cubic-bezier(0.05, 0.9, 0.1, 1),
+                opacity 0.35s ease;
+        }
+
+        .photo.is-switching {
+            opacity: 0;
         }
 
         .photo-frame.is-zoomed .photo {
@@ -128,6 +141,93 @@
             text-align: center;
             font-size: 1.1rem;
             color: #333;
+        }
+
+        #caption-text {
+            transition: opacity 0.35s ease;
+            margin: 0;
+        }
+
+        #caption-text.is-switching {
+            opacity: 0;
+        }
+
+        /* --- RIGHT SIDE GLOWING ARROW & METAL FLAKE GLITTER --- */
+        .next-arrow-btn {
+            position: fixed;
+            right: 40px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 76px;
+            height: 84px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 200;
+            padding: 0;
+            outline: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .next-arrow-btn:hover .arrow-svg {
+            transform: scale(1.1);
+        }
+
+        .next-arrow-btn:active .arrow-svg {
+            transform: scale(0.95);
+        }
+
+        .arrow-svg {
+            width: 60px;
+            height: 68px;
+            overflow: visible;
+            transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            animation: redGlowPulse 4s ease-in-out infinite;
+        }
+
+        /* White-to-red radiant glow cycle every 4 seconds */
+        @keyframes redGlowPulse {
+            0%, 100% {
+                filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.9))
+                        drop-shadow(0 0 6px rgba(255, 0, 51, 0.35));
+            }
+            50% {
+                filter: drop-shadow(0 0 5px #ffffff)
+                        drop-shadow(0 0 14px #ff0033)
+                        drop-shadow(0 0 28px rgba(255, 0, 51, 0.85));
+            }
+        }
+
+        /* Metal flake glitter particles */
+        .metal-flake {
+            position: fixed;
+            pointer-events: none;
+            z-index: 201;
+            clip-path: polygon(50% 0%, 88% 25%, 100% 65%, 72% 100%, 22% 92%, 0% 50%, 18% 15%);
+            will-change: transform, opacity;
+            animation: flakeFloat var(--dur) cubic-bezier(0.15, 0.8, 0.3, 1) forwards;
+        }
+
+        @keyframes flakeFloat {
+            0% {
+                opacity: 0;
+                transform: translate(0, 0) rotate(0deg) scale(0.2);
+            }
+            20% {
+                opacity: 1;
+                transform: translate(calc(var(--dx) * 0.25), calc(var(--dy) * 0.25)) rotate(calc(var(--rot) * 0.3)) scale(1.15);
+            }
+            55% {
+                opacity: 0.95;
+                filter: brightness(1.6);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(var(--dx), var(--dy)) rotate(var(--rot)) scale(0.1);
+            }
         }
 
         /* Desktop style */
@@ -152,6 +252,15 @@
                 font-size: 1.2rem;
                 letter-spacing: 0.15em;
             }
+            .next-arrow-btn {
+                right: 10px;
+                width: 56px;
+                height: 68px;
+            }
+            .arrow-svg {
+                width: 44px;
+                height: 52px;
+            }
         }
     </style>
 </head>
@@ -169,16 +278,96 @@
     </div>
 
     <div class="text-box">
-        <p>Sapphic-Sex; Not in Bed-- In Public--Combining Two Binaries Into a Single Subject, the Objective, Established Eroticism, Joy, Excitement & Frivolous Love</p>
+        <p id="caption-text">Sapphic-Sex; Not in Bed-- In Public--Combining Two Binaries Into a Single Subject, the Objective, Established Eroticism, Joy, Excitement & Frivolous Love</p>
     </div>
 
+    <!-- Right-Side Glowing Gradient Arrow with Tail Bending Up & Down -->
+    <button class="next-arrow-btn" id="next-arrow-btn" aria-label="Next photo" title="Next photo (Right Arrow)">
+        <svg class="arrow-svg" viewBox="0 0 68 76" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <!-- Animated White-to-Red Gradient cycling every 4s -->
+                <linearGradient id="whiteToRedGradient" x1="0%" y1="50%" x2="100%" y2="50%">
+                    <stop offset="0%" stop-color="#ffffff">
+                        <animate attributeName="stop-color" values="#ffffff; #ffccd5; #ff0033; #ffccd5; #ffffff" dur="4s" repeatCount="indefinite" />
+                    </stop>
+                    <stop offset="50%" stop-color="#ff6685">
+                        <animate attributeName="stop-color" values="#ff8099; #ff0033; #ffffff; #ff0033; #ff8099" dur="4s" repeatCount="indefinite" />
+                    </stop>
+                    <stop offset="100%" stop-color="#ff0033">
+                        <animate attributeName="stop-color" values="#ff0033; #ffffff; #ff0033; #b30024; #ff0033" dur="4s" repeatCount="indefinite" />
+                    </stop>
+                </linearGradient>
+            </defs>
+
+            <!-- Flexible shaft/tail anchored near arrowhead (x=54, y=38), bending smoothly up and down -->
+            <path id="arrow-tail"
+                  d="M10 38 Q32 38 54 38"
+                  stroke="url(#whiteToRedGradient)"
+                  stroke-width="4.5"
+                  stroke-linecap="round"
+                  fill="none">
+                <animate id="tailBendAnim"
+                         attributeName="d"
+                         values="M10 38 Q32 38 54 38;
+                                 M10 12 Q34 38 54 38;
+                                 M10 38 Q32 38 54 38;
+                                 M10 64 Q34 38 54 38;
+                                 M10 38 Q32 38 54 38"
+                         keyTimes="0; 0.25; 0.5; 0.75; 1"
+                         calcMode="spline"
+                         keySplines="0.42 0 0.58 1; 0.42 0 0.58 1; 0.42 0 0.58 1; 0.42 0 0.58 1"
+                         dur="3.2s"
+                         repeatCount="indefinite" />
+            </path>
+
+            <!-- Arrowhead -->
+            <path d="M38 22L54 38L38 54"
+                  stroke="url(#whiteToRedGradient)"
+                  stroke-width="4.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  fill="none"/>
+        </svg>
+    </button>
+
     <script>
+        // ==========================================
+        // ADD YOUR GALLERY PHOTOS HERE
+        // ==========================================
+        const galleryItems = [
+            {
+                src: "images/Sapphic-Sex;--Established Eroticism, Joy, Excitement & Frivolous Love (Name in JPG Info), Plastic, Oil on Pallet, 40 x 82, 2026.jpg",
+                caption: "Sapphic-Sex; Not in Bed-- In Public--Combining Two Binaries Into a Single Subject, the Objective, Established Eroticism, Joy, Excitement & Frivolous Love"
+            },
+            {
+                src: "images/second-photo.jpg", // <-- Replace with your 2nd image file path
+                caption: "Sapphic-Sex; Not in Bed-- In Public--Combining Two Binaries Into a Single Subject, the Objective, Established Eroticism, Joy, Excitement & Frivolous Love (Detail / View 2)"
+            }
+            // Example for adding a 3rd photo:
+            // ,{
+            //     src: "images/third-photo.jpg",
+            //     caption: "Your 3rd photo caption here"
+            // }
+        ];
+
         window.addEventListener('DOMContentLoaded', () => {
             const loaderBar = document.getElementById('loader-bar');
             const frame = document.getElementById('photo-frame');
             const img = document.getElementById('photo');
+            const captionText = document.getElementById('caption-text');
+            const nextArrowBtn = document.getElementById('next-arrow-btn');
+            const arrowTail = document.getElementById('arrow-tail');
 
-            // Animate bar smoothly toward 90% while downloading
+            let currentIndex = 0;
+            let isTransitioning = false;
+
+            // Preload additional gallery images in the background so switching is instant
+            galleryItems.slice(1).forEach(item => {
+                const preloadImg = new Image();
+                preloadImg.src = item.src;
+            });
+
+            // Animate bar smoothly toward 90% while downloading initial image
             let progress = 0;
             const progressInterval = setInterval(() => {
                 progress += (90 - progress) * 0.08;
@@ -188,13 +377,11 @@
             function finishAndReveal() {
                 clearInterval(progressInterval);
                 loaderBar.style.width = '100%';
-                // Wait 250ms so the bar visibly reaches 100%, then fade bar out & fade image in
                 setTimeout(() => {
                     document.body.classList.add('images-loaded');
                 }, 250);
             }
 
-            // Wait until image is BOTH downloaded AND fully decoded into pixels
             function waitForFullDecode() {
                 if (img.decode) {
                     img.decode()
@@ -208,11 +395,135 @@
             if (img.complete && img.naturalWidth > 0) {
                 waitForFullDecode();
             } else {
-                img.addEventListener('load', waitForFullDecode);
-                img.addEventListener('error', finishAndReveal);
+                img.addEventListener('load', waitForFullDecode, { once: true });
+                img.addEventListener('error', finishAndReveal, { once: true });
             }
 
-            // Helper to update transform origin from client coordinates
+            // ==========================================
+            // METAL FLAKE GLITTER SPARKLE EMITTER
+            // ==========================================
+            const flakePalettes = [
+                'linear-gradient(135deg, #ffffff 0%, #e6e6e6 45%, #ff0033 100%)',
+                'linear-gradient(135deg, #ff0033 0%, #ff8099 50%, #ffffff 100%)',
+                'linear-gradient(135deg, #ffffff 0%, #cccccc 50%, #808080 100%)',
+                'linear-gradient(135deg, #ffccd5 0%, #ff0033 60%, #99001f 100%)'
+            ];
+
+            function spawnMetalFlake(burst = false, customOrigin = null) {
+                if (!document.body.classList.contains('images-loaded')) return;
+
+                const rect = nextArrowBtn.getBoundingClientRect();
+                if (rect.width === 0) return;
+
+                const flake = document.createElement('div');
+                flake.className = 'metal-flake';
+
+                // Track live tail tip if requested, otherwise emit around the arrow
+                let startX, startY;
+                if (customOrigin && arrowTail) {
+                    const svgRect = nextArrowBtn.querySelector('.arrow-svg').getBoundingClientRect();
+                    const dAttr = arrowTail.getAttribute('d') || '';
+                    const match = dAttr.match(/^M\s*([\d.]+)\s+([\d.]+)/);
+                    if (match) {
+                        const vx = parseFloat(match[1]);
+                        const vy = parseFloat(match[2]);
+                        startX = svgRect.left + (vx / 68) * svgRect.width;
+                        startY = svgRect.top + (vy / 76) * svgRect.height;
+                    }
+                }
+
+                if (startX === undefined || startY === undefined) {
+                    startX = rect.left + rect.width * (0.2 + Math.random() * 0.6);
+                    startY = rect.top + rect.height * (0.2 + Math.random() * 0.6);
+                }
+
+                const size = (burst ? 4 : 3) + Math.random() * 4.5;
+                flake.style.width = `${size}px`;
+                flake.style.height = `${size * (0.7 + Math.random() * 0.6)}px`;
+                flake.style.left = `${startX}px`;
+                flake.style.top = `${startY}px`;
+                flake.style.background = flakePalettes[Math.floor(Math.random() * flakePalettes.length)];
+                flake.style.boxShadow = '0 0 4px rgba(255, 255, 255, 0.9), 0 0 6px rgba(255, 0, 51, 0.6)';
+
+                const angle = Math.random() * Math.PI * 2;
+                const distance = (burst ? 45 : 22) + Math.random() * (burst ? 75 : 45);
+                const dx = Math.cos(angle) * distance;
+                const dy = Math.sin(angle) * distance - (Math.random() * 12);
+                const rot = (Math.random() > 0.5 ? 1 : -1) * (180 + Math.random() * 360);
+                const dur = (burst ? 0.9 : 1.3) + Math.random() * 1.1;
+
+                flake.style.setProperty('--dx', `${dx}px`);
+                flake.style.setProperty('--dy', `${dy}px`);
+                flake.style.setProperty('--rot', `${rot}deg`);
+                flake.style.setProperty('--dur', `${dur}s`);
+
+                document.body.appendChild(flake);
+
+                setTimeout(() => {
+                    flake.remove();
+                }, dur * 1000 + 50);
+            }
+
+            // Continuous ambient metal flake emission (including flakes right off the bending tail)
+            setInterval(() => {
+                spawnMetalFlake(false, Math.random() > 0.45);
+                if (Math.random() > 0.45) {
+                    setTimeout(() => spawnMetalFlake(false, true), 120);
+                }
+            }, 240);
+
+            // ==========================================
+            // GALLERY NAVIGATION (CLICK OR RIGHT ARROW KEY)
+            // ==========================================
+            function goToNextPhoto() {
+                if (isTransitioning || galleryItems.length <= 1) return;
+                isTransitioning = true;
+
+                for (let i = 0; i < 16; i++) {
+                    setTimeout(() => spawnMetalFlake(true, i % 2 === 0), i * 18);
+                }
+
+                frame.classList.remove('is-zoomed');
+
+                img.classList.add('is-switching');
+                captionText.classList.add('is-switching');
+
+                setTimeout(() => {
+                    currentIndex = (currentIndex + 1) % galleryItems.length;
+                    const nextItem = galleryItems[currentIndex];
+
+                    const revealNext = () => {
+                        captionText.textContent = nextItem.caption;
+                        img.alt = nextItem.caption;
+                        img.style.transformOrigin = 'center center';
+                        img.classList.remove('is-switching');
+                        captionText.classList.remove('is-switching');
+                        isTransitioning = false;
+                    };
+
+                    img.src = nextItem.src;
+
+                    if (img.complete && img.naturalWidth > 0) {
+                        revealNext();
+                    } else {
+                        img.onload = revealNext;
+                        img.onerror = revealNext;
+                    }
+                }, 350);
+            }
+
+            nextArrowBtn.addEventListener('click', goToNextPhoto);
+
+            window.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowRight') {
+                    e.preventDefault();
+                    goToNextPhoto();
+                }
+            });
+
+            // ==========================================
+            // SECRET DOUBLE-CLICK / DOUBLE-TAP ZOOM
+            // ==========================================
             function setOrigin(clientX, clientY) {
                 const rect = frame.getBoundingClientRect();
                 const x = Math.max(0, Math.min(100, ((clientX - rect.left) / rect.width) * 100));
@@ -220,7 +531,6 @@
                 img.style.transformOrigin = `${x}% ${y}%`;
             }
 
-            // Desktop: Secret Toggle 4x Zoom ONLY on Double-Click
             frame.addEventListener('dblclick', (e) => {
                 e.preventDefault();
                 const willZoom = !frame.classList.contains('is-zoomed');
@@ -228,19 +538,16 @@
                 frame.classList.toggle('is-zoomed', willZoom);
             });
 
-            // Desktop: Pan around while zoomed in
             frame.addEventListener('mousemove', (e) => {
                 if (!frame.classList.contains('is-zoomed')) return;
                 setOrigin(e.clientX, e.clientY);
             });
 
-            // Desktop: Freeze origin at cursor exit point so it unmagnifies cleanly from there
             frame.addEventListener('mouseleave', (e) => {
                 if (!frame.classList.contains('is-zoomed')) return;
                 setOrigin(e.clientX, e.clientY);
             });
 
-            // Mobile: Secret Toggle 4x Zoom ONLY on Double-Tap
             let lastTap = 0;
             frame.addEventListener('touchend', (e) => {
                 if (e.touches.length > 0) return;
@@ -256,7 +563,6 @@
                 lastTap = currentTime;
             });
 
-            // Mobile: Single-finger pan while zoomed in
             frame.addEventListener('touchmove', (e) => {
                 if (e.touches.length === 1 && frame.classList.contains('is-zoomed')) {
                     e.preventDefault();
