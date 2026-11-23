@@ -71,7 +71,7 @@
         /* --- PAGE ELEMENTS (HIDDEN INITIALLY, 6S FADE-IN) --- */
         .photo-frame,
         .text-box,
-        .next-arrow-btn {
+        .nav-arrow-btn {
             opacity: 0;
             transform: translateY(15px);
             transition: 
@@ -85,9 +85,21 @@
             transform: translateY(0);
         }
 
-        body.images-loaded .next-arrow-btn {
+        body.images-loaded .nav-arrow-btn {
             opacity: 1;
             transform: translateY(-50%);
+        }
+
+        /* Hide the left arrow until the user navigates to a subsequent photo */
+        .prev-arrow-btn {
+            pointer-events: none;
+            visibility: hidden;
+        }
+
+        body.images-loaded .prev-arrow-btn.is-visible {
+            opacity: 1;
+            pointer-events: auto;
+            visibility: visible;
         }
 
         /* --- IMAGE CONTAINER & SECRET DOUBLE-CLICK MAGNIFICATION --- */
@@ -152,10 +164,9 @@
             opacity: 0;
         }
 
-        /* --- RIGHT SIDE DOUBLE CHEVRON ARROW & FALLING SILVER GLITTER FLAKES --- */
-        .next-arrow-btn {
+        /* --- LEFT & RIGHT DOUBLE CHEVRON ARROWS & FALLING SILVER GLITTER FLAKES --- */
+        .nav-arrow-btn {
             position: fixed;
-            right: 36px;
             top: 50%;
             transform: translateY(-50%);
             width: 84px;
@@ -172,11 +183,19 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        .next-arrow-btn:hover .arrow-svg {
+        .next-arrow-btn {
+            right: 36px;
+        }
+
+        .prev-arrow-btn {
+            left: 36px;
+        }
+
+        .nav-arrow-btn:hover .arrow-svg {
             transform: scale(1.08);
         }
 
-        .next-arrow-btn:active .arrow-svg {
+        .nav-arrow-btn:active .arrow-svg {
             transform: scale(0.95);
         }
 
@@ -186,6 +205,18 @@
             overflow: visible;
             transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
             animation: redGlowPulse 4s ease-in-out infinite;
+        }
+
+        .prev-arrow-btn .arrow-svg {
+            transform: scaleX(-1);
+        }
+
+        .prev-arrow-btn:hover .arrow-svg {
+            transform: scaleX(-1) scale(1.08);
+        }
+
+        .prev-arrow-btn:active .arrow-svg {
+            transform: scaleX(-1) scale(0.95);
         }
 
         /* White-to-red radiant glow cycle every 4 seconds */
@@ -292,10 +323,15 @@
                 font-size: 1.2rem;
                 letter-spacing: 0.15em;
             }
-            .next-arrow-btn {
-                right: 8px;
+            .nav-arrow-btn {
                 width: 64px;
                 height: 72px;
+            }
+            .next-arrow-btn {
+                right: 8px;
+            }
+            .prev-arrow-btn {
+                left: 8px;
             }
             .arrow-svg {
                 width: 52px;
@@ -321,12 +357,11 @@
         <p id="caption-text">Sapphic-Sex; Not in Bed-- In Public--Combining Two Binaries Into a Single Subject, the Objective, Established Eroticism, Joy, Excitement & Frivolous Love</p>
     </div>
 
-    <!-- Right-Side Double Chevron Arrow with Staggered White-to-Red Opacity -->
-    <button class="next-arrow-btn" id="next-arrow-btn" aria-label="Next photo" title="Next photo (Right Arrow)">
+    <!-- Left-Side Back Double Chevron Arrow (Revealed after going to next photo) -->
+    <button class="nav-arrow-btn prev-arrow-btn" id="prev-arrow-btn" aria-label="Previous photo" title="Previous photo (Left Arrow)">
         <svg class="arrow-svg" viewBox="0 0 80 88" fill="none" xmlns="http://www.w3.org/2000/svg">
             <defs>
-                <!-- Animated White-to-Red Gradient cycling every 4s -->
-                <linearGradient id="whiteToRedGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <linearGradient id="whiteToRedGradientPrev" x1="0%" y1="0%" x2="100%" y2="100%">
                     <stop offset="0%" stop-color="#ffffff">
                         <animate attributeName="stop-color" values="#ffffff; #ffccd5; #ff0033; #ffccd5; #ffffff" dur="4s" repeatCount="indefinite" />
                     </stop>
@@ -339,19 +374,52 @@
                 </linearGradient>
             </defs>
 
-            <!-- First (left/tail) chevron -->
             <path class="chevron-left"
                   d="M14 14L41 44L14 74"
-                  stroke="url(#whiteToRedGradient)"
+                  stroke="url(#whiteToRedGradientPrev)"
                   stroke-width="9"
                   stroke-linecap="round"
                   stroke-linejoin="round"
                   fill="none"/>
 
-            <!-- Second (right/lead) chevron -->
             <path class="chevron-right"
                   d="M41 14L68 44L41 74"
-                  stroke="url(#whiteToRedGradient)"
+                  stroke="url(#whiteToRedGradientPrev)"
+                  stroke-width="9"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  fill="none"/>
+        </svg>
+    </button>
+
+    <!-- Right-Side Next Double Chevron Arrow -->
+    <button class="nav-arrow-btn next-arrow-btn" id="next-arrow-btn" aria-label="Next photo" title="Next photo (Right Arrow)">
+        <svg class="arrow-svg" viewBox="0 0 80 88" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <linearGradient id="whiteToRedGradientNext" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#ffffff">
+                        <animate attributeName="stop-color" values="#ffffff; #ffccd5; #ff0033; #ffccd5; #ffffff" dur="4s" repeatCount="indefinite" />
+                    </stop>
+                    <stop offset="50%" stop-color="#ff6685">
+                        <animate attributeName="stop-color" values="#ff8099; #ff0033; #ffffff; #ff0033; #ff8099" dur="4s" repeatCount="indefinite" />
+                    </stop>
+                    <stop offset="100%" stop-color="#ff0033">
+                        <animate attributeName="stop-color" values="#ff0033; #ffffff; #ff0033; #b30024; #ff0033" dur="4s" repeatCount="indefinite" />
+                    </stop>
+                </linearGradient>
+            </defs>
+
+            <path class="chevron-left"
+                  d="M14 14L41 44L14 74"
+                  stroke="url(#whiteToRedGradientNext)"
+                  stroke-width="9"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  fill="none"/>
+
+            <path class="chevron-right"
+                  d="M41 14L68 44L41 74"
+                  stroke="url(#whiteToRedGradientNext)"
                   stroke-width="9"
                   stroke-linecap="round"
                   stroke-linejoin="round"
@@ -385,17 +453,17 @@
             const img = document.getElementById('photo');
             const captionText = document.getElementById('caption-text');
             const nextArrowBtn = document.getElementById('next-arrow-btn');
+            const prevArrowBtn = document.getElementById('prev-arrow-btn');
 
             let currentIndex = 0;
+            let hasAdvancedOnce = false;
             let isTransitioning = false;
 
-            // Preload additional gallery images in the background so switching is instant
             galleryItems.slice(1).forEach(item => {
                 const preloadImg = new Image();
                 preloadImg.src = item.src;
             });
 
-            // Animate bar smoothly toward 90% while downloading initial image
             let progress = 0;
             const progressInterval = setInterval(() => {
                 progress += (90 - progress) * 0.08;
@@ -444,10 +512,10 @@
                 'linear-gradient(160deg, #e2e8f0 0%, #7c8796 52%, #f1f5f9 100%)'
             ];
 
-            function spawnSilverFlake(burst = false) {
-                if (!document.body.classList.contains('images-loaded')) return;
+            function spawnSilverFlake(originBtn, burst = false) {
+                if (!document.body.classList.contains('images-loaded') || !originBtn) return;
 
-                const rect = nextArrowBtn.getBoundingClientRect();
+                const rect = originBtn.getBoundingClientRect();
                 if (rect.width === 0) return;
 
                 const flake = document.createElement('div');
@@ -490,21 +558,30 @@
             }
 
             setInterval(() => {
-                spawnSilverFlake(false);
+                spawnSilverFlake(nextArrowBtn, false);
+                if (hasAdvancedOnce) {
+                    spawnSilverFlake(prevArrowBtn, false);
+                }
                 if (Math.random() > 0.35) {
-                    setTimeout(() => spawnSilverFlake(false), 90);
+                    const targetBtn = hasAdvancedOnce && Math.random() > 0.5 ? prevArrowBtn : nextArrowBtn;
+                    setTimeout(() => spawnSilverFlake(targetBtn, false), 90);
                 }
             }, 130);
 
             // ==========================================
-            // GALLERY NAVIGATION (CLICK OR RIGHT ARROW KEY)
+            // GALLERY NAVIGATION (NEXT & PREV)
             // ==========================================
-            function goToNextPhoto() {
+            function navigateToIndex(targetIndex, sourceBtn, isForward) {
                 if (isTransitioning || galleryItems.length <= 1) return;
                 isTransitioning = true;
 
+                if (isForward) {
+                    hasAdvancedOnce = true;
+                    prevArrowBtn.classList.add('is-visible');
+                }
+
                 for (let i = 0; i < 20; i++) {
-                    setTimeout(() => spawnSilverFlake(true), i * 20);
+                    setTimeout(() => spawnSilverFlake(sourceBtn, true), i * 20);
                 }
 
                 frame.classList.remove('is-zoomed');
@@ -513,7 +590,7 @@
                 captionText.classList.add('is-switching');
 
                 setTimeout(() => {
-                    currentIndex = (currentIndex + 1) % galleryItems.length;
+                    currentIndex = (targetIndex + galleryItems.length) % galleryItems.length;
                     const nextItem = galleryItems[currentIndex];
 
                     const revealNext = () => {
@@ -536,12 +613,25 @@
                 }, 350);
             }
 
+            function goToNextPhoto() {
+                navigateToIndex(currentIndex + 1, nextArrowBtn, true);
+            }
+
+            function goToPrevPhoto() {
+                if (!hasAdvancedOnce) return;
+                navigateToIndex(currentIndex - 1, prevArrowBtn, false);
+            }
+
             nextArrowBtn.addEventListener('click', goToNextPhoto);
+            prevArrowBtn.addEventListener('click', goToPrevPhoto);
 
             window.addEventListener('keydown', (e) => {
                 if (e.key === 'ArrowRight') {
                     e.preventDefault();
                     goToNextPhoto();
+                } else if (e.key === 'ArrowLeft' && hasAdvancedOnce) {
+                    e.preventDefault();
+                    goToPrevPhoto();
                 }
             });
 
