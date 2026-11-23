@@ -164,7 +164,7 @@
             opacity: 0;
         }
 
-        /* --- LEFT & RIGHT DOUBLE CHEVRON ARROWS & FALLING SILVER GLITTER FLAKES --- */
+        /* --- LEFT & RIGHT DOUBLE CHEVRON ARROWS WITH WHITE-TO-RED EDGE SHADOW PULSE --- */
         .nav-arrow-btn {
             position: fixed;
             top: 50%;
@@ -204,7 +204,7 @@
             height: 76px;
             overflow: visible;
             transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-            animation: redGlowPulse 4s ease-in-out infinite;
+            animation: edgeWhiteToRedPulse 4s ease-in-out infinite;
         }
 
         .prev-arrow-btn .arrow-svg {
@@ -219,16 +219,17 @@
             transform: scaleX(-1) scale(0.95);
         }
 
-        /* White-to-red radiant glow cycle every 4 seconds */
-        @keyframes redGlowPulse {
+        /* Outer edge shadow pulsing from white to red every 4 seconds */
+        @keyframes edgeWhiteToRedPulse {
             0%, 100% {
-                filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.9))
-                        drop-shadow(0 0 6px rgba(255, 0, 51, 0.35));
+                filter: drop-shadow(0 0 4px #ffffff)
+                        drop-shadow(0 0 10px rgba(255, 255, 255, 0.95))
+                        drop-shadow(0 0 18px rgba(255, 255, 255, 0.6));
             }
             50% {
-                filter: drop-shadow(0 0 5px #ffffff)
-                        drop-shadow(0 0 14px #ff0033)
-                        drop-shadow(0 0 26px rgba(255, 0, 51, 0.8));
+                filter: drop-shadow(0 0 4px #ffccd5)
+                        drop-shadow(0 0 11px #ff0033)
+                        drop-shadow(0 0 22px rgba(255, 0, 51, 0.78));
             }
         }
 
@@ -249,55 +250,6 @@
             }
             50% {
                 opacity: 1;
-            }
-        }
-
-        /* Flat angular silver metallic glitter flakes falling to bottom */
-        .silver-flake {
-            position: fixed;
-            pointer-events: none;
-            z-index: 199;
-            will-change: transform, opacity;
-            animation: flakeFallDown var(--dur) linear forwards;
-        }
-
-        .silver-flake-inner {
-            width: 100%;
-            height: 100%;
-            clip-path: var(--poly);
-            background: var(--facet);
-            animation: flakeTumble var(--tumble-dur) ease-in-out infinite alternate;
-        }
-
-        @keyframes flakeFallDown {
-            0% {
-                opacity: 0;
-                transform: translate3d(0, 0, 0);
-            }
-            8% {
-                opacity: 1;
-            }
-            85% {
-                opacity: 0.95;
-            }
-            100% {
-                opacity: 0;
-                transform: translate3d(var(--drift-x), var(--fall-y), 0);
-            }
-        }
-
-        @keyframes flakeTumble {
-            0% {
-                transform: rotate(0deg) scaleX(1) scaleY(1);
-                filter: brightness(0.85) contrast(1.2);
-            }
-            50% {
-                transform: rotate(var(--spin-mid)) scaleX(0.45) scaleY(1.05);
-                filter: brightness(1.85) contrast(1.3);
-            }
-            100% {
-                transform: rotate(var(--spin-end)) scaleX(0.95) scaleY(0.75);
-                filter: brightness(1.1) contrast(1.15);
             }
         }
 
@@ -496,92 +448,15 @@
             }
 
             // ==========================================
-            // SILVER METALLIC GLITTER FLAKES FALLING TO BOTTOM
-            // ==========================================
-            const flakePolygons = [
-                'polygon(12% 4%, 96% 18%, 84% 92%, 6% 78%)',
-                'polygon(4% 22%, 78% 6%, 95% 84%, 24% 96%)',
-                'polygon(18% 8%, 92% 28%, 72% 96%, 8% 68%)',
-                'polygon(8% 14%, 88% 8%, 94% 76%, 16% 94%)'
-            ];
-
-            const silverFacets = [
-                'linear-gradient(125deg, #f8fafc 0%, #cbd5e1 42%, #64748b 78%, #e2e8f0 100%)',
-                'linear-gradient(215deg, #ffffff 0%, #94a3b8 48%, #475569 85%, #cbd5e1 100%)',
-                'linear-gradient(45deg, #64748b 0%, #e2e8f0 45%, #ffffff 72%, #94a3b8 100%)',
-                'linear-gradient(160deg, #e2e8f0 0%, #7c8796 52%, #f1f5f9 100%)'
-            ];
-
-            function spawnSilverFlake(originBtn, burst = false) {
-                if (!document.body.classList.contains('images-loaded') || !originBtn) return;
-
-                const rect = originBtn.getBoundingClientRect();
-                if (rect.width === 0) return;
-
-                const flake = document.createElement('div');
-                flake.className = 'silver-flake';
-
-                const inner = document.createElement('div');
-                inner.className = 'silver-flake-inner';
-
-                const startX = rect.left + rect.width * (0.16 + Math.random() * 0.72);
-                const startY = rect.top + rect.height * (0.2 + Math.random() * 0.6);
-
-                const width = (burst ? 4.5 : 3.5) + Math.random() * 4.5;
-                const height = width * (0.65 + Math.random() * 0.65);
-
-                flake.style.width = `${width}px`;
-                flake.style.height = `${height}px`;
-                flake.style.left = `${startX}px`;
-                flake.style.top = `${startY}px`;
-
-                inner.style.setProperty('--poly', flakePolygons[Math.floor(Math.random() * flakePolygons.length)]);
-                inner.style.setProperty('--facet', silverFacets[Math.floor(Math.random() * silverFacets.length)]);
-                inner.style.setProperty('--spin-mid', `${(Math.random() > 0.5 ? 1 : -1) * (90 + Math.random() * 140)}deg`);
-                inner.style.setProperty('--spin-end', `${(Math.random() > 0.5 ? 1 : -1) * (220 + Math.random() * 260)}deg`);
-                inner.style.setProperty('--tumble-dur', `${0.38 + Math.random() * 0.45}s`);
-
-                const remainingHeight = Math.max(120, window.innerHeight - startY + 24);
-                const driftX = (Math.random() - 0.58) * (burst ? 110 : 75);
-                const fallDuration = (remainingHeight / window.innerHeight) * (2.6 + Math.random() * 1.6);
-
-                flake.style.setProperty('--fall-y', `${remainingHeight}px`);
-                flake.style.setProperty('--drift-x', `${driftX}px`);
-                flake.style.setProperty('--dur', `${fallDuration}s`);
-
-                flake.appendChild(inner);
-                document.body.appendChild(flake);
-
-                setTimeout(() => {
-                    flake.remove();
-                }, fallDuration * 1000 + 80);
-            }
-
-            setInterval(() => {
-                spawnSilverFlake(nextArrowBtn, false);
-                if (hasAdvancedOnce) {
-                    spawnSilverFlake(prevArrowBtn, false);
-                }
-                if (Math.random() > 0.35) {
-                    const targetBtn = hasAdvancedOnce && Math.random() > 0.5 ? prevArrowBtn : nextArrowBtn;
-                    setTimeout(() => spawnSilverFlake(targetBtn, false), 90);
-                }
-            }, 130);
-
-            // ==========================================
             // GALLERY NAVIGATION (NEXT & PREV)
             // ==========================================
-            function navigateToIndex(targetIndex, sourceBtn, isForward) {
+            function navigateToIndex(targetIndex, isForward) {
                 if (isTransitioning || galleryItems.length <= 1) return;
                 isTransitioning = true;
 
                 if (isForward) {
                     hasAdvancedOnce = true;
                     prevArrowBtn.classList.add('is-visible');
-                }
-
-                for (let i = 0; i < 20; i++) {
-                    setTimeout(() => spawnSilverFlake(sourceBtn, true), i * 20);
                 }
 
                 frame.classList.remove('is-zoomed');
@@ -614,12 +489,12 @@
             }
 
             function goToNextPhoto() {
-                navigateToIndex(currentIndex + 1, nextArrowBtn, true);
+                navigateToIndex(currentIndex + 1, true);
             }
 
             function goToPrevPhoto() {
                 if (!hasAdvancedOnce) return;
-                navigateToIndex(currentIndex - 1, prevArrowBtn, false);
+                navigateToIndex(currentIndex - 1, false);
             }
 
             nextArrowBtn.addEventListener('click', goToNextPhoto);
