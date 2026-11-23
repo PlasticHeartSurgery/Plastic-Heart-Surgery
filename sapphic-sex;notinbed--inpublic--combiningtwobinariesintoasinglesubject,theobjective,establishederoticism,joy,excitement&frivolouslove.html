@@ -164,13 +164,13 @@
             opacity: 0;
         }
 
-        /* --- LEFT & RIGHT DOUBLE CHEVRON ARROWS WITH WHITE-TO-RED EDGE SHADOW PULSE --- */
+        /* --- LEFT & RIGHT DOUBLE CHEVRON ARROWS WITH LARGE CIRCULAR WHITE-TO-RED ORB GLOW --- */
         .nav-arrow-btn {
             position: fixed;
             top: 50%;
             transform: translateY(-50%);
-            width: 84px;
-            height: 92px;
+            width: 136px;
+            height: 136px;
             background: transparent;
             border: none;
             cursor: pointer;
@@ -184,11 +184,52 @@
         }
 
         .next-arrow-btn {
-            right: 36px;
+            right: 20px;
         }
 
         .prev-arrow-btn {
-            left: 36px;
+            left: 20px;
+        }
+
+        /* Large circular orb aura behind each arrow (~2x the previous glow spread) */
+        .nav-arrow-btn::before {
+            content: "";
+            position: absolute;
+            width: 136px;
+            height: 136px;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: -1;
+            animation: orbWhiteToRedPulse 4s ease-in-out infinite;
+        }
+
+        @keyframes orbWhiteToRedPulse {
+            0%, 100% {
+                background: radial-gradient(
+                    circle,
+                    rgba(255, 255, 255, 0.98) 0%,
+                    rgba(255, 255, 255, 0.85) 36%,
+                    rgba(255, 255, 255, 0.42) 62%,
+                    rgba(255, 255, 255, 0) 76%
+                );
+                box-shadow:
+                    0 0 24px rgba(255, 255, 255, 0.95),
+                    0 0 48px rgba(255, 255, 255, 0.72);
+                transform: scale(0.94);
+            }
+            50% {
+                background: radial-gradient(
+                    circle,
+                    rgba(255, 255, 255, 0.92) 0%,
+                    rgba(255, 102, 133, 0.72) 32%,
+                    rgba(255, 0, 51, 0.56) 58%,
+                    rgba(255, 0, 51, 0) 76%
+                );
+                box-shadow:
+                    0 0 28px rgba(255, 0, 51, 0.78),
+                    0 0 56px rgba(255, 0, 51, 0.55);
+                transform: scale(1.06);
+            }
         }
 
         .nav-arrow-btn:hover .arrow-svg {
@@ -222,14 +263,14 @@
         /* Outer edge shadow pulsing from white to red every 4 seconds */
         @keyframes edgeWhiteToRedPulse {
             0%, 100% {
-                filter: drop-shadow(0 0 4px #ffffff)
-                        drop-shadow(0 0 10px rgba(255, 255, 255, 0.95))
-                        drop-shadow(0 0 18px rgba(255, 255, 255, 0.6));
+                filter: drop-shadow(0 0 8px #ffffff)
+                        drop-shadow(0 0 20px rgba(255, 255, 255, 0.95))
+                        drop-shadow(0 0 36px rgba(255, 255, 255, 0.75));
             }
             50% {
-                filter: drop-shadow(0 0 4px #ffccd5)
-                        drop-shadow(0 0 11px #ff0033)
-                        drop-shadow(0 0 22px rgba(255, 0, 51, 0.78));
+                filter: drop-shadow(0 0 8px #ffccd5)
+                        drop-shadow(0 0 22px #ff0033)
+                        drop-shadow(0 0 44px rgba(255, 0, 51, 0.85));
             }
         }
 
@@ -276,14 +317,18 @@
                 letter-spacing: 0.15em;
             }
             .nav-arrow-btn {
-                width: 64px;
-                height: 72px;
+                width: 108px;
+                height: 108px;
+            }
+            .nav-arrow-btn::before {
+                width: 108px;
+                height: 108px;
             }
             .next-arrow-btn {
-                right: 8px;
+                right: -6px;
             }
             .prev-arrow-btn {
-                left: 8px;
+                left: -6px;
             }
             .arrow-svg {
                 width: 52px;
