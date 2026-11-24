@@ -26,7 +26,7 @@
             font-style: normal;
         }
 
-        * {
+- {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
@@ -468,9 +468,18 @@
                 font-size: 1.4rem;
                 letter-spacing: 0.15em;
             }
+            .links-grid {
+                gap: 16px;
+                margin-top: 20px;
+            }
+            .link-card {
+                padding: 18px;
+            }
             .video-card {
                 flex-direction: column;
                 align-items: flex-start;
+                gap: 14px;
+                padding: 18px;
             }
             .custom-image-box {
                 width: 100%;
@@ -489,6 +498,15 @@
             .paypal-amt-btn {
                 font-size: 0.85rem;
                 padding: 10px 6px;
+            }
+            /* Mobile-only Twitch embed sizing */
+            #twitch-embed,
+            #twitch-embed iframe {
+                max-width: 100% !important;
+                width: 100% !important;
+            }
+            #twitch-embed iframe {
+                height: 320px !important;
             }
         }
     </style>
@@ -604,6 +622,13 @@
                         <div class="link-desc"></div>
                     </div>
                 </a>
+
+                <!-- Mixcloud Widget Card -->
+                <div class="link-card">
+                    <div class="link-tag">Mixcloud</div>
+                    <div class="link-desc" style="margin-bottom: 12px;">Practicing New Songs</div>
+                    <iframe width="100%" height="130" src="https://player-widget.mixcloud.com/widget/iframe/?26=1&hide_cover=1&feed=%2FPlasticHeartSurgery%2Fpracticing-new-songs%2F&utm_medium=share&utm_source=embed&utm_content=show&utm_term=VXNlcjo1NDY5ODYzNA%3D%3D" frameborder="0" allow="encrypted-media; fullscreen; autoplay; idle-detection; speaker-selection; web-share;" ></iframe>
+                </div>
 
                 <!-- PayPal Widget Card -->
                 <div class="paypal-widget-card">
