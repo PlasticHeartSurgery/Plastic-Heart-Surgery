@@ -348,8 +348,6 @@
             border-radius: 6px;
             padding: 24px;
             box-shadow: 4px 4px 0px #000000;
-            max-width: 100%;
-            overflow: hidden;
             transition: transform 0.2s ease, border-color 0.4s ease, background-color 0.4s ease;
         }
         .paypal-widget-card:hover {
@@ -360,17 +358,13 @@
             font-family: 'Hypik', sans-serif !important;
             color: #ff0033;
             text-decoration: none;
-            overflow-wrap: anywhere;
-            word-break: break-word;
-            display: inline-block;
-            max-width: 100%;
         }
         .paypal-widget-card .link-title a:hover {
             text-decoration: underline;
         }
         .paypal-amounts {
             display: grid;
-            grid-template-columns: repeat(4, minmax(0, 1fr));
+            grid-template-columns: repeat(4, 1fr);
             gap: 10px;
             margin-bottom: 16px;
         }
@@ -385,9 +379,6 @@
             color: #111111;
             cursor: pointer;
             transition: all 0.2s ease;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
         }
         .paypal-amt-btn:hover {
             border-color: #ff0033;
@@ -468,18 +459,9 @@
                 font-size: 1.4rem;
                 letter-spacing: 0.15em;
             }
-            .links-grid {
-                gap: 16px;
-                margin-top: 20px;
-            }
-            .link-card {
-                padding: 18px;
-            }
             .video-card {
                 flex-direction: column;
                 align-items: flex-start;
-                gap: 14px;
-                padding: 18px;
             }
             .custom-image-box {
                 width: 100%;
@@ -493,7 +475,7 @@
                 line-height: 1.4;
             }
             .paypal-amounts {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
+                grid-template-columns: repeat(2, 1fr);
             }
             .paypal-amt-btn {
                 font-size: 0.85rem;
