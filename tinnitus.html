@@ -5151,8 +5151,7 @@
                 }
             }
         }
-
-        progressWrapper.addEventListener('mousedown', (e) => {
+progressWrapper.addEventListener('mousedown', (e) => {
             if (!activeCard && audio.src) {
                 const card = document.querySelector('.track-card');
                 if (card) activeCard = card;
@@ -5346,11 +5345,7 @@
 
         /* --- IMAGE LOADER & REVEAL --- */
         window.addEventListener('DOMContentLoaded', () => {
-            const imageSources = [
-                "images/Eel 1.png",
-                "images/Eel 2.png",
-                "images/Eel 3.png"
-            ];
+            const imageSources = [];
 
             let loadedCount = 0;
             const totalImages = imageSources.length;
@@ -5364,6 +5359,11 @@
                 setTimeout(() => {
                     document.body.classList.add('images-loaded');
                 }, 150);
+            }
+
+            if (totalImages === 0) {
+                revealPage();
+                return;
             }
 
             const safetyTimer = setTimeout(revealPage, 2000);
