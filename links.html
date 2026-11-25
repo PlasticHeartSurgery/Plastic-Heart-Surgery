@@ -26,7 +26,7 @@
             font-style: normal;
         }
 
-        - {
+        *, *::before, *::after {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
@@ -343,15 +343,21 @@
 
         /* PayPal Widget Styles with Hypik Font & Pure Red */
         .paypal-widget-card {
+            display: block;
+            width: 100%;
             background: #ffffff;
             border: 2px solid #000000;
+            border-left: 2px solid #000000;
             border-radius: 6px;
             padding: 24px;
             box-shadow: 4px 4px 0px #000000;
+            position: relative;
+            z-index: 1;
             transition: transform 0.2s ease, border-color 0.4s ease, background-color 0.4s ease;
         }
         .paypal-widget-card:hover {
             border-color: #ff0033;
+            border-left-color: #ff0033;
             animation: gradientGlow 3s ease-in-out infinite alternate;
         }
         .paypal-widget-card .link-title a {
@@ -364,9 +370,10 @@
         }
         .paypal-amounts {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(4, minmax(0, 1fr));
             gap: 10px;
             margin-bottom: 16px;
+            width: 100%;
         }
         .paypal-amt-btn {
             background: #ffffff;
@@ -379,6 +386,10 @@
             color: #111111;
             cursor: pointer;
             transition: all 0.2s ease;
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
         .paypal-amt-btn:hover {
             border-color: #ff0033;
@@ -393,6 +404,7 @@
         }
         .paypal-custom-input, .paypal-note-input {
             width: 100%;
+            max-width: 100%;
             background: #ffffff;
             border: 2px solid #111111;
             border-radius: 4px;
@@ -415,6 +427,7 @@
         }
         .paypal-donate-btn {
             width: 100%;
+            max-width: 100%;
             background: linear-gradient(135deg, #ff0033, #ffffff);
             border: 2px solid #ff0033;
             border-radius: 4px;
@@ -475,11 +488,20 @@
                 line-height: 1.4;
             }
             .paypal-amounts {
-                grid-template-columns: repeat(2, 1fr);
+                grid-template-columns: repeat(2, minmax(0, 1fr));
             }
             .paypal-amt-btn {
                 font-size: 0.85rem;
                 padding: 10px 6px;
+            }
+            /* Mobile-only Twitch embed sizing */
+            #twitch-embed,
+            #twitch-embed iframe {
+                max-width: 100% !important;
+                width: 100% !important;
+            }
+            #twitch-embed iframe {
+                height: 320px !important;
             }
         }
     </style>
